@@ -53,5 +53,7 @@ public:
 
 	UINT GetVAO() const;
 	UINT GetVertexCount() const;
+	Material &GetMaterial();
+	const Material &GetMaterial() const;
 };
 

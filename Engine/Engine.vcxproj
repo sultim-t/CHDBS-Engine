@@ -269,8 +269,6 @@
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="Systems\RenderingSystem.h" />
     <ClInclude Include="Systems\ISystem.h" />
-    <ClInclude Include="TEMP\mesh.h" />
-    <ClInclude Include="TEMP\model.h" />
     <ClInclude Include="TEMP\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>

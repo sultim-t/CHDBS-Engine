@@ -71,3 +71,13 @@ UINT Mesh::GetVertexCount() const
 {
 	return vertices.size();
 }
+
+Material & Mesh::GetMaterial()
+{
+	return material;
+}
+
+const Material & Mesh::GetMaterial() const
+{
+	return material;
+}

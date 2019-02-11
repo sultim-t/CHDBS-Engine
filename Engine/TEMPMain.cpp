@@ -25,9 +25,6 @@
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
 
-#include <Engine/TEMP/model.h>
-
-
 float *vertices;
 
 int main()
@@ -133,14 +130,10 @@ int main()
 	cube4.AddComponent(&cube4model);
 	cube4.GetTransform().SetPosition(Vector3(1, 1, 5));*/
 
-	ModelLE doubleBarrel("TEMP/DoubleBarrel/DoubleBarrel.obj");
-	ModelLE terrain("TEMP/DoubleBarrel/beacj.fbx");
 
 	Texture textureDB = Texture();
 	textureDB.Load("TEMP/DoubleBarrel/WeaponsPalette.png");
-	//Texture terrainTexture = Texture();
-	//terrainTexture.Load("TEMP/DoubleBarrel/TerrainPalette.png");
-
+	
 	Transform dbTransform = Transform();
 	dbTransform.Translate(Vector3(0, 0, -10));
 	dbTransform.Rotate(Vector3(90, 0, 0));
@@ -157,6 +150,9 @@ int main()
 
 
 
+	CModel terrain = CModel();
+	terrain.Enable();
+	terrain.Load("TEMP/DoubleBarrel/beacj.fbx");
 
 	CModel cmodel = CModel();
 	cmodel.Enable();
@@ -166,7 +162,7 @@ int main()
 	mat.BindShader(shader);
 	
 	cmodel.meshes[0].BindMaterial(mat);
-
+	terrain.meshes[0].GetMaterial().BindShader(shader);
 
 
 
@@ -205,11 +201,11 @@ int main()
 		// cube4.GetComponent<CModel>()->Draw(simpleDepthShader);
 
 		simpleDepthShader.SetMat4("model", terrainTransform.GetTransformMatrix());
-		terrain.Draw(simpleDepthShader.GetProgramID());
+		//terrain.Draw(simpleDepthShader.GetProgramID());
 
 		//textureDB.Activate(0);
 		simpleDepthShader.SetMat4("model", dbTransform.GetTransformMatrix());
-		doubleBarrel.Draw(simpleDepthShader.GetProgramID());
+		//doubleBarrel.Draw(simpleDepthShader.GetProgramID());
 		// ---------------------
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -240,15 +236,15 @@ int main()
 		//cube4.GetComponent<CModel>()->Draw(shader);
 		
 		shader.SetMat4("model", terrainTransform.GetTransformMatrix());
-		terrain.Draw(shader.GetProgramID());
+		terrain.Draw();
 
 		//shader.SetMat4("model", Matrix4::Matrix(1.0f, true));
 		//cmodel.Draw();
 		
 
-		textureDB.Activate(0);
+		//textureDB.Activate(0);
 		shader.SetMat4("model", dbTransform.GetTransformMatrix());
-		doubleBarrel.Draw(shader.GetProgramID());
+		cmodel.Draw();
 		// ---------------------
 
 		ContextWindow::Instance().SwapBuffers();
