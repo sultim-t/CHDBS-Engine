@@ -20,6 +20,7 @@
 #include <Engine/Components/CModel.h>
 #include <Engine/DataStructures/HashTable.h>
 #include <Engine/DataStructures/DynamicArray.h>
+#include <Engine/Rendering/Cubemap.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
@@ -117,7 +118,7 @@ int main()
 	Vector3 lightPosN = Vector3(-2.0f, 4.0f, -1.0f);
 
 
-	Entity cube4 = Entity();
+	/*Entity cube4 = Entity();
 	
 	Mesh cube4Mesh = Mesh();
 	//cube4Mesh.AddTexture(texture);
@@ -130,10 +131,7 @@ int main()
 
 	cube4model.SetOwner(&cube4);
 	cube4.AddComponent(&cube4model);
-	cube4.GetTransform().SetPosition(Vector3(1, 1, 5));
-
-
-
+	cube4.GetTransform().SetPosition(Vector3(1, 1, 5));*/
 
 	ModelLE doubleBarrel("TEMP/DoubleBarrel/DoubleBarrel.obj");
 	ModelLE terrain("TEMP/DoubleBarrel/beacj.fbx");
@@ -151,6 +149,30 @@ int main()
 	terrainTransform.Translate(Vector3(-20, 26, 20));
 	terrainTransform.Rotate(Vector3(-90, -90, 0));
 
+
+
+
+
+
+
+
+
+
+	CModel cmodel = CModel();
+	cmodel.Enable();
+	cmodel.Load("TEMP/DoubleBarrel/DoubleBarrel.obj");
+
+	Material mat = Material({ textureDB });
+	mat.BindShader(shader);
+	
+	cmodel.meshes[0].BindMaterial(mat);
+
+
+
+
+
+
+
 	while (!ContextWindow::Instance().ShouldClose())
 	{
 		Time::Calculate();
@@ -159,7 +181,7 @@ int main()
 		cameraEntity->GetComponent<CFreeMovement>()->Update();
 		cameraEntity->GetComponent<CCamera>()->Update();
 
-		cube4.GetTransform().Rotate(Vector3(Time::GetDeltaTime() * 30, Time::GetDeltaTime() * 40, Time::GetDeltaTime() * 20));
+		// cube4.GetTransform().Rotate(Vector3(Time::GetDeltaTime() * 30, Time::GetDeltaTime() * 40, Time::GetDeltaTime() * 20));
 
 		// render
 		glClearColor(0.5f, 0.85f, 1.0f, 1.0f);
@@ -179,8 +201,8 @@ int main()
 		
 		// ---------------------
 		//texture.Activate(0);
-		simpleDepthShader.SetMat4("model", cube4.GetTransform().GetTransformMatrix());
-		cube4.GetComponent<CModel>()->Draw(simpleDepthShader);
+		// simpleDepthShader.SetMat4("model", cube4.GetTransform().GetTransformMatrix());
+		// cube4.GetComponent<CModel>()->Draw(simpleDepthShader);
 
 		simpleDepthShader.SetMat4("model", terrainTransform.GetTransformMatrix());
 		terrain.Draw(simpleDepthShader.GetProgramID());
@@ -213,12 +235,16 @@ int main()
 
 		shadowTexture.Activate(1);
 		// ---------------------
-		texture.Activate(0);
-		shader.SetMat4("model", cube4.GetTransform().GetTransformMatrix());
-		cube4.GetComponent<CModel>()->Draw(shader);
+		//texture.Activate(0);
+		//shader.SetMat4("model", cube4.GetTransform().GetTransformMatrix());
+		//cube4.GetComponent<CModel>()->Draw(shader);
 		
 		shader.SetMat4("model", terrainTransform.GetTransformMatrix());
 		terrain.Draw(shader.GetProgramID());
+
+		//shader.SetMat4("model", Matrix4::Matrix(1.0f, true));
+		//cmodel.Draw();
+		
 
 		textureDB.Activate(0);
 		shader.SetMat4("model", dbTransform.GetTransformMatrix());

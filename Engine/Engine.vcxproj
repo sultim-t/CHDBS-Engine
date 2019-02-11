@@ -176,7 +176,6 @@
     <ClCompile Include="Components\CMesh.cpp" />
     <ClCompile Include="Components\IComponent.cpp" />
     <ClCompile Include="Components\CModel.cpp" />
-    <ClCompile Include="Components\_CMesh.cpp" />
     <ClCompile Include="Entities\EntityFactory.cpp" />
     <ClCompile Include="Components\CLight.cpp" />
     <ClCompile Include="Base\Time.cpp" />
@@ -226,7 +225,6 @@
     <ClInclude Include="Components\CFreeMovement.h" />
     <ClInclude Include="Components\IComponent.h" />
     <ClInclude Include="Components\CModel.h" />
-    <ClInclude Include="Components\_CMesh.h" />
     <ClInclude Include="DataStructures\DynamicArray.h" />
     <ClInclude Include="DataStructures\HashTable.h" />
     <ClInclude Include="DataStructures\LinkedList.h" />

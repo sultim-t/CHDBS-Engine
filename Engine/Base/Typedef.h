@@ -38,7 +38,7 @@ typedef UINT		ShaderID;
 typedef UINT		TextureID;
 
 // Containers
-template <class T> class StaticArray;
+template <class T, UINT> class StaticArray;
 template <class T> class DynamicArray;
 template <class T> class LinkedList;
 template <class K, class T> class HashTable;
@@ -70,6 +70,7 @@ class Time;
 class ContextWindow;
 class Logger;
 class String;
+typedef char* CString;
 
 // Systems
 class ISystem;

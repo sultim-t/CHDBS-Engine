@@ -67,6 +67,7 @@ public:
 		{
 			glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
 											  // retrieve texture number (the N in diffuse_textureN)
+			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 			string number;
 			string name = textures[i].type;
 			if (name == "texture_diffuse")
@@ -81,7 +82,6 @@ public:
 													 // now set the sampler to the correct texture unit
 			glUniform1i(glGetUniformLocation(shaderID, (name + number).c_str()), i);
 			// and finally bind the texture
-			glBindTexture(GL_TEXTURE_2D, textures[i].id);
 		}
 
 		// draw mesh

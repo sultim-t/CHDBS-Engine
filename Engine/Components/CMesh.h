@@ -23,7 +23,7 @@ struct Vertex5
 	Vector3 Bitangent;
 };
 
-class Mesh : public IComponent
+class Mesh
 {
 	friend class RenderingSystem;
 
@@ -31,49 +31,27 @@ private:
 	MeshID meshId;
 	UINT vao, vbo, ibo;
 
-public:
-	std::vector<Vertex> Vertices;
-	std::vector<UINT> Indices;
-
-	MaterialID material;
-	
-
-	// temp
-	std::vector<Texture> Textures;
-
 private:
-	bool FindSimilarVertex(const Vertex &vert, const std::vector<Vertex> &vertices, unsigned &foundIndex);
+	std::vector<Vertex5> vertices;
+	std::vector<UINT> indices;
 
+	Material material;
+	
 public:
-	// Empty constructor
-	Mesh();
 	// Construct mesh from std::vector's
-	Mesh(const std::vector<Vertex> vertices, const std::vector<unsigned int> indices, const std::vector<Texture> textures = std::vector<Texture>());
-	// Constructor with calculating indices
-	Mesh(const std::vector<Vertex> vertices, const std::vector<Texture> textures = std::vector<Texture>());
-
+	Mesh(const std::vector<Vertex5> vertices, const std::vector<UINT> indices, const Material &material);
 	~Mesh();
 
 	// Inits vao, vbo, ibo; positions, normals, uvs
-	void Init() override;
-	void Update() override {};
+	void Init();
+	void BindMaterial(Material &material);
 
-	void BindMaterial();
-
-	// TEMP function:
-	// Inits mesh from array: {x, y, z, nx, ny, nz, u, v, ...}, count is sizeof(all) 
-	void InitMesh(FLOAT *all, INT count);
-
-	// Renders mesh with a specific shader
-	void Draw(const Shader &shader) const;
-	// Renders mesh with a specific shader
-	void DrawElements(const Shader &shader) const;
+	// Renders mesh with current material
+	void Draw() const;
 	// Render mesh to shadowmap
-	void DrawToShadowMap(FramebufferTexture &shadowMap);
+	// void DrawToShadowMap(FramebufferTexture &shadowMap);
 
-	void AddTexture(const Texture &texture);
-
-	const unsigned &GetVAO() const;
-	unsigned GetVertexCount() const;
+	UINT GetVAO() const;
+	UINT GetVertexCount() const;
 };
 

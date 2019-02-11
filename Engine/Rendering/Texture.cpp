@@ -56,6 +56,7 @@ void Texture::Load(const char * path)
 void Texture::Activate(INT i) const
 {
 	ASSERT(i >= 0 && i < 32);
+
 	glActiveTexture(GL_TEXTURE0 + i);
 	glBindTexture(GL_TEXTURE_2D, graphicsTextureId);
 }

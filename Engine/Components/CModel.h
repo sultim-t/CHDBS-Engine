@@ -7,7 +7,7 @@ class CModel : public IComponent
 {
 	CLASSDECLARATION(CModel)
 
-private:
+public:
 	std::vector<Mesh> meshes;
 	std::vector<Texture> loadedTextures;
 
@@ -27,10 +27,7 @@ public:
 	// Load through assimp
 	void Load(const char *path);
 
-	void AddMesh(const Mesh &mesh);
-	void AddMeshTexture(const unsigned index, const Texture &texture);
-
-	void Draw(Shader &shader);
+	void Draw();
 
 	const std::vector<Mesh> &GetMeshes() const;
 

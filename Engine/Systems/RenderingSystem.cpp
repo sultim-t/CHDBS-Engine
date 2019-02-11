@@ -77,7 +77,7 @@ void RenderingSystem::CreateShadowMap(FramebufferTexture &shadowMap)
 		// MUST BE INITIALIZED
 		Shader depthShader;
 
-		for (UINT i = 0; i < lastMeshId; i++)
+		/*for (UINT i = 0; i < lastMeshId; i++)
 		{
 			Mesh *mesh;
 			if (meshes.Find(i, mesh))
@@ -87,7 +87,7 @@ void RenderingSystem::CreateShadowMap(FramebufferTexture &shadowMap)
 					mesh->Draw(depthShader);
 				}
 			}
-		}
+		}*/
 	}
 
 	// reset framebuffer

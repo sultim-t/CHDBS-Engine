@@ -2,6 +2,7 @@
 #include <Engine/Math/Vector.h>
 #include <Engine/Rendering/Texture.h>
 #include <Engine/Components/CMesh.h>
+#include <Engine/Rendering/Material.h>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -20,20 +21,7 @@ bool CModel::operator<(const CModel & model) const
 	return modelId < model.modelId;
 }
 
-void CModel::AddMesh(const Mesh & mesh)
-{
-	meshes.push_back(mesh);
-}
-
-void CModel::AddMeshTexture(const UINT index, const Texture & texture)
-{
-	if (index < meshes.size())
-	{
-		meshes[index].Textures.push_back(texture);
-	}
-}
-
-void CModel::Draw(Shader & shader)
+void CModel::Draw()
 {
 	if (!isActive)
 	{
@@ -42,7 +30,7 @@ void CModel::Draw(Shader & shader)
 
 	for (unsigned i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].Draw(shader);
+		meshes[i].Draw();
 	}
 }
 
@@ -107,14 +95,14 @@ Mesh CModel::ProcessMesh(void *m, const void *s)
 	aiScene *scene = (aiScene*)s;
 
 	// data to fill
-	vector<Vertex> vertices;
+	vector<Vertex5> vertices;
 	vector<unsigned int> indices;
 	vector<Texture> textures;
 
 	// Walk through each of the mesh's vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
-		Vertex vertex;
+		Vertex5 vertex;
 		Vector3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
 						// positions
 		vector[0] = mesh->mVertices[i].x;
@@ -143,14 +131,13 @@ Mesh CModel::ProcessMesh(void *m, const void *s)
 		vector[0] = mesh->mTangents[i].x;
 		vector[1] = mesh->mTangents[i].y;
 		vector[2] = mesh->mTangents[i].z;
-		//!!!!!!!!!!!!!
-		//vertex.Tangent = vector;
+		vertex.Tangent = vector;
 
 		// bitangent
 		vector[0] = mesh->mBitangents[i].x;
 		vector[1] = mesh->mBitangents[i].y;
 		vector[2] = mesh->mBitangents[i].z;
-		//vertex.Bitangent = vector;
+		vertex.Bitangent = vector;
 
 		vertices.push_back(vertex);
 	}
@@ -184,8 +171,10 @@ Mesh CModel::ProcessMesh(void *m, const void *s)
 	std::vector<Texture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, TEXTURE_HEIGHT);
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
+	Material meshMaterial = Material(textures);
+
 	// return a mesh object created from the extracted mesh data
-	return Mesh(vertices, indices, textures);
+	return Mesh(vertices, indices, meshMaterial);
 }
 
 
@@ -205,7 +194,7 @@ std::vector<Texture> CModel::LoadMaterialTextures(void *m, int t, TextureType my
 		mat->GetTexture(type, i, &str);
 		// check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
 		bool skip = false;
-		for (unsigned int j = 0; j < textures.size(); j++)
+		for (unsigned int j = 0; j < loadedTextures.size(); j++)
 		{
 			if (std::strcmp(loadedTextures[j].GetPath(), str.C_Str()) == 0)
 			{
