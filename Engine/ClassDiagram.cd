@@ -1,0 +1,326 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Debug" Collapsed="true">
+    <Position X="20.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Base\DebugTool.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Input" Collapsed="true">
+    <Position X="20.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAABAAAAAAAAAgQAAAAAAAAAAAAAAAAAAgAAAAAAg=</HashCode>
+      <FileName>Input\Input.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Light" Collapsed="true">
+    <Position X="22" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IBAAAQAAAQAgAAAAAABAAgAIAAAECACAAQABAAAAAAA=</HashCode>
+      <FileName>Rendering\Light.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Material" Collapsed="true">
+    <Position X="16.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Rendering\Material.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Time" Collapsed="true">
+    <Position X="18.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAgAAAAEAAQAAAAAAAAAAACAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Time.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IComponent" Collapsed="true">
+    <Position X="18.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAIAAAAgAAQEAAAABAAAAAAAAAAQAAiAAAAAgA=</HashCode>
+      <FileName>Components\IComponent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LinkedList&lt;T&gt;" Collapsed="true">
+    <Position X="15" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAgBACAACAAIAABAAAAAAAAAIAAAACAABAAAA=</HashCode>
+      <FileName>DataStructures\LinkedList.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Engine" Collapsed="true">
+    <Position X="22" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAEAQAAAAAAAAAgBAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Engine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Brush" Collapsed="true">
+    <Position X="5.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAgAAAABAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Entities\Brush.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Entity" Collapsed="true">
+    <Position X="5.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAACAAAAAIAAAAEADABBAAAABEAAAEAAAABICIAgA=</HashCode>
+      <FileName>Entities\Entity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EntityFactory" Collapsed="true">
+    <Position X="15" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAgAA=</HashCode>
+      <FileName>Entities\ObjectFactory.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Renderer" Collapsed="true">
+    <Position X="15" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAIAAAAAAAAAAQJCgAAAAAAA=</HashCode>
+      <FileName>Rendering\Renderer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StaticShader" Collapsed="true">
+    <Position X="5.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAQAAAAAAAAgAAAAAAAAGAAAAAAAAAESEAAABAA=</HashCode>
+      <FileName>Rendering\StaticShader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Camera" Collapsed="true">
+    <Position X="16.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABQCAQACARAAACAYAADgIAABACCAAFgkAIAAAgAAgAA=</HashCode>
+      <FileName>Rendering\Camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Projection" Collapsed="true">
+    <Position X="22" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAARAAA=</HashCode>
+      <FileName>Math\Projection.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Transform" Collapsed="true">
+    <Position X="20.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAACCABAAAAAIAKAQCEAAAAggAIACFAgAAAAI=</HashCode>
+      <FileName>Math\Transform.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EntityRenderer" Collapsed="true">
+    <Position X="16.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAgAAAAAAAACAAAAAAAAAAAIQDAwAABAAAA=</HashCode>
+      <FileName>Rendering\EntityRenderer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ContextWindow" Collapsed="true">
+    <Position X="18.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAgAARAQAAgAEBAAAAAAAAAQBAmAEAAIAg=</HashCode>
+      <FileName>Rendering\ContextWindow.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Mesh" Collapsed="true">
+    <Position X="18.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAEEAgkBCAAAAAAAAAAAAgAAAERACAAAAAAA=</HashCode>
+      <FileName>Rendering\Mesh.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sphere" Collapsed="true">
+    <Position X="16.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAgAAAAACAAAAAAAAAQEAAJAIAAAAAAAAAEAAQiQAAA=</HashCode>
+      <FileName>Math\Sphere.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shader" Collapsed="true">
+    <Position X="5.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QBAMgAgAAAAAAhAIAAAACEAACEgEAAAAJAACAAA4BgA=</HashCode>
+      <FileName>Rendering\Shader.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="AABB" Collapsed="true">
+    <Position X="15" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BBBCAAAAAIIAAACAAAAECABAIAAAAAAAACEBAVAQAAA=</HashCode>
+      <FileName>Math\AABB.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Model" Collapsed="true">
+    <Position X="20.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAgAAAIACQAgAAAAAAAAAAgAAAACFCgAggAAAAAkA=</HashCode>
+      <FileName>Rendering\Model.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ISystem" Collapsed="true">
+    <Position X="2.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Systems\ISystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RenderingSystem" Collapsed="true">
+    <Position X="2.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Systems\RenderingSystem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Message" Collapsed="true">
+    <Position X="15" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>Base\Message.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="FramebufferTexture" Collapsed="true">
+    <Position X="2.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAQAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\FramebufferTexture.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Texture" Collapsed="true">
+    <Position X="2.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAgARAQAACiABAAgADAAGQAAIAAEAAAgA=</HashCode>
+      <FileName>Rendering\Texture.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Vertex" Collapsed="true">
+    <Position X="18.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAgAAIAAAAAAAAIAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Mesh.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Quaternion" Collapsed="true">
+    <Position X="16.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAEBAAAQAACAEAAAAAgEAwAAAUAAA=</HashCode>
+      <FileName>Math\Quaternion.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Matrix&lt;Type, Dim&gt;" Collapsed="true">
+    <Position X="3.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAEAAAASAAAAEgAAAAAAAgAABAAAA=</HashCode>
+      <FileName>Math\Matrix.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Vector&lt;Type, Dim&gt;" Collapsed="true">
+    <Position X="9.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABgEAEAAAAQBACgFAQABAAECgAABAAAA=</HashCode>
+      <FileName>Math\Vector.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="EntityID" Collapsed="true">
+    <Position X="16.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="ComponentID" Collapsed="true">
+    <Position X="15" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="MessageID" Collapsed="true">
+    <Position X="18.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Matrix2" Collapsed="true">
+    <Position X="0.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Matrix3" Collapsed="true">
+    <Position X="6.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Matrix4" Collapsed="true">
+    <Position X="0.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Matrix3Double" Collapsed="true">
+    <Position X="3.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Vector2" Collapsed="true">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Vector3" Collapsed="true">
+    <Position X="12.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Vector4" Collapsed="true">
+    <Position X="9.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="Euler" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Base\Typedef.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Enum Name="LightType" Collapsed="true">
+    <Position X="16.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAAAAAAAAAgAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Rendering\Light.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CameraProjection" Collapsed="true">
+    <Position X="15" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Camera.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TextureType" Collapsed="true">
+    <Position X="18.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAQAAAAAEAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>Rendering\Texture.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

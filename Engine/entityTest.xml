@@ -1,0 +1,14 @@
+<Entity 
+  name="Camera"
+  posx ="1" posy="2" posz="3"
+  eulx ="0" euly ="0" eulz="0">
+
+  <CCamera
+    znear="0.1"
+    zfar="5000"
+    proj="persp"
+    fov="100" />
+
+  <CFreeMovement 
+    speed="5" />
+</Entity>
