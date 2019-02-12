@@ -88,8 +88,9 @@ Matrix4 CCamera::GetViewMatrix() const
 	Transform t = owner->GetTransform();
 	Vector3 position = t.GetPosition();
 
-	Vector3 f, r, u;
-	t.GetFRU(f, r, u);
+	Vector3 f = t.GetForward();
+	Vector3 r = t.GetRight();
+	Vector3 u = t.GetUp();
 	
 	return Transform::LookAt(position, position + f, u);
 }

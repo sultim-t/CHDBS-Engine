@@ -21,9 +21,6 @@ private:
 
 public:
 	//~CModel() override;
-
-	bool operator<(const CModel &model) const;
-
 	// Load through assimp
 	void Load(const char *path);
 

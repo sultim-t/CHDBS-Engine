@@ -12,9 +12,6 @@ private:
 	Vector3 scale;
 	Quaternion quat;
 
-	mutable Vector3 forward, right, up;
-	mutable bool fruWasModified;
-
 public:
 	// Transform with default values
 	Transform();
@@ -71,8 +68,6 @@ public:
 	const Vector3 GetRight() const;
 	// Get up vector
 	const Vector3 GetUp() const;
-	// Get forward, right and up vector
-	const void GetFRU(Vector3 &f, Vector3 &r, Vector3 &u) const;
 
 	// Returns tranformation matrix
 	const Matrix4 GetTransformMatrix() const;

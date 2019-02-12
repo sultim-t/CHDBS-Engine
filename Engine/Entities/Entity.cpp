@@ -59,7 +59,7 @@ bool Entity::PreXMLInit(void * root)
 	scale[2] = elem->FloatAttribute("scalez", 1);
 
 	transform.SetPosition(pos);
-	transform.SetScale(pos);
+	transform.SetScale(scale);
 
 	return true;
 }

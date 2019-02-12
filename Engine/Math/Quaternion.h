@@ -67,6 +67,10 @@ public:
 	static Quaternion Slerp(Quaternion &a, Quaternion &b, float t);
 
 	inline Vector3 RotateVector(Vector3 v) const;
+
+	inline Vector3 GetForward() const;
+	inline Vector3 GetRight() const;
+	inline Vector3 GetUp() const;
 };
 
 inline Quaternion::Quaternion()
@@ -300,27 +304,6 @@ inline void Quaternion::Normalize()
 
 inline void Quaternion::FromEuler(const Vector3& euler, Quaternion & q)
 {
-	/*Quaternion qH;
-	Quaternion qP;
-	Quaternion qB;
-
-	qH.w = Cos(euler[0] * 0.5f);
-	qH.x = 0;
-	qH.y = Sin(euler[0] * 0.5f);
-	qH.z = 0;
-
-	qP.w = Cos(euler[1] * 0.5f);
-	qP.x = Sin(euler[1] * 0.5f);
-	qP.y = 0;
-	qP.z = 0;
-
-	qB.w = Cos(euler[2] * 0.5f);
-	qB.x = 0;
-	qB.y = 0;
-	qB.z = Sin(euler[2] * 0.5f);
-
-	q = qH * qP * qB;*/
-
 	float pitch = DEG2RAD(euler[PITCH]);
 	float roll = DEG2RAD(euler[ROLL]);
 	float yaw = DEG2RAD(euler[YAW]);
@@ -390,6 +373,21 @@ inline Vector3 Quaternion::RotateVector(Vector3 v) const
 	Vector3 q = Vector3(quat[0], quat[1], quat[2]);
 	Vector3 cross = Vector3::Cross(q, v) * 2.0f;
 	
-	result = v + (cross * q[3]) + Vector3::Cross(q, cross);
+	result = v + (cross * quat[3]) + Vector3::Cross(q, cross);
 	return result;
+}
+
+inline Vector3 Quaternion::GetForward() const
+{
+	return RotateVector(Vector3(1.0f, 0.0f, 0.0f));
+}
+
+inline Vector3 Quaternion::GetRight() const
+{
+	return RotateVector(Vector3(0.0f, 1.0f, 0.0f));
+}
+
+inline Vector3 Quaternion::GetUp() const
+{
+	return RotateVector(Vector3(0.0f, 0.0f, 1.0f));
 }

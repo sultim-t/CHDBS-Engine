@@ -68,7 +68,7 @@ String & String::operator=(const String & b)
 
 String & String::operator=(const char * b)
 {
-	ASSERT(b == nullptr);
+	ASSERT(b != nullptr);
 
 	// allocate copy
 	char *copy = AllocateString(b);

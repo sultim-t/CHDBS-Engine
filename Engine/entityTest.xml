@@ -1,6 +1,6 @@
 <Entity 
   name="Camera"
-  posx ="1" posy="2" posz="3"
+  posx ="0" posy="0" posz="0"
   eulx ="0" euly ="0" eulz="0">
 
   <CCamera

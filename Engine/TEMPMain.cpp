@@ -135,7 +135,7 @@ int main()
 	textureDB.Load("TEMP/DoubleBarrel/WeaponsPalette.png");
 	
 	Transform dbTransform = Transform();
-	dbTransform.Translate(Vector3(0, 0, -10));
+	dbTransform.Translate(Vector3(0, 0, -1));
 	dbTransform.Rotate(Vector3(90, 0, 0));
 
 	Transform terrainTransform = Transform();
@@ -243,7 +243,7 @@ int main()
 		
 
 		//textureDB.Activate(0);
-		shader.SetMat4("model", dbTransform.GetTransformMatrix());
+		shader.SetMat4("model", dbTransform.GetTransformMatrix() * cameraEntity->GetTransform().GetTransformMatrix());
 		cmodel.Draw();
 		// ---------------------
 

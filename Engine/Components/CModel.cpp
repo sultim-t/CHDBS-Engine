@@ -16,11 +16,6 @@
 
 CLASSDEFINITION(IComponent, CModel)
 
-bool CModel::operator<(const CModel & model) const
-{
-	return modelId < model.modelId;
-}
-
 void CModel::Draw()
 {
 	if (!isActive)

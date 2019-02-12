@@ -96,8 +96,8 @@ inline HashTable<K, T>::~HashTable()
 template<class K, class T>
 inline void HashTable<K, T>::Init(UINT chainCount, UINT maxChainSize)
 {
-	ASSERT(chains != NULL);
-	ASSERT(chainSizes != NULL);
+	ASSERT(chains == NULL);
+	ASSERT(chainSizes == NULL);
 
 	this->chainCount = chainCount;
 	this->maxChainSize = maxChainSize;

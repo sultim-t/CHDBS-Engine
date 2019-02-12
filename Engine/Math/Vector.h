@@ -337,7 +337,7 @@ inline void Vector<Type, Dim>::Normalize(Vector<Type, Dim>&vec)
 {
 	Type length = Vector<Type, Dim>::Length(vec);
 
-	ASSERT(length == 0);
+	ASSERT(length != 0);
 
 	// inverted length
 	length = (Type)1 / length;
