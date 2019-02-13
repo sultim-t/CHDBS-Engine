@@ -35,9 +35,6 @@ EntityID EntityFactory::GetNextEntityID()
 
 EntityFactory::EntityFactory()
 {
-	// componentCreators.insert(std::pair<std::string, IComponentCreator>("CCamera", CompCreator<CCamera>));
-	// componentCreators.insert(std::pair<std::string, IComponentCreator>("CFreeMovement", CompCreator<CFreeMovement>));
-
 	compCreators.Init(10, 6);
 	compCreators.DeclareHashFunction(String::StringHash);
 
@@ -75,7 +72,7 @@ IComponent *EntityFactory::CreateComponent(void *xmlElemP)
 	return comp;
 }
 
-Entity *EntityFactory::CreateEntity(const char *resource)
+Entity *EntityFactory::PCreateEntity(const char *resource)
 {
 	using namespace tinyxml2;
 
@@ -89,7 +86,6 @@ Entity *EntityFactory::CreateEntity(const char *resource)
 		return nullptr;
 	}
 
-	// TEMP: must be allocated in pool
 	Entity *entity = new Entity(GetNextEntityID());
 
 	// load main data
@@ -137,8 +133,13 @@ Entity *EntityFactory::CreateEntity(const char *resource)
 	return entity;
 }
 
-EntityFactory & EntityFactory::Instance()
+EntityFactory &EntityFactory::Instance()
 {
 	static EntityFactory instance;
 	return instance;
+}
+
+Entity *EntityFactory::CreateEntity(const char * resource)
+{
+	return EntityFactory::Instance().PCreateEntity(resource);
 }

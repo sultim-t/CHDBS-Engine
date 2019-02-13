@@ -20,15 +20,7 @@ bool childclass::IsClassType( const ComponentID classType ) const {             
         if ( classType == childclass::Type )                                                \
             return true;                                                                    \
         return parentclass::IsClassType( classType );                                       \
-}                                                                                           \
-
-#define CLASSDEFINITION( parentclass, childclass )                                          \
-const ComponentID childclass::Type = HASHSTRING( TOSTRING( childclass ) );                  \
-bool childclass::IsClassType( const ComponentID classType ) const {                         \
-        if ( classType == childclass::Type )                                                \
-            return true;                                                                    \
-        return parentclass::IsClassType( classType );                                       \
-}                                             
+}
 
 class IComponent
 {
@@ -46,16 +38,18 @@ public:
 		return classType == Type;
 	}
 
-// temp public
-public:
+private:
 	void SetOwner(Entity *owner)
 	{
 		this->owner = owner;
 	}
 
+protected:
 	IComponent() {};
 
 public:
+	virtual ~IComponent() {};
+
 	virtual void Init() = 0;
 	virtual void Update() = 0;
 

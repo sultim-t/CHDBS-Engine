@@ -1,19 +1,10 @@
 #include "SystemAllocator.h"
 #include <cstdlib>
-#include <cstring>
 
 SystemAllocator::SystemAllocator()
 {
 	allocatedSize = 0;
 	allocCalls = freeCalls = reallocCalls = 0;
-}
-
-SystemAllocator::~SystemAllocator()
-{ 
-	if (allocCalls - freeCalls > 0)
-	{
-		Logger::Print("Memory leak");
-	}
 }
 
 void * SystemAllocator::Allocate(UINT size)

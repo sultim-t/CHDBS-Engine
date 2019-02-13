@@ -20,8 +20,8 @@ private:
 
 public:
 	Entity(EntityID id);
-	Entity(const Entity&); // = delete;
-	Entity(const Entity&&); // = delete;
+	Entity(const Entity&) = delete;
+	Entity(const Entity&&) = delete;
 
 	// Loads main data from xml element
 	bool PreXMLInit(void *root);

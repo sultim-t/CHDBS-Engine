@@ -10,7 +10,6 @@ class SystemAllocator
 {
 private:
 	SystemAllocator();
-	~SystemAllocator();
 
 	void operator=(const SystemAllocator&) = delete;
 

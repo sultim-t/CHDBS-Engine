@@ -53,10 +53,10 @@ int main()
 	shader.SetInt("shadowMap", 1);
 
 	// From XML
-	Entity *cameraEntity = EntityFactory::Instance().CreateEntity("entityTest.xml");	
-	Entity *lightEntity = EntityFactory::Instance().CreateEntity("light.xml");
-	Entity *terrainEntity = EntityFactory::Instance().CreateEntity("terrain.xml");
-	Entity *dbEntity = EntityFactory::Instance().CreateEntity("doubleBarrel.xml");
+	Entity *cameraEntity = EntityFactory::CreateEntity("entityTest.xml");	
+	Entity *lightEntity = EntityFactory::CreateEntity("light.xml");
+	Entity *terrainEntity = EntityFactory::CreateEntity("terrain.xml");
+	Entity *dbEntity = EntityFactory::CreateEntity("doubleBarrel.xml");
 
 
 	Texture textureDB = Texture();

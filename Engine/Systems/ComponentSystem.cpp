@@ -7,6 +7,13 @@ ComponentSystem::~ComponentSystem()
 { 
 	FOREACHLINKEDLIST(Entity*, entityPtr, entities)
 	{
+		Entity *entity = *entityPtr;
+
+		for (auto c : entity->GetAllComponents())
+		{
+			delete c;
+		}
+
 		delete (*entityPtr);
 	}
 }

@@ -45,9 +45,11 @@ private:
 
 private:
 	RenderingSystem();
-	RenderingSystem(const RenderingSystem&) = delete;
-	RenderingSystem(const RenderingSystem&&) = delete;
 	~RenderingSystem();
+
+	RenderingSystem(RenderingSystem&) = delete;
+	RenderingSystem(RenderingSystem&&) = delete;
+	RenderingSystem &operator=(const RenderingSystem&) = delete;
 
 public:
 	// Init structures

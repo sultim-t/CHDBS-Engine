@@ -11,8 +11,9 @@ private:
 	ContextWindow();
 	~ContextWindow();
 
-	ContextWindow(ContextWindow const&) = delete;
-	ContextWindow& operator= (ContextWindow const&) = delete;
+	ContextWindow(ContextWindow&) = delete;
+	ContextWindow(ContextWindow&&) = delete;
+	ContextWindow &operator=(const ContextWindow&) = delete;
 
 public:
 	static ContextWindow &Instance();

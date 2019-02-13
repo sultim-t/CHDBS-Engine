@@ -23,12 +23,8 @@ private:
 			this->Value = value;
 		}
 
-		~HTElement()
-		{
-			// temp?
-			//Key.~K();
-			//Value.~T();
-		}
+		// default
+		~HTElement() { }
 
 		void operator=(HTElement &elem)
 		{

@@ -13,9 +13,11 @@ private:
 
 private:
 	ComponentSystem();
-	ComponentSystem(const ComponentSystem&) = delete;
-	ComponentSystem(const ComponentSystem&&) = delete;
 	~ComponentSystem();
+
+	ComponentSystem(ComponentSystem&) = delete;
+	ComponentSystem(ComponentSystem&&) = delete;
+	ComponentSystem &operator=(const ComponentSystem&) = delete;
 
 public:
 	// Init structures
