@@ -1,12 +1,9 @@
 #pragma once
 
-#include <Engine/DataStructures/LinkedList.h>
-
 class Engine
 {
 private:
 	bool isActive;
-	LinkedList<ISystem*> systems;
 
 public:
 	Engine();
@@ -17,5 +14,4 @@ public:
 	void MainLoop();
 	// To update all systems
 	void Update();
-	void AddSystem(ISystem *system);
 };

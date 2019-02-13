@@ -2,28 +2,29 @@
 
 #include "IComponent.h"
 #include <Engine/Components/CMesh.h>
+#include <Engine/Base/String.h>
 
 class CModel : public IComponent
 {
+	friend class ResourceManager;
+
 	CLASSDECLARATION(CModel)
 
 public:
+	UINT modelId;
+
 	std::vector<Mesh> meshes;
 	std::vector<Texture> loadedTextures;
 
-	std::string directory;
-	unsigned modelId;
-
-public:
-	//~CModel() override;
-	// Load through assimp
-	void Load(const char *path);
-
-	void Draw();
-
-	const std::vector<Mesh> &GetMeshes() const;
+	String directory;
+	String path;
 
 public:
 	void Init() override;
 	void Update() override;
+	void SetProperty(const String &key, const String &value) override;
+
+	void BindPath(const char *path);
+	void Draw();
+	const std::vector<Mesh> &GetMeshes() const;
 };

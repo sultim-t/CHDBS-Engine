@@ -1,7 +1,8 @@
 #pragma once
 
-#include <Engine\Components\IComponent.h>
-#include <Engine\Math\Transform.h>
+#include <Engine/Components/IComponent.h>
+#include <Engine/Math/Transform.h>
+#include <Engine/DataStructures/StaticArray.h>
 #include <vector>
 
 class Entity
@@ -12,8 +13,6 @@ private:
 	EntityID entityId;
 
 	bool isActive;
-	// bool isActiveInHierarchy;
-	// bool isStatic;
 	int layer;
 	int tag;
 
@@ -41,9 +40,10 @@ protected:
 
 public:
 	template <class T>
-	const T *GetComponent() const;
-	template <class T>
 	T *GetComponent();
+	template <class T>
+	const T *GetComponent() const;
+	const std::vector<IComponent*> &GetAllComponents() const;
 
 	void Destroy();
 
@@ -56,17 +56,17 @@ public:
 	// Returns reference
 	Transform &GetTransform();
 	// Returns copy of const Entity
-	const Transform GetTransform() const;
+	const Transform &GetTransform() const;
 };
 
 template<class T>
-const inline T * Entity::GetComponent() const
+const T * Entity::GetComponent() const
 {
 	return GetComponent();
 }
 
 template<class T>
-inline T * Entity::GetComponent()
+T * Entity::GetComponent()
 {
 	auto iter = components->begin();
 	auto last = components->end();

@@ -69,6 +69,7 @@ typedef Vector<float, 3> Euler;
 class Time;
 class ContextWindow;
 class Logger;
+class ResourceManager;
 class String;
 typedef char* CString;
 
@@ -78,7 +79,7 @@ class RenderingSystem;
 class PhysicsSystem;
 class AudioSystem;
 class UISystem;
-class LogicSystem;
+class ComponentSystem;
 
 // Entities
 class Entity;

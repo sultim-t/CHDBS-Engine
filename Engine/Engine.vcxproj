@@ -195,6 +195,7 @@
     <ClCompile Include="Math\BasicMath.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />
+    <ClCompile Include="Systems\ComponentSystem.cpp" />
     <ClCompile Include="Systems\RenderingSystem.cpp" />
     <ClCompile Include="model_loading.cpp" />
     <ClCompile Include="TEMPMain.cpp" />
@@ -245,6 +246,7 @@
     <ClInclude Include="Base\Typedef.h" />
     <ClInclude Include="Rendering\Texture.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
+    <ClInclude Include="Systems\ComponentSystem.h" />
     <ClInclude Include="Systems\RenderingSystem.h" />
     <ClInclude Include="Systems\ISystem.h" />
     <ClInclude Include="TEMP\tinyxml2\tinyxml2.h" />

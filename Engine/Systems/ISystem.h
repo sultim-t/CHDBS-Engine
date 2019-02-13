@@ -7,5 +7,4 @@ class ISystem
 private:
 	virtual void Init() = 0;
 	virtual void Update() = 0;
-	// virtual ~ISystem() = 0;
 };

@@ -1,0 +1,7 @@
+<Entity 
+  name="Double Barrel"
+  posx ="0" posy="0" posz="-1"
+  eulx ="90" euly ="0" eulz="0">
+  <CModel
+    path="TEMP/DoubleBarrel/DoubleBarrel.obj"/>
+</Entity>

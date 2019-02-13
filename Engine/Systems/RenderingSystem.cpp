@@ -20,8 +20,7 @@ RenderingSystem::RenderingSystem()
 }
 
 RenderingSystem::~RenderingSystem()
-{
-}
+{ }
 
 void RenderingSystem::Init()
 {
@@ -69,8 +68,8 @@ void RenderingSystem::Update()
 				if (shader->Is3D())
 				{
 					Matrix4 projM = cam->GetProjectionMatrix(
-						ContextWindow::Instance().GetWidth(), 
-						ContextWindow::Instance().GetHeight());
+						(float)ContextWindow::Instance().GetWidth(), 
+						(float)ContextWindow::Instance().GetHeight());
 					Matrix4 viewM = cam->GetViewMatrix();
 
 					shader->SetMat4("projection", projM);

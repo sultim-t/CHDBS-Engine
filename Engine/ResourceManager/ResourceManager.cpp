@@ -45,7 +45,7 @@ void ResourceManager::LoadModel(const char * path, CModel & outModel)
 
 	// retrieve the directory path of the filepath
 	string p = string(path);
-	outModel.directory = p.substr(0, p.find_last_of('/'));
+	outModel.directory = p.substr(0, p.find_last_of('/')).c_str();
 
 	// process ASSIMP's root node recursively
 	ProcessModelNode(scene->mRootNode, scene, outModel);
@@ -191,7 +191,9 @@ std::vector<Texture> ResourceManager::LoadMaterialTextures(void *m, int t, Textu
 		if (!skip)
 		{
 			// if texture hasn't been loaded already, load it
-			string s = outModel.directory + '/' + str.C_Str();
+			string s = (const char*)outModel.directory;
+			s += '/';
+			s += str.C_Str();
 
 			Texture texture = Texture();
 			texture.Load(s.c_str());

@@ -2,6 +2,8 @@
 #include <Engine/TEMP/tinyxml2/tinyxml2.h>
 #include <Engine/Components/CCamera.h>
 #include <Engine/Components/CFreeMovement.h>
+#include <Engine/Components/CModel.h>
+#include <Engine/Components/CLight.h>
 #include <Engine/Base/String.h>
 
 template <class T>
@@ -41,6 +43,8 @@ EntityFactory::EntityFactory()
 
 	compCreators.Add("CCamera", CompCreator<CCamera>);
 	compCreators.Add("CFreeMovement", CompCreator<CFreeMovement>);
+	compCreators.Add("CLight", CompCreator<CLight>);
+	compCreators.Add("CModel", CompCreator<CModel>);
 }
 
 IComponent *EntityFactory::CreateComponent(void *xmlElemP)
@@ -68,11 +72,6 @@ IComponent *EntityFactory::CreateComponent(void *xmlElemP)
 		return nullptr;
 	}
 
-	if (comp)
-	{
-		comp->Init();
-	}
-
 	return comp;
 }
 
@@ -96,6 +95,7 @@ Entity *EntityFactory::CreateEntity(const char *resource)
 	// load main data
 	if (!entity->PreXMLInit(root))
 	{
+		delete entity;
 		// fail
 		return nullptr;
 	}
@@ -106,13 +106,28 @@ Entity *EntityFactory::CreateEntity(const char *resource)
 		node = node->NextSiblingElement())
 	{
 		IComponent *comp = CreateComponent(node);
-		if (comp)
+		
+		// if component created
+		if (comp != nullptr)
 		{
+			if (node->BoolAttribute("active", true))
+			{
+				// must be activated through field
+				// else will be activated as a component
+				comp->isActive = true;
+			}
+			
+			// link
 			entity->AddComponent(comp);
 			comp->SetOwner(entity);
+
+			// all is set up
+			comp->Init();
 		}
 		else
 		{
+			delete entity;
+
 			// if some node incorrect
 			return nullptr;
 		}

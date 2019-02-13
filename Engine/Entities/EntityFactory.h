@@ -11,8 +11,6 @@ class EntityFactory
 
 private:
 	EntityID lastId;
-
-	HashTable<EntityID, Entity*> allEntities;
 	HashTable<String, IComponentCreator> compCreators;
 
 private:

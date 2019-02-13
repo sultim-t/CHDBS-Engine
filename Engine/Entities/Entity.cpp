@@ -1,5 +1,6 @@
 #include "Entity.h"
-#include <Engine\TEMP\tinyxml2\tinyxml2.h>
+#include <Engine/TEMP/tinyxml2/tinyxml2.h>
+#include <Engine/Systems/ComponentSystem.h>
 
 void Entity::AddComponent(IComponent * c)
 {
@@ -23,6 +24,9 @@ bool Entity::PreXMLInit(void * root)
 	using namespace tinyxml2;
 
 	XMLElement *elem = (XMLElement*)root;
+
+	bool setActive = elem->BoolAttribute("active", true);
+	SetActive(setActive);
 
 	Vector3 pos, scale;
 
@@ -65,18 +69,24 @@ bool Entity::PreXMLInit(void * root)
 }
 
 void Entity::Init()
-{
+{ 
+	ComponentSystem::Instance().Register(this);
 }
 
 Entity::Entity()
 {
-	// TEMP
 	components = new std::vector<IComponent*>();
 	isActive = true;
 }
 
+const std::vector<IComponent*>& Entity::GetAllComponents() const
+{
+	return *components;
+}
+
 void Entity::Destroy()
 {
+	free(components);
 }
 
 void Entity::SetActive(bool active)
@@ -104,7 +114,7 @@ Transform &Entity::GetTransform()
 	return transform;
 }
 
-const Transform Entity::GetTransform() const
+const Transform &Entity::GetTransform() const
 {
 	return transform;
 }

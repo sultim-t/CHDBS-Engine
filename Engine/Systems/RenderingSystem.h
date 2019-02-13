@@ -28,10 +28,10 @@ private:
 
 	// Sorted camera list
 	// First element is first to render
-	LinkedList<CCamera*> cameras;
-	LinkedList<CLight*>	lights;
-	LinkedList<Shader*>	allShaders;
-	LinkedList<CModel*> allModels;
+	LinkedList<CCamera*>	cameras;
+	LinkedList<CLight*>		lights;
+	LinkedList<Shader*>		allShaders;
+	LinkedList<CModel*>		allModels;
 
 	UINT lastMeshId;
 	UINT lastMaterialId;

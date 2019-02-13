@@ -1,6 +1,7 @@
 #include "Engine.h"
 #include <Engine/Systems/ISystem.h>
 #include <Engine/Rendering/ContextWindow.h>
+#include <Engine/Systems/RenderingSystem.h>
 
 Engine::Engine()
 {
@@ -23,18 +24,15 @@ void Engine::MainLoop()
 	{
 		Time::Calculate();
 		Update();
+
+		if (!ContextWindow::Instance().ShouldClose())
+		{
+			isActive = false;
+		}
 	}
 }
 
 void Engine::Update()
 {
-	FOREACHLINKEDLIST(ISystem*, system, systems)
-	{
-		(*system)->Update();
-	}
-}
-
-void Engine::AddSystem(ISystem * system)
-{
-	systems.Add(system);
+	RenderingSystem::Instance().Update();
 }

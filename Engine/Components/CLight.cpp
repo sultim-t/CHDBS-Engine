@@ -50,22 +50,22 @@ LightType CLight::GetLightType() const
 	return ltype;
 }
 
-/*const Matrix4 & CLight::GetProjection() const
+/*const Matrix4 &CLight::GetProjection() const
 {
 	return projection;
 }
 
-const Matrix4 & CLight::GetView() const
+const Matrix4 &CLight::GetView() const
 {
 	return view;
 }*/
 
-const Matrix4 & CLight::GetLightSpace() const
+const Matrix4 &CLight::GetLightSpace() const
 {
 	return lightSpace;
 }
 
-LightType & CLight::GetLightType()
+LightType &CLight::GetLightType()
 {
 	return ltype;
 }
@@ -80,7 +80,7 @@ const bool CLight::IsStatic() const
 	return isStatic;
 }
 
-const Vector3 & CLight::GetColor() const
+const Vector3 &CLight::GetColor() const
 {
 	return color;
 }
@@ -110,12 +110,12 @@ Vector3 CLight::GetPosition() const
 	return owner->GetTransform().GetPosition();
 }
 
-Color & CLight::GetColor()
+Color &CLight::GetColor()
 {
 	return color;
 }
 
-float & CLight::GetBias()
+float &CLight::GetBias()
 {
 	return bias;
 }
@@ -125,12 +125,12 @@ const float CLight::GetRange()
 	return range;
 }
 
-float & CLight::GetConeAngle()
+float &CLight::GetConeAngle()
 {
 	return coneAngle;
 }
 
-bool & CLight::IsCastingShadows()
+bool &CLight::IsCastingShadows()
 {
 	return castShadows;
 }
@@ -139,6 +139,7 @@ void CLight::Init()
 {
 	RenderingSystem::Instance().Register(this);
 
+	// if light is static just calculate matrix one time
 	if (isStatic)
 	{
 		Recalculate();
@@ -156,7 +157,7 @@ void CLight::Update()
 	Recalculate();
 }
 
-void CLight::SetProperty(const String & key, const String & value)
+void CLight::SetProperty(const String &key, const String &value)
 {
 	if (key == PROPERTY_KEY_TYPE)
 	{

@@ -6,13 +6,20 @@
 #include <Engine/Rendering/Material.h>
 #include <Engine/ResourceManager/ResourceManager.h>
 #include <Engine/Systems/RenderingSystem.h>
+#include <Engine/Base/String.h>
 
+#define PROPERTY_KEY_TYPE "path"
 
 CLASSDEFINITION(IComponent, CModel)
 
+void CModel::BindPath(const char * path)
+{
+	this->path = path;
+}
+
 void CModel::Draw()
 {
-	if (!isActive)
+	if (!IsActive())
 	{
 		return;
 	}
@@ -34,12 +41,22 @@ const std::vector<Mesh>& CModel::GetMeshes() const
 void CModel::Init()
 {
 	RenderingSystem::Instance().Register(this);
+
+	// load model
+	ResourceManager::LoadModel(path, *this);
 }
 
 void CModel::Update()
 { }
 
-void CModel::Load(const char * path)
+void CModel::SetProperty(const String & key, const String & value)
 {
-	ResourceManager::LoadModel(path, *this);
+	if (key == PROPERTY_KEY_TYPE)
+	{
+		path = value;
+	}
+	else
+	{
+		Logger::Print("Wrong model property");
+	}
 }

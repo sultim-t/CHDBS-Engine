@@ -2,6 +2,7 @@
 
 #include <Engine/Base/Hash.h>
 #include <Engine/DataStructures/StaticArray.h>
+#include <Engine/Entities/Entity.h>
 #include <functional>
 
 #define TOSTRING( x ) #x
@@ -59,25 +60,11 @@ public:
 	virtual void Update() = 0;
 
 	virtual void SetProperty(const String &key, const String &value) { }
-	// const virtual String[] GetProperties() const { }
 
-	virtual void Enable()
-	{
-		isActive = true;
-	};
+	virtual void Enable();
+	virtual void Disable();
 
-	virtual void Disable()
-	{
-		isActive = false;
-	};
-
-	bool IsActive() const
-	{
-		return isActive;
-	}
-
-	const Entity &GetOwner() const
-	{
-		return *owner;
-	}
+	// Returns true if component and entity are active
+	bool IsActive() const;
+	const Entity &GetOwner() const;
 };
