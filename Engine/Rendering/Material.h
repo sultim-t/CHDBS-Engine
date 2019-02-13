@@ -24,9 +24,14 @@ public:
 
 	// Activate material
 	void Activate() const;
-
 	// Add texture to material
-	void AddTexture(Texture t);
+	void AddTexture(const Texture &t);
 	// Bind shader
-	void BindShader(Shader &shader);
+	void BindShader(const Shader &shader);
+	// Bind model matrix
+	void BindModelMatrix(const Matrix4 &model);
+
+	// Getters
+	Shader &GetShader();
+	const Shader &GetShader() const;
 };

@@ -6,17 +6,13 @@
 #include <Engine/DataStructures/HashTable.h>
 
 #include <Engine/Components/CMesh.h>
+#include <Engine/Components/CLight.h>
 #include <Engine/Rendering/Material.h>
 #include <Engine/Rendering/Texture.h>
-#include <Engine/Components/CLight.h>
+#include <Engine/Rendering/FramebufferTexture.h>
 
 class RenderingSystem : public ISystem
 {
-	friend class Mesh;
-	friend class Material;
-	friend class Texture;
-	friend class Shader;
-
 private:
 	HashTable<MeshID	, Mesh*		>	meshes;
 	HashTable<MaterialID, Material*	>	materials;
@@ -24,9 +20,9 @@ private:
 	HashTable<ShaderID	, Shader*	>	shaders;
 
 	// Stores all meshes that have same material
-	HashTable<MaterialID, LinkedList<MeshID>*>		matMeshes;
+	HashTable<MaterialID, LinkedList<Mesh*>*>		matMeshes;
 	// Stores all textures used in this material
-	HashTable<MaterialID, LinkedList<TextureID>*>	matTextures;
+	HashTable<MaterialID, LinkedList<Texture*>*>	matTextures;
 	// Shader used in material
 	HashTable<MaterialID, ShaderID			>		matShaders;
 
@@ -34,34 +30,35 @@ private:
 	// First element is first to render
 	LinkedList<CCamera*> cameras;
 	LinkedList<CLight*>	lights;
+	LinkedList<Shader*>	allShaders;
+	LinkedList<CModel*> allModels;
 
 	UINT lastMeshId;
 	UINT lastMaterialId;
 	UINT lastTextureId;
 	UINT lastShaderId;
 
-	//IGraphics *graphics;
-	static RenderingSystem *instance;
+	// main shadowmap
+	FramebufferTexture shadowMap;
+	// shader for shadowmapping
+	Shader depthShader;
 
-public:
+private:
 	RenderingSystem();
 	RenderingSystem(const RenderingSystem&) = delete;
 	RenderingSystem(const RenderingSystem&&) = delete;
 	~RenderingSystem();
 
-	// UINT HashUINT(UINT toHash);
-
-	// Get list of IDs of meshes with same material
-	inline LinkedList<MeshID> *GetMatMesh(MaterialID id);
-
+public:
+	// Init structures
 	void Init() override;
 	// Render frame
 	void Update() override;
 
-	void CreateShadowMap(FramebufferTexture & shadowMap);
+	void CreateShadowMap(const CLight &light, FramebufferTexture & shadowMap);
 
 	// Get instance of system
-	static RenderingSystem *Instance();
+	static RenderingSystem &Instance();
 
 	// Register mesh by calculating its ID
 	void Register(Mesh *mesh);
@@ -72,7 +69,13 @@ public:
 	// Register shader by calculating its ID
 	void Register(Shader *shader);
 	// Attach mesh to material
-	void Register(Mesh &mesh, Material &material);
+	void Register(Mesh *mesh, const Material &material);
+	// Register model
+	void Register(CModel *model);
+	// Register light
+	void Register(CLight *light);
+	// Register camera
+	void Register(CCamera *camera);
 
 
 	// Get mesh by its ID
@@ -84,5 +87,7 @@ public:
 	// Get mesh by its ID
 	Shader *GetShader(ShaderID id) const;
 	// Get list of IDs of meshes with same material
-	const LinkedList<MeshID> *GetMatMesh(MaterialID id) const;
+	const LinkedList<Mesh*> *GetMatMesh(MaterialID id) const;
+	// Get list of IDs of meshes with same material
+	inline LinkedList<Mesh*> *GetMatMesh(MaterialID id);
 };

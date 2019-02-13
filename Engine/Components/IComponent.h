@@ -75,4 +75,9 @@ public:
 	{
 		return isActive;
 	}
+
+	const Entity &GetOwner() const
+	{
+		return *owner;
+	}
 };

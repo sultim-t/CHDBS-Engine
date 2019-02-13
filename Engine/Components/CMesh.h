@@ -49,7 +49,7 @@ public:
 	// Renders mesh with current material
 	void Draw() const;
 	// Render mesh to shadowmap
-	// void DrawToShadowMap(FramebufferTexture &shadowMap);
+	void DrawToShadowMap(FramebufferTexture &shadowMap);
 
 	UINT GetVAO() const;
 	UINT GetVertexCount() const;

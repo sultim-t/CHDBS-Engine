@@ -384,10 +384,10 @@ inline Vector3 Quaternion::GetForward() const
 
 inline Vector3 Quaternion::GetRight() const
 {
-	return RotateVector(Vector3(0.0f, 1.0f, 0.0f));
+	return -RotateVector(Vector3(0.0f, 0.0f, 1.0f));
 }
 
 inline Vector3 Quaternion::GetUp() const
 {
-	return RotateVector(Vector3(0.0f, 0.0f, 1.0f));
+	return -RotateVector(Vector3(0.0f, 1.0f, 0.0f));
 }

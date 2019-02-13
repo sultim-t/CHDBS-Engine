@@ -1,6 +1,2 @@
 #pragma once
-
-class Memory
-{
-
-};
+#include "SystemAllocator.h"

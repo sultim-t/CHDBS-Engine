@@ -2,6 +2,7 @@
 #include <Engine/Math/Projection.h>
 #include <Engine/Entities/Entity.h>
 #include <Engine/Base/String.h>
+#include <Engine/Systems/RenderingSystem.h>
 
 #define PROPERTY_KEY_TYPE		"type"
 #define PROPERTY_KEY_COLORR		"colorr"
@@ -33,7 +34,9 @@ void CLight::Recalculate()
 		projection = Projection::Perspective(coneAngle, 1, 0.1f, range);
 	}
 	else
-	{ }
+	{
+		ASSERT(0);
+	}
 
 	Vector3 pos = owner->GetTransform().GetPosition();
 	Vector3 at = pos + owner->GetTransform().GetForward();
@@ -134,6 +137,8 @@ bool & CLight::IsCastingShadows()
 
 void CLight::Init()
 {
+	RenderingSystem::Instance().Register(this);
+
 	if (isStatic)
 	{
 		Recalculate();

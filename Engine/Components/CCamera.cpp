@@ -3,6 +3,7 @@
 #include <Engine/Math/Transform.h>
 #include <Engine/Math/Projection.h>
 #include <Engine/Entities/Entity.h>
+#include <Engine/Systems/RenderingSystem.h>
 #include <Engine/Base/String.h>
 
 #define PROPERTY_KEY_PROJ	"proj"
@@ -29,7 +30,9 @@
 CLASSDEFINITION(IComponent, CCamera)
 
 void CCamera::Init()
-{ }
+{ 
+	RenderingSystem::Instance().Register(this);
+}
 
 void CCamera::SetProperty(const String & key, const String & value)
 {
@@ -89,7 +92,6 @@ Matrix4 CCamera::GetViewMatrix() const
 	Vector3 position = t.GetPosition();
 
 	Vector3 f = t.GetForward();
-	Vector3 r = t.GetRight();
 	Vector3 u = t.GetUp();
 	
 	return Transform::LookAt(position, position + f, u);

@@ -1,5 +1,6 @@
 #pragma once
 #include "IComponent.h"
+#include <Engine/Entities/Entity.h>
 
 enum CameraProjection
 {
@@ -29,10 +30,12 @@ public:
 	Matrix4 GetViewMatrix() const;
 	// Calculates projection matrix
 	Matrix4 GetProjectionMatrix(float scrWidth, float scrHeight);
+
 	inline CameraProjection GetProjection() const;
 	inline float GetFOV() const;
 	inline float GetNearClipDist() const;
 	inline float GetFarClipDist() const;
+	inline const Vector3 &GetPosition() const;
 
 	inline void SetProjection(CameraProjection p);
 	inline void SetFOV(float fov);
@@ -63,6 +66,13 @@ inline float CCamera::GetNearClipDist() const
 inline float CCamera::GetFarClipDist() const
 {
 	return zFar;
+}
+
+inline const Vector3 & CCamera::GetPosition() const
+{
+	ASSERT(owner != nullptr);
+
+	return owner->GetTransform().GetPosition();
 }
 
 inline void CCamera::SetProjection(CameraProjection p)

@@ -13,6 +13,9 @@ private:
 	UINT vertId;
 	UINT fragId;
 
+	bool isAffectedByLight;
+	bool is3D;
+
 public:
 	// Reads and builds the shader
 	void Load(const char *vertexPath, const char *fragmentPath, const char *geometryPath = nullptr);
@@ -49,12 +52,14 @@ public:
 	~Shader();
 
 	// Initializes vertex and fragment shader
-	virtual void Init() {};
+	virtual void Init();
 
 	// Use/activate the shader
 	void Use() const;
 	// Deactivate
 	void Stop() const;
 
-	const int GetProgramID() const;
+	int GetProgramID() const;
+	bool IsAffectedByLight() const;
+	bool Is3D() const;
 };

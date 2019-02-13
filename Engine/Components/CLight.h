@@ -18,8 +18,6 @@ class CLight : public IComponent
 private:
 	LightType ltype;
 	
-	/*Matrix4 projection, view;*/
-	
 	// View * Projection, used for shadow mapping
 	// Used for rendering from light's point of view
 	Matrix4 lightSpace;
@@ -40,17 +38,11 @@ private:
 	void Recalculate();
 	
 public:
-	// Returns light type
-	LightType GetLightType() const;
-
-	/*// Returns const reference to projection matrix
-	const Matrix4 &GetProjection() const;
-	// Returns const reference to view matrix
-	const Matrix4 &GetView() const;*/
-
 	// Returns const reference to light space matrix
 	const Matrix4 &GetLightSpace() const;
 
+	// Returns light type
+	LightType GetLightType() const;
 	// Returns copy of bool
 	const bool IsStatic() const;
 	// Returns const reference of color

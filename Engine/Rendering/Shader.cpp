@@ -3,6 +3,7 @@
 
 #include <Engine/Math/Vector.h>
 #include <Engine/Math/Matrix.h>
+#include <Engine/Systems/RenderingSystem.h>
 
 #include <fstream>
 #include <sstream>
@@ -35,8 +36,7 @@ const char* fragmentDefaultShader =
 #pragma endregion
 
 Shader::Shader()
-{
-}
+{ }
 
 Shader::~Shader()
 {
@@ -49,6 +49,11 @@ Shader::~Shader()
 	glDeleteShader(fragId);
 
 	glDeleteProgram(graphicsProgramId);
+}
+
+void Shader::Init()
+{
+	RenderingSystem::Instance().Register(this);
 }
 
 void Shader::Load(const char * vertexPath, const char * fragmentPath, const char * geometryPath)
@@ -234,7 +239,17 @@ void Shader::SetMat4(const char * name, const Matrix4 &mat) const
 	glUniformMatrix4fv(glGetUniformLocation(graphicsProgramId, name), 1, GL_FALSE, mat.ToArray());
 }
 
-const int Shader::GetProgramID() const
+int Shader::GetProgramID() const
 {
 	return graphicsProgramId;
+}
+
+bool Shader::IsAffectedByLight() const
+{
+	return isAffectedByLight;
+}
+
+bool Shader::Is3D() const
+{
+	return is3D;
 }

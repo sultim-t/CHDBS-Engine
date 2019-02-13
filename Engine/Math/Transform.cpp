@@ -54,36 +54,14 @@ void Transform::Reset()
 	scale = (1.0f, 1.0f, 1.0f);
 }
 
-const void Transform::GetPosition(Vector3& pos) const
-{
-	pos = Vector3(position);
-}
-
-const void Transform::GetEuler(Vector3& euler) const
-{
-	euler = quat.ToEuler();
-}
-
-const void Transform::GetScale(Vector3& s) const
-{
-	s = Vector3(scale);
-}
-
-const void Transform::GetRotation(Quaternion & q) const
-{
-	q = Quaternion(quat);
-}
-
-// Get copies
-
-const Vector3 Transform::GetPosition() const
+const Vector3 & Transform::GetPosition() const
 {
 	return position;
 }
 
-const Vector3 Transform::GetScale() const
+const Vector3 & Transform::GetScale() const
 {
-	return Vector3(scale);
+	return scale;
 }
 
 const Vector3 Transform::GetEuler() const
@@ -91,9 +69,9 @@ const Vector3 Transform::GetEuler() const
 	return quat.ToEuler();
 }
 
-const Quaternion Transform::GetRotation() const
+const Quaternion & Transform::GetRotation() const
 {
-	return Quaternion(quat);
+	return quat;
 }
 
 // Setters
@@ -131,6 +109,13 @@ const Vector3 Transform::GetRight() const
 const Vector3 Transform::GetUp() const
 {
 	return quat.GetUp();
+}
+
+const void Transform::GetFRU(Vector3 & f, Vector3 & r, Vector3 & u) const
+{
+	f = quat.GetForward();
+	r = quat.GetRight();
+	u = quat.GetUp();
 }
 
 const Matrix4 Transform::GetTransformMatrix() const
@@ -242,39 +227,38 @@ Matrix4 Transform::ScaleMatrix(const Matrix4& mat, const Vector3 &vec)
 }
 
 
-// left handed
-//Matrix4 Transform::LookAt(const Vector3 &position, const Vector3 &target, const Vector3 &up)
-//{
-//	Matrix4 mat;
-//
-//	Vector3 f, s, u;
-//
-//	// front
-//	f = target - position;
-//	f.Normalize();
-//
-//	// left
-//	s = Vector3::Cross(up, f);
-//	s.Normalize();
-//
-//	// up
-//	u = Vector3::Cross(f, s);
-//
-//	for (int i = 0; i < 3; i++)
-//	{
-//		mat(i, 0) = s[i];
-//		mat(i, 1) = u[i];
-//		mat(i, 2) = f[i];
-//	}
-//
-//	mat(3, 0) = -Vector3::Dot(s, position);
-//	mat(3, 1) = -Vector3::Dot(u, position);
-//	mat(3, 2) = -Vector3::Dot(f, position);
-//
-//	mat(0, 3) = 0.0f;
-//	mat(1, 3) = 0.0f;
-//	mat(2, 3) = 0.0f;
-//	mat(3, 3) = 1.0f;
-//
-//	return mat;
-//}
+// left handed lookat
+/*
+		Matrix4 mat;
+
+		Vector3 f, s, u;
+
+		// front
+		f = target - position;
+		f.Normalize();
+
+		// left
+		s = Vector3::Cross(up, f);
+		s.Normalize();
+
+		// up
+		u = Vector3::Cross(f, s);
+
+		for (int i = 0; i < 3; i++)
+		{
+			mat(i, 0) = s[i];
+			mat(i, 1) = u[i];
+			mat(i, 2) = f[i];
+		}
+
+		mat(3, 0) = -Vector3::Dot(s, position);
+		mat(3, 1) = -Vector3::Dot(u, position);
+		mat(3, 2) = -Vector3::Dot(f, position);
+
+		mat(0, 3) = 0.0f;
+		mat(1, 3) = 0.0f;
+		mat(2, 3) = 0.0f;
+		mat(3, 3) = 1.0f;
+
+		return mat;
+*/

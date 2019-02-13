@@ -23,6 +23,7 @@ public:
 	inline const Type operator[](int index) const;
 	inline Vector<Type, Dim>operator+(const Vector<Type, Dim>in) const;
 	inline Vector<Type, Dim>&operator+=(const Vector<Type, Dim>in);
+	inline Vector<Type, Dim>operator-() const;
 	inline Vector<Type, Dim>operator-(const Vector<Type, Dim>in) const;
 	inline Vector<Type, Dim>&operator-=(const Vector<Type, Dim>in);
 	inline Vector<Type, Dim>operator*(const Type scale) const;
@@ -164,6 +165,12 @@ inline Vector<Type, Dim> &Vector<Type, Dim>::operator+=(const Vector<Type, Dim>i
 	}
 
 	return *this;
+}
+
+template<class Type, int Dim>
+inline Vector<Type, Dim> Vector<Type, Dim>::operator-() const
+{
+	return (*this) * (Type)(-1);
 }
 
 template <class Type, int Dim>

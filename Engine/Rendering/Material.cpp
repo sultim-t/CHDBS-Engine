@@ -29,12 +29,27 @@ void Material::Activate() const
 	}
 }
 
-void Material::AddTexture(Texture t)
+void Material::AddTexture(const Texture &t)
 {
 	textures.push_back(t);
 }
 
-void Material::BindShader(Shader &shader)
+void Material::BindShader(const Shader &shader)
 {
 	this->shader = shader;
+}
+
+void Material::BindModelMatrix(const Matrix4 & model)
+{
+	shader.SetMat4("model", model);
+}
+
+Shader & Material::GetShader()
+{
+	return shader;
+}
+
+const Shader & Material::GetShader() const
+{
+	return shader;
 }

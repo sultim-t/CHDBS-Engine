@@ -88,7 +88,7 @@ void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)
 	float yaw = xoffset * Time::GetDeltaTime();
 	float pitch = yoffset * Time::GetDeltaTime();
 
-	Euler e = Euler(0, pitch, yaw);
+	Euler e = Euler(0, yaw, pitch);
 	owner->GetTransform().Rotate(e);
 }
 
@@ -98,12 +98,12 @@ void CFreeMovement::ProcessMouseScroll(float yoffset)
 
 	float fov = cam->GetFOV();
 
-	if (fov >= 1.0f && fov <= 180.0f)
+	if (fov >= 1.0f && fov <= 120.0f)
 		fov -= yoffset * SCROLL_SPEED * Time::GetDeltaTime();
 	if (fov <= 1.0f)
 		fov = 1.0f;
-	if (fov >= 180.0f)
-		fov = 180.0f;
+	if (fov >= 120.0f)
+		fov = 120.0f;
 
 	cam->SetFOV(fov);
 }

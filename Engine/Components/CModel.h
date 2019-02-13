@@ -14,11 +14,6 @@ public:
 	std::string directory;
 	unsigned modelId;
 
-private:
-	void ProcessNode(void *node, const void *scene);
-	Mesh ProcessMesh(void *mesh, const void *scene);
-	std::vector<Texture> LoadMaterialTextures(void *mat, int type, TextureType myType);
-
 public:
 	//~CModel() override;
 	// Load through assimp
