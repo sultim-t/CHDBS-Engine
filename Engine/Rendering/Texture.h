@@ -7,7 +7,8 @@ enum TextureType
 	TEXTURE_NORMAL = 2,
 	TEXTURE_HEIGHT = 3,
 	TEXTURE_EMISSION = 4,
-	TEXTURE_DETAIL = 5
+	TEXTURE_DETAIL = 5,
+	TEXTURE_CUBEMAP = 6
 };
 
 class Texture
@@ -32,38 +33,11 @@ public:
 	void Load(const char* path);
 	virtual void Activate(INT i) const;
 
-	UINT GetID() const
-	{
-		return graphicsTextureId;
-	}
-
-	void SetType(TextureType t)
-	{
-		type = t;
-	}
-
-	TextureType GetType() const
-	{
-		return type;
-	}
-
-	const char *GetPath() const
-	{
-		return path;
-	}
-
-	INT GetWidth() const
-	{
-		return width;
-	}
-
-	INT GetHeight() const
-	{
-		return height;
-	}
-
-	UINT GetFormat() const
-	{
-		return format;
-	}
+	UINT GetID() const;
+	void SetType(TextureType t);
+	TextureType GetType() const;
+	const char *GetPath() const;
+	INT GetWidth() const;
+	INT GetHeight() const;
+	UINT GetFormat() const;
 };

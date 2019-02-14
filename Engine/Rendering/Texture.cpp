@@ -60,3 +60,38 @@ void Texture::Activate(INT i) const
 	glActiveTexture(GL_TEXTURE0 + i);
 	glBindTexture(GL_TEXTURE_2D, graphicsTextureId);
 }
+
+UINT Texture::GetID() const
+{
+	return graphicsTextureId;
+}
+
+void Texture::SetType(TextureType t)
+{
+	type = t;
+}
+
+TextureType Texture::GetType() const
+{
+	return type;
+}
+
+const char * Texture::GetPath() const
+{
+	return path;
+}
+
+INT Texture::GetWidth() const
+{
+	return width;
+}
+
+INT Texture::GetHeight() const
+{
+	return height;
+}
+
+UINT Texture::GetFormat() const
+{
+	return format;
+}

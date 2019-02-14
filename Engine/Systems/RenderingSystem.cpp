@@ -5,6 +5,7 @@
 #include <Engine/Components/CCamera.h>
 #include <Engine/Components/CModel.h>
 #include <Engine/Rendering/OpenGL.h>
+#include <Engine/Rendering/Skybox.h>
 
 // Identity function
 // Use ONLY if keys are ordered natural numbers
@@ -43,6 +44,7 @@ void RenderingSystem::Init()
 	shadowMap.Create(1024, 1024);
 
 	depthShader.Load("Systems/ShadowMapping.vs", "Systems/ShadowMapping.fs");
+	Skybox::Instance().Init();
 }
 
 void RenderingSystem::Update()
@@ -53,6 +55,11 @@ void RenderingSystem::Update()
 	FOREACHLINKEDLIST(CCamera*, camPtr, cameras)
 	{
 		CCamera *cam = *camPtr;
+
+		Matrix4 projM = cam->GetProjectionMatrix(
+			(float)ContextWindow::Instance().GetWidth(),
+			(float)ContextWindow::Instance().GetHeight());
+		Matrix4 viewM = cam->GetViewMatrix();
 
 		FOREACHLINKEDLIST(CLight*, lightPtr, lights)
 		{
@@ -67,11 +74,6 @@ void RenderingSystem::Update()
 
 				if (shader->Is3D())
 				{
-					Matrix4 projM = cam->GetProjectionMatrix(
-						(float)ContextWindow::Instance().GetWidth(), 
-						(float)ContextWindow::Instance().GetHeight());
-					Matrix4 viewM = cam->GetViewMatrix();
-
 					shader->SetMat4("projection", projM);
 					shader->SetMat4("view", viewM);
 					shader->SetVec3("viewPos", cam->GetPosition());
@@ -90,6 +92,11 @@ void RenderingSystem::Update()
 			CModel *model = *modelPtr;
 			model->Draw();
 		}
+		
+		Matrix4 skyCamSpace = viewM;
+		skyCamSpace.SetRow(3, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+		skyCamSpace *= projM;
+		Skybox::Instance().Draw(skyCamSpace);
 	}
 
 	ContextWindow::Instance().SwapBuffers();

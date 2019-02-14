@@ -63,20 +63,28 @@ public:
 	static RenderingSystem &Instance();
 
 	// Register mesh by calculating its ID
+	// and saving the pointer
 	void Register(Mesh *mesh);
 	// Register material by calculating its ID
+	// and saving the pointer
 	void Register(Material *material);
 	// Register texture by calculating its ID
+	// and saving the pointer
 	void Register(Texture *texture);
 	// Register shader by calculating its ID
+	// and saving the pointer
 	void Register(Shader *shader);
 	// Attach mesh to material
+	// and saving the pointer
 	void Register(Mesh *mesh, const Material &material);
 	// Register model
+	// and saving the pointer
 	void Register(CModel *model);
 	// Register light
+	// and saving the pointer
 	void Register(CLight *light);
 	// Register camera
+	// and saving the pointer
 	void Register(CCamera *camera);
 
 

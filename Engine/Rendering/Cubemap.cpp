@@ -5,8 +5,7 @@
 
 #include <ImageLoading/stb_image.h>
 
-template<UINT N>
-void Cubemap::LoadCubemap(const StaticArray<const char*, N> &paths)
+void Cubemap::LoadCubemap(const StaticArray<const char*, 6> &paths)
 {
 	glGenTextures(1, &graphicsTextureId);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, graphicsTextureId);
@@ -22,6 +21,7 @@ void Cubemap::LoadCubemap(const StaticArray<const char*, N> &paths)
 		else
 		{
 			Logger::Print("Can't load cubemap");
+			stbi_image_free(data);
 		}
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

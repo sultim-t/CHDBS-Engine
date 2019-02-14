@@ -193,6 +193,7 @@
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Math\AABB.cpp" />
     <ClCompile Include="Math\BasicMath.cpp" />
+    <ClCompile Include="Rendering\Skybox.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="Systems\ComponentSystem.cpp" />
@@ -244,6 +245,7 @@
     <ClInclude Include="Math\Matrix.h" />
     <ClInclude Include="Math\Vector.h" />
     <ClInclude Include="Base\Typedef.h" />
+    <ClInclude Include="Rendering\Skybox.h" />
     <ClInclude Include="Rendering\Texture.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />

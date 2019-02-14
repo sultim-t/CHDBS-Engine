@@ -33,7 +33,7 @@ inline void StaticArray<T, Size>::operator=(const StaticArray<T, Size>& source)
 template<class T, UINT Size>
 inline const T & StaticArray<T, Size>::operator[](UINT index) const
 {
-	ASSERT(index >= 0 && index < size);
+	ASSERT(index >= 0 && index < Size);
 
 	return arr[index];
 }
@@ -41,7 +41,7 @@ inline const T & StaticArray<T, Size>::operator[](UINT index) const
 template<class T, UINT Size>
 inline T & StaticArray<T, Size>::operator[](UINT index)
 {
-	ASSERT(index >= 0 && index < size);
+	ASSERT(index >= 0 && index < Size);
 
 	return arr[index];
 }

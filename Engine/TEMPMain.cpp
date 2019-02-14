@@ -21,6 +21,7 @@
 #include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/Rendering/Cubemap.h>
 #include <Engine/Components/CLight.h>
+#include <Engine/Rendering/Skybox.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
@@ -28,21 +29,25 @@
 
 int main()
 {
-	//Engine *engine = new Engine();
-	//engine->Init();
-
-	//RenderingSystem *rendering = new RenderingSystem();
-	//rendering->Init();
-
-	//engine->AddSystem(rendering);
-
-	//engine->MainLoop();
-
-	//return 0;
+	//Engine engine = Engine();
+	//engine.Init();
 
 	ContextWindow::Instance().Init("Engine", 1280, 720);
 	RenderingSystem::Instance().Init();
 	ComponentSystem::Instance().Init();
+
+
+	StaticArray<const char*, 6> skyNames;
+	skyNames[0] = "TEMP/DoubleBarrel/Skybox/right.jpg";
+	skyNames[1] = "TEMP/DoubleBarrel/Skybox/left.jpg";
+	skyNames[2] = "TEMP/DoubleBarrel/Skybox/top.jpg";
+	skyNames[3] = "TEMP/DoubleBarrel/Skybox/bottom.jpg";
+	skyNames[4] = "TEMP/DoubleBarrel/Skybox/front.jpg";
+	skyNames[5] = "TEMP/DoubleBarrel/Skybox/back.jpg";
+
+	Cubemap sky = Cubemap();
+	sky.LoadCubemap(skyNames);
+	Skybox::Instance().BindCubemap(sky);
 
 	Shader shader = Shader();
 	shader.Init();
@@ -51,6 +56,7 @@ int main()
 	shader.Use();
 	shader.SetInt("diffuseTexture", 0);
 	shader.SetInt("shadowMap", 1);
+	shader.Stop();
 
 	// From XML
 	Entity *cameraEntity = EntityFactory::CreateEntity("entityTest.xml");	
