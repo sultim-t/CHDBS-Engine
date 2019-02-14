@@ -82,7 +82,7 @@ Mesh ResourceManager::ProcessMesh(void *m, const void *s, CModel &outModel)
 	// data to fill
 	vector<Vertex5> vertices;
 	vector<unsigned int> indices;
-	vector<Texture> textures;
+	vector<ITexture> textures;
 
 	// Walk through each of the mesh's vertices
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -144,16 +144,16 @@ Mesh ResourceManager::ProcessMesh(void *m, const void *s, CModel &outModel)
 	// normal: texture_normalN
 
 	// 1. diffuse maps
-	vector<Texture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, TEXTURE_DIFFUSE, outModel);
+	vector<ITexture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, TEXTURE_TYPE_DIFFUSE, outModel);
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	// 2. specular maps
-	vector<Texture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, TEXTURE_SPECULAR, outModel);
+	vector<ITexture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, TEXTURE_TYPE_SPECULAR, outModel);
 	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	// 3. normal maps
-	std::vector<Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, TEXTURE_NORMAL, outModel);
+	std::vector<ITexture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, TEXTURE_TYPE_NORMAL, outModel);
 	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 	// 4. height maps
-	std::vector<Texture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, TEXTURE_HEIGHT, outModel);
+	std::vector<ITexture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, TEXTURE_TYPE_HEIGHT, outModel);
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 	Material meshMaterial = Material(textures);
@@ -165,14 +165,14 @@ Mesh ResourceManager::ProcessMesh(void *m, const void *s, CModel &outModel)
 
 // checks all material textures of a given type and loads the textures if they're not loaded yet.
 // the required info is returned as a Texture struct.
-std::vector<Texture> ResourceManager::LoadMaterialTextures(void *m, int t, TextureType myType, CModel &outModel)
+std::vector<ITexture> ResourceManager::LoadMaterialTextures(void *m, int t, TextureType myType, CModel &outModel)
 {
 	using namespace std;
 
 	aiMaterial *mat = (aiMaterial*)m;
 	aiTextureType type = (aiTextureType)t;
 
-	vector<Texture> textures;
+	vector<ITexture> textures;
 	for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
 	{
 		aiString str;

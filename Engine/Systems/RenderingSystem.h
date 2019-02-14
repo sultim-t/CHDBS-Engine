@@ -16,13 +16,13 @@ class RenderingSystem : public ISystem
 private:
 	HashTable<MeshID	, Mesh*		>	meshes;
 	HashTable<MaterialID, Material*	>	materials;
-	HashTable<TextureID	, Texture*	>	textures;
+	HashTable<TextureID	, ITexture*	>	textures;
 	HashTable<ShaderID	, Shader*	>	shaders;
 
 	// Stores all meshes that have same material
 	HashTable<MaterialID, LinkedList<Mesh*>*>		matMeshes;
 	// Stores all textures used in this material
-	HashTable<MaterialID, LinkedList<Texture*>*>	matTextures;
+	HashTable<MaterialID, LinkedList<ITexture*>*>	matTextures;
 	// Shader used in material
 	HashTable<MaterialID, ShaderID			>		matShaders;
 
@@ -70,7 +70,7 @@ public:
 	void Register(Material *material);
 	// Register texture by calculating its ID
 	// and saving the pointer
-	void Register(Texture *texture);
+	void Register(ITexture *texture);
 	// Register shader by calculating its ID
 	// and saving the pointer
 	void Register(Shader *shader);
@@ -93,7 +93,7 @@ public:
 	// Get material by its ID
 	Material *GetMaterial(MaterialID id) const;
 	// Get texture by its ID
-	Texture *GetTexture(TextureID id) const;
+	ITexture *GetTexture(TextureID id) const;
 	// Get mesh by its ID
 	Shader *GetShader(ShaderID id) const;
 	// Get list of IDs of meshes with same material

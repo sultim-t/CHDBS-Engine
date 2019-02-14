@@ -5,6 +5,11 @@
 
 #include <ImageLoading/stb_image.h>
 
+Cubemap::Cubemap()
+{
+	type = TEXTURE_TYPE_CUBEMAP;
+}
+
 void Cubemap::LoadCubemap(const StaticArray<const char*, 6> &paths)
 {
 	glGenTextures(1, &graphicsTextureId);

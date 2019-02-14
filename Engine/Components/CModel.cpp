@@ -26,8 +26,7 @@ void CModel::Draw()
 
 	for (unsigned i = 0; i < meshes.size(); i++)
 	{
-		meshes[i].GetMaterial()
-			.BindModelMatrix(owner->GetTransform()
+		meshes[i].GetMaterial().BindModelMatrix(owner->GetTransform()
 				.GetTransformMatrix());
 		meshes[i].Draw();
 	}

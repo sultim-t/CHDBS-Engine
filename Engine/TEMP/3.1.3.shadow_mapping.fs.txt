@@ -8,8 +8,9 @@ in VS_OUT {
     vec4 FragPosLightSpace;
 } fs_in;
 
-uniform sampler2D diffuseTexture;
-uniform sampler2D shadowMap;
+uniform sampler2D t_diff0;
+uniform sampler2D t_shdw0;
+uniform samplerCube t_cube0;
 
 uniform vec3 lightPos;
 uniform vec3 viewPos;
@@ -21,7 +22,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     // transform to [0,1] range
     projCoords = projCoords * 0.5 + 0.5;
     // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
-    float closestDepth = texture(shadowMap, projCoords.xy).r; 
+    float closestDepth = texture(t_shdw0, projCoords.xy).r; 
     // get depth of current fragment from light's perspective
     float currentDepth = projCoords.z;
     // calculate bias (based on depth map resolution and slope)
@@ -33,12 +34,12 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
     // PCF
     float shadow = 0.0;
-    vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+    vec2 texelSize = 1.0 / textureSize(t_shdw0, 0);
     for(int x = -2; x <= 2; ++x)
     {
         for(int y = -2; y <= 2; ++y)
         {
-            float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r; 
+            float pcfDepth = texture(t_shdw0, projCoords.xy + vec2(x, y) * texelSize).r; 
             shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
         }    
     }
@@ -53,7 +54,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
 
 void main()
 {           
-    vec3 color = texture(diffuseTexture, fs_in.TexCoords).rgb;
+    vec3 color = texture(t_diff0, fs_in.TexCoords).rgb;
     vec3 normal = normalize(fs_in.Normal);
     vec3 lightColor = vec3(1.0);
     // ambient
@@ -64,8 +65,13 @@ void main()
     vec3 diffuse = diff * lightColor;
     // calculate shadow
     float shadow = ShadowCalculation(fs_in.FragPosLightSpace);                      
-		// vec3 lighting = (ambient + (1.0 - shadow) * (diffuse + specular)) * color;    
+
+	vec3 I = normalize(fs_in.FragPos - viewPos);
+	vec3 R = reflect(I, normal);
+	//vec3 reflection = texture(t_cube0, R).rgb;
+
     vec3 lighting = (ambient + (1.0 - shadow) * diffuse) * color;    
+	//lighting *= reflection;
 
     FragColor = vec4(lighting, 1.0);
 }

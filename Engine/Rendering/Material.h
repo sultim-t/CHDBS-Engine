@@ -14,10 +14,10 @@ private:
 protected:
 	Shader shader;
 	// must be <= 16
-	std::vector<Texture> textures;
+	std::vector<ITexture> textures;
 
 public:
-	Material(std::vector<Texture> textures = std::vector<Texture>());
+	Material(std::vector<ITexture> textures = std::vector<ITexture>());
 
 	// Init material from XML element
 	bool Init(void* xmlElem);
@@ -25,7 +25,7 @@ public:
 	// Activate material
 	void Activate() const;
 	// Add texture to material
-	void AddTexture(const Texture &t);
+	void AddTexture(const ITexture &t);
 	// Bind shader
 	void BindShader(const Shader &shader);
 	// Bind model matrix

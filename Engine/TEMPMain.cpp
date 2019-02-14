@@ -52,11 +52,6 @@ int main()
 	Shader shader = Shader();
 	shader.Init();
 	shader.Load("TEMP/3.1.3.shadow_mapping.vs.txt", "TEMP/3.1.3.shadow_mapping.fs.txt");
-	// shader configuration
-	shader.Use();
-	shader.SetInt("diffuseTexture", 0);
-	shader.SetInt("shadowMap", 1);
-	shader.Stop();
 
 	// From XML
 	Entity *cameraEntity = EntityFactory::CreateEntity("entityTest.xml");	
@@ -67,16 +62,16 @@ int main()
 
 	Texture textureDB = Texture();
 	textureDB.Load("TEMP/DoubleBarrel/WeaponsPalette.png");
-	Material mat = Material({ textureDB });
+	Material mat = Material({ textureDB, sky });
 	mat.BindShader(shader);
 	
-	dbEntity->GetComponent<CModel>()->
-		meshes[0].BindMaterial(mat);
+	dbEntity->GetComponent<CModel>()->meshes[0].
+		BindMaterial(mat);
 
-	terrainEntity->GetComponent<CModel>()->
-		meshes[0].GetMaterial().
+	terrainEntity->GetComponent<CModel>()->meshes[0].GetMaterial().
 		BindShader(shader);
-
+	terrainEntity->GetComponent<CModel>()->meshes[0].GetMaterial().
+		AddTexture(sky);
 
 	while (!ContextWindow::Instance().ShouldClose())
 	{

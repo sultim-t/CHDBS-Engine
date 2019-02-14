@@ -15,8 +15,8 @@ UINT HashUnsigned(UINT i)
 }
 
 RenderingSystem::RenderingSystem()
-{ 
-	lastMeshId = lastMaterialId 
+{
+	lastMeshId = lastMaterialId
 		= lastShaderId = lastTextureId = 0;
 }
 
@@ -42,6 +42,7 @@ void RenderingSystem::Init()
 
 	shadowMap = FramebufferTexture();
 	shadowMap.Create(1024, 1024);
+	shadowMap.SetType(TEXTURE_TYPE_SHADOWMAP);
 
 	depthShader.Load("Systems/ShadowMapping.vs", "Systems/ShadowMapping.fs");
 	Skybox::Instance().Init();
@@ -61,39 +62,71 @@ void RenderingSystem::Update()
 			(float)ContextWindow::Instance().GetHeight());
 		Matrix4 viewM = cam->GetViewMatrix();
 
+		Matrix4 camSpace = viewM * projM;
+
 		FOREACHLINKEDLIST(CLight*, lightPtr, lights)
 		{
 			CLight *light = *lightPtr;
 			CreateShadowMap(*light, shadowMap);
-			shadowMap.Activate(1);
+			shadowMap.Activate(TEXTURE_TYPE_SHADOWMAP);
 
-			FOREACHLINKEDLIST(Shader*, shaderPtr, allShaders)
+			/*FOREACHLINKEDLIST(Shader*, shaderPtr, allShaders)
 			{
 				Shader* shader = *shaderPtr;
 				shader->Use();
 
+				shader->SetInt(TEXTURE_NAME_SHADOWMAP, TEXTURE_TYPE_SHADOWMAP);
+
 				if (shader->Is3D())
 				{
-					shader->SetMat4("projection", projM);
-					shader->SetMat4("view", viewM);
+					shader->SetMat4("spaceM", camSpace);
 					shader->SetVec3("viewPos", cam->GetPosition());
-					shader->SetVec3("lightPos", light->GetPosition());
 				}
 
 				if (shader->IsAffectedByLight())
 				{
+					shader->SetVec3("lightPos", light->GetPosition());
 					shader->SetMat4("lightSpaceMatrix", light->GetLightSpace());
+				}
+			}*/
+
+			// fix me
+			FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
+			{
+				CModel *model = *modelPtr;
+				// model->Draw();
+
+				for (auto m : model->GetMeshes())
+				{
+					Shader &shader = m.GetMaterial().GetShader();
+
+					shader.Use();
+
+					shader.SetInt(TEXTURE_NAME_SHADOWMAP, TEXTURE_TYPE_SHADOWMAP);
+
+					if (shader.Is3D())
+					{
+						shader.SetMat4("spaceM", camSpace);
+						shader.SetVec3("viewPos", cam->GetPosition());
+					}
+
+					if (shader.IsAffectedByLight())
+					{
+						shader.SetVec3("lightPos", light->GetPosition());
+						shader.SetMat4("lightSpaceMatrix", light->GetLightSpace());
+					}
+
+					m.GetMaterial().BindModelMatrix(model->GetOwner().GetTransform().GetTransformMatrix());
+					m.Draw();
+
+					//shader.Stop();
 				}
 			}
 		}
-
-		FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
-		{
-			CModel *model = *modelPtr;
-			model->Draw();
-		}
 		
 		Matrix4 skyCamSpace = viewM;
+		// reset position
+		// to make skybox feel infinitely far
 		skyCamSpace.SetRow(3, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
 		skyCamSpace *= projM;
 		Skybox::Instance().Draw(skyCamSpace);
@@ -147,7 +180,7 @@ void RenderingSystem::Register(Material *material)
 	lastMaterialId++;
 }
 
-void RenderingSystem::Register(Texture *texture)
+void RenderingSystem::Register(ITexture *texture)
 {
 	texture->textureId = lastTextureId;
 	textures.Add(lastTextureId, texture);
@@ -200,9 +233,9 @@ Material *RenderingSystem::GetMaterial(MaterialID id) const
 	return result;
 }
 
-Texture *RenderingSystem::GetTexture(TextureID id) const
+ITexture *RenderingSystem::GetTexture(TextureID id) const
 {
-	Texture *result;
+	ITexture *result;
 	textures.Find(id, result);
 
 	return result;

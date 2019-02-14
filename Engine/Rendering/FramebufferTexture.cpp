@@ -25,6 +25,14 @@ void FramebufferTexture::Create(INT width, INT height)
 	this->height = height;
 }
 
+void FramebufferTexture::Activate(INT i) const
+{
+	ASSERT(i >= 0 && i < 32);
+
+	glActiveTexture(GL_TEXTURE0 + i);
+	glBindTexture(GL_TEXTURE_2D, graphicsTextureId);
+}
+
 unsigned FramebufferTexture::GetFBO()
 {
 	return fbo;

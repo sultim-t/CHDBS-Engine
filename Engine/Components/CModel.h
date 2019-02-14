@@ -14,7 +14,7 @@ public:
 	UINT modelId;
 
 	std::vector<Mesh> meshes;
-	std::vector<Texture> loadedTextures;
+	std::vector<ITexture> loadedTextures;
 
 	String directory;
 	String path;

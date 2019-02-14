@@ -4,7 +4,7 @@
 
 Texture::Texture()
 {
-	type = TEXTURE_DIFFUSE;
+	type = TEXTURE_TYPE_DIFFUSE;
 }
 
 Texture::~Texture()
@@ -61,37 +61,37 @@ void Texture::Activate(INT i) const
 	glBindTexture(GL_TEXTURE_2D, graphicsTextureId);
 }
 
-UINT Texture::GetID() const
+UINT ITexture::GetID() const
 {
 	return graphicsTextureId;
 }
 
-void Texture::SetType(TextureType t)
+void ITexture::SetType(TextureType t)
 {
 	type = t;
 }
 
-TextureType Texture::GetType() const
+TextureType ITexture::GetType() const
 {
 	return type;
 }
 
-const char * Texture::GetPath() const
+const char *ITexture::GetPath() const
 {
 	return path;
 }
 
-INT Texture::GetWidth() const
+INT ITexture::GetWidth() const
 {
 	return width;
 }
 
-INT Texture::GetHeight() const
+INT ITexture::GetHeight() const
 {
 	return height;
 }
 
-UINT Texture::GetFormat() const
+UINT ITexture::GetFormat() const
 {
 	return format;
 }
