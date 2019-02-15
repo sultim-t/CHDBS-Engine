@@ -51,6 +51,8 @@ void Texture::Load(const char * path)
 	ResourceManager::DeleteTexture(data);
 
 	this->path = path;
+
+	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Texture::Activate(INT i) const

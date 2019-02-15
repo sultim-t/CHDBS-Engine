@@ -28,8 +28,9 @@ public:
 	void AddTexture(const ITexture &t);
 	// Bind shader
 	void BindShader(const Shader &shader);
+
 	// Bind model matrix
-	void BindModelMatrix(const Matrix4 &model);
+	void BindModelMatrix(const Matrix4 &model) const;
 
 	// Getters
 	Shader &GetShader();

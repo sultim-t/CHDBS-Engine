@@ -45,9 +45,20 @@ int main()
 	skyNames[4] = "TEMP/DoubleBarrel/Skybox/front.jpg";
 	skyNames[5] = "TEMP/DoubleBarrel/Skybox/back.jpg";
 
+	StaticArray<const char*, 6> reflName;
+	reflName[0] = "TEMP/DoubleBarrel/chrome.jpg";
+	reflName[1] = "TEMP/DoubleBarrel/chrome.jpg";
+	reflName[2] = "TEMP/DoubleBarrel/chrome.jpg";
+	reflName[3] = "TEMP/DoubleBarrel/chrome.jpg";
+	reflName[4] = "TEMP/DoubleBarrel/chrome.jpg";
+	reflName[5] = "TEMP/DoubleBarrel/chrome.jpg";
+
 	Cubemap sky = Cubemap();
 	sky.LoadCubemap(skyNames);
 	Skybox::Instance().BindCubemap(sky);
+
+	Cubemap reflection = Cubemap();
+	reflection.LoadCubemap(reflName);
 
 	Shader shader = Shader();
 	shader.Init();
@@ -62,16 +73,19 @@ int main()
 
 	Texture textureDB = Texture();
 	textureDB.Load("TEMP/DoubleBarrel/WeaponsPalette.png");
-	Material mat = Material({ textureDB, sky });
+	Material mat = Material({ textureDB, reflection });
 	mat.BindShader(shader);
 	
 	dbEntity->GetComponent<CModel>()->meshes[0].
 		BindMaterial(mat);
 
-	terrainEntity->GetComponent<CModel>()->meshes[0].GetMaterial().
-		BindShader(shader);
-	terrainEntity->GetComponent<CModel>()->meshes[0].GetMaterial().
-		AddTexture(sky);
+	for (UINT i = 0; i < terrainEntity->GetComponent<CModel>()->meshes.size(); i++)
+	{
+		terrainEntity->GetComponent<CModel>()->meshes[i].GetMaterial().
+			BindShader(shader);
+		terrainEntity->GetComponent<CModel>()->meshes[i].GetMaterial().
+			AddTexture(reflection);
+	}
 
 	while (!ContextWindow::Instance().ShouldClose())
 	{

@@ -17,25 +17,30 @@ void CModel::BindPath(const char * path)
 	this->path = path;
 }
 
-void CModel::Draw()
-{
-	if (!IsActive())
-	{
-		return;
-	}
+//void CModel::Draw()
+//{
+//	if (!IsActive())
+//	{
+//		return;
+//	}
+//
+//	for (unsigned i = 0; i < meshes.size(); i++)
+//	{
+//		meshes[i].GetMaterial().BindModelMatrix(owner->GetTransform()
+//				.GetTransformMatrix());
+//		meshes[i].Draw();
+//	}
+//}
 
-	for (unsigned i = 0; i < meshes.size(); i++)
-	{
-		meshes[i].GetMaterial().BindModelMatrix(owner->GetTransform()
-				.GetTransformMatrix());
-		meshes[i].Draw();
-	}
-}
-
-const std::vector<Mesh>& CModel::GetMeshes() const
+const std::vector<Mesh> &CModel::GetMeshes() const
 {
 	return meshes;
 }
+
+//std::vector<Mesh> &CModel::GetMeshes()
+//{
+//	return meshes;
+//}
 
 void CModel::Init()
 {

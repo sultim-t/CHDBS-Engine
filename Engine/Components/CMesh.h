@@ -44,12 +44,12 @@ public:
 
 	// Inits vao, vbo, ibo; positions, normals, uvs
 	void Init();
-	void BindMaterial(Material &material);
+	void BindMaterial(const Material &material);
 
 	// Renders mesh with current material
-	void Draw() const;
-	// Render mesh to shadowmap
-	void DrawToShadowMap(FramebufferTexture &shadowMap);
+	void Draw(const Matrix4 &transformation) const;
+	// Render mesh without activating material
+	void DrawToShadowMap() const;
 
 	UINT GetVAO() const;
 	UINT GetVertexCount() const;

@@ -70,56 +70,30 @@ void RenderingSystem::Update()
 			CreateShadowMap(*light, shadowMap);
 			shadowMap.Activate(TEXTURE_TYPE_SHADOWMAP);
 
-			/*FOREACHLINKEDLIST(Shader*, shaderPtr, allShaders)
-			{
-				Shader* shader = *shaderPtr;
-				shader->Use();
-
-				shader->SetInt(TEXTURE_NAME_SHADOWMAP, TEXTURE_TYPE_SHADOWMAP);
-
-				if (shader->Is3D())
-				{
-					shader->SetMat4("spaceM", camSpace);
-					shader->SetVec3("viewPos", cam->GetPosition());
-				}
-
-				if (shader->IsAffectedByLight())
-				{
-					shader->SetVec3("lightPos", light->GetPosition());
-					shader->SetMat4("lightSpaceMatrix", light->GetLightSpace());
-				}
-			}*/
-
-			// fix me
 			FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
 			{
 				CModel *model = *modelPtr;
-				// model->Draw();
 
-				for (auto m : model->GetMeshes())
+				for (const Mesh &m : model->GetMeshes())
 				{
-					Shader &shader = m.GetMaterial().GetShader();
+				 	const Shader *shader = &m.GetMaterial().GetShader();
+					shader->Use();
 
-					shader.Use();
+					shader->SetInt(TEXTURE_NAME_SHADOWMAP, TEXTURE_TYPE_SHADOWMAP);
 
-					shader.SetInt(TEXTURE_NAME_SHADOWMAP, TEXTURE_TYPE_SHADOWMAP);
-
-					if (shader.Is3D())
+					if (shader->Is3D())
 					{
-						shader.SetMat4("spaceM", camSpace);
-						shader.SetVec3("viewPos", cam->GetPosition());
+						shader->SetMat4("spaceM", camSpace);
+						shader->SetVec3("viewPos", cam->GetPosition());
 					}
 
-					if (shader.IsAffectedByLight())
+					if (shader->IsAffectedByLight())
 					{
-						shader.SetVec3("lightPos", light->GetPosition());
-						shader.SetMat4("lightSpaceMatrix", light->GetLightSpace());
+						shader->SetVec3("lightPos", light->GetPosition());
+						shader->SetMat4("lightSpaceMatrix", light->GetLightSpace());
 					}
 
-					m.GetMaterial().BindModelMatrix(model->GetOwner().GetTransform().GetTransformMatrix());
-					m.Draw();
-
-					//shader.Stop();
+					m.Draw(model->GetOwner().GetTransform().GetTransformMatrix());
 				}
 			}
 		}
@@ -127,7 +101,7 @@ void RenderingSystem::Update()
 		Matrix4 skyCamSpace = viewM;
 		// reset position
 		// to make skybox feel infinitely far
-		skyCamSpace.SetRow(3, Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+		skyCamSpace.SetRow(3, Vector4(0.0f));
 		skyCamSpace *= projM;
 		Skybox::Instance().Draw(skyCamSpace);
 	}
@@ -150,8 +124,18 @@ void RenderingSystem::CreateShadowMap(const CLight &light, FramebufferTexture &s
 	{
 		CModel *model = *modelPtr;
 
-		depthShader.SetMat4("model", model->GetOwner().GetTransform().GetTransformMatrix());
-		model->Draw();
+		FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
+		{
+			CModel *model = *modelPtr;
+
+			for (const Mesh &m : model->GetMeshes())
+			{
+				// manually set transformation
+				depthShader.SetMat4("model", model->GetOwner().GetTransform().GetTransformMatrix());
+				// draw without binding its material	
+				m.DrawToShadowMap();
+			}
+		}
 	}
 
 	// unbind framebuffer

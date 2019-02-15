@@ -25,6 +25,7 @@ public:
 	void SetProperty(const String &key, const String &value) override;
 
 	void BindPath(const char *path);
-	void Draw();
+	//void Draw();
+	//std::vector<Mesh> &CModel::GetMeshes();
 	const std::vector<Mesh> &GetMeshes() const;
 };

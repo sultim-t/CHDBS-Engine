@@ -59,7 +59,7 @@ void Material::Activate() const
 			break;
 		}
 
-		char name[TEXTURE_NAME_LENGTH];
+		char name[TEXTURE_NAME_LENGTH + 1];
 
 		// copy except last char
 		for (int i = 0; i < TEXTURE_NAME_LENGTH - 1; i++)
@@ -69,8 +69,12 @@ void Material::Activate() const
 
 		// last char is a texture's index
 		name[TEXTURE_NAME_LENGTH - 1] = '0' + count;
+		// null termianted string
+		name[TEXTURE_NAME_LENGTH] = '\0';
 
+		// set current texture
 		shader.SetInt(name, type);
+
 		// activate texture
 		// doesnt work: wrong virtual overriding
 		// t.Activate(type);
@@ -100,7 +104,7 @@ void Material::BindShader(const Shader &shader)
 	this->shader = shader;
 }
 
-void Material::BindModelMatrix(const Matrix4 & model)
+void Material::BindModelMatrix(const Matrix4 & model) const
 {
 	shader.SetMat4("model", model);
 }
