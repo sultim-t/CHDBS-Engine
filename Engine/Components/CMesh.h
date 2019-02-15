@@ -5,24 +5,9 @@
 #include "IComponent.h"
 #include <Engine/Rendering/Material.h>
 #include <Engine/Rendering/Texture.h>
-#include <Engine/Math/Vector.h>
+#include <Engine/Rendering/Vertex.h>
 
-struct Vertex
-{
-	Vector3 Position;
-	Vector3 Normal;
-	Vector2 TexCoords; // uvs
-};
-
-struct Vertex5
-{
-	Vector3 Position;
-	Vector3 Normal;
-	Vector2 TexCoords; // uvs
-	Vector3 Tangent;
-	Vector3 Bitangent;
-};
-
+// Mesh with material
 class Mesh
 {
 	friend class RenderingSystem;
@@ -46,10 +31,10 @@ public:
 	void Init();
 	void BindMaterial(const Material &material);
 
-	// Renders mesh with current material
-	void Draw(const Matrix4 &transformation) const;
-	// Render mesh without activating material
-	void DrawToShadowMap() const;
+	// Activates material
+	void ActivateMaterial(const Matrix4 &transformation) const;
+	// Renders mesh
+	void Draw() const;
 
 	UINT GetVAO() const;
 	UINT GetVertexCount() const;

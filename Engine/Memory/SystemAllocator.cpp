@@ -18,6 +18,17 @@ void * SystemAllocator::Allocate(UINT size)
 	return allocated;
 }
 
+void * SystemAllocator::CAllocate(UINT count, UINT size)
+{
+	void *allocated = calloc(count, size);
+	ASSERT(allocated != nullptr);
+
+	allocCalls++;
+	allocatedSize += size * count;
+
+	return allocated;
+}
+
 void * SystemAllocator::Reallocate(void * old, UINT oldSize, UINT newSize)
 {
 	void *reallocated = realloc(old, newSize);

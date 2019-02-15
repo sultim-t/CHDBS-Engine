@@ -20,7 +20,7 @@
 #include <vector>
 
 
-UBYTE * ResourceManager::LoadTexture(char const * filename, INT * width, INT * height, INT * comp, INT req_comp)
+UBYTE * ResourceManager::LoadTexture(char const * filename, int * width, int * height, int * comp, int req_comp)
 {
 	return stbi_load(filename, width, height, comp, req_comp);
 }

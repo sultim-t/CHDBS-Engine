@@ -1,7 +1,7 @@
 #include "FramebufferTexture.h"
 #include "OpenGL.h"
 
-void FramebufferTexture::Create(INT width, INT height)
+void FramebufferTexture::Create(int width, int height)
 {
 	glGenFramebuffers(1, &fbo);
 
@@ -25,7 +25,7 @@ void FramebufferTexture::Create(INT width, INT height)
 	this->height = height;
 }
 
-void FramebufferTexture::Activate(INT i) const
+void FramebufferTexture::Activate(int i) const
 {
 	ASSERT(i >= 0 && i < 32);
 

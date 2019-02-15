@@ -1,7 +1,7 @@
 #pragma once
-#include <Engine\Components\IComponent.h>
-#include <Engine\Math\Quaternion.h>
-#include <Engine\Math\Matrix.h>
+#include <Engine/Components/IComponent.h>
+#include <Engine/Math/Quaternion.h>
+#include <Engine/Math/Matrix.h>
 
 enum LightType
 {
@@ -35,42 +35,37 @@ private:
 	float range;
 
 private:
+	// Recalculates light space matrix
 	void Recalculate();
 	
 public:
-	// Returns const reference to light space matrix
+	// Returns light space matrix
 	const Matrix4 &GetLightSpace() const;
 
-	// Returns light type
 	LightType GetLightType() const;
-	// Returns copy of bool
-	const bool IsStatic() const;
-	// Returns const reference of color
+	// If static light doesn't calculate matrix each frame
+	bool IsStatic() const;
 	const Color &GetColor() const;
-	// Returns copy of bias
-	const float GetBias() const;
-	// Returns copy of range of light
-	const float GetRange() const;
-	// Returns copy of cone angle of spotlight in degrees
-	const float GetConeAngle() const;
-	const bool IsCastingShadows() const;
+	// Returns light bias
+	float GetBias() const;
+	// Returns range of light
+	float GetRange() const;
+	// Returns cone angle of spotlight in degrees
+	float GetConeAngle() const;
+	bool IsCastingShadows() const;
 	// Returns postion
 	Vector3 GetPosition() const;
 
-	// Returns reference to light type
-	LightType &GetLightType();
-	// Returns reference to bool
-	bool &IsStatic();
-	// Returns reference to color
-	Color &GetColor();
-	// Returns reference to bias
-	float &GetBias();
-	// Returns reference to range of light
-	const float GetRange();
-	// Returns reference to cone angle of spotlight in degrees
-	float &GetConeAngle();
-	// Returns reference
-	bool &IsCastingShadows();
+	void SetLightType(LightType type);
+	// If static light doesn't calculate matrix each frame
+	void SetStatic(bool isStatic);
+	void SetColor(const Color &color);
+	void SetBias(float bias);
+	// Set range of light (only point and spot)
+	void SetRange(float range);
+	// Set cone angle of light (only spot)
+	void SetConeAngle(float coneAngle);
+	void SetCastingShadows(bool cast);
 
 public:
 	void Init() override;

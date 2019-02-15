@@ -65,17 +65,7 @@ const Matrix4 &CLight::GetLightSpace() const
 	return lightSpace;
 }
 
-LightType &CLight::GetLightType()
-{
-	return ltype;
-}
-
-bool &CLight::IsStatic()
-{
-	return isStatic;
-}
-
-const bool CLight::IsStatic() const
+bool CLight::IsStatic() const
 {
 	return isStatic;
 }
@@ -85,22 +75,22 @@ const Vector3 &CLight::GetColor() const
 	return color;
 }
 
-const float CLight::GetBias() const
+float CLight::GetBias() const
 {
 	return bias;
 }
 
-const float CLight::GetRange() const
+float CLight::GetRange() const
 {
 	return range;
 }
 
-const float CLight::GetConeAngle() const
+float CLight::GetConeAngle() const
 {
 	return coneAngle;
 }
 
-const bool CLight::IsCastingShadows() const
+bool CLight::IsCastingShadows() const
 {
 	return castShadows;
 }
@@ -110,29 +100,39 @@ Vector3 CLight::GetPosition() const
 	return owner->GetTransform().GetPosition();
 }
 
-Color &CLight::GetColor()
+void CLight::SetLightType(LightType type)
 {
-	return color;
+	this->ltype = type;
 }
 
-float &CLight::GetBias()
+void CLight::SetStatic(bool isStatic)
 {
-	return bias;
+	this->isStatic = isStatic;
 }
 
-const float CLight::GetRange()
+void CLight::SetColor(const Color & color)
 {
-	return range;
+	this->color = color;
 }
 
-float &CLight::GetConeAngle()
+void CLight::SetBias(float bias)
 {
-	return coneAngle;
+	this->bias = bias;
 }
 
-bool &CLight::IsCastingShadows()
+void CLight::SetRange(float range)
 {
-	return castShadows;
+	this->range = range;
+}
+
+void CLight::SetConeAngle(float coneAngle)
+{
+	this->coneAngle = coneAngle > 0 ? coneAngle : 0;
+}
+
+void CLight::SetCastingShadows(bool cast)
+{
+	this->castShadows = cast;
 }
 
 void CLight::Init()

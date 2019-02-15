@@ -56,8 +56,8 @@ public:
 	// Removes chars after pos
 	void Remove(UINT fromLeft, UINT fromRight);
 
-	INT ToInt() const;
-	FLOAT ToFloat() const;
+	int ToInt() const;
+	float ToFloat() const;
 
 	const char *GetCharPtr() const;
 

@@ -35,21 +35,21 @@ protected:
 	TextureID textureId;
 	UINT graphicsTextureId;
 
-	INT width, height;
-	INT channelsNumber;
+	int width, height;
+	int channelsNumber;
 	UINT format;
 
 	TextureType type;
 	const char* path;
 
 public:
-	virtual void Activate(INT i) const {};
+	virtual void Activate(int i) const {};
 
 	TextureType GetType() const;
 	const char *GetPath() const;
 	UINT GetID() const;
-	INT GetWidth() const;
-	INT GetHeight() const;
+	int GetWidth() const;
+	int GetHeight() const;
 	UINT GetFormat() const;
 
 	void SetType(TextureType t);
@@ -62,5 +62,5 @@ public:
 	~Texture();
 
 	void Load(const char* path);
-	void Activate(INT i) const override;
+	void Activate(int i) const override;
 };

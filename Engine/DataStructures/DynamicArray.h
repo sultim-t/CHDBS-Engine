@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Engine/Memory/Memory.h>
+
 #define DYNARRAY_INCMULT 2
 
 template <class T>
@@ -7,8 +9,8 @@ class DynamicArray
 {
 private:
 	T *buffer;
-	INT allocated;
-	INT top;
+	int allocated;
+	int top;
 
 private:
 	void Expand();
@@ -17,7 +19,7 @@ public:
 	DynamicArray();
 	~DynamicArray();
 
-	void Init(INT initSize);
+	void Init(int initSize);
 
 	const T &operator[](unsigned index) const;
 	T &operator[](unsigned index);
@@ -54,14 +56,14 @@ inline DynamicArray<T>::~DynamicArray()
 }
 
 template<class T>
-inline void DynamicArray<T>::Init(INT initSize)
+inline void DynamicArray<T>::Init(int initSize)
 {
 	ASSERT(buffer == NULL);
 	ASSERT(initSize < 0);
 
 	allocated = initSize;
 	top = 0;
-	buffer = (T*)malloc(sizeof(T) * initSize);
+	buffer = (T*)SYSALLOCATOR.Allocate(sizeof(T) * initSize);
 }
 
 template<class T>
@@ -126,7 +128,7 @@ inline void DynamicArray<T>::Delete()
 
 	if (buffer != NULL)
 	{
-		free(buffer);
+		SYSALLOCATOR.Free(buffer);
 	}
 
 	allocated = 0;

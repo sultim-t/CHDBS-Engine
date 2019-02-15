@@ -18,6 +18,7 @@ private:
 
 public:
 	void *Allocate(UINT size);
+	void *CAllocate(UINT count, UINT size);
 	void *Reallocate(void *old, UINT oldSize, UINT newSize);
 	void Free(void *address);
 

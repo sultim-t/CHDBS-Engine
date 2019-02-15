@@ -8,7 +8,7 @@ private:
 	UINT fbo;
 
 public:
-	void Create(INT width, INT height);
-	void Activate(INT i) const override;
+	void Create(int width, int height);
+	void Activate(int i) const override;
 	UINT GetFBO();
 };

@@ -93,7 +93,8 @@ void RenderingSystem::Update()
 						shader->SetMat4("lightSpaceMatrix", light->GetLightSpace());
 					}
 
-					m.Draw(model->GetOwner().GetTransform().GetTransformMatrix());
+					m.ActivateMaterial(model->GetOwner().GetTransform().GetTransformMatrix());
+					m.Draw();
 				}
 			}
 		}
@@ -133,7 +134,7 @@ void RenderingSystem::CreateShadowMap(const CLight &light, FramebufferTexture &s
 				// manually set transformation
 				depthShader.SetMat4("model", model->GetOwner().GetTransform().GetTransformMatrix());
 				// draw without binding its material	
-				m.DrawToShadowMap();
+				m.Draw();
 			}
 		}
 	}

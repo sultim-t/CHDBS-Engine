@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include <Engine/TEMP/tinyxml2/tinyxml2.h>
 #include <Engine/Systems/ComponentSystem.h>
+#include <Engine/Memory/Memory.h>
 
 void Entity::AddComponent(IComponent * c)
 {
@@ -86,7 +87,7 @@ const std::vector<IComponent*>& Entity::GetAllComponents() const
 
 void Entity::Destroy()
 {
-	free(components);
+	SYSALLOCATOR.Free(components);
 }
 
 void Entity::SetActive(bool active)

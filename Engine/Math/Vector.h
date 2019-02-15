@@ -19,37 +19,37 @@ public:
 	// Init first 4 dimensions
 	inline Vector(const Type x, const Type y, const Type z, const Type w);
 
-	inline Type& operator[](int index);
+	inline Type &operator[](int index);
 	inline const Type operator[](int index) const;
-	inline Vector<Type, Dim>operator+(const Vector<Type, Dim>in) const;
-	inline Vector<Type, Dim>&operator+=(const Vector<Type, Dim>in);
+	inline Vector<Type, Dim>operator+(const Vector<Type, Dim> &in) const;
+	inline Vector<Type, Dim>&operator+=(const Vector<Type, Dim> &in);
 	inline Vector<Type, Dim>operator-() const;
-	inline Vector<Type, Dim>operator-(const Vector<Type, Dim>in) const;
-	inline Vector<Type, Dim>&operator-=(const Vector<Type, Dim>in);
+	inline Vector<Type, Dim>operator-(const Vector<Type, Dim> &in) const;
+	inline Vector<Type, Dim>&operator-=(const Vector<Type, Dim> &in);
 	inline Vector<Type, Dim>operator*(const Type scale) const;
 	inline Vector<Type, Dim>&operator*=(const Type scale);
-	inline bool operator==(const Vector<Type, Dim>vec);
-	inline bool operator==(const Vector<Type, Dim>vec) const;
-	inline bool operator!=(const Vector<Type, Dim>vec);
+	inline bool operator==(const Vector<Type, Dim> &vec);
+	inline bool operator==(const Vector<Type, Dim> &vec) const;
+	inline bool operator!=(const Vector<Type, Dim> &vec);
 
-	static void Copy(const Vector<Type, Dim> & in, Vector<Type, Dim> & out);
-	static bool ApproximateCompare(const Vector<Type, Dim> & vec1, const Vector<Type, Dim> & vec2);
+	static void Copy(const Vector<Type, Dim> &in, Vector<Type, Dim> &out);
+	static bool ApproximateCompare(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2);
 	// Length of vec
-	static Type Length(const Vector<Type, Dim> & vec);
+	static Type Length(const Vector<Type, Dim> &vec);
 	// Sqr length vec
-	static Type LengthSqr(const Vector<Type, Dim> & vec);
+	static Type LengthSqr(const Vector<Type, Dim> &vec);
 	// Manhattan norm
-	static Type ManhattanNorm(const Vector<Type, Dim> & vec);
+	static Type ManhattanNorm(const Vector<Type, Dim> &vec);
 	// Distance between vec1 and vec2
-	static Type Distance(const Vector<Type, Dim> & vec1, const Vector<Type, Dim> & vec2);
+	static Type Distance(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2);
 	// Sqr distance between vec1 and vec2
-	static Type DistanceSqr(const Vector<Type, Dim> & vec1, const Vector<Type, Dim> & vec2);
+	static Type DistanceSqr(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2);
 	// Dot product of vec1 and vec2
-	static Type Dot(const Vector<Type, Dim> & vec1, const  Vector<Type, Dim> & vec2);
-	static void Normalize(Vector<Type, Dim> & vec);
+	static Type Dot(const Vector<Type, Dim> &vec1, const  Vector<Type, Dim> &vec2);
+	static void Normalize(Vector<Type, Dim> &vec);
 
-	inline void Copy(Vector<Type, Dim> & out);
-	inline bool ApproximateCompare(const Vector<Type, Dim> & vec);
+	inline void Copy(Vector<Type, Dim> &out);
+	inline bool ApproximateCompare(const Vector<Type, Dim> &vec);
 	// Length of this vector
 	inline Type Length();
 	// Sqr length of this vector
@@ -57,16 +57,16 @@ public:
 	// Manhattan norm
 	inline Type ManhattanNorm();
 	// Distance between this and vec
-	inline Type Distance(const Vector<Type, Dim> & vec);
+	inline Type Distance(const Vector<Type, Dim> &vec);
 	// Sqr distance between this and vec
-	inline Type DistanceSqr(const Vector<Type, Dim> & vec);
+	inline Type DistanceSqr(const Vector<Type, Dim> &vec);
 	// Dot product of this and vec
-	inline Type Dot(const Vector<Type, Dim> & vec);
+	inline Type Dot(const Vector<Type, Dim> &vec);
 	inline void Normalize();
 	inline Vector<Type, Dim> GetNormalized() const;
 
-	static Vector<float, 3>Cross(const Vector<Type, Dim> & in1, const  Vector<Type, Dim> & in2);
-	inline Vector<float, 3>Cross(const Vector<Type, Dim> & in);
+	static Vector<float, 3>Cross(const Vector<Type, Dim> &in1, const  Vector<Type, Dim> &in2);
+	inline Vector<float, 3>Cross(const Vector<Type, Dim> &in);
 
 	inline const Type *ToArray() const;
 };
@@ -144,7 +144,7 @@ inline const Type Vector<Type, Dim>::operator[](int index) const
 }
 
 template <class Type, int Dim>
-inline Vector<Type, Dim> Vector<Type, Dim>::operator+(const Vector<Type, Dim>in) const
+inline Vector<Type, Dim> Vector<Type, Dim>::operator+(const Vector<Type, Dim> &in) const
 {
 	Vector<Type, Dim>result;
 
@@ -157,7 +157,7 @@ inline Vector<Type, Dim> Vector<Type, Dim>::operator+(const Vector<Type, Dim>in)
 }
 
 template <class Type, int Dim>
-inline Vector<Type, Dim> &Vector<Type, Dim>::operator+=(const Vector<Type, Dim>in)
+inline Vector<Type, Dim> &Vector<Type, Dim>::operator+=(const Vector<Type, Dim> &in)
 {
 	for (int i = 0; i < Dim; i++)
 	{
@@ -174,7 +174,7 @@ inline Vector<Type, Dim> Vector<Type, Dim>::operator-() const
 }
 
 template <class Type, int Dim>
-inline Vector<Type, Dim> Vector<Type, Dim>::operator-(const Vector<Type, Dim>in) const
+inline Vector<Type, Dim> Vector<Type, Dim>::operator-(const Vector<Type, Dim> &in) const
 {
 	Vector<Type, Dim>result;
 
@@ -187,7 +187,7 @@ inline Vector<Type, Dim> Vector<Type, Dim>::operator-(const Vector<Type, Dim>in)
 }
 
 template <class Type, int Dim>
-inline Vector<Type, Dim> &Vector<Type, Dim>::operator-=(const Vector<Type, Dim>in)
+inline Vector<Type, Dim> &Vector<Type, Dim>::operator-=(const Vector<Type, Dim> &in)
 {
 	for (int i = 0; i < Dim; i++)
 	{
@@ -222,7 +222,7 @@ inline Vector<Type, Dim> &Vector<Type, Dim>::operator*=(const Type scale)
 }
 
 template <class Type, int Dim>
-inline bool Vector<Type, Dim>::operator==(const Vector<Type, Dim>vec)
+inline bool Vector<Type, Dim>::operator==(const Vector<Type, Dim> &vec)
 {
 	for (int i = 0; i < Dim; i++)
 	{
@@ -236,7 +236,7 @@ inline bool Vector<Type, Dim>::operator==(const Vector<Type, Dim>vec)
 }
 
 template<class Type, int Dim>
-inline bool Vector<Type, Dim>::operator==(const Vector<Type, Dim> vec) const
+inline bool Vector<Type, Dim>::operator==(const Vector<Type, Dim> &vec) const
 {
 	for (int i = 0; i < Dim; i++)
 	{
@@ -250,7 +250,7 @@ inline bool Vector<Type, Dim>::operator==(const Vector<Type, Dim> vec) const
 }
 
 template <class Type, int Dim>
-inline bool Vector<Type, Dim>::operator!=(const Vector<Type, Dim>vec)
+inline bool Vector<Type, Dim>::operator!=(const Vector<Type, Dim> &vec)
 {
 	for (int i = 0; i < Dim; i++)
 	{
@@ -302,7 +302,7 @@ inline Type Vector<Type, Dim>::LengthSqr(const Vector<Type, Dim>&vec)
 }
 
 template<class Type, int Dim>
-inline Type Vector<Type, Dim>::ManhattanNorm(const Vector<Type, Dim>& vec)
+inline Type Vector<Type, Dim>::ManhattanNorm(const Vector<Type, Dim> &vec)
 {
 	Type mn = (Type)0;
 
@@ -315,13 +315,13 @@ inline Type Vector<Type, Dim>::ManhattanNorm(const Vector<Type, Dim>& vec)
 }
 
 template <class Type, int Dim>
-inline Type Vector<Type, Dim>::Distance(const Vector<Type, Dim>& vec1, const Vector<Type, Dim>& vec2)
+inline Type Vector<Type, Dim>::Distance(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2)
 {
 	return Length(vec1 - vec2);
 }
 
 template <class Type, int Dim>
-inline Type Vector<Type, Dim>::DistanceSqr(const Vector<Type, Dim>& vec1, const Vector<Type, Dim>& vec2)
+inline Type Vector<Type, Dim>::DistanceSqr(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2)
 {
 	return LengthSqr(vec1 - vec2);
 }
@@ -386,13 +386,13 @@ inline Type Vector<Type, Dim>::ManhattanNorm()
 }
 
 template <class Type, int Dim>
-inline Type Vector<Type, Dim>::Distance(const Vector<Type, Dim>& vec)
+inline Type Vector<Type, Dim>::Distance(const Vector<Type, Dim> &vec)
 {
 	return Distance(*this, vec);
 }
 
 template <class Type, int Dim>
-inline Type Vector<Type, Dim>::DistanceSqr(const Vector<Type, Dim>& vec)
+inline Type Vector<Type, Dim>::DistanceSqr(const Vector<Type, Dim> &vec)
 {
 	return DistanceSqr(*this, vec);
 }

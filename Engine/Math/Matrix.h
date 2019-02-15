@@ -15,8 +15,6 @@ public:
 	Matrix(const Type x);
 	Matrix(const Type x, const bool diagonal);
 	Matrix(const int size, const Type *arr);
-	// Matrix(const Type arr[Dim * Dim]);
-	// Matrix(const Type arr[Dim][Dim]);
 
 	inline Type &operator()(int row, int column);
 	const Type &operator()(int row, int column) const;
@@ -39,21 +37,6 @@ public:
 	inline const Type *ToArray() const;
 	inline void SetRow(int i, const Vector<Type, Dim> &vec);
 };
-
-/*const static float UnitMatrix2FArray[] =
-{	1.f, 0.f,
-	0.f, 1.f	};
-
-const static float UnitMatrix3FArray[] = 
-{	1.f, 0.f, 0.f,
-	0.f, 1.f, 0.f,
-	0.f, 0.f, 1.f	};
-
-const static float UnitMatrix4FArray[] =
-{	1.f, 0.f, 0.f, 0.f,
-	0.f, 1.f, 0.f, 0.f,
-	0.f, 0.f, 1.f, 0.f, 
-	0.f, 0.f, 0.f, 1.f	};*/
 
 template <class Type, int Dim>
 inline Matrix<Type, Dim>::Matrix()

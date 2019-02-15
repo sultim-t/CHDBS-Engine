@@ -11,7 +11,7 @@ private:
 	static std::vector<ITexture> LoadMaterialTextures(void * m, int t, TextureType myType, CModel &outModel);
 	
 public:
-	static UBYTE *LoadTexture(char const *filename, INT *width, INT *height, INT *comp, INT req_comp);
+	static UBYTE *LoadTexture(char const *filename, int *width, int *height, int *comp, int req_comp);
 	static void DeleteTexture(void *address);
 
 	static void LoadModel(const char *path, CModel &outModel);

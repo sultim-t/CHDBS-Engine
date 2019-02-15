@@ -174,6 +174,7 @@
     <ClCompile Include="Components\CCamera.cpp" />
     <ClCompile Include="Components\CFreeMovement.cpp" />
     <ClCompile Include="Components\CMesh.cpp" />
+    <ClCompile Include="Components\CParticleSystem.cpp" />
     <ClCompile Include="Components\IComponent.cpp" />
     <ClCompile Include="Components\CModel.cpp" />
     <ClCompile Include="Entities\EntityFactory.cpp" />
@@ -186,10 +187,12 @@
     <ClCompile Include="Math\Sphere.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
     <ClCompile Include="Memory\SystemAllocator.cpp" />
+    <ClCompile Include="Rendering\ArrayMesh.cpp" />
     <ClCompile Include="Rendering\Cubemap.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
     <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\ContextWindow.cpp" />
+    <ClCompile Include="Rendering\Particle.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Math\AABB.cpp" />
     <ClCompile Include="Math\BasicMath.cpp" />
@@ -208,6 +211,7 @@
     <ClInclude Include="Base\Hash.h" />
     <ClInclude Include="Base\String.h" />
     <ClInclude Include="Components\CMesh.h" />
+    <ClInclude Include="Components\CParticleSystem.h" />
     <ClInclude Include="Components\ICollider.h" />
     <ClInclude Include="Components\CLight.h" />
     <ClInclude Include="Base\Message.h" />
@@ -216,6 +220,7 @@
     <ClInclude Include="Components\CFreeMovement.h" />
     <ClInclude Include="Components\IComponent.h" />
     <ClInclude Include="Components\CModel.h" />
+    <ClInclude Include="DataStructures\Array.h" />
     <ClInclude Include="DataStructures\DynamicArray.h" />
     <ClInclude Include="DataStructures\HashTable.h" />
     <ClInclude Include="DataStructures\LinkedList.h" />
@@ -230,15 +235,19 @@
     <ClInclude Include="Math\BasicMath.h" />
     <ClInclude Include="Math\Projection.h" />
     <ClInclude Include="Math\Quaternion.h" />
+    <ClInclude Include="Math\Ray.h" />
     <ClInclude Include="Math\Sphere.h" />
     <ClInclude Include="Math\Transform.h" />
     <ClInclude Include="Memory\Memory.h" />
     <ClInclude Include="Memory\SystemAllocator.h" />
+    <ClInclude Include="Physics\Rigidbody.h" />
+    <ClInclude Include="Rendering\ArrayMesh.h" />
     <ClInclude Include="Rendering\Cubemap.h" />
     <ClInclude Include="Rendering\FramebufferTexture.h" />
     <ClInclude Include="Rendering\Material.h" />
     <ClInclude Include="Rendering\ContextWindow.h" />
     <ClInclude Include="Rendering\OpenGL.h" />
+    <ClInclude Include="Rendering\Particle.h" />
     <ClInclude Include="Rendering\Shader.h" />
     <ClInclude Include="Math\AABB.h" />
     <ClInclude Include="Base\Assert.h" />
@@ -247,6 +256,7 @@
     <ClInclude Include="Base\Typedef.h" />
     <ClInclude Include="Rendering\Skybox.h" />
     <ClInclude Include="Rendering\Texture.h" />
+    <ClInclude Include="Rendering\Vertex.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />
     <ClInclude Include="Systems\RenderingSystem.h" />

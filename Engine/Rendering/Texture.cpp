@@ -55,7 +55,7 @@ void Texture::Load(const char * path)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Texture::Activate(INT i) const
+void Texture::Activate(int i) const
 {
 	ASSERT(i >= 0 && i < 32);
 
@@ -83,12 +83,12 @@ const char *ITexture::GetPath() const
 	return path;
 }
 
-INT ITexture::GetWidth() const
+int ITexture::GetWidth() const
 {
 	return width;
 }
 
-INT ITexture::GetHeight() const
+int ITexture::GetHeight() const
 {
 	return height;
 }

@@ -1,5 +1,5 @@
 #include "String.h"
-#include <Engine/Memory/SystemAllocator.h>
+#include <Engine/Memory/Memory.h>
 #include <string>
 
 String::String() : String("")
@@ -212,12 +212,12 @@ void String::Remove(UINT fromLeft, UINT fromRight)
 	}
 }
 
-INT String::ToInt() const
+int String::ToInt() const
 {
 	return atoi(string);
 }
 
-FLOAT String::ToFloat() const
+float String::ToFloat() const
 {
 	return (float)atof(string);
 }

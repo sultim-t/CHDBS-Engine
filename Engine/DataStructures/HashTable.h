@@ -2,6 +2,8 @@
 #include "StaticArray.h"
 #include "LinkedList.h"
 
+#include <Engine/Memory/Memory.h>
+
 #define HASH_TABLE_INC_MULT 2
 
 template <class K, class T>
@@ -98,13 +100,13 @@ inline void HashTable<K, T>::Init(UINT chainCount, UINT maxChainSize)
 	this->chainCount = chainCount;
 	this->maxChainSize = maxChainSize;
 
-	chainSizes = (UINT*)malloc(sizeof(UINT) * chainCount);
+	chainSizes = (UINT*)SYSALLOCATOR.Allocate(sizeof(UINT) * chainCount);
 
-	chains = (HTElement<K, T>**)malloc(sizeof(HTElement<K, T>*) * chainCount);
+	chains = (HTElement<K, T>**)SYSALLOCATOR.Allocate(sizeof(HTElement<K, T>*) * chainCount);
 	for (UINT i = 0; i < chainCount; i++)
 	{
 		// can't use malloc because there must be uninitialized keys and values 
-		chains[i] = (HTElement<K, T>*)calloc(maxChainSize, sizeof(HTElement<K, T>));
+		chains[i] = (HTElement<K, T>*)SYSALLOCATOR.CAllocate(maxChainSize, sizeof(HTElement<K, T>));
 		chainSizes[i] = 0;
 	}
 }
@@ -199,13 +201,13 @@ inline void HashTable<K, T>::Resize()
 	chainCount = (UINT)(prevCount * HASH_TABLE_INC_MULT);
 
 	// init for larger table
-	UINT *tempSizes = (UINT*)malloc(sizeof(UINT) * chainCount);
+	UINT *tempSizes = (UINT*)SYSALLOCATOR.Allocate(sizeof(UINT) * chainCount);
 
-	HTElement<K, T> **temp = (HTElement<K, T>**)malloc(sizeof(HTElement<K, T>*) * chainCount);
+	HTElement<K, T> **temp = (HTElement<K, T>**)SYSALLOCATOR.Allocate(sizeof(HTElement<K, T>*) * chainCount);
 	for (UINT i = 0; i < chainCount; i++)
 	{
 		// can't use malloc because there must be uninitialized keys and values 
-		temp[i] = (HTElement<K, T>*)calloc(maxChainSize, sizeof(HTElement<K, T>));
+		temp[i] = (HTElement<K, T>*)SYSALLOCATOR.CAllocate(maxChainSize, sizeof(HTElement<K, T>));
 		tempSizes[i] = 0;
 	}
 
@@ -233,8 +235,8 @@ inline void HashTable<K, T>::Resize()
 	}
 
 	// delete old pointers
-	free(oldChains);
-	free(oldSizes);
+	SYSALLOCATOR.Free(oldChains);
+	SYSALLOCATOR.Free(oldSizes);
 
 	// reassign
 	chains = temp;
@@ -256,6 +258,6 @@ inline void HashTable<K, T>::Delete()
 	}
 
 	chainCount = 0;
-	free(chains);
-	free(chainSizes);
+	SYSALLOCATOR.Free(chains);
+	SYSALLOCATOR.Free(chainSizes);
 }

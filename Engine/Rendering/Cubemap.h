@@ -7,5 +7,5 @@ public:
 	Cubemap();
 
 	void LoadCubemap(const StaticArray<const char*, 6> &paths);
-	void Activate(INT i) const override;
+	void Activate(int i) const override;
 };

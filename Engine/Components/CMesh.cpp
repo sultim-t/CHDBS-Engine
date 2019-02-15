@@ -53,16 +53,13 @@ void Mesh::BindMaterial(const Material & material)
 	this->material = material;
 }
 
-void Mesh::Draw(const Matrix4 &transformation) const
+void Mesh::ActivateMaterial(const Matrix4 & transformation) const
 {
 	material.BindModelMatrix(transformation);
 	material.Activate();
-
-	glBindVertexArray(vao);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 }
 
-void Mesh::DrawToShadowMap() const
+void Mesh::Draw() const
 {
 	glBindVertexArray(vao);
 	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

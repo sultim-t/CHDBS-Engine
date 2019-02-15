@@ -1,22 +1,22 @@
 #pragma once
 
 // Base
-typedef int					BOOL;
+//typedef bool				BOOL;
 
 typedef char				BYTE;
 typedef unsigned char		UBYTE;
 typedef short				SHORT;
 typedef unsigned short		USHORT;
 
-typedef int					INT;
+//typedef int				INT;
 typedef unsigned int		UINT;
 typedef unsigned long 		LONG;
 typedef unsigned long		ULONG;
 typedef unsigned long long 	LLONG;
 typedef unsigned long long	ULLONG;
 
-typedef float				FLOAT;
-typedef double				DOUBLE;
+// typedef float			FLOAT;
+// typedef double			DOUBLE;
 
 typedef char				INT8;
 typedef unsigned char		UINT8;
