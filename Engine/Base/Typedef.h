@@ -59,11 +59,15 @@ typedef Vector<float, 2> Vector2;
 typedef Vector<float, 3> Vector3;
 typedef Vector<float, 4> Vector4;
 
-typedef Vector<float, 3> Color;
 typedef Vector<float, 3> Euler;
 #define ROLL  0
 #define PITCH 1
 #define YAW   2
+
+// Float color RGB
+typedef Vector<float, 3> Color;
+// Ubyte color RGBA
+typedef Vector<UBYTE, 4> Color4;
 
 // Misc
 class Time;

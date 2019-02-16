@@ -6,21 +6,18 @@ struct Particle
 {
 	Vector3 position;
 	Vector3 velocity;
-	float gravityMultiplier;
-	float lifetime;
+	Color4 color;
+	// Time from emitting
+	float life;
 	float rotation;
-	float scale;
-	float elapsedTime;
-	float flags[5];
+	float size;
+	// Distance from camera to sort
+	float camDistance;
 
-public:
-	// Empty constructor
-	Particle();
-	
-	// Returns to default
-	void Clear();
-
-	// Update position, velocity
-	// Returns true if particle is alive
-	bool Update();
+	// For std::sort
+	bool operator<(const Particle &p) const
+	{
+		// reversed, closer particles are rendered last
+		return this->camDistance > p.camDistance;
+	}
 };

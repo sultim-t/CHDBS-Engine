@@ -29,7 +29,7 @@ public:
 	// Calculates view matrix
 	Matrix4 GetViewMatrix() const;
 	// Calculates projection matrix
-	Matrix4 GetProjectionMatrix(float scrWidth, float scrHeight);
+	Matrix4 GetProjectionMatrix(float scrWidth, float scrHeight) const;
 
 	inline CameraProjection GetProjection() const;
 	inline float GetFOV() const;

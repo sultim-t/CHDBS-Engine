@@ -96,7 +96,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <CompileAs>CompileAsCpp</CompileAs>
-      <ForcedIncludeFiles>$(SolutionDir)Engine\Base\Typedef.h;$(SolutionDir)Engine\Base\Assert.h;$(SolutionDir)Engine\Base\Time.h;$(SolutionDir)Engine\Base\Logger.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(SolutionDir)Engine\Base\Typedef.h;$(SolutionDir)Engine\Base\Assert.h;$(SolutionDir)Engine\Base\Time.h;$(SolutionDir)Engine\Base\String.h;$(SolutionDir)Engine\Base\Logger.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
@@ -114,7 +114,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
       <CompileAs>CompileAsCpp</CompileAs>
-      <ForcedIncludeFiles>$(SolutionDir)Engine\Base\Typedef.h;$(SolutionDir)Engine\Base\Assert.h;$(SolutionDir)Engine\Base\Time.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(SolutionDir)Engine\Base\Typedef.h;$(SolutionDir)Engine\Base\Assert.h;$(SolutionDir)Engine\Base\Time.h;$(SolutionDir)Engine\Base\String.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
       <Optimization>Disabled</Optimization>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>

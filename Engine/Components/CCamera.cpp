@@ -97,7 +97,7 @@ Matrix4 CCamera::GetViewMatrix() const
 	return Transform::LookAt(position, position + f, u);
 }
 
-Matrix4 CCamera::GetProjectionMatrix(float width, float height)
+Matrix4 CCamera::GetProjectionMatrix(float width, float height) const
 {
 	if (projection == CAMERA_PROJ_PERSPECTIVE)
 	{
