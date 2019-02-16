@@ -1,11 +1,39 @@
 #include "CParticleSystem.h"
 #include <Engine/Memory/Memory.h>
 #include <Engine/Components/CCamera.h>
+#include <Engine/Systems/RenderingSystem.h>
 
 #include <algorithm>
 
 // must include opengl to use specialized instanced rendering
 #include <Engine/Rendering/OpenGL.h>
+
+
+#define PROPERTY_KEY_VERTPATH	"vertPath"
+#define PROPERTY_KEY_FRAGPATH	"fragPath"
+
+#define PROPERTY_KEY_MAXCOUNT	"maxCount"
+
+#define PROPERTY_KEY_VELX		"velx"
+#define PROPERTY_KEY_VELY		"vely"
+#define PROPERTY_KEY_VELZ		"velz"
+#define PROPERTY_KEY_VELRAND	"velRand"
+
+#define PROPERTY_KEY_COLR		"colr"
+#define PROPERTY_KEY_COLG		"colg"
+#define PROPERTY_KEY_COLB		"colb"
+#define PROPERTY_KEY_COLA		"cola"
+#define PROPERTY_KEY_COLRAND	"colRand"
+
+#define PROPERTY_KEY_SIZE		"size"
+#define PROPERTY_KEY_SIZERAND	"sizeRand"
+
+#define PROPERTY_KEY_LIFE		"lifetime"
+#define PROPERTY_KEY_LIFERAND	"lifetimeRand"
+
+#define PROPERTY_KEY_EMITRATE	"emitRate"
+#define PROPERTY_KEY_LOOPING	"isLooping"
+
 
 float CParticleSystem::quadVertices[] = 
 { 
@@ -24,6 +52,22 @@ void CParticleSystem::BindCamera(const CCamera * cam)
 	this->cam = cam;
 }
 
+void CParticleSystem::Render()
+{
+	return;
+	
+	// if there is no alive particles
+	if (particleCount == 0)
+	{
+		return;
+	}
+
+	glBindVertexArray(vao);
+	StoreData();
+	ActivateShader();
+	LoadAndDraw();
+}
+
 void CParticleSystem::Init()
 {
 	ASSERT(maxParticleCount > 0 && maxParticleCount <= MAX_PARTICLE_COUNT);
@@ -31,8 +75,11 @@ void CParticleSystem::Init()
 	// load shader
 	particleShader.Load(shaderVert, shaderFrag);
 
-	// allocate particales
+	// allocate
 	particles = (Particle*)SYSALLOCATOR.Allocate(sizeof(Particle) * maxParticleCount);
+	positionsAndSizes = (Vector4*)SYSALLOCATOR.Allocate(sizeof(Vector4) * maxParticleCount);
+	colors = (Color4*)SYSALLOCATOR.Allocate(sizeof(Color4) * maxParticleCount);
+
 	lastUsedParticle = 0;
 
 	// init particles
@@ -57,11 +104,16 @@ void CParticleSystem::Init()
 	glGenBuffers(1, &colorBuffer);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, maxParticleCount * sizeof(Color4), NULL, GL_STREAM_DRAW);
+
+	// register particle system to render
+	RenderingSystem::Instance().Register(this);
 }
 
 CParticleSystem::~CParticleSystem()
 {
 	SYSALLOCATOR.Free(particles);
+	SYSALLOCATOR.Free(positionsAndSizes);
+	SYSALLOCATOR.Free(colors);
 }
 
 UINT CParticleSystem::FindDeadParticle()
@@ -90,6 +142,8 @@ UINT CParticleSystem::FindDeadParticle()
 
 void CParticleSystem::Update()
 { 
+	return;
+
 	UINT newparticles = (UINT)(Time::GetDeltaTime() * 10000.0f);
 	if (newparticles > (UINT)(1.0f / 60.0f * 10000.0f))
 	{
@@ -99,7 +153,7 @@ void CParticleSystem::Update()
 	for (UINT i = 0; i < newparticles; i++)
 	{
 		UINT particleIndex = FindDeadParticle();
-		particles[particleIndex].life = 5.0f;
+		particles[particleIndex].life = startLifetime;
 		particles[particleIndex].position = owner->GetTransform().GetPosition();
 	
 		float spread = 1.5f;
@@ -123,25 +177,21 @@ void CParticleSystem::Update()
 		particles[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
 	}
 
-	UINT particlesCount = Simulate();
+	Simulate();
 
 	// if there is no alive particles
-	if (particlesCount == 0)
+	if (particleCount == 0)
 	{
 		return;
 	}
 
+	// sort particles to prepare for rendering
 	SortParticles();
-
-	glBindVertexArray(vao);
-	StoreData(particlesCount);
-	ActivateShader();
-	LoadAndDraw(particlesCount);
 }
 
-UINT CParticleSystem::Simulate()
+void CParticleSystem::Simulate()
 {
-	UINT particlesCount = 0;
+	UINT count = 0;
 
 	for (UINT i = 0; i < maxParticleCount; i++) {
 
@@ -160,17 +210,13 @@ UINT CParticleSystem::Simulate()
 				// length is sqr: only for comparing
 				p.camDistance = (p.position - cam->GetPosition()).LengthSqr();
 
-				// debug?
-				positionsAndSize[4 * particlesCount + 0] = p.position[0];
-				positionsAndSize[4 * particlesCount + 1] = p.position[1];
-				positionsAndSize[4 * particlesCount + 2] = p.position[2];
+				positionsAndSizes[4 * count][0] = p.position[0];
+				positionsAndSizes[4 * count][1] = p.position[1];
+				positionsAndSizes[4 * count][2] = p.position[2];
 
-				positionsAndSize[4 * particlesCount + 3] = p.position[3];
+				positionsAndSizes[4 * count][3] = p.size;
 
-				colors[4 * particlesCount + 0] = p.color[0];
-				colors[4 * particlesCount + 1] = p.color[1];
-				colors[4 * particlesCount + 2] = p.color[2];
-				colors[4 * particlesCount + 3] = p.color[3];
+				colors[4 * count] = p.color;
 			}
 			else
 			{
@@ -178,27 +224,27 @@ UINT CParticleSystem::Simulate()
 				p.camDistance = -1.0f;
 			}
 
-			particlesCount++;
+			count++;
 		}
 	}
 
-	return particlesCount;
+	particleCount = count;
 }
 
 void CParticleSystem::SortParticles()
 {
-	std::sort(&particles[0], &particles[maxParticleCount]);
+	std::sort(&particles[0], &particles[maxParticleCount - 1]);
 }
 
-void CParticleSystem::StoreData(UINT particlesCount)
+void CParticleSystem::StoreData()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, positionBuffer);
 	glBufferData(GL_ARRAY_BUFFER, maxParticleCount * sizeof(Vector4), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, particlesCount * sizeof(Vector4), positionsAndSize);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, particleCount * sizeof(Vector4), positionsAndSizes);
 
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, maxParticleCount * sizeof(Color4), NULL, GL_STREAM_DRAW);
-	glBufferSubData(GL_ARRAY_BUFFER, 0, particlesCount * sizeof(Color4), colors);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, particleCount * sizeof(Color4), colors);
 }
 
 void CParticleSystem::ActivateShader()
@@ -216,7 +262,7 @@ void CParticleSystem::ActivateShader()
 	particleShader.SetMat4("viewProj", viewProj);
 }
 
-void CParticleSystem::LoadAndDraw(UINT particleCount)
+void CParticleSystem::LoadAndDraw()
 {
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
@@ -237,11 +283,91 @@ void CParticleSystem::LoadAndDraw(UINT particleCount)
 	// instanced drawing
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particleCount);
 
+	// to default
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+
+	particleShader.Stop();
+	glDisable(GL_BLEND);
 }
 
 void CParticleSystem::SetProperty(const String & key, const String & value)
 {
+	if (key == PROPERTY_KEY_VERTPATH)
+	{
+		shaderVert = value;
+	}
+	else if (key == PROPERTY_KEY_FRAGPATH)
+	{
+		shaderFrag = value;
+	}
+	else if (key == PROPERTY_KEY_MAXCOUNT)
+	{
+		maxParticleCount = (UINT)value.ToInt();
+	}
+	else if (key == PROPERTY_KEY_VELX)
+	{
+		startVelocity[0] = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_VELY)
+	{
+		startVelocity[1] = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_VELZ)
+	{
+		startVelocity[2] = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_VELRAND)
+	{
+		velocityRandomness = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_COLR)
+	{
+		startColor[0] = (UBYTE)value.ToInt();
+	}
+	else if (key == PROPERTY_KEY_COLG)
+	{
+		startColor[1] = (UBYTE)value.ToInt();
+	}
+	else if (key == PROPERTY_KEY_COLB)
+	{
+		startColor[2] = (UBYTE)value.ToInt();
+	}
+	else if (key == PROPERTY_KEY_COLA)
+	{
+		startColor[3] = (UBYTE)value.ToInt();
+	}
+	else if (key == PROPERTY_KEY_COLRAND)
+	{
+		colorRandomness = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_SIZE)
+	{
+		startSize = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_SIZERAND)
+	{
+		sizeRandomness = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_LIFE)
+	{
+		startLifetime = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_LIFERAND)
+	{
+		lifetimeRandomness = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_EMITRATE)
+	{
+		emitRate = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_LOOPING)
+	{
+		isLooping = value.ToInt() == 0 ? false : true;
+	}
+	else
+	{
+		Logger::Print("Wrong particle system property");
+	}
 }

@@ -7,6 +7,7 @@
 
 #include <Engine/Components/CMesh.h>
 #include <Engine/Components/CLight.h>
+#include <Engine/Components/CParticleSystem.h>
 #include <Engine/Rendering/Material.h>
 #include <Engine/Rendering/Texture.h>
 #include <Engine/Rendering/FramebufferTexture.h>
@@ -28,10 +29,11 @@ private:
 
 	// Sorted camera list
 	// First element is first to render
-	LinkedList<CCamera*>	cameras;
-	LinkedList<CLight*>		lights;
-	LinkedList<Shader*>		allShaders;
-	LinkedList<CModel*>		allModels;
+	LinkedList<CCamera*>			cameras;
+	LinkedList<CLight*>				lights;
+	LinkedList<Shader*>				allShaders;
+	LinkedList<CModel*>				allModels;
+	LinkedList<CParticleSystem*>	particleSystems;
 
 	UINT lastMeshId;
 	UINT lastMaterialId;
@@ -75,17 +77,15 @@ public:
 	// and saving the pointer
 	void Register(Shader *shader);
 	// Attach mesh to material
-	// and saving the pointer
 	void Register(Mesh *mesh, const Material &material);
-	// Register model
-	// and saving the pointer
+	// Register model by saving its pointer
 	void Register(CModel *model);
-	// Register light
-	// and saving the pointer
+	// Register light by saving its pointer
 	void Register(CLight *light);
-	// Register camera
-	// and saving the pointer
+	// Register camera by saving its pointer
 	void Register(CCamera *camera);
+	// Register particle system by saving its pointer
+	void Register(CParticleSystem *ps);
 
 
 	// Get mesh by its ID

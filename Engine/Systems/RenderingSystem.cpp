@@ -99,6 +99,14 @@ void RenderingSystem::Update()
 			}
 		}
 		
+		FOREACHLINKEDLIST(CParticleSystem*, psPtr, particleSystems)
+		{
+			CParticleSystem *ps = *psPtr;
+
+			ps->BindCamera(cam);
+			ps->Render();
+		}
+
 		Matrix4 skyCamSpace = viewM;
 		// reset position
 		// to make skybox feel infinitely far
@@ -200,6 +208,11 @@ void RenderingSystem::Register(CLight * light)
 void RenderingSystem::Register(CCamera * camera)
 {
 	cameras.Add(camera);
+}
+
+void RenderingSystem::Register(CParticleSystem * ps)
+{
+	particleSystems.Add(ps);
 }
 
 Mesh *RenderingSystem::GetMesh(MeshID id) const

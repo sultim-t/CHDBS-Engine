@@ -4,17 +4,17 @@
 
 struct Particle
 {
-	Vector3 position;
-	Vector3 velocity;
-	Color4 color;
+	Vector3	position;
+	Vector3	velocity;
+	Color4	color;
 	// Time from emitting
-	float life;
-	float rotation;
-	float size;
+	float	life;
+	float	rotation;
+	float	size;
 	// Distance from camera to sort
-	float camDistance;
+	float	camDistance;
 
-	// For std::sort
+	// For sorting before redendering
 	bool operator<(const Particle &p) const
 	{
 		// reversed, closer particles are rendered last

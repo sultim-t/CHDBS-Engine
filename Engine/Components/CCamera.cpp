@@ -4,7 +4,6 @@
 #include <Engine/Math/Projection.h>
 #include <Engine/Entities/Entity.h>
 #include <Engine/Systems/RenderingSystem.h>
-#include <Engine/Base/String.h>
 
 #define PROPERTY_KEY_PROJ	"proj"
 #define PROPERTY_KEY_ZNEAR	"znear"

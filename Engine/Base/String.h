@@ -13,55 +13,154 @@ private:
 
 public:
 	// Creates empty string ("")
-	String();
+	inline String();
+	// Creates copy of orig
+	inline String(const String &orig);
 	// Creates copy from orig
 	String(const char* orig);
-	// Creates copy of orig
-	String(const String &orig);
 	// Destructor
 	~String();
 
-	char operator[](UINT i) const;
+	inline char operator[](UINT i) const;
 
-	bool operator==(const String &b) const;
+	inline bool operator==(const String &b) const;
 	bool operator==(const char *b) const;
-	bool operator!=(const String &b) const;
-	bool operator!=(const char *b) const;
+	inline bool operator!=(const String &b) const;
+	inline bool operator!=(const char *b) const;
 
-	String &operator=(const String &b);
+	inline String &operator=(const String &b);
 	String &operator=(const char *b);
 
 	// Overloaded cast to const char*
-	operator const char * () const;
+	inline operator const char * () const;
 
 	// Concatenate
-	String operator+(const String &b) const;
+	inline String operator+(const String &b) const;
 	// Concatenate
 	String operator+(const char *b) const;
 	// Concatenate
-	String &operator+=(const String &b);
+	inline String &operator+=(const String &b);
 	// Concatenate
 	String &operator+=(const char *b);
 
 	// Returns length of this string
-	UINT Length() const;
+	inline UINT Length() const;
 
 	// Makes string empty
-	void Clear();
+	inline void Clear();
 	// Splits this string by pos
 	// Char with index "pos" will be in "b"
-	void Split(UINT pos, String &a, String &b) const;
-	// Removes chars after pos
-	void Remove(UINT pos);
-	// Removes chars after pos
+	inline void Split(UINT pos, String &a, String &b) const;
+	// Removes chars from right
+	inline void Remove(UINT fromRight);
+	// Removes chars
 	void Remove(UINT fromLeft, UINT fromRight);
 
 	int ToInt() const;
 	float ToFloat() const;
 
-	const char *GetCharPtr() const;
+	inline const char *GetCharPtr() const;
 
 	// Hash function for a string
 	// Can be used in hash table
 	static UINT StringHash(String toHash);
 };
+
+inline String::String() : String("")
+{ }
+
+inline String::String(const String & orig) : String(orig.string)
+{ }
+
+inline char String::operator[](UINT i) const
+{
+	ASSERT(i < length);
+	return string[i];
+}
+
+inline bool String::operator==(const String & b) const
+{
+	return (*this) == b.string;
+}
+
+inline bool String::operator!=(const String & b) const
+{
+	return !(*this == b);
+}
+
+inline bool String::operator!=(const char * b) const
+{
+	return !(*this == b);
+}
+
+inline String & String::operator=(const String & b)
+{
+	*this = b.string;
+	return *this;
+}
+
+inline String::operator const char*() const
+{
+	return string;
+}
+
+inline String String::operator+(const String & b) const
+{
+	return (*this + b.string);
+}
+
+inline String & String::operator+=(const String & b)
+{
+	*this += b.string;
+	return *this;
+}
+
+inline UINT String::Length() const
+{
+	return length;
+}
+
+inline void String::Clear()
+{
+	*this = "";
+}
+
+inline void String::Split(UINT pos, String & a, String & b) const
+{
+	ASSERT(pos < length);
+
+	// create copies
+	a = string;
+	b = string;
+
+	a.Remove(0, length - pos);
+	b.Remove(pos, 0);
+}
+
+inline void String::Remove(UINT fromRight)
+{
+	Remove(0, fromRight);
+}
+
+inline const char * String::GetCharPtr() const
+{
+	return string;
+}
+
+inline UINT String::StringHash(String toHash)
+{
+	// djb2
+	// modified: using UINT
+
+	unsigned char *str = (unsigned char*)toHash.string;
+
+	UINT hash = 5381;
+	int c;
+
+	while (c = *str++)
+	{
+		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+	}
+
+	return hash;
+}

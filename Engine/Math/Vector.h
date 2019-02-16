@@ -21,6 +21,7 @@ public:
 
 	inline Type &operator[](int index);
 	inline const Type operator[](int index) const;
+	inline Vector<Type, Dim>&operator=(const Vector<Type, Dim> &in);
 	inline Vector<Type, Dim>operator+(const Vector<Type, Dim> &in) const;
 	inline Vector<Type, Dim>&operator+=(const Vector<Type, Dim> &in);
 	inline Vector<Type, Dim>operator-() const;
@@ -141,6 +142,13 @@ inline const Type Vector<Type, Dim>::operator[](int index) const
 	ASSERT(index < Dim);
 
 	return vector[index];
+}
+
+template<class Type, int Dim>
+inline Vector<Type, Dim>& Vector<Type, Dim>::operator=(const Vector<Type, Dim>& in)
+{
+	Copy(in, *this);
+	return *this;
 }
 
 template <class Type, int Dim>

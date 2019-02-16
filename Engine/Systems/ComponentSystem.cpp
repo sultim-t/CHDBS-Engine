@@ -9,11 +9,13 @@ ComponentSystem::~ComponentSystem()
 	{
 		Entity *entity = *entityPtr;
 
+		// delete each component in entity
 		for (auto c : entity->GetAllComponents())
 		{
 			delete c;
 		}
 
+		// delete entity itself
 		delete (*entityPtr);
 	}
 }

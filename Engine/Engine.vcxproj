@@ -192,7 +192,6 @@
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
     <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\ContextWindow.cpp" />
-    <ClCompile Include="Rendering\Particle.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Math\AABB.cpp" />
     <ClCompile Include="Math\BasicMath.cpp" />

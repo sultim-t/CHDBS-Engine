@@ -104,6 +104,7 @@ class CModel;
 	class Texture;
 	class FramebufferTexture;
 class CLight;
+class CParticleSystem;
 
 class Rigidbody;
 class ICollider;

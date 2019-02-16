@@ -1,12 +1,5 @@
-#include "String.h"
 #include <Engine/Memory/Memory.h>
 #include <string>
-
-String::String() : String("")
-{ }
-
-String::String(const String & orig) : String(orig.string)
-{ }
 
 String::String(const char * orig)
 {
@@ -33,37 +26,9 @@ char * String::AllocateString(const char * orig)
 	return copy;
 }
 
-char String::operator[](UINT i) const
-{
-	ASSERT(i < length);
-	return string[i];
-}
-
-bool String::operator==(const String & b) const
-{
-	// if 0 then equal
-	return strcmp(string, b.string) == 0;
-}
-
 bool String::operator==(const char * b) const
 {
 	return strcmp(string, b) == 0;
-}
-
-bool String::operator!=(const String & b) const
-{
-	return !(*this == b);
-}
-
-bool String::operator!=(const char * b) const
-{
-	return !(*this == b);
-}
-
-String & String::operator=(const String & b)
-{
-	*this = b.string;
-	return *this;
 }
 
 String & String::operator=(const char * b)
@@ -83,16 +48,6 @@ String & String::operator=(const char * b)
 	string = copy;
 
 	return *this;
-}
-
-String::operator const char*() const
-{
-	return string;
-}
-
-String String::operator+(const String & b) const
-{
-	return (*this + b.string);
 }
 
 String String::operator+(const char * b) const
@@ -120,12 +75,6 @@ String String::operator+(const char * b) const
 	return copy;
 }
 
-String & String::operator+=(const String & b)
-{
-	*this += b.string;
-	return *this;
-}
-
 String & String::operator+=(const char * b)
 {
 	ASSERT(b != nullptr);
@@ -145,33 +94,6 @@ String & String::operator+=(const char * b)
 	length = size;
 
 	return *this;
-}
-
-UINT String::Length() const
-{
-	return length;
-}
-
-void String::Clear()
-{
-	*this = "";
-}
-
-void String::Split(UINT pos, String & a, String & b) const
-{
-	ASSERT(pos < length);
-
-	// create copies
-	a = string;
-	b = string;
-
-	a.Remove(0, length - pos);
-	b.Remove(pos, 0);
-}
-
-void String::Remove(UINT pos)
-{
-	Remove(0, pos);
 }
 
 void String::Remove(UINT fromLeft, UINT fromRight)
@@ -220,27 +142,4 @@ int String::ToInt() const
 float String::ToFloat() const
 {
 	return (float)atof(string);
-}
-
-const char * String::GetCharPtr() const
-{
-	return string;
-}
-
-UINT String::StringHash(String toHash)
-{
-	// djb2
-	// modified: using UINT
-
-	unsigned char *str = (unsigned char*)toHash.string;
-
-	UINT hash = 5381;
-	int c;
-
-	while (c = *str++)
-	{
-		hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
-	}
-
-	return hash;
 }

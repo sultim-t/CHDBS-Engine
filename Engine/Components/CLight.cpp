@@ -1,7 +1,6 @@
 #include "CLight.h"
 #include <Engine/Math/Projection.h>
 #include <Engine/Entities/Entity.h>
-#include <Engine/Base/String.h>
 #include <Engine/Systems/RenderingSystem.h>
 
 #define PROPERTY_KEY_TYPE		"type"

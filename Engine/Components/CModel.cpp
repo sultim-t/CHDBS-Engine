@@ -6,7 +6,6 @@
 #include <Engine/Rendering/Material.h>
 #include <Engine/ResourceManager/ResourceManager.h>
 #include <Engine/Systems/RenderingSystem.h>
-#include <Engine/Base/String.h>
 
 #define PROPERTY_KEY_TYPE "path"
 

@@ -25,12 +25,33 @@ private:
 
 	// Creates component from xml node
 	IComponent *CreateComponent(void *xmlElem);
+	
 	// Parses XML file and creates entity
 	Entity *PCreateEntity(const char *resource);
+	template<class T>
+	inline void PRegisterComponentType(const String &name);
+	
 	// Get instance
 	static EntityFactory &Instance();
 
 public:
 	// Parses XML file and creates entity
 	static Entity *CreateEntity(const char *resource);
+	// Call this function to register component type
+	// It will automatically generate a component creator
+	// which will call SetProperty function the component
+	template<class T>
+	static void RegisterComponentType(const String &name);
 };
+
+template<class T>
+inline void EntityFactory::PRegisterComponentType(const String &name)
+{
+	compCreators.Add(name, CompCreator<T>);
+}
+
+template<class T>
+inline void EntityFactory::RegisterComponentType(const String &name)
+{
+	Instance().PRegisterComponentType<T>();
+}

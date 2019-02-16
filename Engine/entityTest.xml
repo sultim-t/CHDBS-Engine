@@ -10,5 +10,5 @@
     fov="100" />
 
   <CFreeMovement 
-    speed="5" />
+    speed="7.5" />
 </Entity>

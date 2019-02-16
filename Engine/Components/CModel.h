@@ -2,7 +2,6 @@
 
 #include "IComponent.h"
 #include <Engine/Components/CMesh.h>
-#include <Engine/Base/String.h>
 
 class CModel : public IComponent
 {

@@ -4,7 +4,7 @@
 #include <Engine/Components/CFreeMovement.h>
 #include <Engine/Components/CModel.h>
 #include <Engine/Components/CLight.h>
-#include <Engine/Base/String.h>
+#include <Engine/Components/CParticleSystem.h>
 
 template <class T>
 IComponent *CompCreator(void *elemPointer);
@@ -38,10 +38,12 @@ EntityFactory::EntityFactory()
 	compCreators.Init(10, 6);
 	compCreators.DeclareHashFunction(String::StringHash);
 
-	compCreators.Add("CCamera", CompCreator<CCamera>);
-	compCreators.Add("CFreeMovement", CompCreator<CFreeMovement>);
-	compCreators.Add("CLight", CompCreator<CLight>);
-	compCreators.Add("CModel", CompCreator<CModel>);
+	// Builtin components
+	PRegisterComponentType<CCamera>("CCamera");
+	PRegisterComponentType<CFreeMovement>("CFreeMovement");
+	PRegisterComponentType<CLight>("CLight");
+	PRegisterComponentType<CModel>("CModel");
+	PRegisterComponentType<CParticleSystem>("CParticleSystem");
 }
 
 IComponent *EntityFactory::CreateComponent(void *xmlElemP)
@@ -117,7 +119,7 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 			entity->AddComponent(comp);
 			comp->SetOwner(entity);
 
-			// all is set up
+			// everything is set up
 			comp->Init();
 		}
 		else

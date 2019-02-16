@@ -1,0 +1,10 @@
+<Entity 
+  name="Particles"
+  posx ="0" posy="0" posz="2">
+
+  <CParticleSystem
+    maxCount="500" 
+    lifetime="5"
+    vertPath="TEMP/particle.vs"
+    fragPath="TEMP/particle.fs"/>
+</Entity>

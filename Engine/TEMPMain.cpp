@@ -69,6 +69,7 @@ int main()
 	Entity *lightEntity = EntityFactory::CreateEntity("light.xml");
 	Entity *terrainEntity = EntityFactory::CreateEntity("terrain.xml");
 	Entity *dbEntity = EntityFactory::CreateEntity("doubleBarrel.xml");
+	Entity *particles = EntityFactory::CreateEntity("particleSystem.xml");
 
 
 	Texture textureDB = Texture();

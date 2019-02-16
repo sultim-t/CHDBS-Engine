@@ -2,7 +2,6 @@
 #include <Engine/Input/Input.h>
 #include <Engine/Entities/Entity.h>
 #include <Engine/Components/CCamera.h>
-#include <Engine/Base/String.h>
 
 #define MOVE_FORWARD	0
 #define MOVE_BACK		1

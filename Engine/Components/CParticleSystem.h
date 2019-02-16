@@ -7,28 +7,38 @@ class CParticleSystem : public IComponent
 {
 	CLASSDECLARATION(CParticleSystem)
 
-public:
+private:
 	UINT vao;
 	UINT vertexBuffer;
 	UINT positionBuffer;
 	UINT colorBuffer;
 	
-	UINT lastUsedParticle = 0;
 	UINT maxParticleCount = 0;
+	// for finding
+	UINT lastUsedParticle;
+	// render only this number of particles
+	// amount of alive particles
+	UINT particleCount;
 
 	Vector3 startVelocity;
-	float velocityRandomness;
+	float	velocityRandomness;
 
-	float startLifetime;
-	float lifetimeRandomness;
+	Color4	startColor;
+	float	colorRandomness;
 
-	float emitRate;
-	bool isLooping;
+	float	startSize;
+	float	sizeRandomness;
+
+	float	startLifetime;
+	float	lifetimeRandomness;
+
+	float	emitRate;
+	bool	isLooping;
 
 	// array of particles
 	Particle	*particles;
 	// array of positions and sizes
-	Vector4		*positionsAndSize;
+	Vector4		*positionsAndSizes;
 	Color4		*colors;
 
 	static float quadVertices[];
@@ -44,11 +54,11 @@ public:
 private:
 	UINT FindDeadParticle();
 
-	UINT Simulate();
+	void Simulate();
 	void SortParticles();
-	void StoreData(UINT particlesCount);
+	void StoreData();
 	void ActivateShader();
-	void LoadAndDraw(UINT particlesCount);
+	void LoadAndDraw();
 
 public:
 	~CParticleSystem();
@@ -57,8 +67,10 @@ public:
 	void Start();
 	// Emit particles
 	void Emit(UINT count);
+
 	// Bind camera to render
 	void BindCamera(const CCamera *cam);
+	void Render();
 
 public:
 	void Init() override;
