@@ -8,24 +8,33 @@ class Sphere
 private:
 	Vector3 center;
 	float radius;
-public:
-	Sphere();
-	Sphere(const float radius);
-	Sphere(const Vector3 &center, const float radius);
 
-	bool Contains(Sphere &sphere) const;
+public:
+	// Empty constructor
+	Sphere();
+	// Construct sphere with center in 0 and given radius
+	Sphere(float radius);
+	// Construct sphere with given center and radius
+	Sphere(const Vector3 &center, float radius);
+
+	bool Contains(const Sphere &sphere) const;
 	bool Contacts(const Sphere &sphere) const;
 	// bool ContactsAABB(const AABB center, const float radius);
 
-	static Sphere &Union(const Sphere &sphere1, Sphere &sphere2);
-	static Sphere &Intersect(Sphere &sphere1, Sphere &sphere2);
+	static Sphere GetUnion(const Sphere &sphere1, const  Sphere &sphere2);
+	static Sphere GetIntersection(const Sphere &sphere1, const Sphere &sphere2);
 
-	Sphere &GetUnion(Sphere &sphere);
-	Sphere &GetIntersection(Sphere &sphere);
+	Sphere GetUnion(const Sphere &sphere) const;
+	Sphere GetIntersection(const Sphere &sphere) const;
 
-	const Vector3 GetCenter() const;
-	const float GetRadius() const;
+	// Union this sphere with another
+	void Union(const Sphere &sphere);
+	// Intersect this sphere with another
+	void Intersect(const Sphere &sphere);
 
-	void SetCenter(Vector3 &vec);
-	void SetRadius(const float radius);
+	const Vector3 &GetCenter() const;
+	float GetRadius() const;
+
+	void SetCenter(const Vector3 &vec);
+	void SetRadius(float radius);
 };

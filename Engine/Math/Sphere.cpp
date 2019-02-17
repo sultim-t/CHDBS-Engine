@@ -1,6 +1,6 @@
 #include "Sphere.h"
 
-Sphere::Sphere() : Sphere::Sphere((0.0f,0.0f,0.0f), 1.0f)
+Sphere::Sphere()
 {}
 
 Sphere::Sphere(const float radius) : Sphere::Sphere((0.0f, 0.0f, 0.0f), radius)
@@ -14,7 +14,7 @@ Sphere::Sphere(const Vector3 & center, const float radius)
 	this->radius = radius;
 }
 
-bool Sphere::Contains(Sphere & sphere) const
+bool Sphere::Contains(const Sphere & sphere) const
 {
 	float sqrDist = center.LengthSqr(sphere.center);
 	float delta = radius - sphere.radius;
@@ -30,50 +30,60 @@ bool Sphere::Contacts(const Sphere & sphere) const
 	return sqrDist < sum * sum;
 }
 
-Sphere & Sphere::Union(const Sphere & sphere1, Sphere & sphere2)
+Sphere Sphere::GetUnion(const Sphere & sphere1, const Sphere & sphere2)
 {
 	Vector3 newCenter = (sphere1.center + sphere2.center) * 0.5f;
 	float newRadius = (sphere1.radius + sphere2.radius) * 0.5f;
 
-	return *(new Sphere(newCenter, newRadius));
+	return Sphere(newCenter, newRadius);
 }
 
-Sphere & Sphere::Intersect(Sphere & sphere1, Sphere & sphere2)
+Sphere Sphere::GetIntersection(const Sphere & sphere1, const Sphere & sphere2)
 {
 	Vector3 newCenter = (sphere1.center + sphere2.center) * 0.5f;
 	float newRadius = ABS(sphere2.radius - sphere1.radius) * 0.5f;
 
-	return *(new Sphere(newCenter, newRadius));
+	return Sphere(newCenter, newRadius);
 }
 
-Sphere & Sphere::GetUnion(Sphere & sphere)
+Sphere Sphere::GetUnion(const Sphere & sphere) const
 {
-	return Union(*this, sphere);
+	return GetUnion(*this, sphere);
 }
 
-Sphere & Sphere::GetIntersection(Sphere & sphere)
+Sphere Sphere::GetIntersection(const Sphere & sphere) const
 {
-	return Intersect(*this, sphere);
+	return GetIntersection(*this, sphere);
 }
 
-const Vector3 Sphere::GetCenter() const
+void Sphere::Union(const Sphere & sphere)
+{
+	*this = GetUnion(*this, sphere);
+}
+
+void Sphere::Intersect(const Sphere & sphere)
+{
+	*this = GetIntersection(*this, sphere);
+}
+
+const Vector3 &Sphere::GetCenter() const
 {
 	return center;
 }
 
-const float Sphere::GetRadius() const
+float Sphere::GetRadius() const
 {
 	return radius;
 }
 
-void Sphere::SetCenter(Vector3 & vec)
+void Sphere::SetCenter(const Vector3 & vec)
 {
 	center = vec;
 }
 
-void Sphere::SetRadius(const float radius)
+void Sphere::SetRadius(float radius)
 {
-	ASSERT(radius <= 0);
+	ASSERT(radius > 0);
 
 	this->radius = radius;
 }

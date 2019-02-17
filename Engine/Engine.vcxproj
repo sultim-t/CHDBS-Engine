@@ -183,6 +183,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="Entities\Entity.cpp" />
     <ClCompile Include="Input\Input.cpp" />
+    <ClCompile Include="Math\Frustum.cpp" />
     <ClCompile Include="Math\Projection.cpp" />
     <ClCompile Include="Math\Sphere.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
@@ -232,6 +233,8 @@
     <ClInclude Include="Entities\EntityFactory.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Math\BasicMath.h" />
+    <ClInclude Include="Math\Frustum.h" />
+    <ClInclude Include="Math\Plane.h" />
     <ClInclude Include="Math\Projection.h" />
     <ClInclude Include="Math\Quaternion.h" />
     <ClInclude Include="Math\Ray.h" />
