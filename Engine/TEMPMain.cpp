@@ -88,6 +88,9 @@ int main()
 			AddTexture(reflection);
 	}
 
+	// Recalculate time, there shouldn't be counted initialization time
+	Time::Calculate();
+
 	while (!ContextWindow::Instance().ShouldClose())
 	{
 		Time::Calculate();

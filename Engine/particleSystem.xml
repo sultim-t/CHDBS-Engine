@@ -1,10 +1,17 @@
 <Entity 
   name="Particles"
-  posx ="0" posy="0" posz="2">
+  posx ="0" posy="0" posz="0">
 
   <CParticleSystem
-    maxCount="500" 
-    lifetime="5"
+    maxCount="5000" 
+    lifetime="2"
+    size="0.3"
+    colr="128"
+    colg="255"
+    colb="128"
+    cola="128"
+    vely="5"
+    velRand="0.5"
     vertPath="TEMP/particle.vs"
     fragPath="TEMP/particle.fs"/>
 </Entity>

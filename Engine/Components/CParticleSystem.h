@@ -29,6 +29,9 @@ private:
 	float	startSize;
 	float	sizeRandomness;
 
+	float	startRotation;
+	float	rotationRandomness;
+
 	float	startLifetime;
 	float	lifetimeRandomness;
 

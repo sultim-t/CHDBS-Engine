@@ -28,6 +28,9 @@
 #define PROPERTY_KEY_SIZE		"size"
 #define PROPERTY_KEY_SIZERAND	"sizeRand"
 
+#define PROPERTY_KEY_ROT		"rotation"
+#define PROPERTY_KEY_ROTRAND	"rotationRand"
+
 #define PROPERTY_KEY_LIFE		"lifetime"
 #define PROPERTY_KEY_LIFERAND	"lifetimeRand"
 
@@ -54,13 +57,14 @@ void CParticleSystem::BindCamera(const CCamera * cam)
 
 void CParticleSystem::Render()
 {
-	return;
-	
 	// if there is no alive particles
 	if (particleCount == 0)
 	{
 		return;
 	}
+
+	// sort particles to prepare for rendering
+	SortParticles();
 
 	glBindVertexArray(vao);
 	StoreData();
@@ -81,6 +85,7 @@ void CParticleSystem::Init()
 	colors = (Color4*)SYSALLOCATOR.Allocate(sizeof(Color4) * maxParticleCount);
 
 	lastUsedParticle = 0;
+	cam = nullptr;
 
 	// init particles
 	for (UINT i = 0; i < maxParticleCount; i++)
@@ -136,57 +141,46 @@ UINT CParticleSystem::FindDeadParticle()
 		}
 	}
 
-	// all particles are not alive
+	// all particles are alive
 	return 0;
 }
 
 void CParticleSystem::Update()
 { 
-	return;
+	UINT newparticles = (UINT)(Time::GetDeltaTime() * 100.0f);
 
-	UINT newparticles = (UINT)(Time::GetDeltaTime() * 10000.0f);
-	if (newparticles > (UINT)(1.0f / 60.0f * 10000.0f))
+	if (newparticles > maxParticleCount)
 	{
-		newparticles = (UINT)(1.0f / 60.0f * 10000.0f);
+		newparticles = maxParticleCount - particleCount;
+	}
+	else if (newparticles == 0)
+	{
+		newparticles = 1;
 	}
 
+	// init new particles
 	for (UINT i = 0; i < newparticles; i++)
 	{
 		UINT particleIndex = FindDeadParticle();
 		particles[particleIndex].life = startLifetime;
 		particles[particleIndex].position = owner->GetTransform().GetPosition();
-	
-		float spread = 1.5f;
-		Vector3 maindir = Vector3(0.0f, 10.0f, 0.0f);
-		// Very bad way to generate a random direction; 
-		Vector3 randomdir = Vector3(
-			(rand() % 2000 - 1000.0f) / 1000.0f,
-			(rand() % 2000 - 1000.0f) / 1000.0f,
-			(rand() % 2000 - 1000.0f) / 1000.0f
-		);
 
-		particles[particleIndex].velocity = maindir + randomdir*spread;
+		float r = (float)(rand() % 1000) * velocityRandomness / 1000.0f;
 
+		Vector3 velRand;
+		for (UINT k = 0; k < 3; k++)
+		{
+			velRand[k] = (float)(rand() % 1000) * velocityRandomness / 1000.0f;
+		}
 
-		// Very bad way to generate a random color
-		particles[particleIndex].color[0] = rand() % 256;
-		particles[particleIndex].color[1] = rand() % 256;
-		particles[particleIndex].color[2] = rand() % 256;
-		particles[particleIndex].color[3] = (rand() % 256) / 3;
+		particles[particleIndex].velocity = startVelocity + velRand;
 
-		particles[particleIndex].size = (rand() % 1000) / 2000.0f + 0.1f;
+		particles[particleIndex].rotation = startRotation;
+		particles[particleIndex].color = startColor;
+		particles[particleIndex].size = startSize;
 	}
 
 	Simulate();
-
-	// if there is no alive particles
-	if (particleCount == 0)
-	{
-		return;
-	}
-
-	// sort particles to prepare for rendering
-	SortParticles();
 }
 
 void CParticleSystem::Simulate()
@@ -207,13 +201,9 @@ void CParticleSystem::Simulate()
 				p.velocity += Vector3(0.0f, -9.81f, 0.0f) * Time::GetDeltaTime();
 				p.position += p.velocity * Time::GetDeltaTime();
 				
-				// length is sqr: only for comparing
-				p.camDistance = (p.position - cam->GetPosition()).LengthSqr();
-
 				positionsAndSizes[4 * count][0] = p.position[0];
 				positionsAndSizes[4 * count][1] = p.position[1];
 				positionsAndSizes[4 * count][2] = p.position[2];
-
 				positionsAndSizes[4 * count][3] = p.size;
 
 				colors[4 * count] = p.color;
@@ -233,7 +223,13 @@ void CParticleSystem::Simulate()
 
 void CParticleSystem::SortParticles()
 {
-	std::sort(&particles[0], &particles[maxParticleCount - 1]);
+	for (UINT i = 0; i < particleCount; i++)
+	{
+		// length is sqr: only for comparing
+		particles[i].camDistance = (particles[i].position - cam->GetPosition()).LengthSqr();
+	}
+
+	std::sort(&particles[0], &particles[maxParticleCount]);
 }
 
 void CParticleSystem::StoreData()
@@ -258,7 +254,7 @@ void CParticleSystem::ActivateShader()
 	particleShader.SetVec3("cameraUp", t.GetUp());
 	particleShader.SetVec3("cameraRight", t.GetRight());
 
-	Matrix4 viewProj = cam->GetProjectionMatrix(16, 9) * cam->GetViewMatrix();
+	Matrix4 viewProj = cam->GetViewMatrix() * cam->GetProjectionMatrix(16, 9);
 	particleShader.SetMat4("viewProj", viewProj);
 }
 
@@ -274,13 +270,16 @@ void CParticleSystem::LoadAndDraw()
 
 	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_FALSE, 0, (void*)0);
+	// store colors as integer type => normalized = GL_TRUE
+	glVertexAttribPointer(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, (void*)0);
 
 	glVertexAttribDivisor(0, 0); // 0 per quad (reuse same vertices)
 	glVertexAttribDivisor(1, 1); // 1 position and size per quad
 	glVertexAttribDivisor(2, 1); // 1 color per quad
 	
 	// instanced drawing
+	// draw first particles in array
+	// dead particles are in the end => will not be loaded and drawn
 	glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, particleCount);
 
 	// to default
@@ -349,6 +348,14 @@ void CParticleSystem::SetProperty(const String & key, const String & value)
 	else if (key == PROPERTY_KEY_SIZERAND)
 	{
 		sizeRandomness = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_ROT)
+	{
+		startRotation = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_ROTRAND)
+	{
+		rotationRandomness = value.ToFloat();
 	}
 	else if (key == PROPERTY_KEY_LIFE)
 	{
