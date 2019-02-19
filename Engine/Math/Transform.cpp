@@ -12,7 +12,7 @@ Transform::Transform(const Vector3& pos, const Vector3& euler, const Vector3 &s)
 	scale = s;
 }
 
-Transform::Transform(const Vector3& pos, const Quaternion & q, const Vector3 &s)
+Transform::Transform(const Vector3& pos, const Quaternion &q, const Vector3 &s)
 {
 	position = pos;
 	quat = q;
@@ -29,7 +29,7 @@ void Transform::Rotate(const Vector3& euler)
 	Rotate(Quaternion(euler));
 }
 
-void Transform::Rotate(const Quaternion & q)
+void Transform::Rotate(const Quaternion &q)
 {
 	quat *= q;
 }
@@ -54,22 +54,22 @@ void Transform::Reset()
 	scale = (1.0f, 1.0f, 1.0f);
 }
 
-const Vector3 & Transform::GetPosition() const
+const Vector3 &Transform::GetPosition() const
 {
 	return position;
 }
 
-Vector3 & Transform::GetPosition()
+Vector3 &Transform::GetPosition()
 {
 	return position;
 }
 
-const Vector3 & Transform::GetScale() const
+const Vector3 &Transform::GetScale() const
 {
 	return scale;
 }
 
-Vector3 & Transform::GetScale()
+Vector3 &Transform::GetScale()
 {
 	return scale;
 }
@@ -79,12 +79,12 @@ const Vector3 Transform::GetEuler() const
 	return quat.ToEuler();
 }
 
-const Quaternion & Transform::GetRotation() const
+const Quaternion &Transform::GetRotation() const
 {
 	return quat;
 }
 
-Quaternion & Transform::GetRotation()
+Quaternion &Transform::GetRotation()
 {
 	return quat;
 }
@@ -106,7 +106,7 @@ void Transform::SetScale(const Vector3& s)
 	scale = s;
 }
 
-void Transform::SetRotation(Quaternion & q)
+void Transform::SetRotation(Quaternion &q)
 {
 	quat = q;
 }
@@ -126,7 +126,7 @@ const Vector3 Transform::GetUp() const
 	return quat.GetUp();
 }
 
-const void Transform::GetFRU(Vector3 & f, Vector3 & r, Vector3 & u) const
+const void Transform::GetFRU(Vector3 &f, Vector3 &r, Vector3 &u) const
 {
 	f = quat.GetForward();
 	r = quat.GetRight();

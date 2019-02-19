@@ -66,7 +66,7 @@ UINT SystemAllocator::GetFreeCallsCount()
 	return freeCalls;
 }
 
-SystemAllocator & SystemAllocator::Instance()
+SystemAllocator &SystemAllocator::Instance()
 {
 	static SystemAllocator sysAllocator;
 	return sysAllocator;

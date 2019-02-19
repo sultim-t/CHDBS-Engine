@@ -33,7 +33,7 @@ void CCamera::Init()
 	RenderingSystem::Instance().Register(this);
 }
 
-void CCamera::SetProperty(const String & key, const String & value)
+void CCamera::SetProperty(const String &key, const String &value)
 {
 	if (key == PROPERTY_KEY_PROJ)
 	{

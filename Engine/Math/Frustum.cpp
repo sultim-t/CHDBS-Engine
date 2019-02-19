@@ -32,12 +32,12 @@ bool Frustum::IsInside(const Vector3 &point) const
 	return true;
 }
 
-bool Frustum::IsInside(const Sphere & sphere) const
+bool Frustum::IsInside(const Sphere &sphere) const
 {
 	return IsInside(sphere.GetCenter(), sphere.GetRadius());
 }
 
-bool Frustum::IsInside(const Vector3 & center, float radius) const
+bool Frustum::IsInside(const Vector3 &center, float radius) const
 {
 	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
 	{

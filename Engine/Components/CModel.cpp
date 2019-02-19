@@ -52,7 +52,7 @@ void CModel::Init()
 void CModel::Update()
 { }
 
-void CModel::SetProperty(const String & key, const String & value)
+void CModel::SetProperty(const String &key, const String &value)
 {
 	if (key == PROPERTY_KEY_TYPE)
 	{

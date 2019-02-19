@@ -74,7 +74,7 @@ inline float Frustum::GetFarClipDist() const
 	return far;
 }
 
-inline const Plane & Frustum::GetPlane(FrustumPlane side) const
+inline const Plane &Frustum::GetPlane(FrustumPlane side) const
 {
 	return planes[(int)side];
 }

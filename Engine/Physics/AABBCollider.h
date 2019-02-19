@@ -17,12 +17,12 @@ public:
 	bool Intersect(const ICollider &col) const override;
 };
 
-inline AABB & AABBCollider::GetAABB()
+inline AABB &AABBCollider::GetAABB()
 {
 	return aabb;
 }
 
-inline const AABB & AABBCollider::GetAABB() const
+inline const AABB &AABBCollider::GetAABB() const
 {
 	return aabb;
 }

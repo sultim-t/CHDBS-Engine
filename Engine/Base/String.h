@@ -69,7 +69,7 @@ public:
 inline String::String() : String("")
 { }
 
-inline String::String(const String & orig) : String(orig.string)
+inline String::String(const String &orig) : String(orig.string)
 { }
 
 inline char String::operator[](UINT i) const
@@ -78,12 +78,12 @@ inline char String::operator[](UINT i) const
 	return string[i];
 }
 
-inline bool String::operator==(const String & b) const
+inline bool String::operator==(const String &b) const
 {
 	return (*this) == b.string;
 }
 
-inline bool String::operator!=(const String & b) const
+inline bool String::operator!=(const String &b) const
 {
 	return !(*this == b);
 }
@@ -93,7 +93,7 @@ inline bool String::operator!=(const char * b) const
 	return !(*this == b);
 }
 
-inline String & String::operator=(const String & b)
+inline String &String::operator=(const String &b)
 {
 	*this = b.string;
 	return *this;
@@ -104,12 +104,12 @@ inline String::operator const char*() const
 	return string;
 }
 
-inline String String::operator+(const String & b) const
+inline String String::operator+(const String &b) const
 {
 	return (*this + b.string);
 }
 
-inline String & String::operator+=(const String & b)
+inline String &String::operator+=(const String &b)
 {
 	*this += b.string;
 	return *this;
@@ -125,7 +125,7 @@ inline void String::Clear()
 	*this = "";
 }
 
-inline void String::Split(UINT pos, String & a, String & b) const
+inline void String::Split(UINT pos, String &a, String &b) const
 {
 	ASSERT(pos < length);
 

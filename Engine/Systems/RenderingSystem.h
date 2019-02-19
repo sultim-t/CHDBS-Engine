@@ -59,7 +59,7 @@ public:
 	// Render frame
 	void Update() override;
 
-	void CreateShadowMap(const CLight &light, FramebufferTexture & shadowMap);
+	void CreateShadowMap(const CLight &light, FramebufferTexture &shadowMap);
 
 	// Get instance of system
 	static RenderingSystem &Instance();

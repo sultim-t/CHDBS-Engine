@@ -63,7 +63,7 @@ inline LinkedList<T>::~LinkedList()
 }
 
 template<class T>
-inline T & LinkedList<T>::operator[](unsigned index)
+inline T &LinkedList<T>::operator[](unsigned index)
 {
 	ASSERT(index >= size);
 
@@ -77,7 +77,7 @@ inline T & LinkedList<T>::operator[](unsigned index)
 }
 
 template<class T>
-inline const T & LinkedList<T>::operator[](unsigned index) const
+inline const T &LinkedList<T>::operator[](unsigned index) const
 {
 	ASSERT(index >= size);
 
@@ -147,7 +147,7 @@ inline void LinkedList<T>::Remove(const T &data)
 }
 
 template<class T>
-inline bool LinkedList<T>::Find(const T & data)
+inline bool LinkedList<T>::Find(const T &data)
 {
 	LinkedListNode *p = head;
 

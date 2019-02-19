@@ -86,7 +86,7 @@ inline Quaternion::Quaternion(const Vector3& euler)
 	FromEuler(euler, *this);
 }
 
-inline Quaternion::Quaternion(const Quaternion & q)
+inline Quaternion::Quaternion(const Quaternion &q)
 {
 	quat[0] = q.quat[0];
 	quat[1] = q.quat[1];
@@ -100,18 +100,18 @@ inline const float Quaternion::operator[](int index) const
 	return quat[index];
 }
 
-inline float & Quaternion::operator[](int index)
+inline float &Quaternion::operator[](int index)
 {
 	ASSERT(index >= 0 || index < 4);
 	return quat[index];
 }
 
-inline const Quaternion Quaternion::operator+(const Quaternion & r) const
+inline const Quaternion Quaternion::operator+(const Quaternion &r) const
 {
 	return Quaternion(quat[0] + r.quat[0], quat[1] + r.quat[1], quat[2] + r.quat[2], quat[3] + r.quat[3]);
 }
 
-inline Quaternion & Quaternion::operator+=(const Quaternion & r)
+inline Quaternion &Quaternion::operator+=(const Quaternion &r)
 {
 	quat[0] += r.quat[0];
 	quat[1] += r.quat[1];
@@ -121,12 +121,12 @@ inline Quaternion & Quaternion::operator+=(const Quaternion & r)
 	return *this;
 }
 
-inline const Quaternion Quaternion::operator-(const Quaternion & r) const
+inline const Quaternion Quaternion::operator-(const Quaternion &r) const
 {
 	return Quaternion(quat[0] - r.quat[0], quat[1] - r.quat[1], quat[2] - r.quat[2], quat[3] - r.quat[3]);
 }
 
-inline Quaternion & Quaternion::operator-=(const Quaternion & r)
+inline Quaternion &Quaternion::operator-=(const Quaternion &r)
 {
 	quat[0] -= r.quat[0];
 	quat[1] -= r.quat[1];
@@ -136,7 +136,7 @@ inline Quaternion & Quaternion::operator-=(const Quaternion & r)
 	return *this;
 }
 
-inline const Quaternion Quaternion::operator*(const Quaternion & r) const
+inline const Quaternion Quaternion::operator*(const Quaternion &r) const
 {
 	return Quaternion(
 		quat[0] * r.quat[0] - quat[1] * r.quat[1] - quat[2] * r.quat[2] - quat[3] * r.quat[3],
@@ -145,13 +145,13 @@ inline const Quaternion Quaternion::operator*(const Quaternion & r) const
 		quat[0] * r.quat[3] + quat[1] * r.quat[2] - quat[2] * r.quat[1] + quat[3] * r.quat[0]);
 }
 
-inline Quaternion & Quaternion::operator*=(const Quaternion & r)
+inline Quaternion &Quaternion::operator*=(const Quaternion &r)
 {
 	*this = (*this) * r;
 	return *this;
 }
 
-inline const Vector3 Quaternion::operator*(const Vector3 & v) const
+inline const Vector3 Quaternion::operator*(const Vector3 &v) const
 {
 	return RotateVector(v);
 }
@@ -170,7 +170,7 @@ inline const Quaternion Quaternion::operator*(const float scale) const
 		quat[3] * scale);
 }
 
-inline Quaternion & Quaternion::operator*=(const float scale)
+inline Quaternion &Quaternion::operator*=(const float scale)
 {
 	quat[0] *= scale;
 	quat[1] *= scale;
@@ -191,7 +191,7 @@ inline const Quaternion Quaternion::operator/(const float scale) const
 		quat[3] * inv);
 }
 
-inline Quaternion & Quaternion::operator/=(const float scale)
+inline Quaternion &Quaternion::operator/=(const float scale)
 {
 	float inv = 1.0f / scale;
 
@@ -203,7 +203,7 @@ inline Quaternion & Quaternion::operator/=(const float scale)
 	return *this;
 }
 
-inline void Quaternion::ToEuler(const Quaternion & q, Vector3& euler)
+inline void Quaternion::ToEuler(const Quaternion &q, Vector3& euler)
 {
 	// roll
 	float sinr = +2.0f * (q.quat[0] * q.quat[1] + q.quat[2] * q.quat[3]);
@@ -228,12 +228,12 @@ inline void Quaternion::ToEuler(const Quaternion & q, Vector3& euler)
 	euler[2] = RAD2DEG(ATan2(siny, cosy));
 }
 
-const inline void Quaternion::ToEuler(Vector3 & euler) const
+const inline void Quaternion::ToEuler(Vector3 &euler) const
 {
 	ToEuler(*this, euler);
 }
 
-inline Vector3 Quaternion::ToEuler(const Quaternion & quat)
+inline Vector3 Quaternion::ToEuler(const Quaternion &quat)
 {
 	Vector3 result;
 	ToEuler(quat, result);
@@ -246,7 +246,7 @@ const inline Vector3 Quaternion::ToEuler() const
 	return ToEuler(*this);
 }
 
-inline void Quaternion::FromAxisAngle(const Vector3 & axis, float angle)
+inline void Quaternion::FromAxisAngle(const Vector3 &axis, float angle)
 {
 	quat[0] = Cos(angle * 0.5f);
 
@@ -256,7 +256,7 @@ inline void Quaternion::FromAxisAngle(const Vector3 & axis, float angle)
 	quat[3] = axis[2] * s;
 }
 
-inline void Quaternion::ToAxisAngle(Vector3 & axis, float & angle) const
+inline void Quaternion::ToAxisAngle(Vector3 &axis, float &angle) const
 {
 	angle = 2 * ACos(quat[0]);
 
@@ -277,7 +277,7 @@ inline void Quaternion::ToAxisAngle(Vector3 & axis, float & angle) const
 	}
 }
 
-inline float Quaternion::Dot(const Quaternion & a, const Quaternion & b)
+inline float Quaternion::Dot(const Quaternion &a, const Quaternion &b)
 {
 	return a.quat[0] * b.quat[0] + a.quat[1] * b.quat[1] + a.quat[2] * b.quat[2] + a.quat[3] * b.quat[3];
 }
@@ -293,7 +293,7 @@ inline void Quaternion::Normalize()
 	quat[3] = q[3];
 }
 
-inline void Quaternion::FromEuler(const Vector3& euler, Quaternion & q)
+inline void Quaternion::FromEuler(const Vector3& euler, Quaternion &q)
 {
 	float pitch = DEG2RAD(euler[PITCH]);
 	float roll = DEG2RAD(euler[ROLL]);
@@ -319,7 +319,7 @@ inline void Quaternion::FromEuler(const Vector3& euler)
 	FromEuler(euler, *this);
 }
 
-inline Quaternion Quaternion::Lerp(const Quaternion & a, const Quaternion & b, const float t)
+inline Quaternion Quaternion::Lerp(const Quaternion &a, const Quaternion &b, const float t)
 {
 	Quaternion q;
 
@@ -335,7 +335,7 @@ inline Quaternion Quaternion::Lerp(const Quaternion & a, const Quaternion & b, c
 	return q;
 }
 
-inline Quaternion Quaternion::Slerp(const Quaternion & a, const Quaternion & b, const float t)
+inline Quaternion Quaternion::Slerp(const Quaternion &a, const Quaternion &b, const float t)
 {
 	Quaternion q;
 

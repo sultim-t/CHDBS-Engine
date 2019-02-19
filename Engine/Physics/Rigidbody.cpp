@@ -8,12 +8,12 @@ void Rigidbody::Init()
 	allImpulses.Init(8);
 }
 
-void Rigidbody::AddForce(const Vector3 & force)
+void Rigidbody::AddForce(const Vector3 &force)
 {
 	allForces.Push(force);
 }
 
-void Rigidbody::AddImpulse(const Vector3 & impulse)
+void Rigidbody::AddImpulse(const Vector3 &impulse)
 {
 	allImpulses.Push(impulse);
 }

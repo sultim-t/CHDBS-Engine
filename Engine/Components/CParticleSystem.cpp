@@ -293,7 +293,7 @@ void CParticleSystem::LoadAndDraw()
 	glDisable(GL_BLEND);
 }
 
-void CParticleSystem::SetProperty(const String & key, const String & value)
+void CParticleSystem::SetProperty(const String &key, const String &value)
 {
 	if (key == PROPERTY_KEY_VERTPATH)
 	{

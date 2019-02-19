@@ -104,17 +104,17 @@ void Material::BindShader(const Shader &shader)
 	this->shader = shader;
 }
 
-void Material::BindModelMatrix(const Matrix4 & model) const
+void Material::BindModelMatrix(const Matrix4 &model) const
 {
 	shader.SetMat4("model", model);
 }
 
-Shader & Material::GetShader()
+Shader &Material::GetShader()
 {
 	return shader;
 }
 
-const Shader & Material::GetShader() const
+const Shader &Material::GetShader() const
 {
 	return shader;
 }

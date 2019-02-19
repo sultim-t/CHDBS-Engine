@@ -52,7 +52,7 @@ void ComponentSystem::Register(Entity * entity)
 	entities.Add(entity);
 }
 
-ComponentSystem & ComponentSystem::Instance()
+ComponentSystem &ComponentSystem::Instance()
 {
 	static ComponentSystem instance;
 	return instance;

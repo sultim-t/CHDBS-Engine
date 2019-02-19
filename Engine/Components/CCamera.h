@@ -68,7 +68,7 @@ inline float CCamera::GetFarClipDist() const
 	return zFar;
 }
 
-inline const Vector3 & CCamera::GetPosition() const
+inline const Vector3 &CCamera::GetPosition() const
 {
 	ASSERT(owner != nullptr);
 

@@ -118,7 +118,7 @@ inline void HashTable<K, T>::DeclareHashFunction(HashFunction hashFunc)
 }
 
 template<class K, class T>
-inline void HashTable<K, T>::Add(const K & key, const T & value)
+inline void HashTable<K, T>::Add(const K &key, const T &value)
 {
 	UINT hash = hashFunc(key) % chainCount;
 
@@ -139,7 +139,7 @@ inline void HashTable<K, T>::Add(const K & key, const T & value)
 }
 
 template<class K, class T>
-inline bool HashTable<K, T>::Remove(const K & key, T &outValue)
+inline bool HashTable<K, T>::Remove(const K &key, T &outValue)
 {
 	UINT hash = hashFunc(key) % chainCount;
 	
@@ -173,7 +173,7 @@ inline bool HashTable<K, T>::Remove(const K & key, T &outValue)
 }
 
 template<class K, class T>
-inline bool HashTable<K, T>::Find(const K & key, T & outValue) const
+inline bool HashTable<K, T>::Find(const K &key, T &outValue) const
 {
 	UINT hash = hashFunc(key) % chainCount;
 

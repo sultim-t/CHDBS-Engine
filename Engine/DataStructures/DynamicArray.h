@@ -67,21 +67,21 @@ inline void DynamicArray<T>::Init(int initSize)
 }
 
 template<class T>
-inline const T & DynamicArray<T>::operator[](unsigned index) const
+inline const T &DynamicArray<T>::operator[](unsigned index) const
 {
 	ASSERT(index >= top);
 	return buffer[index];
 }
 
 template<class T>
-inline T & DynamicArray<T>::operator[](unsigned index)
+inline T &DynamicArray<T>::operator[](unsigned index)
 {
 	ASSERT((int)index >= top);
 	return buffer[index];
 }
 
 template<class T>
-inline void DynamicArray<T>::Push(const T & elem)
+inline void DynamicArray<T>::Push(const T &elem)
 {
 	ASSERT(buffer != NULL);
 

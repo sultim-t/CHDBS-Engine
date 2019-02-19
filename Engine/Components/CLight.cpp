@@ -109,7 +109,7 @@ void CLight::SetStatic(bool isStatic)
 	this->isStatic = isStatic;
 }
 
-void CLight::SetColor(const Color & color)
+void CLight::SetColor(const Color &color)
 {
 	this->color = color;
 }

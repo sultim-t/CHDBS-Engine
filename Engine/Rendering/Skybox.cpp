@@ -74,7 +74,7 @@ void Skybox::Init()
 	shader.Stop();
 }
 
-void Skybox::BindCubemap(const Cubemap & cubemap)
+void Skybox::BindCubemap(const Cubemap &cubemap)
 {
 	this->cubemap = cubemap;
 	isCubemapSet = true;
@@ -101,7 +101,7 @@ void Skybox::Draw(const Matrix4 &camSpace) const
 	glDepthFunc(GL_LESS);
 }
 
-Skybox & Skybox::Instance()
+Skybox &Skybox::Instance()
 {
 	static Skybox skybox;
 	return skybox;

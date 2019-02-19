@@ -62,7 +62,7 @@ inline void Sphere::SetRadius(float radius)
 	this->radius = radius;
 }
 
-inline bool Sphere::Intersect(const IShape & shape) const
+inline bool Sphere::Intersect(const IShape &shape) const
 {
 	switch (shape.GetShapeType())
 	{

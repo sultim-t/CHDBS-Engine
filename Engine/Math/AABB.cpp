@@ -126,7 +126,7 @@ bool AABB::Intersect(const Sphere &sphere) const
 	return true;
 }
 
-AABB AABB::GetUnion(const AABB & aabb1, const AABB & aabb2)
+AABB AABB::GetUnion(const AABB &aabb1, const AABB &aabb2)
 {	
 	AABB result;
 
@@ -139,7 +139,7 @@ AABB AABB::GetUnion(const AABB & aabb1, const AABB & aabb2)
 	return result;
 }
 
-AABB AABB::GetIntersection(const AABB & aabb1, const AABB & aabb2)
+AABB AABB::GetIntersection(const AABB &aabb1, const AABB &aabb2)
 {
 	AABB result;
 

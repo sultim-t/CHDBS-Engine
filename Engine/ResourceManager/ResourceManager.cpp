@@ -30,7 +30,7 @@ void ResourceManager::DeleteTexture(void * address)
 	stbi_image_free(address);
 }
 
-void ResourceManager::LoadModel(const char * path, CModel & outModel)
+void ResourceManager::LoadModel(const char * path, CModel &outModel)
 {
 	using namespace std;
 

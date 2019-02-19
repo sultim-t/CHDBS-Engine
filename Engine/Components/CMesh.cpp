@@ -2,7 +2,7 @@
 #include <Engine/Rendering/OpenGL.h>
 #include <vector>
 
-Mesh::Mesh(const std::vector<Vertex5> vertices, const std::vector<UINT> indices, const Material & material)
+Mesh::Mesh(const std::vector<Vertex5> vertices, const std::vector<UINT> indices, const Material &material)
 {
 	this->vertices = vertices;
 	this->indices = indices;
@@ -48,12 +48,12 @@ void Mesh::Init()
 	glBindVertexArray(0);
 }
 
-void Mesh::BindMaterial(const Material & material)
+void Mesh::BindMaterial(const Material &material)
 {
 	this->material = material;
 }
 
-void Mesh::ActivateMaterial(const Matrix4 & transformation) const
+void Mesh::ActivateMaterial(const Matrix4 &transformation) const
 {
 	material.BindModelMatrix(transformation);
 	material.Activate();
@@ -75,12 +75,12 @@ UINT Mesh::GetVertexCount() const
 	return vertices.size();
 }
 
-Material & Mesh::GetMaterial()
+Material &Mesh::GetMaterial()
 {
 	return material;
 }
 
-const Material & Mesh::GetMaterial() const
+const Material &Mesh::GetMaterial() const
 {
 	return material;
 }

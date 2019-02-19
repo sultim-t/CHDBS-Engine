@@ -38,7 +38,7 @@ void CFreeMovement::Update()
 	ProcessKeyboard();
 }
 
-void CFreeMovement::SetProperty(const String & key, const String & value)
+void CFreeMovement::SetProperty(const String &key, const String &value)
 {
 	if (key == PROPERTY_KEY_SPEED)
 	{

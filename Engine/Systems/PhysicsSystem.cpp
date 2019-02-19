@@ -14,7 +14,7 @@ void PhysicsSystem::Update()
 	}
 }
 
-PhysicsSystem & PhysicsSystem::Instance()
+PhysicsSystem &PhysicsSystem::Instance()
 {
 	static PhysicsSystem instance;
 	return instance;

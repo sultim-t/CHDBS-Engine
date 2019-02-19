@@ -31,7 +31,7 @@ bool String::operator==(const char * b) const
 	return strcmp(string, b) == 0;
 }
 
-String & String::operator=(const char * b)
+String &String::operator=(const char * b)
 {
 	ASSERT(b != nullptr);
 
@@ -75,7 +75,7 @@ String String::operator+(const char * b) const
 	return copy;
 }
 
-String & String::operator+=(const char * b)
+String &String::operator+=(const char * b)
 {
 	ASSERT(b != nullptr);
 

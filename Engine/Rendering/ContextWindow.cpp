@@ -49,7 +49,7 @@ void ScrollCallback(GLFWwindow * window, double xoffset, double yoffset)
 	Input::Scroll = (float)yoffset;
 }
 
-ContextWindow & ContextWindow::Instance()
+ContextWindow &ContextWindow::Instance()
 {
 	static ContextWindow instance;
 	return instance;
