@@ -5,21 +5,12 @@
 struct Quaternion
 {
 private:
-	union
-	{
-		float quat[4];
-		struct
-		{
-			float w;
-			float x;
-			float y;
-			float z;
-		};
-	};
+	float quat[4];
+
 public:
 	inline Quaternion();
 	inline Quaternion(float a);
-	inline Quaternion(float w, float x, float y, float z);
+	inline Quaternion(float x, float y, float z, float w);
 	inline Quaternion(const Vector3 &euler);
 	inline Quaternion(const Quaternion &q);
 
@@ -43,7 +34,7 @@ public:
 
 	static Quaternion Identity();
 
-	static float Dot(Quaternion &a, Quaternion &b);
+	static float Dot(const Quaternion &a, const Quaternion &b);
 	inline void Normalize();
 
 	// Counvert from euler in degrees to quat
@@ -57,16 +48,16 @@ public:
 	inline const Vector3 ToEuler() const;
 
 	// Convert from axis and angle
-	inline void FromAxisAngle(const Vector3 &axis, float angle);
+	inline void FromAxisAngle(const Vector3 &axis, const float angle);
 	// Convert to axis and angle in Radians
 	inline void ToAxisAngle(Vector3 &axis, float &angle) const;
 
 	// Interpolates between a and b, normalizes the result, t is clamped to [0,1]
-	static Quaternion Lerp(Quaternion &a, Quaternion &b, float t);
+	static Quaternion Lerp(const Quaternion &a, const Quaternion &b, const float t);
 	// Spherically interpolates between a and b, t is clamped to [0,1]
-	static Quaternion Slerp(Quaternion &a, Quaternion &b, float t);
+	static Quaternion Slerp(const Quaternion &a, const Quaternion &b, const float t);
 
-	inline Vector3 RotateVector(Vector3 v) const;
+	inline Vector3 RotateVector(const Vector3 &v) const;
 
 	inline Vector3 GetForward() const;
 	inline Vector3 GetRight() const;
@@ -79,15 +70,15 @@ inline Quaternion::Quaternion()
 
 inline Quaternion::Quaternion(float a)
 {
-	w = x = y = z = a;
+	quat[0] = quat[1] = quat[2] = quat[3] = a;
 }
 
-inline Quaternion::Quaternion(float w, float x, float y, float z)
+inline Quaternion::Quaternion(float x, float y, float z, float w)
 {
-	this->w = w;
-	this->x = x;
-	this->y = y;
-	this->z = z;
+	quat[0] = x;
+	quat[1] = y;
+	quat[2] = z;
+	quat[3] = w;
 }
 
 inline Quaternion::Quaternion(const Vector3& euler)
@@ -97,10 +88,10 @@ inline Quaternion::Quaternion(const Vector3& euler)
 
 inline Quaternion::Quaternion(const Quaternion & q)
 {
-	w = q.w;
-	x = q.x;
-	y = q.y;
-	z = q.z;
+	quat[0] = q.quat[0];
+	quat[1] = q.quat[1];
+	quat[2] = q.quat[2];
+	quat[3] = q.quat[3];
 }
 
 inline const float Quaternion::operator[](int index) const
@@ -117,30 +108,30 @@ inline float & Quaternion::operator[](int index)
 
 inline const Quaternion Quaternion::operator+(const Quaternion & r) const
 {
-	return Quaternion(w + r.w, x + r.x, y + r.y, z + r.z);
+	return Quaternion(quat[0] + r.quat[0], quat[1] + r.quat[1], quat[2] + r.quat[2], quat[3] + r.quat[3]);
 }
 
 inline Quaternion & Quaternion::operator+=(const Quaternion & r)
 {
-	w += r.w;
-	x += r.x;
-	y += r.y;
-	z += r.z;
+	quat[0] += r.quat[0];
+	quat[1] += r.quat[1];
+	quat[2] += r.quat[2];
+	quat[3] += r.quat[3];
 
 	return *this;
 }
 
 inline const Quaternion Quaternion::operator-(const Quaternion & r) const
 {
-	return Quaternion(w - r.w, x - r.x, y - r.y, z - r.z);
+	return Quaternion(quat[0] - r.quat[0], quat[1] - r.quat[1], quat[2] - r.quat[2], quat[3] - r.quat[3]);
 }
 
 inline Quaternion & Quaternion::operator-=(const Quaternion & r)
 {
-	w -= r.w;
-	x -= r.x;
-	y -= r.y;
-	z -= r.z;
+	quat[0] -= r.quat[0];
+	quat[1] -= r.quat[1];
+	quat[2] -= r.quat[2];
+	quat[3] -= r.quat[3];
 
 	return *this;
 }
@@ -148,10 +139,10 @@ inline Quaternion & Quaternion::operator-=(const Quaternion & r)
 inline const Quaternion Quaternion::operator*(const Quaternion & r) const
 {
 	return Quaternion(
-		w * r.w - x * r.x - y * r.y - z * r.z,
-		w * r.x + x * r.w + y * r.z - z * r.y,
-		w * r.y - x * r.z + y * r.w + z * r.x,
-		w * r.z + x * r.y - y * r.x + z * r.w);
+		quat[0] * r.quat[0] - quat[1] * r.quat[1] - quat[2] * r.quat[2] - quat[3] * r.quat[3],
+		quat[0] * r.quat[1] + quat[1] * r.quat[0] + quat[2] * r.quat[3] - quat[3] * r.quat[2],
+		quat[0] * r.quat[2] - quat[1] * r.quat[3] + quat[2] * r.quat[0] + quat[3] * r.quat[1],
+		quat[0] * r.quat[3] + quat[1] * r.quat[2] - quat[2] * r.quat[1] + quat[3] * r.quat[0]);
 }
 
 inline Quaternion & Quaternion::operator*=(const Quaternion & r)
@@ -173,18 +164,18 @@ inline Quaternion Quaternion::Identity()
 inline const Quaternion Quaternion::operator*(const float scale) const
 {
 	return Quaternion(
-	  w * scale,
-	  x * scale,
-	  y * scale,
-	  z * scale);
+		quat[0] * scale,
+		quat[1] * scale,
+		quat[2] * scale,
+		quat[3] * scale);
 }
 
 inline Quaternion & Quaternion::operator*=(const float scale)
 {
-	w *= scale;
-	x *= scale;
-	y *= scale;
-	z *= scale;
+	quat[0] *= scale;
+	quat[1] *= scale;
+	quat[2] *= scale;
+	quat[3] *= scale;
 
 	return *this;
 }
@@ -194,20 +185,20 @@ inline const Quaternion Quaternion::operator/(const float scale) const
 	float inv = 1.0f / scale;
 
 	return Quaternion(
-		w * inv,
-		x * inv,
-		y * inv,
-		z * inv);
+		quat[0] * inv,
+		quat[1] * inv,
+		quat[2] * inv,
+		quat[3] * inv);
 }
 
 inline Quaternion & Quaternion::operator/=(const float scale)
 {
 	float inv = 1.0f / scale;
 
-	w *= inv;
-	x *= inv;
-	y *= inv;
-	z *= inv;
+	quat[0] *= inv;
+	quat[1] *= inv;
+	quat[2] *= inv;
+	quat[3] *= inv;
 
 	return *this;
 }
@@ -215,12 +206,12 @@ inline Quaternion & Quaternion::operator/=(const float scale)
 inline void Quaternion::ToEuler(const Quaternion & q, Vector3& euler)
 {
 	// roll
-	float sinr = +2.0f * (q.w * q.x + q.y * q.z);
-	float cosr = +1.0f - 2.0f * (q.x * q.x + q.y * q.y);
+	float sinr = +2.0f * (q.quat[0] * q.quat[1] + q.quat[2] * q.quat[3]);
+	float cosr = +1.0f - 2.0f * (q.quat[1] * q.quat[1] + q.quat[2] * q.quat[2]);
 	euler[0] = RAD2DEG(ATan2(sinr, cosr));
 
 	// pitch
-	float sinp = +2.0f * (q.w * q.y - q.z * q.x);
+	float sinp = +2.0f * (q.quat[0] * q.quat[2] - q.quat[3] * q.quat[1]);
 	// clamping
 	if (Abs(sinp) >= 1.0f)
 	{
@@ -232,8 +223,8 @@ inline void Quaternion::ToEuler(const Quaternion & q, Vector3& euler)
 	}
 
 	// yaw
-	float siny = +2.0f * (q.w * q.z + q.x * q.y);
-	float cosy = +1.0f - 2.0f * (q.y * q.y + q.z * q.z);
+	float siny = +2.0f * (q.quat[0] * q.quat[3] + q.quat[1] * q.quat[2]);
+	float cosy = +1.0f - 2.0f * (q.quat[2] * q.quat[2] + q.quat[3] * q.quat[3]);
 	euler[2] = RAD2DEG(ATan2(siny, cosy));
 }
 
@@ -257,49 +248,49 @@ const inline Vector3 Quaternion::ToEuler() const
 
 inline void Quaternion::FromAxisAngle(const Vector3 & axis, float angle)
 {
-	w = Cos(angle * 0.5f);
+	quat[0] = Cos(angle * 0.5f);
 
 	float s = Sin(angle * 0.5f);
-	x = axis[0] * s;
-	y = axis[1] * s;
-	z = axis[2] * s;
+	quat[1] = axis[0] * s;
+	quat[2] = axis[1] * s;
+	quat[3] = axis[2] * s;
 }
 
 inline void Quaternion::ToAxisAngle(Vector3 & axis, float & angle) const
 {
-	angle = 2 * ACos(w);
+	angle = 2 * ACos(quat[0]);
 
-	float s = Sqrt(1 - w * w);
+	float s = Sqrt(1 - quat[0] * quat[0]);
 
 	if (ABS(s) >= 0.001f)
 	{
-		axis[0] = x / s;
-		axis[1] = y / s;
-		axis[2] = z / s;
+		axis[0] = quat[1] / s;
+		axis[1] = quat[2] / s;
+		axis[2] = quat[3] / s;
 	}
 	else
 	{
 		// angle is zero
-		axis[0] = 1;
-		axis[1] = 0;
-		axis[2] = 0;
+		axis[0] = 1.0f;
+		axis[1] = 0.0f;
+		axis[2] = 0.0f;
 	}
 }
 
-inline float Quaternion::Dot(Quaternion & a, Quaternion & b)
+inline float Quaternion::Dot(const Quaternion & a, const Quaternion & b)
 {
-	return a.w * b.w + a.x * b.x + a.y * b.y + a.z * b.z;
+	return a.quat[0] * b.quat[0] + a.quat[1] * b.quat[1] + a.quat[2] * b.quat[2] + a.quat[3] * b.quat[3];
 }
 
 inline void Quaternion::Normalize()
 {
-	Vector4 q = (w, x, y, z);
+	Vector4 q = (quat[0], quat[1], quat[2], quat[3]);
 	q.Normalize();
 
-	w = q[0];
-	x = q[1];
-	y = q[2];
-	z = q[3];
+	quat[0] = q[0];
+	quat[1] = q[1];
+	quat[2] = q[2];
+	quat[3] = q[3];
 }
 
 inline void Quaternion::FromEuler(const Vector3& euler, Quaternion & q)
@@ -317,10 +308,10 @@ inline void Quaternion::FromEuler(const Vector3& euler, Quaternion & q)
 	float cp = Cos(pitch * 0.5f);
 	float sp = Sin(pitch * 0.5f);
 
-	q.w = cy * cr * cp + sy * sr * sp;
-	q.x = cy * sr * cp - sy * cr * sp;
-	q.y = cy * cr * sp + sy * sr * cp;
-	q.z = sy * cr * cp - cy * sr * sp;
+	q.quat[0] = cy * cr * cp + sy * sr * sp;
+	q.quat[1] = cy * sr * cp - sy * cr * sp;
+	q.quat[2] = cy * cr * sp + sy * sr * cp;
+	q.quat[3] = sy * cr * cp - cy * sr * sp;
 }
 
 inline void Quaternion::FromEuler(const Vector3& euler)
@@ -328,52 +319,57 @@ inline void Quaternion::FromEuler(const Vector3& euler)
 	FromEuler(euler, *this);
 }
 
-inline Quaternion Quaternion::Lerp(Quaternion & a, Quaternion & b, float t)
+inline Quaternion Quaternion::Lerp(const Quaternion & a, const Quaternion & b, const float t)
 {
 	Quaternion q;
 
 	float it = 1 - t;
 
-	q.x = it * a.x + t * b.x;
-	q.y = it * a.y + t * b.y;
-	q.z = it * a.z + t *b.z;
-	q.w = it * a.w + t * b.w;
+	q.quat[1] = it * a.quat[1] + t * b.quat[1];
+	q.quat[2] = it * a.quat[2] + t * b.quat[2];
+	q.quat[3] = it * a.quat[3] + t * b.quat[3];
+	q.quat[0] = it * a.quat[0] + t * b.quat[0];
 
 	q.Normalize();
 
 	return q;
 }
 
-inline Quaternion Quaternion::Slerp(Quaternion & a, Quaternion & b, float t)
+inline Quaternion Quaternion::Slerp(const Quaternion & a, const Quaternion & b, const float t)
 {
 	Quaternion q;
 
 	float it = 1 - t;
 
-	float theta = ACos(a.x*b.x + a.y*b.y + a.z*b.z + a.w*b.w);
+	float theta = ACos(a.quat[1]*b.quat[1] + a.quat[2]*b.quat[2] + a.quat[3]*b.quat[3] + a.quat[0]*b.quat[0]);
 	float s = Sin(theta);
 
 	float la = Sin(it * theta) / s;
 	float lb = Sin(t * theta) / s;
 
-	q.x = la * a.x + lb * b.x;
-	q.y = la * a.y + lb * b.y;
-	q.z = la * a.z + lb * b.z;
-	q.w = la * a.w + lb * b.w;
+	q.quat[0] = la * a.quat[0] + lb * b.quat[0];
+	q.quat[1] = la * a.quat[1] + lb * b.quat[1];
+	q.quat[2] = la * a.quat[2] + lb * b.quat[2];
+	q.quat[3] = la * a.quat[3] + lb * b.quat[3];
 
 	q.Normalize();
 
 	return q;
 }
 
-inline Vector3 Quaternion::RotateVector(Vector3 v) const
+inline Vector3 Quaternion::RotateVector(const Vector3 &v) const
 {
 	Vector3 result;
 
-	Vector3 q = Vector3(quat[0], quat[1], quat[2]);
-	Vector3 cross = Vector3::Cross(q, v) * 2.0f;
+	const Vector3 q = Vector3(quat[0], quat[1], quat[2]);
+	const Vector3 cross = Vector3::Cross(q, v) * 2.0f;
 	
 	result = v + (cross * quat[3]) + Vector3::Cross(q, cross);
+
+	// result = q * 2.0f * Vector3::Dot(q, v)
+	//	+ v * (quat[3] * quat[3] - Vector3::Dot(q, q))
+	//	+ cross;
+
 	return result;
 }
 

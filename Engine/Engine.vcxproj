@@ -188,6 +188,8 @@
     <ClCompile Include="Math\Sphere.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
     <ClCompile Include="Memory\SystemAllocator.cpp" />
+    <ClCompile Include="Physics\AABBCollider.cpp" />
+    <ClCompile Include="Physics\Rigidbody.cpp" />
     <ClCompile Include="Rendering\ArrayMesh.cpp" />
     <ClCompile Include="Rendering\Cubemap.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
@@ -200,6 +202,7 @@
     <ClCompile Include="Rendering\Texture.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="Systems\ComponentSystem.cpp" />
+    <ClCompile Include="Systems\PhysicsSystem.cpp" />
     <ClCompile Include="Systems\RenderingSystem.cpp" />
     <ClCompile Include="model_loading.cpp" />
     <ClCompile Include="TEMPMain.cpp" />
@@ -212,7 +215,8 @@
     <ClInclude Include="Base\String.h" />
     <ClInclude Include="Components\CMesh.h" />
     <ClInclude Include="Components\CParticleSystem.h" />
-    <ClInclude Include="Components\ICollider.h" />
+    <ClInclude Include="Math\IShape.h" />
+    <ClInclude Include="Physics\ICollider.h" />
     <ClInclude Include="Components\CLight.h" />
     <ClInclude Include="Base\Message.h" />
     <ClInclude Include="Base\Time.h" />
@@ -242,6 +246,7 @@
     <ClInclude Include="Math\Transform.h" />
     <ClInclude Include="Memory\Memory.h" />
     <ClInclude Include="Memory\SystemAllocator.h" />
+    <ClInclude Include="Physics\AABBCollider.h" />
     <ClInclude Include="Physics\Rigidbody.h" />
     <ClInclude Include="Rendering\ArrayMesh.h" />
     <ClInclude Include="Rendering\Cubemap.h" />
@@ -261,6 +266,7 @@
     <ClInclude Include="Rendering\Vertex.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />
+    <ClInclude Include="Systems\PhysicsSystem.h" />
     <ClInclude Include="Systems\RenderingSystem.h" />
     <ClInclude Include="Systems\ISystem.h" />
     <ClInclude Include="TEMP\tinyxml2\tinyxml2.h" />

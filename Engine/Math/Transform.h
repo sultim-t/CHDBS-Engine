@@ -34,21 +34,27 @@ public:
 
 	// Position vector
 	const Vector3 &GetPosition() const;
+	// Returns reference to position vector
+	Vector3 &GetPosition();
 	// Sets position
-	void SetPosition(Vector3 &position);
+	void SetPosition(const Vector3 &position);
 
 	// Calculate rotation represented in euler's angles
 	const Vector3 GetEuler() const;
 	// Sets euler's angles
-	void SetRotation(Vector3 &euler);
+	void SetRotation(const Vector3 &euler);
 
 	// Scale vector
 	const Vector3 &GetScale() const;
+	// Returns reference to scale vector
+	Vector3 &GetScale();
 	// Sets scale
-	void SetScale(Vector3 &scale);
+	void SetScale(const Vector3 &scale);
 
 	// Rotation represented in quaternion
 	const Quaternion &GetRotation() const;
+	// Returns reference to quaternion
+	Quaternion &GetRotation();
 	// Sets quaternion
 	void SetRotation(Quaternion &quat);
 

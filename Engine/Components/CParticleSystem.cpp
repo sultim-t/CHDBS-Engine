@@ -34,6 +34,8 @@
 #define PROPERTY_KEY_LIFE		"lifetime"
 #define PROPERTY_KEY_LIFERAND	"lifetimeRand"
 
+#define PROPERTY_KEY_GRAVMULT	"gravMult"
+
 #define PROPERTY_KEY_EMITRATE	"emitRate"
 #define PROPERTY_KEY_LOOPING	"isLooping"
 
@@ -147,7 +149,7 @@ UINT CParticleSystem::FindDeadParticle()
 
 void CParticleSystem::Update()
 { 
-	UINT newparticles = (UINT)(Time::GetDeltaTime() * 100.0f);
+	UINT newparticles = (UINT)(Time::GetDeltaTime() * emitRate);
 
 	if (newparticles > maxParticleCount)
 	{
@@ -187,9 +189,9 @@ void CParticleSystem::Simulate()
 {
 	UINT count = 0;
 
-	for (UINT i = 0; i < maxParticleCount; i++) {
-
-		Particle& p = particles[i];
+	for (UINT i = 0; i < maxParticleCount; i++) 
+	{
+		Particle &p = particles[i];
 
 		// only alive particles are processed
 		if (p.life > 0.0f)
@@ -198,7 +200,7 @@ void CParticleSystem::Simulate()
 
 			if (p.life > 0.0f)
 			{
-				p.velocity += Vector3(0.0f, -9.81f, 0.0f) * Time::GetDeltaTime();
+				p.velocity += Vector3(0.0f, -9.81f, 0.0f) * gravityMultiplier * Time::GetDeltaTime();
 				p.position += p.velocity * Time::GetDeltaTime();
 				
 				positionsAndSizes[4 * count][0] = p.position[0];
@@ -364,6 +366,10 @@ void CParticleSystem::SetProperty(const String & key, const String & value)
 	else if (key == PROPERTY_KEY_LIFERAND)
 	{
 		lifetimeRandomness = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_GRAVMULT)
+	{
+		gravityMultiplier = value.ToFloat();
 	}
 	else if (key == PROPERTY_KEY_EMITRATE)
 	{

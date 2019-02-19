@@ -60,5 +60,7 @@ public:
 
 	// Returns true if component and entity are active
 	bool IsActive() const;
+
 	const Entity &GetOwner() const;
+	Entity &GetOwner();
 };

@@ -25,14 +25,10 @@ void CFreeMovement::Update()
 		ContextWindow::Instance().RequestClose();
 	}
 
-	float y1 = 0;
 	float x1 = Input::IsPressed(INPUT_KEY_RIGHT) ? 1.0f : 0.0f;
 	x1 += Input::IsPressed(INPUT_KEY_LEFT) ? -1.0f : 0.0f;
-	if (x1 == 0)
-	{
-		y1 = Input::IsPressed(INPUT_KEY_UP) ? 1.0f : 0.0f;
-		y1 += Input::IsPressed(INPUT_KEY_DOWN) ? -1.0f : 0.0f;
-	}
+	float y1 = Input::IsPressed(INPUT_KEY_UP) ? 1.0f : 0.0f;
+	y1 += Input::IsPressed(INPUT_KEY_DOWN) ? -1.0f : 0.0f;
 
 	float scroll = Input::IsPressed(INPUT_KEY_KP_SUBTRACT)? -1.0f : 0.0f;
 	scroll += Input::IsPressed(INPUT_KEY_KP_ADD)? 1.0f : 0.0f;
@@ -61,6 +57,7 @@ void CFreeMovement::ProcessKeyboard()
 	Vector3 offset = Vector3(0, 0, 0);
 	Vector3 front = t.GetForward();
 	Vector3 right = t.GetRight();
+	Vector3 up = t.GetUp();
 
 	float velocity = Speed * Time::GetDeltaTime();
 	
@@ -76,6 +73,12 @@ void CFreeMovement::ProcessKeyboard()
 	if (Input::IsPressed(INPUT_KEY_D))
 		offset += right * velocity;
 
+	if (Input::IsPressed(INPUT_KEY_Q))
+		offset -= up * velocity;
+
+	if (Input::IsPressed(INPUT_KEY_E))
+		offset += up * velocity;
+
 	t.Translate(offset);
 }
 
@@ -84,10 +87,10 @@ void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)
 	xoffset *= Input::MouseSensitivity;
 	yoffset *= Input::MouseSensitivity;
 
-	float yaw = xoffset * Time::GetDeltaTime();
-	float pitch = yoffset * Time::GetDeltaTime();
+	float x = xoffset * Time::GetDeltaTime();
+	float y = yoffset * Time::GetDeltaTime();
 
-	Euler e = Euler(0, yaw, pitch);
+	Euler e = Euler(0, x, y);
 	owner->GetTransform().Rotate(e);
 }
 

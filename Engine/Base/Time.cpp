@@ -3,12 +3,29 @@
 
 float Time::deltaTime = 0;
 float Time::lastFrame = 0;
+float Time::fixedDeltaTime = 1.0f / 60.0f;
+float Time::fdtAccum = 0;
 
 void Time::Calculate()
 {
 	float currentFrame = (float)glfwGetTime();
 	deltaTime = currentFrame - lastFrame;
 	lastFrame = currentFrame;
+}
+
+bool Time::CalculateFixedDelta()
+{
+	fdtAccum += deltaTime;
+
+	if (fdtAccum > fixedDeltaTime)
+	{
+		fdtAccum -= fixedDeltaTime;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 float Time::GetTime()
@@ -19,4 +36,9 @@ float Time::GetTime()
 float Time::GetDeltaTime()
 {
 	return deltaTime;
+}
+
+float Time::GetFixedDeltaTime()
+{
+	return fixedDeltaTime;
 }

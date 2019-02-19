@@ -76,17 +76,14 @@ inline const T & DynamicArray<T>::operator[](unsigned index) const
 template<class T>
 inline T & DynamicArray<T>::operator[](unsigned index)
 {
-	ASSERT(index >= top);
+	ASSERT((int)index >= top);
 	return buffer[index];
 }
 
 template<class T>
 inline void DynamicArray<T>::Push(const T & elem)
 {
-	if (buffer == NULL)
-	{
-		Init(DYNARRAY_DEFAULTSIZE);
-	}
+	ASSERT(buffer != NULL);
 
 	if (top >= allocated)
 	{
@@ -100,6 +97,9 @@ inline void DynamicArray<T>::Push(const T & elem)
 template<class T>
 inline void DynamicArray<T>::Pop()
 {
+	ASSERT(buffer != NULL);
+	ASSERT(top >= 0);
+
 	buffer[top].~T();
 	top--;
 }
@@ -113,7 +113,7 @@ inline unsigned DynamicArray<T>::GetSize()
 template<class T>
 inline void DynamicArray<T>::Clear()
 {
-	for (INT i = 0; i < top; i++)
+	for (int i = 0; i < top; i++)
 	{
 		buffer[i].~T();
 	}

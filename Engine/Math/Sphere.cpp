@@ -1,4 +1,5 @@
 #include "Sphere.h"
+#include "AABB.h"
 
 Sphere::Sphere()
 {}
@@ -22,12 +23,25 @@ bool Sphere::Contains(const Sphere & sphere) const
 	return sqrDist <= delta * delta;
 }
 
-bool Sphere::Contacts(const Sphere & sphere) const
+bool Sphere::Intersect(const Sphere & sphere) const
 {
 	float sqrDist = center.LengthSqr(sphere.center);
 	float sum = radius + sphere.radius;
 
 	return sqrDist < sum * sum;
+}
+
+bool Sphere::Intersect(const AABB &aabb) const
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if ((center[i] + radius < aabb.GetMin()[i]) || (center[i] - radius > aabb.GetMax()[i]))
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 Sphere Sphere::GetUnion(const Sphere & sphere1, const Sphere & sphere2)
@@ -56,7 +70,7 @@ Sphere Sphere::GetIntersection(const Sphere & sphere) const
 	return GetIntersection(*this, sphere);
 }
 
-void Sphere::Union(const Sphere & sphere)
+/*void Sphere::Union(const Sphere & sphere)
 {
 	*this = GetUnion(*this, sphere);
 }
@@ -64,26 +78,4 @@ void Sphere::Union(const Sphere & sphere)
 void Sphere::Intersect(const Sphere & sphere)
 {
 	*this = GetIntersection(*this, sphere);
-}
-
-const Vector3 &Sphere::GetCenter() const
-{
-	return center;
-}
-
-float Sphere::GetRadius() const
-{
-	return radius;
-}
-
-void Sphere::SetCenter(const Vector3 & vec)
-{
-	center = vec;
-}
-
-void Sphere::SetRadius(float radius)
-{
-	ASSERT(radius > 0);
-
-	this->radius = radius;
-}
+}*/

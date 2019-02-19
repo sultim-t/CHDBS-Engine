@@ -1,11 +1,8 @@
 #include "AABB.h"
-
-// using only 3 dimensional vectors
+#include "Sphere.h"
 
 AABB::AABB()
-{
-	Nullify();
-}
+{ }
 
 AABB::AABB(const Vector3 &vec)
 {
@@ -55,13 +52,13 @@ void AABB::Nullify()
 	}
 }
 
-void AABB::Move(Vector3 &vec)
+void AABB::Move(const Vector3 &vec)
 {
 	minBounds += vec;
 	maxBounds += vec;
 }
 
-bool AABB::Contains(AABB &aabb) const
+bool AABB::Contains(const AABB &aabb) const
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -74,7 +71,7 @@ bool AABB::Contains(AABB &aabb) const
 	return true;
 }
 
-bool AABB::IsContained(AABB &aabb) const
+bool AABB::IsContained(const AABB &aabb) const
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -87,7 +84,7 @@ bool AABB::IsContained(AABB &aabb) const
 	return true;
 }
 
-bool AABB::Contacts(const AABB &aabb) const
+bool AABB::Intersect(const AABB &aabb) const
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -113,8 +110,11 @@ bool AABB::Contacts(const AABB &aabb) const
 	return true;
 }*/
 
-bool AABB::ContactsSphere(const Vector3 center, const float radius) const
+bool AABB::Intersect(const Sphere &sphere) const
 {
+	const Vector3 &center = sphere.GetCenter();
+	const float radius = sphere.GetRadius();
+
 	for (int i = 0; i < 3; i++)
 	{
 		if ((center[i] + radius < minBounds[i]) || (center[i] - radius > maxBounds[i]))
@@ -126,65 +126,43 @@ bool AABB::ContactsSphere(const Vector3 center, const float radius) const
 	return true;
 }
 
-AABB &AABB::Union(const AABB & aabb1, const AABB & aabb2)
+AABB AABB::GetUnion(const AABB & aabb1, const AABB & aabb2)
 {	
-	AABB *result = new AABB();
+	AABB result;
 
 	for (int i = 0; i < 3; i++)
 	{
-		result->minBounds[i] = aabb1.minBounds[i] < aabb2.minBounds[i] ? aabb1.minBounds[i] : aabb2.minBounds[i];
-		result->maxBounds[i] = aabb1.maxBounds[i] > aabb2.maxBounds[i] ? aabb1.maxBounds[i] : aabb2.maxBounds[i];
+		result.minBounds[i] = aabb1.minBounds[i] < aabb2.minBounds[i] ? aabb1.minBounds[i] : aabb2.minBounds[i];
+		result.maxBounds[i] = aabb1.maxBounds[i] > aabb2.maxBounds[i] ? aabb1.maxBounds[i] : aabb2.maxBounds[i];
 	}
 
-	return *result;
+	return result;
 }
 
-AABB & AABB::Intersect(const AABB & aabb1, const AABB & aabb2)
+AABB AABB::GetIntersection(const AABB & aabb1, const AABB & aabb2)
 {
-	AABB *result = new AABB();
+	AABB result;
 
 	for (int i = 0; i < 3; i++)
 	{
-		result->minBounds[i] = aabb1.minBounds[i] > aabb2.minBounds[i] ? aabb1.minBounds[i] : aabb2.minBounds[i];
-		result->maxBounds[i] = aabb1.maxBounds[i] < aabb2.maxBounds[i] ? aabb1.maxBounds[i] : aabb2.maxBounds[i];
+		result.minBounds[i] = aabb1.minBounds[i] > aabb2.minBounds[i] ? aabb1.minBounds[i] : aabb2.minBounds[i];
+		result.maxBounds[i] = aabb1.maxBounds[i] < aabb2.maxBounds[i] ? aabb1.maxBounds[i] : aabb2.maxBounds[i];
 	}
 
-	if (result->IsEmpty())
+	if (result.IsEmpty())
 	{
-		result->Nullify();
+		result.Nullify();
 	}
 
-	return *result;
+	return result;
 }
 
-AABB &AABB::GetUnion(const AABB &aabb)
+AABB AABB::GetUnion(const AABB &aabb) const
 {
-	return Union(*this, aabb);
+	return GetUnion(*this, aabb);
 }
 
-AABB &AABB::GetIntersection(const AABB &aabb)
+AABB AABB::GetIntersection(const AABB &aabb) const
 {
-	return Intersect(*this, aabb);
-}
-
-const Vector3 &AABB::GetCenter() const
-{
-	Vector3 result = (minBounds + maxBounds) * 0.5f;
-
-	return *(new Vector3(result));
-}
-
-const Vector3 AABB::GetSize() const
-{
-	return maxBounds - minBounds;
-}
-
-const Vector3 &AABB::GetMin() const
-{
-	return minBounds;
-}
-
-const Vector3 &AABB::GetMax() const
-{
-	return maxBounds;
+	return GetIntersection(*this, aabb);
 }

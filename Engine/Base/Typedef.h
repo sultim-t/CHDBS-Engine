@@ -69,6 +69,12 @@ typedef Vector<float, 3> Color;
 // Ubyte color RGBA
 typedef Vector<UBYTE, 4> Color4;
 
+// Shapes
+enum class ShapeType;
+class IShape;
+class AABB;
+class Sphere;
+
 // Misc
 class Time;
 class ContextWindow;
@@ -81,7 +87,7 @@ typedef char* CString;
 class ISystem;
 class RenderingSystem;
 class PhysicsSystem;
-class AudioSystem;
+// class AudioSystem;
 class UISystem;
 class ComponentSystem;
 
@@ -102,6 +108,7 @@ class CModel;
 	class Material;
 	class Shader;
 	class Texture;
+	class Cubemap;
 	class FramebufferTexture;
 class CLight;
 class CParticleSystem;
@@ -111,7 +118,6 @@ class ICollider;
 	class AABBCollider;
 	class SphereCollider;
 	class CapsuleCollider;
-	class MeshCollider;
 
 
 

@@ -97,6 +97,9 @@ int main()
 
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
+
+		//dbEntity->GetTransform().GetPosition() =
+		//	Vector3::Lerp(dbEntity->GetTransform().GetPosition(), cameraEntity->GetTransform().GetPosition() + Vector3(1.0f, -0.5f, 1.5f), Time::GetDeltaTime() * 20);
 	}
 
 	ContextWindow::Instance().Terminate();

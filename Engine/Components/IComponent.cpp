@@ -18,7 +18,12 @@ bool IComponent::IsActive() const
 	return isActive && owner->IsActive();
 }
 
-const Entity & IComponent::GetOwner() const
+const Entity &IComponent::GetOwner() const
+{
+	return *owner;
+}
+
+Entity &IComponent::GetOwner()
 {
 	return *owner;
 }

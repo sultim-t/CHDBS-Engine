@@ -35,6 +35,8 @@ private:
 	float	startLifetime;
 	float	lifetimeRandomness;
 
+	float	gravityMultiplier;
+
 	float	emitRate;
 	bool	isLooping;
 

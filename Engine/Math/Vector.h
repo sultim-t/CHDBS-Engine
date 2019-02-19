@@ -22,6 +22,7 @@ public:
 	inline Type &operator[](int index);
 	inline const Type operator[](int index) const;
 	inline Vector<Type, Dim>&operator=(const Vector<Type, Dim> &in);
+	
 	inline Vector<Type, Dim>operator+(const Vector<Type, Dim> &in) const;
 	inline Vector<Type, Dim>&operator+=(const Vector<Type, Dim> &in);
 	inline Vector<Type, Dim>operator-() const;
@@ -29,6 +30,9 @@ public:
 	inline Vector<Type, Dim>&operator-=(const Vector<Type, Dim> &in);
 	inline Vector<Type, Dim>operator*(const Type scale) const;
 	inline Vector<Type, Dim>&operator*=(const Type scale);
+	inline Vector<Type, Dim>operator/(const Type scale) const;
+	inline Vector<Type, Dim>&operator/=(const Type scale);
+	
 	inline bool operator==(const Vector<Type, Dim> &vec);
 	inline bool operator==(const Vector<Type, Dim> &vec) const;
 	inline bool operator!=(const Vector<Type, Dim> &vec);
@@ -65,6 +69,8 @@ public:
 	inline Type Dot(const Vector<Type, Dim> &vec);
 	inline void Normalize();
 	inline Vector<Type, Dim> GetNormalized() const;
+
+	static Vector<Type, Dim> Lerp(const Vector<Type, Dim> &start, const Vector<Type, Dim> &end, const float t);
 
 	static Vector<float, 3>Cross(const Vector<Type, Dim> &in1, const  Vector<Type, Dim> &in2);
 	inline Vector<float, 3>Cross(const Vector<Type, Dim> &in);
@@ -224,6 +230,30 @@ inline Vector<Type, Dim> &Vector<Type, Dim>::operator*=(const Type scale)
 	for (int i = 0; i < Dim; i++)
 	{
 		vector[i] *= scale;
+	}
+
+	return *this;
+}
+
+template<class Type, int Dim>
+inline Vector<Type, Dim> Vector<Type, Dim>::operator/(const Type scale) const
+{
+	Vector<Type, Dim> result;
+
+	for (int i = 0; i < Dim; i++)
+	{
+		result[i] = vector[i] / scale;
+	}
+
+	return result;
+}
+
+template<class Type, int Dim>
+inline Vector<Type, Dim>& Vector<Type, Dim>::operator/=(const Type scale)
+{
+	for (int i = 0; i < Dim; i++)
+	{
+		vector[i] /= scale;
 	}
 
 	return *this;
@@ -425,12 +455,13 @@ inline Vector<Type, Dim> Vector<Type, Dim>::GetNormalized() const
 	return result;
 }
 
-#pragma region vector3
-/*const Vector<Type, Dim>Vector::Zero = Vector(0.0f, 0.0f, 0.0f);
-const Vector<Type, Dim>Vector::Right = Vector(1.0f, 0.0f, 0.0f);
-const Vector<Type, Dim>Vector::Up = Vector(0.0f, 1.0f, 0.0f);
-const Vector<Type, Dim>Vector::Forward = Vector(0.0f, 0.0f, 1.0f);*/
+template<class Type, int Dim>
+inline Vector<Type, Dim> Vector<Type, Dim>::Lerp(const Vector<Type, Dim>& start, const Vector<Type, Dim>& end, const float t)
+{
+	return start + (end - start) * t;
+}
 
+#pragma region vector3
 template <>
 inline Vector<float, 3> Vector<float, 3>::Cross(const Vector<float, 3>&in1, const Vector<float, 3>&in2)
 {

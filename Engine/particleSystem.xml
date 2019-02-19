@@ -4,14 +4,16 @@
 
   <CParticleSystem
     maxCount="5000" 
-    lifetime="2"
+    lifetime="3"
     size="0.3"
-    colr="128"
-    colg="255"
-    colb="128"
-    cola="128"
-    vely="5"
+    colr="255"
+    colg="0"
+    colb="0"
+    cola="255"
+    velx="5"
     velRand="0.5"
+    gravMult="0.5"
+    emitRate="50"
     vertPath="TEMP/particle.vs"
     fragPath="TEMP/particle.fs"/>
 </Entity>

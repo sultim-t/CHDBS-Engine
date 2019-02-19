@@ -59,7 +59,17 @@ const Vector3 & Transform::GetPosition() const
 	return position;
 }
 
+Vector3 & Transform::GetPosition()
+{
+	return position;
+}
+
 const Vector3 & Transform::GetScale() const
+{
+	return scale;
+}
+
+Vector3 & Transform::GetScale()
 {
 	return scale;
 }
@@ -74,19 +84,24 @@ const Quaternion & Transform::GetRotation() const
 	return quat;
 }
 
+Quaternion & Transform::GetRotation()
+{
+	return quat;
+}
+
 // Setters
 
-void Transform::SetPosition(Vector3& p)
+void Transform::SetPosition(const Vector3& p)
 {
 	position = p;
 }
 
-void Transform::SetRotation(Vector3& euler)
+void Transform::SetRotation(const Vector3& euler)
 {
 	quat = Quaternion(euler);
 }
 
-void Transform::SetScale(Vector3& s)
+void Transform::SetScale(const Vector3& s)
 {
 	scale = s;
 }
