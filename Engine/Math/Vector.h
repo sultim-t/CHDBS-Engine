@@ -78,6 +78,10 @@ public:
 	inline const Type *ToArray() const;
 };
 
+// gloabal overload; to use (scale*Vector)
+template<class Type, int Dim>
+inline Vector<Type, Dim> operator*(const Type scale, const Vector<Type, Dim>& vec) const;
+
 /*
 ==========
 Vectors
@@ -484,4 +488,11 @@ template<class Type, int Dim>
 inline const Type *Vector<Type, Dim>::ToArray() const
 {
 	return &vector[0];
+}
+
+// gloabal overload; to use (scale*Vector)
+template<class Type, int Dim>
+inline Vector<Type, Dim> operator*(const Type scale, const Vector<Type, Dim>& vec) const
+{
+	return vec * scale;
 }

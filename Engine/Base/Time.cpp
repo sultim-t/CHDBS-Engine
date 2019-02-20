@@ -6,18 +6,23 @@ float Time::lastFrame = 0;
 float Time::fixedDeltaTime = 1.0f / 60.0f;
 float Time::fdtAccum = 0;
 
-void Time::Calculate()
+void Time::Init()
 {
-	float currentFrame = (float)glfwGetTime();
-	deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
+	lastFrame = GetTime();
 }
 
-bool Time::CalculateFixedDelta()
+void Time::Calculate()
 {
-	fdtAccum += deltaTime;
+	float currentFrame = GetTime();
+	deltaTime = currentFrame - lastFrame;
+	lastFrame = currentFrame;
 
-	if (fdtAccum > fixedDeltaTime)
+	fdtAccum += deltaTime;
+}
+
+bool Time::ToFixedUpdate()
+{
+	if (fdtAccum >= fixedDeltaTime)
 	{
 		fdtAccum -= fixedDeltaTime;
 		return true;

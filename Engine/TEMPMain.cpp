@@ -93,15 +93,19 @@ int main()
 	dbEntity->GetComponent<Rigidbody>()->AddForce(PhysicsSystem::Gravity);
 
 	// Recalculate time, there shouldn't be counted initialization time
-	Time::Calculate();
+	Time::Init();
 
 	while (!ContextWindow::Instance().ShouldClose())
 	{
 		Time::Calculate();
 
+		while (Time::ToFixedUpdate())
+		{
+			PhysicsSystem::Instance().Update();
+		}
+
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
-		PhysicsSystem::Instance().Update();
 
 		//dbEntity->GetTransform().GetPosition() =
 		//	Vector3::Lerp(dbEntity->GetTransform().GetPosition(), cameraEntity->GetTransform().GetPosition() + Vector3(1.0f, -0.5f, 1.5f), Time::GetDeltaTime() * 20);

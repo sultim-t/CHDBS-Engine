@@ -28,7 +28,7 @@ void Engine::MainLoop()
 	while (isActive)
 	{
 		Time::Calculate();
-		while (Time::CalculateFixedDelta())
+		while (Time::ToFixedUpdate())
 		{
 			FixedUpdate();
 		}

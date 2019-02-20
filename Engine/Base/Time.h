@@ -10,10 +10,14 @@ private:
 	static float fixedDeltaTime;
 	static float fdtAccum;
 
+// temp public
+public:
+	static void Init();
+
 public:
 	// Must be called only on frame change
 	static void Calculate();
-	static bool CalculateFixedDelta ();
+	static bool ToFixedUpdate();
 
 public:
 	// Current time
