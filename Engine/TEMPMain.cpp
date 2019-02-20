@@ -26,6 +26,7 @@
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
 #include <Engine/Systems/ComponentSystem.h>
+#include <Engine/Systems/PhysicsSystem.h>
 
 int main()
 {
@@ -33,9 +34,10 @@ int main()
 	//engine.Init();
 
 	ContextWindow::Instance().Init("Engine", 1280, 720);
+	
 	RenderingSystem::Instance().Init();
 	ComponentSystem::Instance().Init();
-
+	PhysicsSystem::Instance().Init();
 
 	StaticArray<const char*, 6> skyNames;
 	skyNames[0] = "TEMP/DoubleBarrel/Skybox/right.jpg";
@@ -88,6 +90,8 @@ int main()
 			AddTexture(reflection);
 	}
 
+	dbEntity->GetComponent<Rigidbody>()->AddForce(PhysicsSystem::Gravity);
+
 	// Recalculate time, there shouldn't be counted initialization time
 	Time::Calculate();
 
@@ -97,6 +101,7 @@ int main()
 
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
+		PhysicsSystem::Instance().Update();
 
 		//dbEntity->GetTransform().GetPosition() =
 		//	Vector3::Lerp(dbEntity->GetTransform().GetPosition(), cameraEntity->GetTransform().GetPosition() + Vector3(1.0f, -0.5f, 1.5f), Time::GetDeltaTime() * 20);

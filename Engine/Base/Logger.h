@@ -3,5 +3,5 @@
 class Logger
 {
 public:
-	static void Print(char *message);
+	static void Print(const char *message);
 };

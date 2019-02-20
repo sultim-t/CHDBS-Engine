@@ -88,7 +88,7 @@ bool AABB::Intersect(const AABB &aabb) const
 {
 	for (int i = 0; i < 3; i++)
 	{
-		if (maxBounds[i] < aabb.minBounds[i] || maxBounds[i] > aabb.maxBounds[i])
+		if (maxBounds[i] < aabb.minBounds[i] || minBounds[i] > aabb.maxBounds[i])
 		{
 			return false;
 		}

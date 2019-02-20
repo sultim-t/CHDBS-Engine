@@ -3,26 +3,32 @@
 #include <Engine/Math/Vector.h>
 #include <Engine/Math/Transform.h>
 #include <Engine/DataStructures/DynamicArray.h>
-#include <Engine/Math/AABB.h>
+#include "ICollider.h"
 
 class Rigidbody : public IComponent
 {
+	CLASSDECLARATION(Rigidbody)
+
 private:
 	// pointer to current transform
-	Transform	&transform;
+	Transform	*transform;
 	Vector3		velocity;
 	float		mass;
 
 	DynamicArray<Vector3> allForces;
 	DynamicArray<Vector3> allImpulses;
 
-	AABB collider;
+	// current rigidbody collider
+	ICollider *collider;
 	
 public:
+	~Rigidbody();
+
 	void AddForce(const Vector3 &force);
 	void AddImpulse(const Vector3 &impulse);
 
 	void FixedUpdate();
+	void SolveCollisions(const ICollider *col);
 
 public:
 	// Initialization as component
@@ -30,4 +36,6 @@ public:
 	// Empty update function
 	// Rigidbodies are updated in PhysicsSystem through FixedUpdate()
 	void Update() override {};
+
+	void SetProperty(const String &key, const String &value) override;
 };

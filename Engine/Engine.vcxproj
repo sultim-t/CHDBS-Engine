@@ -188,7 +188,6 @@
     <ClCompile Include="Math\Sphere.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
     <ClCompile Include="Memory\SystemAllocator.cpp" />
-    <ClCompile Include="Physics\AABBCollider.cpp" />
     <ClCompile Include="Physics\Rigidbody.cpp" />
     <ClCompile Include="Rendering\ArrayMesh.cpp" />
     <ClCompile Include="Rendering\Cubemap.cpp" />
@@ -247,7 +246,9 @@
     <ClInclude Include="Memory\Memory.h" />
     <ClInclude Include="Memory\SystemAllocator.h" />
     <ClInclude Include="Physics\AABBCollider.h" />
+    <ClInclude Include="Physics\CollisionInfo.h" />
     <ClInclude Include="Physics\Rigidbody.h" />
+    <ClInclude Include="Physics\SphereCollider.h" />
     <ClInclude Include="Rendering\ArrayMesh.h" />
     <ClInclude Include="Rendering\Cubemap.h" />
     <ClInclude Include="Rendering\FramebufferTexture.h" />

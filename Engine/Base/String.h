@@ -5,7 +5,8 @@ class String
 {
 private:
 	char *string;
-	UINT length;
+	UINT length;	// string length without '\0'
+					// memory allocated for string is (length+1)
 
 private:
 	// Allocates new string
@@ -21,6 +22,7 @@ public:
 	// Destructor
 	~String();
 
+	inline char &operator[](UINT i);
 	inline char operator[](UINT i) const;
 
 	inline bool operator==(const String &b) const;
@@ -58,6 +60,7 @@ public:
 
 	int ToInt() const;
 	float ToFloat() const;
+	Vector3 ToVector3() const;
 
 	inline const char *GetCharPtr() const;
 
@@ -72,9 +75,15 @@ inline String::String() : String("")
 inline String::String(const String &orig) : String(orig.string)
 { }
 
+inline char &String::operator[](UINT i)
+{
+	ASSERT(i <= length); // == to allow to read '\0'
+	return string[i];
+}
+
 inline char String::operator[](UINT i) const
 {
-	ASSERT(i < length);
+	ASSERT(i <= length); // == to allow to read '\0'
 	return string[i];
 }
 

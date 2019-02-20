@@ -98,6 +98,11 @@ void CFreeMovement::ProcessMouseScroll(float yoffset)
 {
 	CCamera *cam = owner->GetComponent<CCamera>();
 
+	if (cam == nullptr)
+	{
+		return;
+	}
+
 	float fov = cam->GetFOV();
 
 	if (fov >= 1.0f && fov <= 120.0f)

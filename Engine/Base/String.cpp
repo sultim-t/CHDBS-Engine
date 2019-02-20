@@ -1,4 +1,5 @@
 #include <Engine/Memory/Memory.h>
+#include <Engine/Math/Vector.h>
 #include <string>
 
 String::String(const char * orig)
@@ -142,4 +143,41 @@ int String::ToInt() const
 float String::ToFloat() const
 {
 	return (float)atof(string);
+}
+
+Vector3 String::ToVector3() const
+{
+	Vector3 result;
+	UINT index = 0;
+
+	String temp(string);
+
+	// pointer to the beginning of float to parse
+	const char *ptr = temp.GetCharPtr();
+	
+	// <= to check last symbol
+	for (UINT i = 0; i <= length; i++)
+	{
+		if (string[i] == ' ' || string[i] == '\0')
+		{
+			ASSERT(index < 3);
+
+			temp[i] = '\0';
+
+			// convert to float till '\0'
+			result[index] = (float)atof(ptr);
+
+			// update ptr
+			ptr = temp + i + 1;
+			index++;
+		}
+	}
+
+	// convert unparsed to zero
+	for (UINT i = index; i < 3; i++)
+	{
+		result[i] = 0;
+	}
+
+	return result;
 }

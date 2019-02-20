@@ -72,6 +72,7 @@ inline bool Sphere::Intersect(const IShape &shape) const
 		return Intersect((Sphere&)shape);
 	default:
 		ASSERT(0);
+		return false;
 	}
 }
 

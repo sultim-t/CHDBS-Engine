@@ -1,11 +1,27 @@
 #include "Rigidbody.h"
+#include "AABBCollider.h"
+#include "SphereCollider.h"
+#include <Engine/Memory/Memory.h>
+#include <Engine/Systems/PhysicsSystem.h>
+
+CLASSDEFINITION(IComponent, Rigidbody)
 
 void Rigidbody::Init()
 {
-	transform = GetOwner().GetTransform();
+	transform = &GetOwner().GetTransform();
 
 	allForces.Init(8);
 	allImpulses.Init(8);
+
+	PhysicsSystem::Instance().Register(this);
+}
+
+Rigidbody::~Rigidbody()
+{
+	if (collider != nullptr)
+	{
+		SYSALLOCATOR.Free(collider);
+	}
 }
 
 void Rigidbody::AddForce(const Vector3 &force)
@@ -44,5 +60,109 @@ void Rigidbody::FixedUpdate()
 
 	Vector3 acceleration = force / mass;
 	velocity += acceleration * Time::GetFixedDeltaTime();
-	transform.GetPosition() += velocity * Time::GetFixedDeltaTime();
+	Vector3 pos = transform->GetPosition() + velocity * Time::GetFixedDeltaTime();
+	
+	AABBCollider col = AABBCollider(AABB(Vector3(-10000, -10, -10000), Vector3(10000, -4, 10000)));
+
+	AABBCollider c1 = AABBCollider(*((AABBCollider*)collider));
+	c1.GetAABB().Move(pos);
+
+	if (c1.Intersect(col))
+	{
+		pos[1] = -4.0f;
+	}
+
+	transform->GetPosition() = pos;
+}
+
+void Rigidbody::SolveCollisions(const ICollider * col)
+{
+}
+
+#define PROPERTY_KEY_MASS		"mass"
+#define PROPERTY_KEY_VELOCITY	"velocity"
+#define PROPERTY_KEY_COLTYPE	"colType"
+
+#define PROPERTY_VAL_COL_AABB	"aabb"
+#define PROPERTY_VAL_COL_SPHERE	"sphere"
+
+#define PROPERTY_KEY_COLOFFSET	"offset"
+
+// for spheres
+#define PROPERTY_KEY_COLRADIUS	"colRadius"
+
+// for aabbs
+#define PROPERTY_KEY_COLMAX		"colMax"
+#define PROPERTY_KEY_COLMIN		"colMin"
+
+void Rigidbody::SetProperty(const String &key, const String &value)
+{
+	if (key == PROPERTY_KEY_MASS)
+	{
+		mass = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_VELOCITY)
+	{
+		velocity = value.ToVector3();
+	}
+	else if (key == PROPERTY_KEY_COLTYPE)
+	{
+		if (value == PROPERTY_VAL_COL_AABB)
+		{
+			ASSERT(collider == nullptr);
+			collider = new AABBCollider();
+		}
+		else if (value == PROPERTY_VAL_COL_AABB)
+		{
+			ASSERT(collider == nullptr);
+			collider = new SphereCollider();
+		}
+		else
+		{
+			Logger::Print("Wrong collider type");
+		}
+	}
+	else if (key == PROPERTY_KEY_COLOFFSET)
+	{
+		if (collider->GetShape().GetShapeType() == ShapeType::AABB)
+		{
+			Vector3 offset = value.ToVector3();
+			((AABBCollider*)collider)->GetOffset() = offset;
+		}
+		else if (collider->GetShape().GetShapeType() == ShapeType::Sphere)
+		{
+			Vector3 center = value.ToVector3();
+			((SphereCollider*)collider)->GetSphere().SetCenter(center);
+		}
+		else
+		{
+			Logger::Print("Rigidbody shape is not set");
+		}
+	}
+	else if (key == PROPERTY_KEY_COLRADIUS)
+	{
+		ASSERT(collider->GetShape().GetShapeType() == ShapeType::Sphere);
+		((SphereCollider*)collider)->GetSphere().SetRadius(value.ToFloat());
+	}
+	else if (key == PROPERTY_KEY_COLMAX)
+	{
+		ASSERT(collider->GetShape().GetShapeType() == ShapeType::AABB);
+		
+		Vector3 m = value.ToVector3();
+		((AABBCollider*)collider)->GetAABB().SetMax(m);
+	}
+	else if (key == PROPERTY_KEY_COLMIN)
+	{
+		ASSERT(collider->GetShape().GetShapeType() == ShapeType::AABB);
+
+		Vector3 m = value.ToVector3();
+		((AABBCollider*)collider)->GetAABB().SetMin(m);
+	}
+	else
+	{
+		String s = "Wrong Rigidbody property";
+		s += value;
+
+		Logger::Print(s);
+	}
 }

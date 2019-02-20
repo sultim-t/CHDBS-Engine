@@ -46,7 +46,7 @@ inline DynamicArray<T>::DynamicArray()
 {
 	allocated = 0;
 	top = 0;
-	buffer = NULL;
+	buffer = nullptr;
 }
 
 template<class T>
@@ -58,8 +58,8 @@ inline DynamicArray<T>::~DynamicArray()
 template<class T>
 inline void DynamicArray<T>::Init(int initSize)
 {
-	ASSERT(buffer == NULL);
-	ASSERT(initSize < 0);
+	ASSERT(buffer == nullptr);
+	ASSERT(initSize > 0);
 
 	allocated = initSize;
 	top = 0;
@@ -69,21 +69,21 @@ inline void DynamicArray<T>::Init(int initSize)
 template<class T>
 inline const T &DynamicArray<T>::operator[](unsigned index) const
 {
-	ASSERT(index >= top);
+	ASSERT(index < top);
 	return buffer[index];
 }
 
 template<class T>
 inline T &DynamicArray<T>::operator[](unsigned index)
 {
-	ASSERT((int)index >= top);
+	ASSERT((int)index < top);
 	return buffer[index];
 }
 
 template<class T>
 inline void DynamicArray<T>::Push(const T &elem)
 {
-	ASSERT(buffer != NULL);
+	ASSERT(buffer != nullptr);
 
 	if (top >= allocated)
 	{
@@ -97,7 +97,7 @@ inline void DynamicArray<T>::Push(const T &elem)
 template<class T>
 inline void DynamicArray<T>::Pop()
 {
-	ASSERT(buffer != NULL);
+	ASSERT(buffer != nullptr);
 	ASSERT(top >= 0);
 
 	buffer[top].~T();
@@ -126,11 +126,11 @@ inline void DynamicArray<T>::Delete()
 {
 	Clear();
 
-	if (buffer != NULL)
+	if (buffer != nullptr)
 	{
 		SYSALLOCATOR.Free(buffer);
 	}
 
 	allocated = 0;
-	buffer = NULL;
+	buffer = nullptr;
 }

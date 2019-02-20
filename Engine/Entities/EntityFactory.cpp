@@ -5,6 +5,7 @@
 #include <Engine/Components/CModel.h>
 #include <Engine/Components/CLight.h>
 #include <Engine/Components/CParticleSystem.h>
+#include <Engine/Physics/Rigidbody.h>
 
 template <class T>
 IComponent *CompCreator(void *elemPointer);
@@ -44,6 +45,7 @@ EntityFactory::EntityFactory()
 	PRegisterComponentType<CLight>("CLight");
 	PRegisterComponentType<CModel>("CModel");
 	PRegisterComponentType<CParticleSystem>("CParticleSystem");
+	PRegisterComponentType<Rigidbody>("Rigidbody");
 }
 
 IComponent *EntityFactory::CreateComponent(void *xmlElemP)
