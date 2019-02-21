@@ -5,14 +5,14 @@ float Input::MouseY;
 float Input::Scroll;
 float Input::MouseXOffset;
 float Input::MouseYOffset;
-float Input::MouseSensitivity = 50.0f;
+float Input::MouseSensitivity = 1.0f;
 
-bool Input::IsPressed(int keycode)
+bool Input::IsPressed(const Keycode keycode)
 {
-	return ContextWindow::Instance().IsPressed(keycode);
+	return ContextWindow::Instance().IsPressed((int)keycode);
 }
 
-bool Input::IsReleased(int keycode)
+bool Input::IsReleased(const Keycode keycode)
 {
-	return ContextWindow::Instance().IsReleased(keycode);
+	return ContextWindow::Instance().IsReleased((int)keycode);
 }

@@ -58,6 +58,7 @@ public:
 	// Removes chars
 	void Remove(UINT fromLeft, UINT fromRight);
 
+	bool ToBool() const;
 	int ToInt() const;
 	float ToFloat() const;
 	Vector3 ToVector3() const;

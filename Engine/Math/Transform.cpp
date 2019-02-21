@@ -187,7 +187,41 @@ Matrix4 Transform::LookAt(const Vector3 &position, const Vector3 &target, const 
 	return mat;
 }
 
-Matrix4 Transform::TranslateMatrix(const Matrix4& mat, const Vector3 &vec)
+Vector3 Transform::DirectionFromLocal(const Vector3 &dir) const
+{
+	// rotate dir by current rotation
+	return quat * dir;
+}
+
+Vector3 Transform::DirectionFromWorld(const Vector3 &dir) const
+{
+	return Quaternion::Inverse(quat) * dir;
+}
+
+Vector3 Transform::PointFromLocal(const Vector3 &vec) const
+{
+	return quat * (Vector3::Scale(vec, scale)) + position;
+}
+
+Vector3 Transform::PointFromWorld(const Vector3 &vec) const
+{
+	ASSERT(scale[0] != 0.0f && scale[1] != 0.0f && scale[2] != 0.0f);
+
+	Vector3 result = vec - position;
+	
+	// unrotate
+	result = Quaternion::Inverse(quat) * result;
+
+	// inverse scale
+	Vector3 invScale = Vector3(1 / scale[0], 1 / scale[1], 1 / scale[2]);
+
+	// unscale
+	result = Vector3::Scale(result, invScale);
+
+	return result;
+}
+
+Matrix4 Transform::TranslateMatrix(const Matrix4 &mat, const Vector3 &vec)
 {
 	Matrix4 result(mat);
 

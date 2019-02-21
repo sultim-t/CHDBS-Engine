@@ -21,7 +21,8 @@ private:
 	UINT particleCount;
 
 	Vector3 startVelocity;
-	float	velocityRandomness;
+	Vector3	velocityRandomness;
+	bool	isWorldVelocity;
 
 	Color4	startColor;
 	float	colorRandomness;
@@ -52,12 +53,17 @@ private:
 	Shader particleShader;
 	String shaderVert, shaderFrag;
 
+	// store pointer to current transform
+	// for fast access
+	Transform *transform;
+
 	// store pointer to camera
 	// for sorting and aligning
 	const CCamera *cam;
 
 private:
 	UINT FindDeadParticle();
+	void GenerateParticle(const Vector3 &pos, const Vector3 &vel, const Color4 &col, float life, float rot, float size);
 
 	void Simulate();
 	void SortParticles();

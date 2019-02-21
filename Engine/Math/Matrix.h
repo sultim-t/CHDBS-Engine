@@ -28,6 +28,9 @@ public:
 	inline Matrix<Type, Dim> operator*(const Matrix<Type, Dim> &matrix2) const;
 	inline Matrix<Type, Dim> &operator*=(const Matrix<Type, Dim> &matrix2);
 
+	// matrix-vector operations
+	inline Vector<Type, Dim> operator*(const Vector<Type, Dim> &vec) const;
+
 	// matrix-scalar opertaions
 	inline Matrix<Type, Dim> operator*(const Type scalar) const;
 	inline Matrix<Type, Dim> &operator*=(const Type scalar);
@@ -192,6 +195,23 @@ inline Matrix<Type, Dim>& Matrix<Type, Dim>::operator*=(const Matrix<Type, Dim>&
 {
 	*this = *this * matrix2;
 	return *this;
+}
+
+template<class Type, int Dim>
+inline Vector<Type, Dim> Matrix<Type, Dim>::operator*(const Vector<Type, Dim>& vec) const
+{
+	Vector<Type, Dim> result;
+
+	for (int i = 0; i < Dim; i++)
+	{
+		result[i] = (Type)0;
+		for (int j = 0; j < Dim; j++)
+		{
+			result[i] += matrix[i][j] * vec[j];
+		}
+	}
+
+	return result;
 }
 
 template<class Type, int Dim>

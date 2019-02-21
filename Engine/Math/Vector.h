@@ -36,6 +36,7 @@ public:
 	inline bool operator==(const Vector<Type, Dim> &vec);
 	inline bool operator==(const Vector<Type, Dim> &vec) const;
 	inline bool operator!=(const Vector<Type, Dim> &vec);
+	inline bool operator!=(const Vector<Type, Dim> &vec) const;
 
 	static void Copy(const Vector<Type, Dim> &in, Vector<Type, Dim> &out);
 	static bool ApproximateCompare(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2);
@@ -52,6 +53,8 @@ public:
 	// Dot product of vec1 and vec2
 	static Type Dot(const Vector<Type, Dim> &vec1, const  Vector<Type, Dim> &vec2);
 	static void Normalize(Vector<Type, Dim> &vec);
+	// Multiplies vectors component-wise
+	static Vector<Type, Dim> Scale(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2);
 
 	inline void Copy(Vector<Type, Dim> &out);
 	inline bool ApproximateCompare(const Vector<Type, Dim> &vec);
@@ -69,6 +72,8 @@ public:
 	inline Type Dot(const Vector<Type, Dim> &vec);
 	inline void Normalize();
 	inline Vector<Type, Dim> GetNormalized() const;
+	// Multiply by vector component-wise
+	inline Vector<Type, Dim> Scale(const Vector<Type, Dim> &vec);
 
 	static Vector<Type, Dim> Lerp(const Vector<Type, Dim> &start, const Vector<Type, Dim> &end, const float t);
 
@@ -79,8 +84,8 @@ public:
 };
 
 // gloabal overload; to use (scale*Vector)
-template<class Type, int Dim>
-inline Vector<Type, Dim> operator*(const Type scale, const Vector<Type, Dim>& vec) const;
+//template<class Type, int Dim>
+//inline Vector<Type, Dim> operator*(const Type scale, const Vector<Type, Dim>& vec) const;
 
 /*
 ==========
@@ -305,6 +310,20 @@ inline bool Vector<Type, Dim>::operator!=(const Vector<Type, Dim> &vec)
 	return true;
 }
 
+template<class Type, int Dim>
+inline bool Vector<Type, Dim>::operator!=(const Vector<Type, Dim>& vec) const
+{
+	for (int i = 0; i < Dim; i++)
+	{
+		if (vector[i] == vec[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 template <class Type, int Dim>
 inline void Vector<Type, Dim>::Copy(const Vector<Type, Dim>&in, Vector<Type, Dim>&out)
 {
@@ -397,6 +416,19 @@ inline void Vector<Type, Dim>::Normalize(Vector<Type, Dim>&vec)
 	}
 }
 
+template<class Type, int Dim>
+inline Vector<Type, Dim> Vector<Type, Dim>::Scale(const Vector<Type, Dim>& vec1, const Vector<Type, Dim>& vec2)
+{
+	Vector<Type, Dim> result;
+
+	for (int i = 0; i < Dim; i++)
+	{
+		result[i] = vec1[i] * vec2[i];
+	}
+	
+	return result;
+}
+
 template <class Type, int Dim>
 inline void Vector<Type, Dim>::Copy(Vector<Type, Dim>&out)
 {
@@ -460,6 +492,12 @@ inline Vector<Type, Dim> Vector<Type, Dim>::GetNormalized() const
 }
 
 template<class Type, int Dim>
+inline Vector<Type, Dim> Vector<Type, Dim>::Scale(const Vector<Type, Dim>& vec)
+{
+	*this = Scale(*this, vec);
+}
+
+template<class Type, int Dim>
 inline Vector<Type, Dim> Vector<Type, Dim>::Lerp(const Vector<Type, Dim>& start, const Vector<Type, Dim>& end, const float t)
 {
 	return start + (end - start) * t;
@@ -491,8 +529,8 @@ inline const Type *Vector<Type, Dim>::ToArray() const
 }
 
 // gloabal overload; to use (scale*Vector)
-template<class Type, int Dim>
+/*template<class Type, int Dim>
 inline Vector<Type, Dim> operator*(const Type scale, const Vector<Type, Dim>& vec) const
 {
 	return vec * scale;
-}
+}*/

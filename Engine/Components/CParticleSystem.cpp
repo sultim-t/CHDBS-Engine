@@ -2,6 +2,7 @@
 #include <Engine/Memory/Memory.h>
 #include <Engine/Components/CCamera.h>
 #include <Engine/Systems/RenderingSystem.h>
+#include <Engine/Base/Random.h>
 
 #include <algorithm>
 
@@ -14,10 +15,9 @@
 
 #define PROPERTY_KEY_MAXCOUNT	"maxCount"
 
-#define PROPERTY_KEY_VELX		"velx"
-#define PROPERTY_KEY_VELY		"vely"
-#define PROPERTY_KEY_VELZ		"velz"
+#define PROPERTY_KEY_VEL		"vel"
 #define PROPERTY_KEY_VELRAND	"velRand"
+#define PROPERTY_KEY_VELWORLD	"isWorldVelocity"
 
 #define PROPERTY_KEY_COLR		"colr"
 #define PROPERTY_KEY_COLG		"colg"
@@ -51,6 +51,31 @@ float CParticleSystem::quadVertices[] =
 #define MAX_PARTICLE_COUNT 10000
 
 CLASSDEFINITION(IComponent, CParticleSystem)
+
+void CParticleSystem::Emit(UINT count)
+{
+	Vector3 tempVel = startVelocity;
+	Vector3 tempVelR = velocityRandomness;
+	
+	if (!isWorldVelocity)
+	{
+		// if velocity is in local space
+		// transform it to world
+		tempVel = transform->DirectionFromLocal(tempVel);
+		tempVelR =  transform->DirectionFromLocal(tempVelR);
+	}
+
+	for (UINT i = 0; i < count; i++)
+	{
+		Vector3 vel = tempVel + Random::GetInsideBox(tempVelR);
+
+		float life = startLifetime + Random::GetFloat(-lifetimeRandomness, lifetimeRandomness);
+		float rot = startRotation + Random::GetFloat(-rotationRandomness, rotationRandomness);
+		float size = startSize + Random::GetFloat(-sizeRandomness, sizeRandomness);
+
+		GenerateParticle(transform->GetPosition(), vel, startColor, life, rot, size);
+	}
+}
 
 void CParticleSystem::BindCamera(const CCamera * cam)
 {
@@ -88,6 +113,7 @@ void CParticleSystem::Init()
 
 	lastUsedParticle = 0;
 	cam = nullptr;
+	transform = &GetOwner().GetTransform();
 
 	// init particles
 	for (UINT i = 0; i < maxParticleCount; i++)
@@ -147,40 +173,19 @@ UINT CParticleSystem::FindDeadParticle()
 	return 0;
 }
 
+void CParticleSystem::GenerateParticle(const Vector3 &pos, const Vector3 &vel, const Color4 &col, float life, float rot, float size)
+{
+	UINT particleIndex = FindDeadParticle();
+	particles[particleIndex].position = pos;
+	particles[particleIndex].velocity = vel;
+	particles[particleIndex].color = col;
+	particles[particleIndex].life = life;
+	particles[particleIndex].rotation = rot;
+	particles[particleIndex].size = size;
+}
+
 void CParticleSystem::Update()
 { 
-	UINT newparticles = (UINT)(Time::GetDeltaTime() * emitRate);
-
-	if (newparticles > maxParticleCount)
-	{
-		newparticles = maxParticleCount - particleCount;
-	}
-	else if (newparticles == 0)
-	{
-		newparticles = 1;
-	}
-
-	// init new particles
-	for (UINT i = 0; i < newparticles; i++)
-	{
-		UINT particleIndex = FindDeadParticle();
-		particles[particleIndex].life = startLifetime;
-		particles[particleIndex].position = owner->GetTransform().GetPosition();
-
-		float r = (float)(rand() % 1000) * velocityRandomness / 1000.0f;
-
-		Vector3 velRand;
-		for (UINT k = 0; k < 3; k++)
-		{
-			velRand[k] = (float)(rand() % 1000) * velocityRandomness / 1000.0f;
-		}
-
-		particles[particleIndex].velocity = startVelocity + velRand;
-
-		particles[particleIndex].rotation = startRotation;
-		particles[particleIndex].color = startColor;
-		particles[particleIndex].size = startSize;
-	}
 
 	Simulate();
 }
@@ -203,12 +208,12 @@ void CParticleSystem::Simulate()
 				p.velocity += Vector3(0.0f, -9.81f, 0.0f) * gravityMultiplier * Time::GetDeltaTime();
 				p.position += p.velocity * Time::GetDeltaTime();
 				
-				positionsAndSizes[4 * count][0] = p.position[0];
-				positionsAndSizes[4 * count][1] = p.position[1];
-				positionsAndSizes[4 * count][2] = p.position[2];
-				positionsAndSizes[4 * count][3] = p.size;
+				positionsAndSizes[count][0] = p.position[0];
+				positionsAndSizes[count][1] = p.position[1];
+				positionsAndSizes[count][2] = p.position[2];
+				positionsAndSizes[count][3] = p.size;
 
-				colors[4 * count] = p.color;
+				colors[count] = p.color;
 			}
 			else
 			{
@@ -307,21 +312,17 @@ void CParticleSystem::SetProperty(const String &key, const String &value)
 	{
 		maxParticleCount = (UINT)value.ToInt();
 	}
-	else if (key == PROPERTY_KEY_VELX)
+	else if (key == PROPERTY_KEY_VEL)
 	{
-		startVelocity[0] = value.ToFloat();
-	}
-	else if (key == PROPERTY_KEY_VELY)
-	{
-		startVelocity[1] = value.ToFloat();
-	}
-	else if (key == PROPERTY_KEY_VELZ)
-	{
-		startVelocity[2] = value.ToFloat();
+		startVelocity = value.ToVector3();
 	}
 	else if (key == PROPERTY_KEY_VELRAND)
 	{
-		velocityRandomness = value.ToFloat();
+		velocityRandomness = value.ToVector3();
+	}
+	else if (key == PROPERTY_KEY_VELWORLD)
+	{
+		isWorldVelocity = value.ToBool();
 	}
 	else if (key == PROPERTY_KEY_COLR)
 	{
@@ -377,7 +378,7 @@ void CParticleSystem::SetProperty(const String &key, const String &value)
 	}
 	else if (key == PROPERTY_KEY_LOOPING)
 	{
-		isLooping = value.ToInt() == 0 ? false : true;
+		isLooping = value.ToBool();
 	}
 	else
 	{

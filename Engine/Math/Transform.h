@@ -78,5 +78,18 @@ public:
 	static Matrix4 ScaleMatrix(const Matrix4& mat, const Vector3& vec);
 
 	static Matrix4 LookAt(const Vector3 &position, const Vector3 &target, const Vector3 &up);
+
+	// Transform direction from local space to world
+	// Returns dir in world space
+	Vector3 DirectionFromLocal(const Vector3 &dir) const;
+	// Transform direction from world space to local
+	// Returns dir in local space
+	Vector3 DirectionFromWorld(const Vector3 &dir) const;
+	// Transform point from local space to world
+	// Note: affected by scale
+	Vector3 PointFromLocal(const Vector3 &vec) const;
+	// Transform point from world space to local
+	// Note: affected by scale
+	Vector3 PointFromWorld(const Vector3 &vec) const;
 };
 

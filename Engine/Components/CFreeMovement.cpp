@@ -20,18 +20,18 @@ void CFreeMovement::Init()
 
 void CFreeMovement::Update()
 {
-	if (Input::IsPressed(INPUT_KEY_ESCAPE))
+	if (Input::IsPressed(Keycode::KeyESCAPE))
 	{
 		ContextWindow::Instance().RequestClose();
 	}
 
-	float x1 = Input::IsPressed(INPUT_KEY_RIGHT) ? 1.0f : 0.0f;
-	x1 += Input::IsPressed(INPUT_KEY_LEFT) ? -1.0f : 0.0f;
-	float y1 = Input::IsPressed(INPUT_KEY_UP) ? 1.0f : 0.0f;
-	y1 += Input::IsPressed(INPUT_KEY_DOWN) ? -1.0f : 0.0f;
+	float x1 = Input::IsPressed(Keycode::KeyRIGHT) ? 1.0f : 0.0f;
+	x1 += Input::IsPressed(Keycode::KeyLEFT) ? -1.0f : 0.0f;
+	float y1 = Input::IsPressed(Keycode::KeyUP) ? 1.0f : 0.0f;
+	y1 += Input::IsPressed(Keycode::KeyDOWN) ? -1.0f : 0.0f;
 
-	float scroll = Input::IsPressed(INPUT_KEY_KP_SUBTRACT)? -1.0f : 0.0f;
-	scroll += Input::IsPressed(INPUT_KEY_KP_ADD)? 1.0f : 0.0f;
+	float scroll = Input::IsPressed(Keycode::KeyKPSUBTRACT)? -1.0f : 0.0f;
+	scroll += Input::IsPressed(Keycode::KeyKPADD)? 1.0f : 0.0f;
 
 	ProcessMouseMovement(x1, y1);
 	ProcessMouseScroll(scroll);
@@ -61,22 +61,22 @@ void CFreeMovement::ProcessKeyboard()
 
 	float velocity = Speed * Time::GetDeltaTime();
 	
-	if (Input::IsPressed(INPUT_KEY_W))
+	if (Input::IsPressed(Keycode::KeyW))
 		offset += front * velocity;
 	
-	if (Input::IsPressed(INPUT_KEY_S))
+	if (Input::IsPressed(Keycode::KeyS))
 		offset -= front * velocity;
 	
-	if (Input::IsPressed(INPUT_KEY_A))
+	if (Input::IsPressed(Keycode::KeyA))
 		offset -= right * velocity;
 
-	if (Input::IsPressed(INPUT_KEY_D))
+	if (Input::IsPressed(Keycode::KeyD))
 		offset += right * velocity;
 
-	if (Input::IsPressed(INPUT_KEY_Q))
+	if (Input::IsPressed(Keycode::KeyQ))
 		offset -= up * velocity;
 
-	if (Input::IsPressed(INPUT_KEY_E))
+	if (Input::IsPressed(Keycode::KeyE))
 		offset += up * velocity;
 
 	t.Translate(offset);

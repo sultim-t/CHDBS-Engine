@@ -2,6 +2,174 @@
 
 #include <Engine\Rendering\ContextWindow.h>
 
+enum class Keycode
+{
+	/* Printable keys */
+	KeySPACE = 32,
+	KeyAPOSTROPHE = 39,
+	KeyCOMMA = 44,
+	KeyMINUS = 45,
+	KeyPERIOD = 46,
+	KeySLASH = 47,
+	Key0 = 48,
+	Key1 = 49,
+	Key2 = 50,
+	Key3 = 51,
+	Key4 = 52,
+	Key5 = 53,
+	Key6 = 54,
+	Key7 = 55,
+	Key8 = 56,
+	Key9 = 57,
+	KeySEMICOLON = 59,
+	KeyEQUAL = 61,
+	KeyA = 65,
+	KeyB = 66,
+	KeyC = 67,
+	KeyD = 68,
+	KeyE = 69,
+	KeyF = 70,
+	KeyG = 71,
+	KeyH = 72,
+	KeyI = 73,
+	KeyJ = 74,
+	KeyK = 75,
+	KeyL = 76,
+	KeyM = 77,
+	KeyN = 78,
+	KeyO = 79,
+	KeyP = 80,
+	KeyQ = 81,
+	KeyR = 82,
+	KeyS = 83,
+	KeyT = 84,
+	KeyU = 85,
+	KeyV = 86,
+	KeyW = 87,
+	KeyX = 88,
+	KeyY = 89,
+	KeyZ = 90,
+	KeyLEFTBRACKET = 91,
+	KeyBACKSLASH = 92,
+	KeyRIGHTBRACKET = 93,
+	KeyGRAVEACCENT = 96,
+	KeyWORLD1 = 161,
+	KeyWORLD2 = 162,
+
+	/* Function keys */
+	KeyESCAPE = 256,
+	KeyENTER = 257,
+	KeyTAB = 258,
+	KeyBACKSPACE = 259,
+	KeyINSERT = 260,
+	KeyDELETE = 261,
+	KeyRIGHT = 262,
+	KeyLEFT = 263,
+	KeyDOWN = 264,
+	KeyUP = 265,
+	KeyPAGEUP = 266,
+	KeyPAGEDOWN = 267,
+	KeyHOME = 268,
+	KeyEND = 269,
+	KeyCAPSLOCK = 280,
+	KeySCROLLLOCK = 281,
+	KeyNUMLOCK = 282,
+	KeyPRINTSCREEN = 283,
+	KeyPAUSE = 284,
+	KeyF1 = 290,
+	KeyF2 = 291,
+	KeyF3 = 292,
+	KeyF4 = 293,
+	KeyF5 = 294,
+	KeyF6 = 295,
+	KeyF7 = 296,
+	KeyF8 = 297,
+	KeyF9 = 298,
+	KeyF10 = 299,
+	KeyF11 = 300,
+	KeyF12 = 301,
+	KeyF13 = 302,
+	KeyF14 = 303,
+	KeyF15 = 304,
+	KeyF16 = 305,
+	KeyF17 = 306,
+	KeyF18 = 307,
+	KeyF19 = 308,
+	KeyF20 = 309,
+	KeyF21 = 310,
+	KeyF22 = 311,
+	KeyF23 = 312,
+	KeyF24 = 313,
+	KeyF25 = 314,
+	KeyKP0 = 320,
+	KeyKP1 = 321,
+	KeyKP2 = 322,
+	KeyKP3 = 323,
+	KeyKP4 = 324,
+	KeyKP5 = 325,
+	KeyKP6 = 326,
+	KeyKP7 = 327,
+	KeyKP8 = 328,
+	KeyKP9 = 329,
+	KeyKPDECIMAL = 330,
+	KeyKPDIVIDE = 331,
+	KeyKPMULTIPLY = 332,
+	KeyKPSUBTRACT = 333,
+	KeyKPADD = 334,
+	KeyKPENTER = 335,
+	KeyKPEQUAL = 336,
+	KeyLEFTSHIFT = 340,
+	KeyLEFTCONTROL = 341,
+	KeyLEFTALT = 342,
+	KeyLEFTSUPER = 343,
+	KeyRIGHTSHIFT = 344,
+	KeyRIGHTCONTROL = 345,
+	KeyRIGHTALT = 346,
+	KeyRIGHTSUPER = 347,
+	KeyMENU = 348,
+
+	KeyLAST = KeyMENU,
+
+	// If this bit is set one or more Shift keys were held down.
+	ModSHIFT = 0x0001,
+	// If this bit is set one or more Control keys were held down.
+	ModCONTROL = 0x0002,
+	// If this bit is set one or more Alt keys were held down.
+	ModALT = 0x0004,
+	// If this bit is set one or more Super keys were held down.
+	ModSUPER = 0x0008,
+
+	MouseBUTTON1 = 0,
+	MouseBUTTON2 = 1,
+	MouseBUTTON3 = 2,
+	MouseBUTTON4 = 3,
+	MouseBUTTON5 = 4,
+	MouseBUTTON6 = 5,
+	MouseBUTTON7 = 6,
+	MouseBUTTON8 = 7,
+	MouseBUTTONLAST = MouseBUTTON8,
+	MouseBUTTONLEFT = MouseBUTTON1,
+	MouseBUTTONRIGHT = MouseBUTTON2,
+	MouseBUTTONMIDDLE = MouseBUTTON3,
+
+	JOYSTICK1 = 0,
+	JOYSTICK2 = 1,
+	JOYSTICK3 = 2,
+	JOYSTICK4 = 3,
+	JOYSTICK5 = 4,
+	JOYSTICK6 = 5,
+	JOYSTICK7 = 6,
+	JOYSTICK8 = 7,
+	JOYSTICK9 = 8,
+	JOYSTICK10 = 9,
+	JOYSTICK11 = 10,
+	JOYSTICK12 = 11,
+	JOYSTICK13 = 12,
+	JOYSTICK14 = 13,
+	JOYSTICK15 = 14,
+	JOYSTICK16 = 15,
+	JOYSTICKLAST = JOYSTICK16
+};
 class Input
 {
 public:
@@ -16,182 +184,6 @@ public:
 	static float MouseYOffset;
 
 public:
-	static bool IsPressed(int keycode);
-	static bool IsReleased(int keycode);
+	static bool IsPressed(const Keycode keycode);
+	static bool IsReleased(const Keycode keycode);
 };
-
-// The key or mouse button was released.
-#define INPUT_RELEASE                0
-// The key or mouse button was pressed.
-#define INPUT_PRESS                  1
-// The key was held down until it repeated.
-#define INPUT_REPEAT                  2
-
-/* The unknown key */
-#define INPUT_KEY_UNKNOWN            -1
-
-/* Printable keys */
-#define INPUT_KEY_SPACE              32
-#define INPUT_KEY_APOSTROPHE         39  /* ' */
-#define INPUT_KEY_COMMA              44  /* , */
-#define INPUT_KEY_MINUS              45  /* - */
-#define INPUT_KEY_PERIOD             46  /* . */
-#define INPUT_KEY_SLASH              47  /* / */
-#define INPUT_KEY_0                  48
-#define INPUT_KEY_1                  49
-#define INPUT_KEY_2                  50
-#define INPUT_KEY_3                  51
-#define INPUT_KEY_4                  52
-#define INPUT_KEY_5                  53
-#define INPUT_KEY_6                  54
-#define INPUT_KEY_7                  55
-#define INPUT_KEY_8                  56
-#define INPUT_KEY_9                  57
-#define INPUT_KEY_SEMICOLON          59  /* ; */
-#define INPUT_KEY_EQUAL              61  /* = */
-#define INPUT_KEY_A                  65
-#define INPUT_KEY_B                  66
-#define INPUT_KEY_C                  67
-#define INPUT_KEY_D                  68
-#define INPUT_KEY_E                  69
-#define INPUT_KEY_F                  70
-#define INPUT_KEY_G                  71
-#define INPUT_KEY_H                  72
-#define INPUT_KEY_I                  73
-#define INPUT_KEY_J                  74
-#define INPUT_KEY_K                  75
-#define INPUT_KEY_L                  76
-#define INPUT_KEY_M                  77
-#define INPUT_KEY_N                  78
-#define INPUT_KEY_O                  79
-#define INPUT_KEY_P                  80
-#define INPUT_KEY_Q                  81
-#define INPUT_KEY_R                  82
-#define INPUT_KEY_S                  83
-#define INPUT_KEY_T                  84
-#define INPUT_KEY_U                  85
-#define INPUT_KEY_V                  86
-#define INPUT_KEY_W                  87
-#define INPUT_KEY_X                  88
-#define INPUT_KEY_Y                  89
-#define INPUT_KEY_Z                  90
-#define INPUT_KEY_LEFT_BRACKET       91  /* [ */
-#define INPUT_KEY_BACKSLASH          92  /* \ */
-#define INPUT_KEY_RIGHT_BRACKET      93  /* ] */
-#define INPUT_KEY_GRAVE_ACCENT       96  /* ` */
-#define INPUT_KEY_WORLD_1            161 /* non-US #1 */
-#define INPUT_KEY_WORLD_2            162 /* non-US #2 */
-
-/* Function keys */
-#define INPUT_KEY_ESCAPE             256
-#define INPUT_KEY_ENTER              257
-#define INPUT_KEY_TAB                258
-#define INPUT_KEY_BACKSPACE          259
-#define INPUT_KEY_INSERT             260
-#define INPUT_KEY_DELETE             261
-#define INPUT_KEY_RIGHT              262
-#define INPUT_KEY_LEFT               263
-#define INPUT_KEY_DOWN               264
-#define INPUT_KEY_UP                 265
-#define INPUT_KEY_PAGE_UP            266
-#define INPUT_KEY_PAGE_DOWN          267
-#define INPUT_KEY_HOME               268
-#define INPUT_KEY_END                269
-#define INPUT_KEY_CAPS_LOCK          280
-#define INPUT_KEY_SCROLL_LOCK        281
-#define INPUT_KEY_NUM_LOCK           282
-#define INPUT_KEY_PRINT_SCREEN       283
-#define INPUT_KEY_PAUSE              284
-#define INPUT_KEY_F1                 290
-#define INPUT_KEY_F2                 291
-#define INPUT_KEY_F3                 292
-#define INPUT_KEY_F4                 293
-#define INPUT_KEY_F5                 294
-#define INPUT_KEY_F6                 295
-#define INPUT_KEY_F7                 296
-#define INPUT_KEY_F8                 297
-#define INPUT_KEY_F9                 298
-#define INPUT_KEY_F10                299
-#define INPUT_KEY_F11                300
-#define INPUT_KEY_F12                301
-#define INPUT_KEY_F13                302
-#define INPUT_KEY_F14                303
-#define INPUT_KEY_F15                304
-#define INPUT_KEY_F16                305
-#define INPUT_KEY_F17                306
-#define INPUT_KEY_F18                307
-#define INPUT_KEY_F19                308
-#define INPUT_KEY_F20                309
-#define INPUT_KEY_F21                310
-#define INPUT_KEY_F22                311
-#define INPUT_KEY_F23                312
-#define INPUT_KEY_F24                313
-#define INPUT_KEY_F25                314
-#define INPUT_KEY_KP_0               320
-#define INPUT_KEY_KP_1               321
-#define INPUT_KEY_KP_2               322
-#define INPUT_KEY_KP_3               323
-#define INPUT_KEY_KP_4               324
-#define INPUT_KEY_KP_5               325
-#define INPUT_KEY_KP_6               326
-#define INPUT_KEY_KP_7               327
-#define INPUT_KEY_KP_8               328
-#define INPUT_KEY_KP_9               329
-#define INPUT_KEY_KP_DECIMAL         330
-#define INPUT_KEY_KP_DIVIDE          331
-#define INPUT_KEY_KP_MULTIPLY        332
-#define INPUT_KEY_KP_SUBTRACT        333
-#define INPUT_KEY_KP_ADD             334
-#define INPUT_KEY_KP_ENTER           335
-#define INPUT_KEY_KP_EQUAL           336
-#define INPUT_KEY_LEFT_SHIFT         340
-#define INPUT_KEY_LEFT_CONTROL       341
-#define INPUT_KEY_LEFT_ALT           342
-#define INPUT_KEY_LEFT_SUPER         343
-#define INPUT_KEY_RIGHT_SHIFT        344
-#define INPUT_KEY_RIGHT_CONTROL      345
-#define INPUT_KEY_RIGHT_ALT          346
-#define INPUT_KEY_RIGHT_SUPER        347
-#define INPUT_KEY_MENU               348
-
-#define INPUT_KEY_LAST               INPUT_KEY_MENU
-
-// If this bit is set one or more Shift keys were held down.
-#define INPUT_MOD_SHIFT           0x0001
-// If this bit is set one or more Control keys were held down.
-#define INPUT_MOD_CONTROL         0x0002
-// If this bit is set one or more Alt keys were held down.
-#define INPUT_MOD_ALT             0x0004
-// If this bit is set one or more Super keys were held down.
-#define INPUT_MOD_SUPER           0x0008
-
-#define INPUT_MOUSE_BUTTON_1         0
-#define INPUT_MOUSE_BUTTON_2         1
-#define INPUT_MOUSE_BUTTON_3         2
-#define INPUT_MOUSE_BUTTON_4         3
-#define INPUT_MOUSE_BUTTON_5         4
-#define INPUT_MOUSE_BUTTON_6         5
-#define INPUT_MOUSE_BUTTON_7         6
-#define INPUT_MOUSE_BUTTON_8         7
-#define INPUT_MOUSE_BUTTON_LAST      INPUT_MOUSE_BUTTON_8
-#define INPUT_MOUSE_BUTTON_LEFT      INPUT_MOUSE_BUTTON_1
-#define INPUT_MOUSE_BUTTON_RIGHT     INPUT_MOUSE_BUTTON_2
-#define INPUT_MOUSE_BUTTON_MIDDLE    INPUT_MOUSE_BUTTON_3
-
-#define INPUT_JOYSTICK_1             0
-#define INPUT_JOYSTICK_2             1
-#define INPUT_JOYSTICK_3             2
-#define INPUT_JOYSTICK_4             3
-#define INPUT_JOYSTICK_5             4
-#define INPUT_JOYSTICK_6             5
-#define INPUT_JOYSTICK_7             6
-#define INPUT_JOYSTICK_8             7
-#define INPUT_JOYSTICK_9             8
-#define INPUT_JOYSTICK_10            9
-#define INPUT_JOYSTICK_11            10
-#define INPUT_JOYSTICK_12            11
-#define INPUT_JOYSTICK_13            12
-#define INPUT_JOYSTICK_14            13
-#define INPUT_JOYSTICK_15            14
-#define INPUT_JOYSTICK_16            15
-#define INPUT_JOYSTICK_LAST          INPUT_JOYSTICK_16

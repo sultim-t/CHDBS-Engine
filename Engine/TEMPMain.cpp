@@ -90,7 +90,6 @@ int main()
 			AddTexture(reflection);
 	}
 
-	dbEntity->GetComponent<Rigidbody>()->AddForce(PhysicsSystem::Gravity);
 
 	// Recalculate time, there shouldn't be counted initialization time
 	Time::Init();
@@ -107,6 +106,10 @@ int main()
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
 
+		if (Input::IsPressed(Keycode::KeyF))
+		{
+			particles->GetComponent<CParticleSystem>()->Emit(1);
+		}
 		//dbEntity->GetTransform().GetPosition() =
 		//	Vector3::Lerp(dbEntity->GetTransform().GetPosition(), cameraEntity->GetTransform().GetPosition() + Vector3(1.0f, -0.5f, 1.5f), Time::GetDeltaTime() * 20);
 	}

@@ -58,7 +58,7 @@ void Rigidbody::FixedUpdate()
 	// and clear list
 	allImpulses.Clear();
 
-	Vector3 acceleration = force / mass;
+	Vector3 acceleration = force / mass + PhysicsSystem::Gravity;
 	velocity += acceleration * Time::GetFixedDeltaTime();
 	Vector3 pos = transform->GetPosition() + velocity * Time::GetFixedDeltaTime();
 	
@@ -70,6 +70,7 @@ void Rigidbody::FixedUpdate()
 	if (c1.Intersect(col))
 	{
 		pos[1] = -4.0f;
+		velocity = 0;
 	}
 
 	transform->GetPosition() = pos;

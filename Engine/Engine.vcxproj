@@ -170,6 +170,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Base\Logger.cpp" />
+    <ClCompile Include="Base\Random.cpp" />
     <ClCompile Include="Base\String.cpp" />
     <ClCompile Include="Components\CCamera.cpp" />
     <ClCompile Include="Components\CFreeMovement.cpp" />
@@ -212,6 +213,7 @@
     <ClInclude Include="Base\Logger.h" />
     <ClInclude Include="Base\Empty.h" />
     <ClInclude Include="Base\Hash.h" />
+    <ClInclude Include="Base\Random.h" />
     <ClInclude Include="Base\String.h" />
     <ClInclude Include="Components\CMesh.h" />
     <ClInclude Include="Components\CParticleSystem.h" />

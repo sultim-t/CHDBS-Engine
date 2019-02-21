@@ -4,7 +4,6 @@
 class Intersection
 {
 private:
-	//
 	static bool ComputeIntervals(const float &VV0, const float &VV1, const float &VV2, const float &D0, const float &D1, const float &D2, const float &D0D1, const float &D0D2, float &A, float &B, float &C, float &X0, float &X1);
 	static bool CoplanarTriTri(const Vector3 &N, const Vector3 &V0, const Vector3 &V1, const Vector3 &V2, const Vector3 &U0, const Vector3 &U1, const Vector3 &U2);
 	static bool PointInTri(const Vector3 &V0, const Vector3 &U0, const Vector3 &U1, const Vector3 &U2, const int i0, const int i1);

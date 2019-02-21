@@ -135,6 +135,11 @@ void String::Remove(UINT fromLeft, UINT fromRight)
 	}
 }
 
+bool String::ToBool() const
+{
+	return (bool)ToInt();
+}
+
 int String::ToInt() const
 {
 	return atoi(string);
