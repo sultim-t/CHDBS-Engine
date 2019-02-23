@@ -1,7 +1,7 @@
 <Entity 
   name="Terrain"
   posx ="-20" posy="26" posz="20"
-  eulx ="00" euly ="00" eulz="0">
+  eulx ="0" euly ="180" eulz="90">
   <CModel
     path="TEMP/DoubleBarrel/beacj.fbx"/>
 </Entity>

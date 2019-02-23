@@ -28,33 +28,34 @@ void Material::Activate() const
 
 		// bind to correct texture unit
 		const char *tname;
-		int type = t.GetType();
+		TextureType ttype = t.GetType();
+		int type = (int)ttype;
 		int count = textureCounts[type];
 
-		switch (type)
+		switch (ttype)
 		{
-		case TEXTURE_TYPE_DIFFUSE:
+		case TextureType::Diffuse:
 			tname = TEXTURE_NAME_DIFFUSE;
 			break;
-		case TEXTURE_TYPE_SPECULAR:
+		case TextureType::Specular:
 			tname = TEXTURE_NAME_SPECULAR;
 			break;
-		case TEXTURE_TYPE_NORMAL:
+		case TextureType::Normal:
 			tname = TEXTURE_NAME_NORMAL;
 			break;
-		case TEXTURE_TYPE_HEIGHT:
+		case TextureType::Height:
 			tname = TEXTURE_NAME_HEIGHT;
 			break;
-		case TEXTURE_TYPE_EMISSION:
+		case TextureType::Emission:
 			tname = TEXTURE_NAME_EMISSION;
 			break;
-		case TEXTURE_TYPE_DETAIL:
+		case TextureType::Detail:
 			tname = TEXTURE_NAME_DETAIL;
 			break;
-		case TEXTURE_TYPE_CUBEMAP:
+		case TextureType::Cubemap:
 			tname = TEXTURE_NAME_CUBEMAP;
 			break;
-		case TEXTURE_TYPE_SHADOWMAP:
+		case TextureType::Shadowmap:
 			tname = TEXTURE_NAME_SHADOWMAP;
 			break;
 		}
@@ -75,19 +76,15 @@ void Material::Activate() const
 		// set current texture
 		shader.SetInt(name, type);
 
-		// activate texture
-		// doesnt work: wrong virtual overriding
-		// t.Activate(type);
-
-		if (type != TEXTURE_TYPE_CUBEMAP)
+		switch (ttype)
 		{
-			glActiveTexture(GL_TEXTURE0 + type);
-			glBindTexture(GL_TEXTURE_2D, t.GetID());
-		}
-		else
-		{
-			glActiveTexture(GL_TEXTURE0 + type);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, t.GetID());
+		case TextureType::Cubemap:
+			// cubemaps are activated in special way
+			((Cubemap&)t).ActivateCubemap(type);
+			break;
+		default:
+			t.Activate(type);
+			break;
 		}
 
 		textureCounts[type]++;

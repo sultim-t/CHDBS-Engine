@@ -1,15 +1,15 @@
 #pragma once
 
-enum TextureType
+enum class TextureType
 {
-	TEXTURE_TYPE_DIFFUSE	= 0,
-	TEXTURE_TYPE_SPECULAR	= 1,
-	TEXTURE_TYPE_NORMAL		= 2,
-	TEXTURE_TYPE_HEIGHT		= 3,
-	TEXTURE_TYPE_EMISSION	= 4,
-	TEXTURE_TYPE_DETAIL		= 5,
-	TEXTURE_TYPE_CUBEMAP	= 6,
-	TEXTURE_TYPE_SHADOWMAP	= 7
+	Diffuse		= 0,
+	Specular	= 1,
+	Normal		= 2,
+	Height		= 3,
+	Emission	= 4,
+	Detail		= 5,
+	Cubemap		= 6,
+	Shadowmap	= 7
 };
 
 // all texture names must be same size
@@ -43,7 +43,7 @@ protected:
 	const char* path;
 
 public:
-	virtual void Activate(int i) const {};
+	void Activate(int i) const;
 
 	TextureType GetType() const;
 	const char *GetPath() const;
@@ -62,5 +62,4 @@ public:
 	~Texture();
 
 	void Load(const char* path);
-	void Activate(int i) const override;
 };

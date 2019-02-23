@@ -24,11 +24,11 @@ void CLight::Recalculate()
 {
 	Matrix4 projection;
 
-	if (ltype == LIGHT_DIRECTIONAL)
+	if (ltype == LightType::Directional)
 	{
 		projection = Projection::Ortho(-10, 10, -10, 10, 0.1f, 30);
 	}
-	else if (ltype == LIGHT_SPOT)
+	else if (ltype == LightType::Spot)
 	{
 		projection = Projection::Perspective(coneAngle, 1, 0.1f, range);
 	}
@@ -162,19 +162,19 @@ void CLight::SetProperty(const String &key, const String &value)
 	{
 		if (value == PROPERTY_VAL_TYPEDIR)
 		{
-			ltype = LIGHT_DIRECTIONAL;
+			ltype = LightType::Directional;
 		}
 		else if (value == PROPERTY_VAL_TYPEPOINT)
 		{
-			ltype = LIGHT_POINT;
+			ltype = LightType::Point;
 		}
 		else if (value == PROPERTY_VAL_TYPESPOT)
 		{
-			ltype = LIGHT_SPOT;
+			ltype = LightType::Spot;
 		}
 		else if (value == PROPERTY_VAL_TYPEAMBIENT)
 		{
-			ltype = LIGHT_AMBIENT;
+			ltype = LightType::Ambient;
 		}
 		else
 		{
@@ -199,11 +199,11 @@ void CLight::SetProperty(const String &key, const String &value)
 	}
 	else if (key == PROPERTY_KEY_STATIC)
 	{
-		isStatic = value.ToInt() == 0 ? false : true;
+		isStatic = value.ToBool();
 	}
 	else if (key == PROPERTY_KEY_SHADOWS)
 	{
-		castShadows = value.ToInt() == 0 ? false : true;
+		castShadows = value.ToBool();
 	}
 	else if (key == PROPERTY_KEY_CONEANGLE)
 	{

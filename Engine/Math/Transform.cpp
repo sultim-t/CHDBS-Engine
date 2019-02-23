@@ -234,7 +234,7 @@ Matrix4 Transform::RotateMatrix(const Matrix4& mat, const Vector3 &inaxis, const
 	float c = Cos(angle);
 	float s = Sin(angle);
 
-	Matrix3 rotate = Matrix3(1.0f, true);
+	Matrix3 rotate;
 	Vector3 vec;
 
 	Vector3 axis = inaxis.GetNormalized();
@@ -253,7 +253,7 @@ Matrix4 Transform::RotateMatrix(const Matrix4& mat, const Vector3 &inaxis, const
 	rotate(2, 1) = vec[2] * axis[1] - s * axis[0];
 	rotate(2, 2) = c + vec[2] * axis[2];
 
-	Matrix4 result(mat);
+	Matrix4 result;
 
 	result.SetRow(0, mat[0] * rotate(0, 0) + mat[1] * rotate(0, 1) + mat[2] * rotate(0, 2));
 	result.SetRow(1, mat[0] * rotate(1, 0) + mat[1] * rotate(1, 1) + mat[2] * rotate(1, 2));

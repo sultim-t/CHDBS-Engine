@@ -31,7 +31,7 @@ float Random::GetFloat(float max)
 
 float Random::GetFloat(float min, float max)
 {
-	return ((float)rand() / (float)(RAND_MAX) * (max + 1 - min)) + min;
+	return ((float)rand() / (float)(RAND_MAX) * (max - min)) + min;
 }
 
 Vector3 Random::GetOnSphere()

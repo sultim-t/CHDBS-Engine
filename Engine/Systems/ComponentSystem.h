@@ -1,7 +1,7 @@
 #pragma once
 #include "ISystem.h"
 
-#include <Engine/DataStructures/LinkedList.h>
+#include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/Entities/Entity.h>
 #include <Engine/Components/IComponent.h>
 
@@ -9,7 +9,8 @@
 class ComponentSystem : public ISystem
 {
 private:
-	LinkedList<Entity*> entities;
+	// Pointer to entities storage
+	const DynamicArray<Entity*> *entities;
 
 private:
 	ComponentSystem();
@@ -25,7 +26,7 @@ public:
 	// Update each active component
 	void Update() override;
 
-	void Register(Entity *entity);
+	void Register(const DynamicArray<Entity*> *entities);
 
 	// Get instance of system
 	static ComponentSystem &Instance();

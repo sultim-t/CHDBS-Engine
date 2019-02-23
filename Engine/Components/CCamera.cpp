@@ -17,7 +17,6 @@
 #define PROPERTY_VAL_PROJORTHO	"ortho"
 #define PROPERTY_VAL_PROJPERSP	"persp"
 
-#define DEFAULT_PROJ	CAMERA_PROJ_PERSPECTIVE;
 #define DEFAULT_FOV		80.0f;
 #define DEFAULT_ZNEAR	0.1f;
 #define DEFAULT_ZFAR	100.0f;
@@ -31,6 +30,19 @@ CLASSDEFINITION(IComponent, CCamera)
 void CCamera::Init()
 { 
 	RenderingSystem::Instance().Register(this);
+
+	if (zNear <= 0.0f)
+	{
+		zNear = DEFAULT_ZNEAR;
+	}
+	if (zFar <= 0.0f)
+	{
+		zFar = DEFAULT_ZFAR;
+	}
+	if (fov <= 0)
+	{
+		fov = DEFAULT_FOV;
+	}
 }
 
 void CCamera::SetProperty(const String &key, const String &value)
@@ -39,16 +51,15 @@ void CCamera::SetProperty(const String &key, const String &value)
 	{
 		if (value == PROPERTY_VAL_PROJORTHO)
 		{
-			projection = CAMERA_PROJ_ORTHOGRAPHIC;
+			projection = CameraProjection::Orthographic;
 		}
 		else if (value == PROPERTY_VAL_PROJPERSP)
 		{
-			projection = CAMERA_PROJ_PERSPECTIVE;
+			projection = CameraProjection::Perspective;
 		}
 		else
 		{
 			Logger::Print("Wrong camera projection");
-			projection = DEFAULT_PROJ;
 		}
 	}
 	else if (key == PROPERTY_KEY_ZNEAR)
@@ -96,11 +107,13 @@ Matrix4 CCamera::GetViewMatrix() const
 	return Transform::LookAt(position, position + f, u);
 }
 
-Matrix4 CCamera::GetProjectionMatrix(float width, float height) const
+Matrix4 CCamera::GetProjectionMatrix() const
 {
-	if (projection == CAMERA_PROJ_PERSPECTIVE)
+	ASSERT(aspect != 0.0f);
+
+	if (projection == CameraProjection::Perspective)
 	{
-		return Projection::Perspective(fov, width / height, zNear, zFar);
+		return Projection::Perspective(fov, aspect, zNear, zFar);
 	}
 	else
 	{

@@ -94,6 +94,8 @@ int main()
 	// Recalculate time, there shouldn't be counted initialization time
 	Time::Init();
 
+	float s = 0;
+
 	while (!ContextWindow::Instance().ShouldClose())
 	{
 		Time::Calculate();
@@ -106,12 +108,15 @@ int main()
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
 
-		if (Input::IsPressed(Keycode::KeyF))
+		s += Time::GetDeltaTime();
+		if (Input::IsPressed(Keycode::KeyF) && s >0.01f)
 		{
+			//particles->GetTransform().SetPosition(cameraEntity->GetTransform().GetPosition() + cameraEntity->GetTransform().GetForward());
+			particles->GetTransform().SetRotation(cameraEntity->GetTransform().GetRotation());
+
+			s = 0;
 			particles->GetComponent<CParticleSystem>()->Emit(1);
 		}
-		//dbEntity->GetTransform().GetPosition() =
-		//	Vector3::Lerp(dbEntity->GetTransform().GetPosition(), cameraEntity->GetTransform().GetPosition() + Vector3(1.0f, -0.5f, 1.5f), Time::GetDeltaTime() * 20);
 	}
 
 	ContextWindow::Instance().Terminate();

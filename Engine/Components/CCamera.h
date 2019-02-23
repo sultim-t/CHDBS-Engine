@@ -2,10 +2,10 @@
 #include "IComponent.h"
 #include <Engine/Entities/Entity.h>
 
-enum CameraProjection
+enum class CameraProjection
 {
-	CAMERA_PROJ_PERSPECTIVE = 0,
-	CAMERA_PROJ_ORTHOGRAPHIC = 1
+	Perspective,
+	Orthographic
 };
 
 class CCamera : public IComponent
@@ -15,6 +15,7 @@ class CCamera : public IComponent
 private:
 	CameraProjection projection;
 	float zNear, zFar;
+	float aspect; // width / height
 
 	// for perspective
 	float fov;
@@ -29,18 +30,20 @@ public:
 	// Calculates view matrix
 	Matrix4 GetViewMatrix() const;
 	// Calculates projection matrix
-	Matrix4 GetProjectionMatrix(float scrWidth, float scrHeight) const;
+	Matrix4 GetProjectionMatrix() const;
 
 	inline CameraProjection GetProjection() const;
 	inline float GetFOV() const;
 	inline float GetNearClipDist() const;
 	inline float GetFarClipDist() const;
+	inline float GetAspect() const;
 	inline const Vector3 &GetPosition() const;
 
 	inline void SetProjection(CameraProjection p);
 	inline void SetFOV(float fov);
 	inline void SetNearClipDist(float znear);
 	inline void SetFarClipDist(float zfar);
+	inline void SetAspect(float width, float height);
 
 	void Init() override;
 	void Update() override {}
@@ -66,6 +69,11 @@ inline float CCamera::GetNearClipDist() const
 inline float CCamera::GetFarClipDist() const
 {
 	return zFar;
+}
+
+inline float CCamera::GetAspect() const
+{
+	return aspect;
 }
 
 inline const Vector3 &CCamera::GetPosition() const
@@ -96,4 +104,9 @@ inline void CCamera::SetFarClipDist(float zFar)
 {
 	ASSERT(zFar > 0);
 	this->zFar = zFar;
+}
+
+inline void CCamera::SetAspect(float width, float height)
+{
+	aspect = width / height;
 }

@@ -13,24 +13,30 @@ private:
 	int top;
 
 private:
+	// Reallocate memory
 	void Expand();
 
 public:
 	DynamicArray();
 	~DynamicArray();
 
+	// Allocate memory
 	void Init(int initSize);
 
-	const T &operator[](unsigned index) const;
-	T &operator[](unsigned index);
+	const T &operator[](int index) const;
+	T &operator[](int index);
 
 	// Push back
 	void Push(const T &elem);
 	// Pop back
-	void Pop();
+	T Pop();
 
-	unsigned GetSize();
+	// Returns elements count
+	int GetSize() const;
+	// Clear array
+	// Note: doesn't frees memory, doesn't destroy elements
 	void Clear();
+	// Frees allocated memory
 	void Delete();
 };
 
@@ -67,16 +73,16 @@ inline void DynamicArray<T>::Init(int initSize)
 }
 
 template<class T>
-inline const T &DynamicArray<T>::operator[](unsigned index) const
+inline const T &DynamicArray<T>::operator[](int index) const
 {
 	ASSERT(index < top);
 	return buffer[index];
 }
 
 template<class T>
-inline T &DynamicArray<T>::operator[](unsigned index)
+inline T &DynamicArray<T>::operator[](int index)
 {
-	ASSERT((int)index < top);
+	ASSERT(index < top);
 	return buffer[index];
 }
 
@@ -95,17 +101,16 @@ inline void DynamicArray<T>::Push(const T &elem)
 }
 
 template<class T>
-inline void DynamicArray<T>::Pop()
+inline T DynamicArray<T>::Pop()
 {
 	ASSERT(buffer != nullptr);
 	ASSERT(top >= 0);
 
-	buffer[top].~T();
-	top--;
+	return buffer[top--];
 }
 
 template<class T>
-inline unsigned DynamicArray<T>::GetSize()
+inline int DynamicArray<T>::GetSize() const
 {
 	return top;
 }
@@ -113,11 +118,6 @@ inline unsigned DynamicArray<T>::GetSize()
 template<class T>
 inline void DynamicArray<T>::Clear()
 {
-	for (int i = 0; i < top; i++)
-	{
-		buffer[i].~T();
-	}
-
 	top = 0;
 }
 

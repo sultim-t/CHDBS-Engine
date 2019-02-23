@@ -7,7 +7,7 @@
 
 Cubemap::Cubemap()
 {
-	type = TEXTURE_TYPE_CUBEMAP;
+	type = TextureType::Cubemap;
 }
 
 void Cubemap::LoadCubemap(const StaticArray<const char*, 6> &paths)
@@ -38,7 +38,7 @@ void Cubemap::LoadCubemap(const StaticArray<const char*, 6> &paths)
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 }
 
-void Cubemap::Activate(int i) const
+void Cubemap::ActivateCubemap(int i) const
 {
 	ASSERT(i >= 0 && i < 32);
 	glActiveTexture(GL_TEXTURE0 + i);

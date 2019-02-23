@@ -4,41 +4,30 @@ ComponentSystem::ComponentSystem()
 { }
 
 ComponentSystem::~ComponentSystem()
-{ 
-	FOREACHLINKEDLIST(Entity*, entityPtr, entities)
-	{
-		Entity *entity = *entityPtr;
-
-		// delete each component in entity
-		for (auto c : entity->GetAllComponents())
-		{
-			delete c;
-		}
-
-		// delete entity itself
-		delete (*entityPtr);
-	}
-}
+{ }
 
 void ComponentSystem::Init()
-{ }
+{
+}
 
 void ComponentSystem::Update()
 {
-	FOREACHLINKEDLIST(Entity*, entityPtr, entities)
+
+	for (int i = 0; i < entities->GetSize(); i++)
 	{
-		Entity *entity = *entityPtr;
+		Entity *entity = entities->operator[](i);
 
 		if (!entity->IsActive())
 		{
 			continue;
 		}
 	
-		using namespace std;
-		vector<IComponent*> components = entity->GetAllComponents();
+		auto &components = entity->GetAllComponents();
 
-		for (auto c : components)
+		for (int i = 0; i < components.GetSize(); i++)
 		{
+			IComponent *c = components[i];
+
 			if (c->IsActive())
 			{
 				c->Update();
@@ -47,9 +36,9 @@ void ComponentSystem::Update()
 	}
 }
 
-void ComponentSystem::Register(Entity * entity)
+void ComponentSystem::Register(const DynamicArray<Entity*> *entities)
 {
-	entities.Add(entity);
+	this->entities = entities;
 }
 
 ComponentSystem &ComponentSystem::Instance()

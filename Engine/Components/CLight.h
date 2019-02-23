@@ -3,12 +3,12 @@
 #include <Engine/Math/Quaternion.h>
 #include <Engine/Math/Matrix.h>
 
-enum LightType
+enum class LightType
 {
-	LIGHT_DIRECTIONAL,
-	LIGHT_POINT,
-	LIGHT_SPOT,
-	LIGHT_AMBIENT
+	Directional,
+	Point,
+	Spot,
+	Ambient
 };
 
 class CLight : public IComponent

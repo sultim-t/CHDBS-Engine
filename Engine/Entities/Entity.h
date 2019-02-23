@@ -2,7 +2,7 @@
 
 #include <Engine/Components/IComponent.h>
 #include <Engine/Math/Transform.h>
-#include <Engine/DataStructures/StaticArray.h>
+#include <Engine/DataStructures/DynamicArray.h>
 #include <vector>
 
 class Entity
@@ -16,24 +16,21 @@ private:
 	int layer;
 	int tag;
 
-	std::vector<IComponent*> *components;
+	DynamicArray<IComponent*> components;
 
-public:
+private:
 	Entity(EntityID id);
 	Entity(const Entity&) = delete;
 	Entity(const Entity&&) = delete;
 
 	// Loads main data from xml element
-	bool PreXMLInit(void *root);
+	bool PreInit(void *root);
 	// Init after loading components
 	void Init();
 
-// temp public functions
-//must be used ONLY by factory
-public:
-	Entity();
+// used by factory
+private:
 	void AddComponent(IComponent *c);
-	void RemoveComponent(IComponent *c);
 
 protected:
 	Transform transform;
@@ -43,14 +40,13 @@ public:
 	T *GetComponent();
 	template <class T>
 	const T *GetComponent() const;
-	const std::vector<IComponent*> &GetAllComponents() const;
+	const DynamicArray<IComponent*> &GetAllComponents() const;
 
 	void Destroy();
 
 public:
 	void SetActive(bool active);
 	bool IsActive();
-	bool IsActiveInHierarchy();
 	EntityID GetID() const;
 
 	// Returns reference
@@ -60,28 +56,23 @@ public:
 };
 
 template<class T>
-const T * Entity::GetComponent() const
+const T *Entity::GetComponent() const
 {
 	return GetComponent();
 }
 
 template<class T>
-T * Entity::GetComponent()
+T *Entity::GetComponent()
 {
-	auto iter = components->begin();
-	auto last = components->end();
-
-	while (iter != last)
+	for (int i = 0; i < components.GetSize(); i++)
 	{
-		IComponent *r = *(iter._Ptr);
+		IComponent *c = components[i];
 
-		if (r->IsClassType(T::Type))
+		if (c->IsClassType(T::Type))
 		{
-			return (T*)r;
+			return (T*)c;
 		}
-
-		iter++;
 	}
 
-	return NULL;
+	return nullptr;
 }

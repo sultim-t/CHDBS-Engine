@@ -42,7 +42,7 @@ void RenderingSystem::Init()
 
 	shadowMap = FramebufferTexture();
 	shadowMap.Create(1024, 1024);
-	shadowMap.SetType(TEXTURE_TYPE_SHADOWMAP);
+	shadowMap.SetType(TextureType::Shadowmap);
 
 	depthShader.Load("Systems/ShadowMapping.vs", "Systems/ShadowMapping.fs");
 	Skybox::Instance().Init();
@@ -57,9 +57,8 @@ void RenderingSystem::Update()
 	{
 		CCamera *cam = *camPtr;
 
-		Matrix4 projM = cam->GetProjectionMatrix(
-			(float)ContextWindow::Instance().GetWidth(),
-			(float)ContextWindow::Instance().GetHeight());
+		cam->SetAspect((float)ContextWindow::Instance().GetWidth(), (float)ContextWindow::Instance().GetHeight());
+		Matrix4 projM = cam->GetProjectionMatrix();
 		Matrix4 viewM = cam->GetViewMatrix();
 
 		Matrix4 camSpace = viewM * projM;
@@ -68,7 +67,7 @@ void RenderingSystem::Update()
 		{
 			CLight *light = *lightPtr;
 			CreateShadowMap(*light, shadowMap);
-			shadowMap.Activate(TEXTURE_TYPE_SHADOWMAP);
+			shadowMap.Activate((int)TextureType::Shadowmap);
 
 			FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
 			{
@@ -79,7 +78,7 @@ void RenderingSystem::Update()
 				 	const Shader *shader = &m.GetMaterial().GetShader();
 					shader->Use();
 
-					shader->SetInt(TEXTURE_NAME_SHADOWMAP, TEXTURE_TYPE_SHADOWMAP);
+					shader->SetInt(TEXTURE_NAME_SHADOWMAP, (int)TextureType::Shadowmap);
 
 					if (shader->Is3D())
 					{

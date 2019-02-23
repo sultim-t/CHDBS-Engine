@@ -3,18 +3,20 @@
   posx ="0" posy="0" posz="0">
 
   <CParticleSystem
-    maxCount="5000" 
-    lifetime="0.8"
-    lifetimeRand="0.2"
+    maxCount="500" 
+    lifetime="1"
+    lifetimeRand="0.1"
     
-    size="0.2"
-    sizeRand="0.05"
+    size="0.3"
+    sizeRand="0.1"
     colr="255"
     colg="245"
     colb="79"
-    cola="255"
-    vel="0 10 0"
-    velRand="1 1 1"
+    cola="100"
+    
+    vel="0 0 10"
+    velRand="2 2 2"
+    
     gravMult="1"
     vertPath="TEMP/particle.vs"
     fragPath="TEMP/particle.fs"/>

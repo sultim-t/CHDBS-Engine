@@ -6,6 +6,7 @@
 #include <Engine/Components/CLight.h>
 #include <Engine/Components/CParticleSystem.h>
 #include <Engine/Physics/Rigidbody.h>
+#include <Engine/Systems/ComponentSystem.h>
 
 template <class T>
 IComponent *CompCreator(void *elemPointer);
@@ -36,6 +37,12 @@ EntityID EntityFactory::GetNextEntityID()
 
 EntityFactory::EntityFactory()
 {
+	// init dynamic array
+	entities.Init(128);
+	// register in component system
+	ComponentSystem::Instance().Register(&entities);
+	
+	// init hash table
 	compCreators.Init(10, 6);
 	compCreators.DeclareHashFunction(String::StringHash);
 
@@ -46,6 +53,23 @@ EntityFactory::EntityFactory()
 	PRegisterComponentType<CModel>("CModel");
 	PRegisterComponentType<CParticleSystem>("CParticleSystem");
 	PRegisterComponentType<Rigidbody>("Rigidbody");
+}
+
+EntityFactory::~EntityFactory()
+{
+	for (int i = 0; i < entities.GetSize(); i++)
+	{
+		auto &components = entities[i]->GetAllComponents();
+
+		// delete each component in entity
+		for (int i = 0; i < components.GetSize(); i++)
+		{
+			delete components[i];
+		}
+
+		// delete entity itself
+		delete entities[i];
+	}
 }
 
 IComponent *EntityFactory::CreateComponent(void *xmlElemP)
@@ -93,12 +117,7 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 	Entity *entity = new Entity(GetNextEntityID());
 
 	// load main data
-	if (!entity->PreXMLInit(root))
-	{
-		delete entity;
-		// fail
-		return nullptr;
-	}
+	ASSERT(entity->PreInit(root));
 
 	// foreach component in xml
 	for (XMLElement *node = root->FirstChildElement();
@@ -106,34 +125,30 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 		node = node->NextSiblingElement())
 	{
 		IComponent *comp = CreateComponent(node);
-		
+
 		// if component created
-		if (comp != nullptr)
-		{
-			if (node->BoolAttribute("active", true))
-			{
-				// must be activated through field
-				// else will be activated as a component
-				comp->isActive = true;
-			}
-			
-			// link
-			entity->AddComponent(comp);
-			comp->SetOwner(entity);
+		ASSERT(comp != nullptr);
 
-			// everything is set up
-			comp->Init();
-		}
-		else
+		if (node->BoolAttribute("active", true))
 		{
-			delete entity;
-
-			// if some node incorrect
-			return nullptr;
+			// must be activated through field
+			// else will be activated as a component
+			comp->isActive = true;
 		}
+
+		// link
+		entity->AddComponent(comp);
+		comp->SetOwner(entity);
+
+		// everything is set up
+		comp->Init();
 	}
 
 	entity->Init();
+	
+	// finally, store entity
+	entities.Push(entity);
+
 	return entity;
 }
 

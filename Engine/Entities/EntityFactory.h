@@ -1,9 +1,8 @@
 #pragma once
 
 #include <Engine/Entities/Entity.h>
+#include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/DataStructures/HashTable.h>
-#include <vector>
-#include <map>
 
 class EntityFactory
 {
@@ -11,13 +10,18 @@ class EntityFactory
 
 private:
 	EntityID lastId;
+
 	// Stores pointers to component creators
 	HashTable<String, IComponentCreator> compCreators;
+
+	// Stores all entities
+	DynamicArray<Entity*> entities;
 
 private:
 	EntityID GetNextEntityID();
 	
 	EntityFactory();
+	~EntityFactory();
 
 	EntityFactory(EntityFactory&) = delete;
 	EntityFactory(EntityFactory&&) = delete;

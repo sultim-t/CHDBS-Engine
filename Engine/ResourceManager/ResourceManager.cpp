@@ -144,16 +144,16 @@ Mesh ResourceManager::ProcessMesh(void *m, const void *s, CModel &outModel)
 	// normal: texture_normalN
 
 	// 1. diffuse maps
-	vector<ITexture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, TEXTURE_TYPE_DIFFUSE, outModel);
+	vector<ITexture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, TextureType::Diffuse, outModel);
 	textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	// 2. specular maps
-	vector<ITexture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, TEXTURE_TYPE_SPECULAR, outModel);
+	vector<ITexture> specularMaps = LoadMaterialTextures(material, aiTextureType_SPECULAR, TextureType::Specular, outModel);
 	textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 	// 3. normal maps
-	std::vector<ITexture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, TEXTURE_TYPE_NORMAL, outModel);
+	std::vector<ITexture> normalMaps = LoadMaterialTextures(material, aiTextureType_HEIGHT, TextureType::Normal, outModel);
 	textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 	// 4. height maps
-	std::vector<ITexture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, TEXTURE_TYPE_HEIGHT, outModel);
+	std::vector<ITexture> heightMaps = LoadMaterialTextures(material, aiTextureType_AMBIENT, TextureType::Height, outModel);
 	textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
 	Material meshMaterial = Material(textures);

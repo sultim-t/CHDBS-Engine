@@ -170,7 +170,9 @@ UINT CParticleSystem::FindDeadParticle()
 	}
 
 	// all particles are alive
-	return 0;
+	// return next?
+	lastUsedParticle = lastUsedParticle + 1;
+	return lastUsedParticle;
 }
 
 void CParticleSystem::GenerateParticle(const Vector3 &pos, const Vector3 &vel, const Color4 &col, float life, float rot, float size)
@@ -261,7 +263,7 @@ void CParticleSystem::ActivateShader()
 	particleShader.SetVec3("cameraUp", t.GetUp());
 	particleShader.SetVec3("cameraRight", t.GetRight());
 
-	Matrix4 viewProj = cam->GetViewMatrix() * cam->GetProjectionMatrix(16, 9);
+	Matrix4 viewProj = cam->GetViewMatrix() * cam->GetProjectionMatrix();
 	particleShader.SetMat4("viewProj", viewProj);
 }
 

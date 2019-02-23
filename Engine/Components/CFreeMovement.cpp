@@ -84,13 +84,17 @@ void CFreeMovement::ProcessKeyboard()
 
 void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)
 {
-	xoffset *= Input::MouseSensitivity;
-	yoffset *= Input::MouseSensitivity;
+	xoffset *= Input::MouseSensitivity * 50;
+	yoffset *= Input::MouseSensitivity * 50;
 
 	float x = xoffset * Time::GetDeltaTime();
 	float y = yoffset * Time::GetDeltaTime();
 
-	Euler e = Euler(0, x, y);
+	Euler e;
+	e[YAW] = x;
+	e[PITCH] = y;
+	e[ROLL] = 0.0f;
+
 	owner->GetTransform().Rotate(e);
 }
 

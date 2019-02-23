@@ -11,8 +11,10 @@ public:
 	inline Quaternion();
 	inline Quaternion(float a);
 	inline Quaternion(float x, float y, float z, float w);
+	// Create from euler angles in Degrees
 	inline Quaternion(const Vector3 &euler);
 	inline Quaternion(const Quaternion &q);
+	inline Quaternion(const Vector3 &axis, float angle);
 
 	inline const float operator[](int index) const;
 	inline float& operator[](int index);
@@ -37,9 +39,14 @@ public:
 	static float Dot(const Quaternion &a, const Quaternion &b);
 	inline void Normalize();
 
-	// Counvert from euler in degrees to quat
+	static Quaternion Conjugate(const Quaternion &q);
+	inline void Conjugate();
+	static Quaternion Inverse(const Quaternion &q);
+	inline void Inverse();
+
+	// Counvert from euler in Degrees to quaternion
 	static void FromEuler(const Vector3 &euler, Quaternion &quat);
-	// Convert euler in degrees to current quaternion
+	// Convert euler in Degrees to current quaternion
 	inline void FromEuler(const Vector3 &euler);
 
 	static void ToEuler(const Quaternion &quat, Vector3 &euler);
@@ -47,10 +54,13 @@ public:
 	static Vector3 ToEuler(const Quaternion &quat);
 	inline const Vector3 ToEuler() const;
 
-	// Convert from axis and angle
+	// Convert from axis and angle in Radians
 	inline void FromAxisAngle(const Vector3 &axis, const float angle);
 	// Convert to axis and angle in Radians
 	inline void ToAxisAngle(Vector3 &axis, float &angle) const;
+
+	static Matrix3 ToRotationMatrix(const Quaternion &q);
+	inline Matrix3 ToRotationMatrix() const;
 
 	// Interpolates between a and b, normalizes the result, t is clamped to [0,1]
 	static Quaternion Lerp(const Quaternion &a, const Quaternion &b, const float t);
@@ -73,12 +83,12 @@ inline Quaternion::Quaternion(float a)
 	quat[0] = quat[1] = quat[2] = quat[3] = a;
 }
 
-inline Quaternion::Quaternion(float x, float y, float z, float w)
+inline Quaternion::Quaternion(float w, float x, float y, float z)
 {
-	quat[0] = x;
-	quat[1] = y;
-	quat[2] = z;
-	quat[3] = w;
+	quat[0] = w;
+	quat[1] = x;
+	quat[2] = y;
+	quat[3] = z;
 }
 
 inline Quaternion::Quaternion(const Vector3& euler)
@@ -92,6 +102,11 @@ inline Quaternion::Quaternion(const Quaternion &q)
 	quat[1] = q.quat[1];
 	quat[2] = q.quat[2];
 	quat[3] = q.quat[3];
+}
+
+inline Quaternion::Quaternion(const Vector3 & axis, float angle)
+{
+	FromAxisAngle(axis, angle);
 }
 
 inline const float Quaternion::operator[](int index) const
@@ -158,6 +173,7 @@ inline const Vector3 Quaternion::operator*(const Vector3 &v) const
 
 inline Quaternion Quaternion::Identity()
 {
+	// identity is quaternion with only free component (w is quat[0])
 	return Quaternion(1.0f, 0.0f, 0.0f, 0.0f);
 }
 
@@ -258,11 +274,11 @@ inline void Quaternion::FromAxisAngle(const Vector3 &axis, float angle)
 
 inline void Quaternion::ToAxisAngle(Vector3 &axis, float &angle) const
 {
-	angle = 2 * ACos(quat[0]);
+	angle = 2.0f * ACos(quat[0]);
 
-	float s = Sqrt(1 - quat[0] * quat[0]);
+	float s = Sqrt(1.0f - quat[0] * quat[0]);
 
-	if (ABS(s) >= 0.001f)
+	if (ABS(s) >= 0.0001f)
 	{
 		axis[0] = quat[1] / s;
 		axis[1] = quat[2] / s;
@@ -275,6 +291,40 @@ inline void Quaternion::ToAxisAngle(Vector3 &axis, float &angle) const
 		axis[1] = 0.0f;
 		axis[2] = 0.0f;
 	}
+}
+
+inline Matrix3 Quaternion::ToRotationMatrix(const Quaternion & q)
+{
+	Vector3 axis;
+	float angle;
+
+	q.ToAxisAngle(axis, angle);
+	axis.Normalize();
+
+	float c = Cos(angle);
+	float s = Sin(angle);
+
+	Matrix3 rotate;
+	Vector3 vec = axis * (1 - c);
+
+	rotate(0, 0) = c + vec[0] * axis[0];
+	rotate(0, 1) = vec[0] * axis[1] + s * axis[2];
+	rotate(0, 2) = vec[0] * axis[2] - s * axis[1];
+
+	rotate(1, 0) = vec[1] * axis[0] - s * axis[2];
+	rotate(1, 1) = c + vec[1] * axis[1];
+	rotate(1, 2) = vec[1] * axis[2] + s * axis[0];
+
+	rotate(2, 0) = vec[2] * axis[0] + s * axis[1];
+	rotate(2, 1) = vec[2] * axis[1] - s * axis[0];
+	rotate(2, 2) = c + vec[2] * axis[2];
+
+	return rotate;
+}
+
+inline Matrix3 Quaternion::ToRotationMatrix() const
+{
+	return ToRotationMatrix(*this);
 }
 
 inline float Quaternion::Dot(const Quaternion &a, const Quaternion &b)
@@ -293,8 +343,55 @@ inline void Quaternion::Normalize()
 	quat[3] = q[3];
 }
 
+inline Quaternion Quaternion::Conjugate(const Quaternion & q)
+{
+	// free component isn't affected
+	return Quaternion(q.quat[0], -q.quat[1], -q.quat[2], -q.quat[3]);
+}
+
+inline void Quaternion::Conjugate()
+{
+	*this = Conjugate(*this);
+}
+
+inline Quaternion Quaternion::Inverse(const Quaternion & q)
+{
+	// inversed means normalized conjugate quaternion
+	return Conjugate(q) / (q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
+}
+
+inline void Quaternion::Inverse()
+{
+	*this = Inverse(*this);
+}
+
 inline void Quaternion::FromEuler(const Vector3& euler, Quaternion &q)
 {
+	/*Quaternion qH;
+	Quaternion qP;
+	Quaternion qB;
+
+	float x = DEG2RAD(euler[0]) * 0.5f;
+	float y = DEG2RAD(euler[1]) * 0.5f;
+	float z = DEG2RAD(euler[2]) * 0.5f;
+
+	qH[0] = Cos(x);
+	qH[1] = 0.0f;
+	qH[2] = Sin(x);
+	qH[3] = 0.0f;
+
+	qP[0] = Cos(y);
+	qP[1] = Sin(y);
+	qP[2] = 0.0f;
+	qP[3] = 0.0f;
+
+	qB[0] = Cos(z);
+	qB[1] = 0.0f;
+	qB[2] = 0.0f;
+	qB[3] = Sin(z);
+
+	q = qH * qP * qB;
+	*/
 	float pitch = DEG2RAD(euler[PITCH]);
 	float roll = DEG2RAD(euler[ROLL]);
 	float yaw = DEG2RAD(euler[YAW]);
@@ -361,29 +458,27 @@ inline Vector3 Quaternion::RotateVector(const Vector3 &v) const
 {
 	Vector3 result;
 
-	const Vector3 q = Vector3(quat[0], quat[1], quat[2]);
+	const Vector3 q = Vector3(quat[1], quat[2], quat[3]);
 	const Vector3 cross = Vector3::Cross(q, v) * 2.0f;
 	
-	result = v + (cross * quat[3]) + Vector3::Cross(q, cross);
-
-	// result = q * 2.0f * Vector3::Dot(q, v)
-	//	+ v * (quat[3] * quat[3] - Vector3::Dot(q, q))
-	//	+ cross;
+	result = v + (cross * quat[0]) + Vector3::Cross(q, cross);
+	
+	// result = ToRotationMatrix() * v;
 
 	return result;
 }
 
 inline Vector3 Quaternion::GetForward() const
 {
-	return RotateVector(Vector3(1.0f, 0.0f, 0.0f));
+	return -RotateVector(Vector3(0.0f, 0.0f, 1.0f));
 }
 
 inline Vector3 Quaternion::GetRight() const
 {
-	return -RotateVector(Vector3(0.0f, 0.0f, 1.0f));
+	return -RotateVector(Vector3(1.0f, 0.0f, 0.0f));
 }
 
 inline Vector3 Quaternion::GetUp() const
 {
-	return -RotateVector(Vector3(0.0f, 1.0f, 0.0f));
+	return RotateVector(Vector3(0.0f, 1.0f, 0.0f));
 }

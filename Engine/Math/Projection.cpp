@@ -1,21 +1,17 @@
 #include "Projection.h"
 #include "Matrix.h"
 
-#include <glm\glm.hpp>
-#include <glm\gtc\matrix_transform.hpp>
-#include <glm\gtc\type_ptr.hpp>
-
 Matrix4 Projection::Perspective(float fov, float aspect, float zNear, float zFar)
 {
 	Matrix4 mat(0.0f);
 
-	float ctgHalfFov = 1.0f / Tan(DEG2RAD(fov) * 0.5f);
+	float ctgHalfFov = 1.0f / Tan(DEG2RAD(fov * 0.5f));
 	float invDiff = 1.0f / (zFar - zNear);
 
-	mat(0, 0) = ctgHalfFov;
-	mat(1, 1) = ctgHalfFov * aspect;
-	mat(2, 2) = -(zFar + zNear) * invDiff;
-	mat(2, 3) = -1.0f;
+	mat(0, 0) = ctgHalfFov/ aspect;			// left: ctgHalfFov * aspect;
+	mat(1, 1) = ctgHalfFov;					// left: ctgHalfFov;
+	mat(2, 2) = (zFar + zNear) * invDiff;	// left: without minus
+	mat(2, 3) = 1.0f; // left: 1.0f;
 	mat(3, 2) = -2.0f * zFar * zNear * invDiff;
 
 	return mat;

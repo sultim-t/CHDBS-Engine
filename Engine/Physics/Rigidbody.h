@@ -7,6 +7,8 @@
 
 class Rigidbody : public IComponent
 {
+	friend class PhysicsSystem;
+
 	CLASSDECLARATION(Rigidbody)
 
 private:

@@ -44,13 +44,13 @@ void Rigidbody::FixedUpdate()
 	Vector3 force(0.0f, 0.0f, 0.0f);
 
 	// add constant forces
-	for (UINT i = 0; i < allForces.GetSize(); i++)
+	for (int i = 0; i < allForces.GetSize(); i++)
 	{
 		force += allForces[i];
 	}
 	
 	// add impulses
-	for (UINT i = 0; i < allImpulses.GetSize(); i++)
+	for (int i = 0; i < allImpulses.GetSize(); i++)
 	{
 		force += allImpulses[i];
 	}

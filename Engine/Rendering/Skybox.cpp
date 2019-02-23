@@ -89,15 +89,21 @@ void Skybox::Draw(const Matrix4 &camSpace) const
 
 	glDepthFunc(GL_LEQUAL);
 
+	// set shader
 	shader.Use();
-	shader.SetMat4("camSpace", camSpace);
 
+	// set uniforms
+	shader.SetMat4("camSpace", camSpace);
+	
+	// activate cubemap
+	cubemap.ActivateCubemap(0);
+
+	// bind
 	glBindVertexArray(vao);
 	
-	cubemap.Activate(0);
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	
-	glBindVertexArray(0);
+	// to default
 	glDepthFunc(GL_LESS);
 }
 

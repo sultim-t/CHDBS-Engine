@@ -9,6 +9,5 @@ private:
 
 public:
 	void Create(int width, int height);
-	void Activate(int i) const override;
-	UINT GetFBO();
+	UINT GetFBO() const;
 };

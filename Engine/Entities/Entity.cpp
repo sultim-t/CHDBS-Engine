@@ -2,26 +2,24 @@
 #include <Engine/TEMP/tinyxml2/tinyxml2.h>
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/Memory/Memory.h>
+#include <Engine/DataStructures/DynamicArray.h>
 
-void Entity::AddComponent(IComponent * c)
+void Entity::AddComponent(IComponent *c)
 {
-	components->push_back(c);
-}
-
-void Entity::RemoveComponent(IComponent * c)
-{
+	components.Push(c);
 }
 
 Entity::Entity(EntityID id)
 {
-	components = new std::vector<IComponent*>();
-
 	entityId = id;
-	isActive = true;
+	isActive = true; // by default entities are active
 }
 
-bool Entity::PreXMLInit(void * root)
+bool Entity::PreInit(void *root)
 {
+	// init container for components
+	components.Init(8);
+
 	using namespace tinyxml2;
 
 	XMLElement *elem = (XMLElement*)root;
@@ -70,25 +68,15 @@ bool Entity::PreXMLInit(void * root)
 }
 
 void Entity::Init()
-{ 
-	ComponentSystem::Instance().Register(this);
-}
+{ }
 
-Entity::Entity()
+const DynamicArray<IComponent*> &Entity::GetAllComponents() const
 {
-	components = new std::vector<IComponent*>();
-	isActive = true;
-}
-
-const std::vector<IComponent*>& Entity::GetAllComponents() const
-{
-	return *components;
+	return components;
 }
 
 void Entity::Destroy()
-{
-	SYSALLOCATOR.Free(components);
-}
+{ }
 
 void Entity::SetActive(bool active)
 {
@@ -98,11 +86,6 @@ void Entity::SetActive(bool active)
 bool Entity::IsActive()
 {
 	return isActive;
-}
-
-bool Entity::IsActiveInHierarchy()
-{
-	return true;
 }
 
 EntityID Entity::GetID() const
