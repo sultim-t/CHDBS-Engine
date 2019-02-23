@@ -5,9 +5,9 @@ class CFreeMovement : public IComponent
 {
 	CLASSDECLARATION(CFreeMovement)
 	
-public:
+private:
 	float x, y;
-	float Speed;
+	float speed;
 
 private:
 	void ProcessMouseMovement(float xoffset, float yoffset);

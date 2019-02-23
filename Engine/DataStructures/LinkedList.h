@@ -167,7 +167,6 @@ inline bool LinkedList<T>::Find(const T &data)
 template<class T>
 inline void LinkedList<T>::Add(T data)
 {
-	// NEEDS allocator
 	LinkedListNode *newNode = new LinkedListNode(data, NULL);
 
 	if (last != NULL)

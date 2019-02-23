@@ -4,7 +4,6 @@
 
 enum class Keycode
 {
-	/* Printable keys */
 	KeySPACE = 32,
 	KeyAPOSTROPHE = 39,
 	KeyCOMMA = 44,
@@ -56,7 +55,6 @@ enum class Keycode
 	KeyWORLD1 = 161,
 	KeyWORLD2 = 162,
 
-	/* Function keys */
 	KeyESCAPE = 256,
 	KeyENTER = 257,
 	KeyTAB = 258,
@@ -130,13 +128,13 @@ enum class Keycode
 
 	KeyLAST = KeyMENU,
 
-	// If this bit is set one or more Shift keys were held down.
+	// If Shift is held down then this bit will be 1
 	ModSHIFT = 0x0001,
-	// If this bit is set one or more Control keys were held down.
+	// If Ctrl is held down then this bit will be 1
 	ModCONTROL = 0x0002,
-	// If this bit is set one or more Alt keys were held down.
+	// If Alt is held down then this bit will be 1
 	ModALT = 0x0004,
-	// If this bit is set one or more Super keys were held down.
+	// If Super is held down then this bit will be 1
 	ModSUPER = 0x0008,
 
 	MouseBUTTON1 = 0,
@@ -170,6 +168,7 @@ enum class Keycode
 	JOYSTICK16 = 15,
 	JOYSTICKLAST = JOYSTICK16
 };
+
 class Input
 {
 public:

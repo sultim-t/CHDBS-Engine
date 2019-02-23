@@ -49,16 +49,6 @@ LightType CLight::GetLightType() const
 	return ltype;
 }
 
-/*const Matrix4 &CLight::GetProjection() const
-{
-	return projection;
-}
-
-const Matrix4 &CLight::GetView() const
-{
-	return view;
-}*/
-
 const Matrix4 &CLight::GetLightSpace() const
 {
 	return lightSpace;

@@ -25,9 +25,6 @@ private:
 			this->Value = value;
 		}
 
-		// default
-		~HTElement() { }
-
 		void operator=(HTElement &elem)
 		{
 			this->Key = elem.Key;
@@ -74,7 +71,12 @@ public:
 	// Slow if "maxChainSize" is big
 	bool Find(const K &key, T &outValue) const;
 
-	// Destroy all data
+	// Clears hash table
+	// Note: doesn't frees memory
+	// Note: doesn't destroy objects in hash table
+	void Clear();
+	// Frees memory for hash table
+	// Note: doesn't destroy objects in hash table
 	void Delete();
 };
 
@@ -161,8 +163,6 @@ inline bool HashTable<K, T>::Remove(const K &key, T &outValue)
 				chain[k].Value = chain[k + 1].Value;
 			}
 
-			chain[chainSize - 1].~HTElement<K, T>();
-
 			chainSizes[hash]--;
 
 			return true;
@@ -244,20 +244,19 @@ inline void HashTable<K, T>::Resize()
 }
 
 template<class K, class T>
-inline void HashTable<K, T>::Delete()
+inline void HashTable<K, T>::Clear()
 {
 	for (UINT i = 0; i < chainCount; i++)
 	{
-		UINT chainSize = chainSizes[i];
 		chainSizes[i] = 0;
-
-		for (UINT j = 0; j < chainSize; j++)
-		{
-			chains[i][j].~HTElement<K, T>();
-		}
 	}
 
 	chainCount = 0;
+}
+
+template<class K, class T>
+inline void HashTable<K, T>::Delete()
+{
 	SYSALLOCATOR.Free(chains);
 	SYSALLOCATOR.Free(chainSizes);
 }

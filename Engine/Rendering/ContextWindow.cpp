@@ -4,7 +4,6 @@
 #include <GLFW\glfw3.h>
 
 static GLFWwindow *window;
-bool firstMouse;
 
 void FramebufferSize—allback(GLFWwindow* window, int width, int height);
 void MouseCallback(GLFWwindow* window, double xpos, double ypos);
@@ -25,23 +24,8 @@ void FramebufferSize—allback(GLFWwindow * window, int width, int height)
 
 void MouseCallback(GLFWwindow * window, double xpos, double ypos)
 {
-	float x = (float)xpos;
-	float y = (float)ypos;
-
-	if (firstMouse)
-	{
-		Input::MouseX = x;
-		Input::MouseY = y;
-		firstMouse = false;
-	}
-
-	float xoffset = x - Input::MouseX;
-	float yoffset = Input::MouseY - y; // reversed since y-coordinates go from bottom to top
-
-	Input::MouseX = x;
-	Input::MouseY = y;
-	Input::MouseXOffset = xoffset;
-	Input::MouseYOffset = yoffset;
+	Input::MouseX = (float)xpos;
+	Input::MouseY = (float)ypos;
 }
 
 void ScrollCallback(GLFWwindow * window, double xoffset, double yoffset)
@@ -77,7 +61,6 @@ void ContextWindow::Init(const char* name, int width, int height)
 
 	Input::MouseX = width / 2.0f;
 	Input::MouseY = height / 2.0f;
-	firstMouse = true;
 
 	glfwMakeContextCurrent(window);
 	glfwSetFramebufferSizeCallback(window, FramebufferSize—allback);

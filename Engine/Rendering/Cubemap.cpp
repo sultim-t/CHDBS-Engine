@@ -1,7 +1,7 @@
 #include "Cubemap.h"
 #include "OpenGL.h"
 
-#include <Engine/DataStructures/StaticArray.h>
+#include <Engine/DataStructures/Array.h>
 
 #include <ImageLoading/stb_image.h>
 
@@ -10,7 +10,7 @@ Cubemap::Cubemap()
 	type = TextureType::Cubemap;
 }
 
-void Cubemap::LoadCubemap(const StaticArray<const char*, 6> &paths)
+void Cubemap::LoadCubemap(const Array<const char*, 6> &paths)
 {
 	glGenTextures(1, &graphicsTextureId);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, graphicsTextureId);

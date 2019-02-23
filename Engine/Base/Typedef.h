@@ -38,7 +38,8 @@ typedef UINT		ShaderID;
 typedef UINT		TextureID;
 
 // Containers
-template <class T, UINT> class StaticArray;
+template <class T, UINT> class Array;
+template <class T> class StaticArray;
 template <class T> class DynamicArray;
 template <class T> class LinkedList;
 template <class K, class T> class HashTable;

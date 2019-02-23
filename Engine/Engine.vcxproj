@@ -203,6 +203,7 @@
     <ClCompile Include="Rendering\Texture.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="Systems\ComponentSystem.cpp" />
+    <ClCompile Include="Systems\InputSystem.cpp" />
     <ClCompile Include="Systems\PhysicsSystem.cpp" />
     <ClCompile Include="Systems\RenderingSystem.cpp" />
     <ClCompile Include="TEMPMain.cpp" />
@@ -270,6 +271,7 @@
     <ClInclude Include="Rendering\Vertex.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />
+    <ClInclude Include="Systems\InputSystem.h" />
     <ClInclude Include="Systems\PhysicsSystem.h" />
     <ClInclude Include="Systems\RenderingSystem.h" />
     <ClInclude Include="Systems\ISystem.h" />

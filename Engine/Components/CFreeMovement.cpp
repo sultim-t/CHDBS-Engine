@@ -25,15 +25,10 @@ void CFreeMovement::Update()
 		ContextWindow::Instance().RequestClose();
 	}
 
-	float x1 = Input::IsPressed(Keycode::KeyRIGHT) ? 1.0f : 0.0f;
-	x1 += Input::IsPressed(Keycode::KeyLEFT) ? -1.0f : 0.0f;
-	float y1 = Input::IsPressed(Keycode::KeyUP) ? 1.0f : 0.0f;
-	y1 += Input::IsPressed(Keycode::KeyDOWN) ? -1.0f : 0.0f;
-
 	float scroll = Input::IsPressed(Keycode::KeyKPSUBTRACT)? -1.0f : 0.0f;
 	scroll += Input::IsPressed(Keycode::KeyKPADD)? 1.0f : 0.0f;
 
-	ProcessMouseMovement(x1, y1);
+	ProcessMouseMovement(Input::MouseXOffset, Input::MouseYOffset);
 	ProcessMouseScroll(scroll);
 	ProcessKeyboard();
 }
@@ -42,7 +37,7 @@ void CFreeMovement::SetProperty(const String &key, const String &value)
 {
 	if (key == PROPERTY_KEY_SPEED)
 	{
-		Speed = value.ToFloat();
+		speed = value.ToFloat();
 	}
 	else
 	{
@@ -59,7 +54,7 @@ void CFreeMovement::ProcessKeyboard()
 	Vector3 right = t.GetRight();
 	Vector3 up = t.GetUp();
 
-	float velocity = Speed * Time::GetDeltaTime();
+	float velocity = speed * Time::GetDeltaTime();
 	
 	if (Input::IsPressed(Keycode::KeyW))
 		offset += front * velocity;

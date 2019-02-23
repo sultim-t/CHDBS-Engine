@@ -1,61 +1,102 @@
 #pragma once
 
-template<class T, UINT Size>
+#include <Engine/Memory/Memory.h>
+
+// An array with dynamic allocation
+template<class T>
 class StaticArray
 {
 private:
-	T arr[Size];
+	T *arr;
+	UINT amount;
 	
 public:
+	// Empty constructor
 	inline StaticArray();
+
+	// Allocates memory for "amount" elements of type T
+	inline void Init(UINT amount);
 	
-	inline void operator=(const StaticArray<T, Size> &source);
+	// Copies elements from "source"
+	inline void operator=(const StaticArray<T> &source);
 	inline const T &operator[](UINT index) const;
 	inline T &operator[](UINT index);
 
+	// Returns amount of elements for which memory were allocated
 	inline UINT GetSize() const;
 
-	// Copy elements to this array from "source"
-	inline void CopyFrom(const StaticArray<T, Size> &source);
+	// Frees allocated memory
+	inline void Delete();
+	// Copy "n" elements to this array from "source"
+	inline void CopyFrom(const StaticArray<T> &source, UINT n);
 };
 
 
-template<class T, UINT Size>
-inline StaticArray<T, Size>::StaticArray()
-{ }
+template<class T>
+inline StaticArray<T>::StaticArray()
+{ 
+	amount = 0;
+	arr = nullptr;
+}
 
-template<class T, UINT Size>
-inline void StaticArray<T, Size>::operator=(const StaticArray<T, Size>& source)
+template<class T>
+inline void StaticArray<T>::Init(UINT amount)
 {
+	ASSERT(amount != 0);
+
+	this->amount = amount;
+	arr = SYSALLOCATOR.Allocate(sizeof(T) * amount);
+}
+
+template<class T>
+inline void StaticArray<T>::operator=(const StaticArray<T> &source)
+{
+	// this array must be empty
+	ASSERT(this->GetSize() == 0 && this->arr == nullptr);
+	
+	// source array must be not empty
+	ASSERT(source.GetSize() != 0 && source.arr != nullptr);
+
+	Init(source.amount);
 	CopyFrom(source);
 }
 
-template<class T, UINT Size>
-inline const T &StaticArray<T, Size>::operator[](UINT index) const
+template<class T>
+inline const T &StaticArray<T>::operator[](UINT index) const
 {
-	ASSERT(index >= 0 && index < Size);
+	ASSERT(index >= 0 && index < amount);
 
 	return arr[index];
 }
 
-template<class T, UINT Size>
-inline T &StaticArray<T, Size>::operator[](UINT index)
+template<class T>
+inline T &StaticArray<T>::operator[](UINT index)
 {
-	ASSERT(index >= 0 && index < Size);
+	ASSERT(index >= 0 && index < amount);
 
 	return arr[index];
 }
 
-template<class T, UINT Size>
-inline UINT StaticArray<T, Size>::GetSize() const
+template<class T>
+inline UINT StaticArray<T>::GetSize() const
 {
-	return Size;
+	return amount;
 }
 
-template<class T, UINT Size>
-inline void StaticArray<T, Size>::CopyFrom(const StaticArray<T, Size>& source)
+template<class T>
+inline void StaticArray<T>::Delete()
 {
-	for (UINT i = 0; i < Size; i++)
+	ASSERT(this->arr != nullptr);
+	SYSALLOCATOR.Free(arr);
+}
+
+template<class T>
+inline void StaticArray<T>::CopyFrom(const StaticArray<T>& source, UINT n)
+{
+	ASSERT(source.GetSize() <= n && source.arr != nullptr);
+	ASSERT(this->GetSize() >= n && this->arr != nullptr);
+
+	for (UINT i = 0; i < n; i++)
 	{
 		arr[i] = source.arr[i];
 	}

@@ -22,11 +22,13 @@
 #include <Engine/Rendering/Cubemap.h>
 #include <Engine/Components/CLight.h>
 #include <Engine/Rendering/Skybox.h>
+#include <Engine/DataStructures/Array.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/Systems/PhysicsSystem.h>
+#include <Engine/Systems/InputSystem.h>
 
 int main()
 {
@@ -38,8 +40,9 @@ int main()
 	RenderingSystem::Instance().Init();
 	ComponentSystem::Instance().Init();
 	PhysicsSystem::Instance().Init();
+	InputSystem::Instance().Init();
 
-	StaticArray<const char*, 6> skyNames;
+	Array<const char*, 6> skyNames;
 	skyNames[0] = "TEMP/DoubleBarrel/Skybox/right.jpg";
 	skyNames[1] = "TEMP/DoubleBarrel/Skybox/left.jpg";
 	skyNames[2] = "TEMP/DoubleBarrel/Skybox/top.jpg";
@@ -47,7 +50,7 @@ int main()
 	skyNames[4] = "TEMP/DoubleBarrel/Skybox/front.jpg";
 	skyNames[5] = "TEMP/DoubleBarrel/Skybox/back.jpg";
 
-	StaticArray<const char*, 6> reflName;
+	Array<const char*, 6> reflName;
 	reflName[0] = "TEMP/DoubleBarrel/chrome.jpg";
 	reflName[1] = "TEMP/DoubleBarrel/chrome.jpg";
 	reflName[2] = "TEMP/DoubleBarrel/chrome.jpg";
@@ -105,6 +108,7 @@ int main()
 			PhysicsSystem::Instance().Update();
 		}
 
+		InputSystem::Instance().Update();
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
 
