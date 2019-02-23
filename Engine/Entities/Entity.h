@@ -18,22 +18,19 @@ private:
 
 	DynamicArray<IComponent*> components;
 
+protected:
+	Transform transform;
+
 private:
 	Entity(EntityID id);
 	Entity(const Entity&) = delete;
 	Entity(const Entity&&) = delete;
 
-	// Loads main data from xml element
-	bool PreInit(void *root);
-	// Init after loading components
+	// Init before loading components
 	void Init();
 
-// used by factory
-private:
+	// used by factory
 	void AddComponent(IComponent *c);
-
-protected:
-	Transform transform;
 
 public:
 	template <class T>

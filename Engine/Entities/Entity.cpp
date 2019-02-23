@@ -1,5 +1,4 @@
 #include "Entity.h"
-#include <Engine/TEMP/tinyxml2/tinyxml2.h>
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/Memory/Memory.h>
 #include <Engine/DataStructures/DynamicArray.h>
@@ -15,60 +14,11 @@ Entity::Entity(EntityID id)
 	isActive = true; // by default entities are active
 }
 
-bool Entity::PreInit(void *root)
-{
+void Entity::Init()
+{ 
 	// init container for components
 	components.Init(8);
-
-	using namespace tinyxml2;
-
-	XMLElement *elem = (XMLElement*)root;
-
-	bool setActive = elem->BoolAttribute("active", true);
-	SetActive(setActive);
-
-	Vector3 pos, scale;
-
-	pos[0] = elem->FloatAttribute("posx");
-	pos[1] = elem->FloatAttribute("posy");
-	pos[2] = elem->FloatAttribute("posz");
-
-	if (elem->FindAttribute("qw"))
-	{
-		Quaternion q;
-		q[0] = elem->FloatAttribute("qw", 1);
-		q[1] = elem->FloatAttribute("qx", 0);
-		q[2] = elem->FloatAttribute("qy", 0);
-		q[2] = elem->FloatAttribute("qz", 0);
-
-		transform.SetRotation(q);
-	}
-	else if (elem->FindAttribute("eulx"))
-	{
-		Euler e;
-		e[0] = elem->FloatAttribute("eulx");
-		e[1] = elem->FloatAttribute("euly");
-		e[2] = elem->FloatAttribute("eulz");
-
-		transform.SetRotation(e);
-	}
-	else
-	{
-		transform.Reset();
-	}
-
-	scale[0] = elem->FloatAttribute("scalex", 1);
-	scale[1] = elem->FloatAttribute("scaley", 1);
-	scale[2] = elem->FloatAttribute("scalez", 1);
-
-	transform.SetPosition(pos);
-	transform.SetScale(scale);
-
-	return true;
 }
-
-void Entity::Init()
-{ }
 
 const DynamicArray<IComponent*> &Entity::GetAllComponents() const
 {

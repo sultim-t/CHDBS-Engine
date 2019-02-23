@@ -1,7 +1,8 @@
-<Entity 
+<Entity
   name="Terrain"
-  posx ="-20" posy="26" posz="20"
-  eulx ="0" euly ="180" eulz="90">
+  position="-20 26 20"
+  euler="0 180 90">
+
   <CModel
     path="TEMP/DoubleBarrel/beacj.fbx"/>
 </Entity>

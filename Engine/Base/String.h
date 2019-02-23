@@ -58,10 +58,19 @@ public:
 	// Removes chars
 	void Remove(UINT fromLeft, UINT fromRight);
 
-	bool ToBool() const;
-	int ToInt() const;
-	float ToFloat() const;
+	static bool ToBool(const char *str);
+	static int ToInt(const char *str);
+	static float ToFloat(const char *str);
+	static Vector3 ToVector3(const char *str);
+	static Quaternion ToQuaternion(const char *str);
+	// template <int Dim>
+	// static Vector<float, Dim> ToVector(const char *str);
+
+	inline bool ToBool() const;
+	inline int ToInt() const;
+	inline float ToFloat() const;
 	Vector3 ToVector3() const;
+	Quaternion ToQuaternion() const;
 
 	inline const char *GetCharPtr() const;
 
@@ -150,6 +159,21 @@ inline void String::Split(UINT pos, String &a, String &b) const
 inline void String::Remove(UINT fromRight)
 {
 	Remove(0, fromRight);
+}
+
+inline bool String::ToBool() const
+{
+	return ToBool(string);
+}
+
+inline int String::ToInt() const
+{
+	return ToInt(string);
+}
+
+inline float String::ToFloat() const
+{
+	return ToFloat(string);
 }
 
 inline const char * String::GetCharPtr() const

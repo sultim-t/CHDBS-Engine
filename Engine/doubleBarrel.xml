@@ -1,9 +1,11 @@
-<Entity 
+<Entity
   name="Double Barrel"
-  posx ="0" posy="2" posz="1"
-  eulx ="90" euly ="0" eulz="0">
+  position="0 2 1"
+  euler="90 0 0">
+  
   <CModel
     path="TEMP/DoubleBarrel/DoubleBarrel.obj"/>
+  
   <Rigidbody
     mass="20"
     velocity="0 10 0"

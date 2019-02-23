@@ -100,6 +100,35 @@ IComponent *EntityFactory::CreateComponent(void *xmlElemP)
 	return comp;
 }
 
+void EntityFactory::SetData(Entity *entity, void *xmlElem)
+{
+	using namespace tinyxml2;
+	XMLElement *elem = (XMLElement*)xmlElem;
+
+	bool setActive = elem->BoolAttribute("active", true);
+	entity->SetActive(setActive);
+
+	if (const char *val = elem->Attribute("position"))
+	{
+		entity->transform.SetPosition(String::ToVector3(val));
+	}
+
+	if (const char *val = elem->Attribute("euler"))
+	{
+		entity->transform.SetRotation(String::ToVector3(val));
+	}
+
+	if (const char *val = elem->Attribute("quat"))
+	{
+		entity->transform.SetRotation(String::ToQuaternion(val));
+	}
+
+	if (const char *val = elem->Attribute("scale"))
+	{
+		entity->transform.SetScale(String::ToVector3(val));
+	}
+}
+
 Entity *EntityFactory::PCreateEntity(const char *resource)
 {
 	using namespace tinyxml2;
@@ -115,9 +144,10 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 	}
 
 	Entity *entity = new Entity(GetNextEntityID());
+	entity->Init();
 
 	// load main data
-	ASSERT(entity->PreInit(root));
+	SetData(entity, root);
 
 	// foreach component in xml
 	for (XMLElement *node = root->FirstChildElement();
@@ -131,7 +161,7 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 
 		if (node->BoolAttribute("active", true))
 		{
-			// must be activated through field
+			// must be activated through the field
 			// else will be activated as a component
 			comp->isActive = true;
 		}
@@ -143,8 +173,6 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 		// everything is set up
 		comp->Init();
 	}
-
-	entity->Init();
 	
 	// finally, store entity
 	entities.Push(entity);

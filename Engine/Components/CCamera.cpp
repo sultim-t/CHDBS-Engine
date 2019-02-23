@@ -101,7 +101,8 @@ Matrix4 CCamera::GetViewMatrix() const
 	Transform t = owner->GetTransform();
 	Vector3 position = t.GetPosition();
 
-	Vector3 f = t.GetForward();
+	// opengl uses inverse z axis
+	Vector3 f = -t.GetForward();
 	Vector3 u = t.GetUp();
 	
 	return Transform::LookAt(position, position + f, u);

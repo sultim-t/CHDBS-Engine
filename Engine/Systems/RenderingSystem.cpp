@@ -66,8 +66,11 @@ void RenderingSystem::Update()
 		FOREACHLINKEDLIST(CLight*, lightPtr, lights)
 		{
 			CLight *light = *lightPtr;
-			CreateShadowMap(*light, shadowMap);
-			shadowMap.Activate((int)TextureType::Shadowmap);
+			if (light->IsCastingShadows())
+			{
+				CreateShadowMap(*light, shadowMap);
+				shadowMap.Activate((int)TextureType::Shadowmap);
+			}
 
 			FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
 			{
@@ -78,7 +81,10 @@ void RenderingSystem::Update()
 				 	const Shader *shader = &m.GetMaterial().GetShader();
 					shader->Use();
 
-					shader->SetInt(TEXTURE_NAME_SHADOWMAP, (int)TextureType::Shadowmap);
+					if (light->IsCastingShadows())
+					{
+						shader->SetInt(TEXTURE_NAME_SHADOWMAP, (int)TextureType::Shadowmap);
+					}
 
 					if (shader->Is3D())
 					{
@@ -98,6 +104,13 @@ void RenderingSystem::Update()
 			}
 		}
 		
+		Matrix4 skyCamSpace = viewM;
+		// reset position
+		// to make skybox feel infinitely far
+		skyCamSpace.SetRow(3, Vector4(0.0f));
+		skyCamSpace *= projM;
+		Skybox::Instance().Draw(skyCamSpace);
+	
 		FOREACHLINKEDLIST(CParticleSystem*, psPtr, particleSystems)
 		{
 			CParticleSystem *ps = *psPtr;
@@ -105,13 +118,6 @@ void RenderingSystem::Update()
 			ps->BindCamera(cam);
 			ps->Render();
 		}
-
-		Matrix4 skyCamSpace = viewM;
-		// reset position
-		// to make skybox feel infinitely far
-		skyCamSpace.SetRow(3, Vector4(0.0f));
-		skyCamSpace *= projM;
-		Skybox::Instance().Draw(skyCamSpace);
 	}
 
 	ContextWindow::Instance().SwapBuffers();

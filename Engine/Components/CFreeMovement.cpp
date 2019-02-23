@@ -91,9 +91,9 @@ void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)
 	float y = yoffset * Time::GetDeltaTime();
 
 	Euler e;
-	e[YAW] = x;
-	e[PITCH] = y;
-	e[ROLL] = 0.0f;
+	e[PITCH] = x;
+	e[YAW] = 0.0f;
+	e[ROLL] = -y;
 
 	owner->GetTransform().Rotate(e);
 }

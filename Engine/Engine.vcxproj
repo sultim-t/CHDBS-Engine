@@ -205,7 +205,6 @@
     <ClCompile Include="Systems\ComponentSystem.cpp" />
     <ClCompile Include="Systems\PhysicsSystem.cpp" />
     <ClCompile Include="Systems\RenderingSystem.cpp" />
-    <ClCompile Include="model_loading.cpp" />
     <ClCompile Include="TEMPMain.cpp" />
     <ClCompile Include="TEMP\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>

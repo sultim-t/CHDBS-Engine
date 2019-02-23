@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Vector.h"
+#include "Matrix.h"
 
 struct Quaternion
 {
@@ -470,12 +471,12 @@ inline Vector3 Quaternion::RotateVector(const Vector3 &v) const
 
 inline Vector3 Quaternion::GetForward() const
 {
-	return -RotateVector(Vector3(0.0f, 0.0f, 1.0f));
+	return RotateVector(Vector3(0.0f, 0.0f, 1.0f));
 }
 
 inline Vector3 Quaternion::GetRight() const
 {
-	return -RotateVector(Vector3(1.0f, 0.0f, 0.0f));
+	return RotateVector(Vector3(1.0f, 0.0f, 0.0f));
 }
 
 inline Vector3 Quaternion::GetUp() const

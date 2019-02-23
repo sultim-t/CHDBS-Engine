@@ -60,9 +60,9 @@ typedef Vector<float, 3> Vector3;
 typedef Vector<float, 4> Vector4;
 
 typedef Vector<float, 3> Euler;
-#define ROLL  2
-#define PITCH 0
-#define YAW   1
+#define ROLL  2		// around z axis
+#define PITCH 0		// around x axis
+#define YAW   1		// around y axis
 
 // Float color RGB
 typedef Vector<float, 3> Color;

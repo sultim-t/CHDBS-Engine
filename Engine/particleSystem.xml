@@ -1,6 +1,6 @@
 <Entity 
   name="Particles"
-  posx ="0" posy="0" posz="0">
+  position="0 0 0">
 
   <CParticleSystem
     maxCount="500" 

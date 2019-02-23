@@ -29,7 +29,10 @@ private:
 
 	// Creates component from xml node
 	IComponent *CreateComponent(void *xmlElem);
-	
+
+	// Sets data to entity from xml node
+	void SetData(Entity *entity, void *xmlElem);
+
 	// Parses XML file and creates entity
 	Entity *PCreateEntity(const char *resource);
 	template<class T>

@@ -1,7 +1,6 @@
 <Entity 
   name="Camera"
-  posx ="-10" posy="0" posz="0"
-  eulx ="0" euly ="0" eulz="0">
+  position="-10 0 0">
 
   <CCamera
     znear="0.1"

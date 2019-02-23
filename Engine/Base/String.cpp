@@ -1,5 +1,6 @@
 #include <Engine/Memory/Memory.h>
 #include <Engine/Math/Vector.h>
+#include <Engine/Math/Quaternion.h>
 #include <string>
 
 String::String(const char * orig)
@@ -135,37 +136,41 @@ void String::Remove(UINT fromLeft, UINT fromRight)
 	}
 }
 
-bool String::ToBool() const
+bool String::ToBool(const char *str)
 {
-	return (bool)ToInt();
+	return ToInt(str) != 0;
 }
 
-int String::ToInt() const
+int String::ToInt(const char *str)
 {
-	return atoi(string);
+	return atoi(str);
 }
 
-float String::ToFloat() const
+float String::ToFloat(const char *str)
 {
-	return (float)atof(string);
+	return (float)atof(str);
 }
 
-Vector3 String::ToVector3() const
+Vector3 String::ToVector3(const char *str)
 {
+	const int Dim = 3;
+
 	Vector3 result;
 	UINT index = 0;
 
-	String temp(string);
+	String temp(str);
 
 	// pointer to the beginning of float to parse
 	const char *ptr = temp.GetCharPtr();
-	
+
+	UINT length = strlen(str);
+
 	// <= to check last symbol
 	for (UINT i = 0; i <= length; i++)
 	{
-		if (string[i] == ' ' || string[i] == '\0')
+		if (str[i] == ' ' || str[i] == '\0')
 		{
-			ASSERT(index < 3);
+			ASSERT(index < Dim);
 
 			temp[i] = '\0';
 
@@ -179,10 +184,61 @@ Vector3 String::ToVector3() const
 	}
 
 	// convert unparsed to zero
-	for (UINT i = index; i < 3; i++)
+	for (UINT i = index; i < Dim; i++)
 	{
 		result[i] = 0;
 	}
 
 	return result;
+}
+
+Quaternion String::ToQuaternion(const char * str)
+{
+	const int Dim = 4;
+
+	Quaternion result;
+	UINT index = 0;
+
+	String temp(str);
+
+	// pointer to the beginning of float to parse
+	const char *ptr = temp.GetCharPtr();
+
+	UINT length = strlen(str);
+
+	// <= to check last symbol
+	for (UINT i = 0; i <= length; i++)
+	{
+		if (str[i] == ' ' || str[i] == '\0')
+		{
+			ASSERT(index < Dim);
+
+			temp[i] = '\0';
+
+			// convert to float till '\0'
+			result[index] = (float)atof(ptr);
+
+			// update ptr
+			ptr = temp + i + 1;
+			index++;
+		}
+	}
+
+	// convert unparsed to zero
+	for (UINT i = index; i < Dim; i++)
+	{
+		result[i] = 0;
+	}
+
+	return result;
+}
+
+Vector3 String::ToVector3() const
+{
+	return ToVector3(string);
+}
+
+Quaternion String::ToQuaternion() const
+{
+	return ToQuaternion(string);
 }
