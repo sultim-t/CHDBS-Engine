@@ -87,15 +87,37 @@ void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)
 	xoffset *= Input::MouseSensitivity * 50;
 	yoffset *= Input::MouseSensitivity * 50;
 
-	float x = xoffset * Time::GetDeltaTime();
-	float y = yoffset * Time::GetDeltaTime();
+	float ax = xoffset * Time::GetDeltaTime();
+	float ay = yoffset * Time::GetDeltaTime();
+
+	x += ax;
+	y += ay;
+
+	if (x > 180.0f)
+	{
+		x -= 360.0f;
+	}
+
+	if (x < -180.0f)
+	{
+		x += 360.0f;
+	}
+
+	if (y < -90.0f)
+	{
+		y = -90.0f;
+	}
+	else if (y > 90.0f)
+	{
+		y = 90.0f;
+	}
 
 	Euler e;
 	e[PITCH] = x;
 	e[YAW] = 0.0f;
 	e[ROLL] = -y;
 
-	owner->GetTransform().Rotate(e);
+	owner->GetTransform().SetRotation(e);
 }
 
 void CFreeMovement::ProcessMouseScroll(float yoffset)

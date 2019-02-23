@@ -6,6 +6,7 @@ class CFreeMovement : public IComponent
 	CLASSDECLARATION(CFreeMovement)
 	
 public:
+	float x, y;
 	float Speed;
 
 private:
