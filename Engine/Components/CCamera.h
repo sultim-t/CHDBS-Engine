@@ -26,6 +26,12 @@ private:
 	float orthoUp;
 	float orthoBottom;
 
+	// TODO: add frustum
+	// change frustum's fov
+	// - only if camera's fov changed >3 degrees
+	// - change by step = 3 degrees
+	// make sure that frustum's fov > camera's fov
+
 public:
 	// Calculates view matrix
 	Matrix4 GetViewMatrix() const;

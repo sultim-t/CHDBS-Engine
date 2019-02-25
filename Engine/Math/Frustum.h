@@ -17,11 +17,11 @@ private:
 	// normals of planes directed to the outside of frustum
 	Plane planes[FRUSTUM_PLANES_COUNT];
 	
-	Vector3 nearVerts[4];
-	Vector3 farVerts[4];
+	Vector3 nearVerts[4];	// counter clockwise, starting from upper right
+	Vector3 farVerts[4];	// counter clockwise, starting from upper right
 
 	float fov;
-	float aspect;
+	float aspect;			// width/height
 	float near, far;
 
 public:

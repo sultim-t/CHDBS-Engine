@@ -25,6 +25,9 @@ public:
 	// Construct plane from normal and point on plane
 	inline Plane(const Vector3 &normal, const Vector3 &point); 
 
+	// Init plane from 3 points on it, counter clockwise order
+	inline void FromPoints(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3);
+
 	// Returns closest point on the plane
 	inline Vector3 GetClosestPoint(const Vector3 &from) const;
 
@@ -40,6 +43,9 @@ public:
 
 	inline const Vector3 &GetNormal() const;
 	inline float GetD() const;
+
+	inline void SetNormal(const Vector3 &n);
+	inline void SetD(float d);
 };
 
 inline Plane::Plane()
@@ -75,14 +81,21 @@ inline Plane::Plane(float A, float B, float C, float D)
 
 inline Plane::Plane(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3)
 {
-	Vector3 n = Vector3::Cross((p3 - p2), (p2 - p1));
-	*this = Plane(n, p1);
+	FromPoints(p1, p2, p3);
 }
 
 inline Plane::Plane(const Vector3 &normal, const Vector3 &point)
 {
 	this->normal = normal.GetNormalized();
 	this->distance = Vector3::Dot(this->normal, point);
+}
+
+inline void Plane::FromPoints(const Vector3 & p1, const Vector3 & p2, const Vector3 & p3)
+{
+	normal = Vector3::Cross((p3 - p2), (p2 - p1));
+	normal.Normalize();
+
+	distance = Vector3::Dot(normal, p1);
 }
 
 inline Vector3 Plane::GetClosestPoint(const Vector3 & from) const
@@ -123,4 +136,14 @@ inline const Vector3 & Plane::GetNormal() const
 inline float Plane::GetD() const
 {
 	return distance;
+}
+
+inline void Plane::SetNormal(const Vector3 & n)
+{
+	normal = n.GetNormalized();
+}
+
+inline void Plane::SetD(float d)
+{
+	distance = d;
 }
