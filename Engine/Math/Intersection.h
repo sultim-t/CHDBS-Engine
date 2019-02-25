@@ -26,6 +26,7 @@ public:
 	static bool RayTriangle(const Ray &ray, const Triangle &t, Vector3 &barycentric);
 
 	static bool SegmentAABB(const Vector3 &p0, const Vector3 &p1, const AABB &aabb, Vector3 &point, float &t);
+	static bool SegmentPlane(const Vector3 &p0, const Vector3 &p1, const Plane &p, Vector3 &point);
 	// Test segment and AABB intersection
 	//   "barycentric" is a barycentric coords on triangle of intersection
 	static bool SegmentTriangle(const Vector3 &p0, const Vector3 &p1, const Triangle &t, Vector3 &barycentric);
@@ -37,7 +38,9 @@ public:
 	//   "point" is a closest point on triangle from sphere center
 	static bool TriangleSphere(const Triangle &t, const Sphere &s, Vector3 &point);
 	static bool TriangleAABB(const Triangle &t, const AABB &aabb);
-	static bool TrianglePlane(const Triangle &t, const Plane &p);
+	// Test triangle and plane intersection
+	// If intersect then result is a segment (p0, p1)
+	static bool TrianglePlane(const Triangle &t, const Plane &plane, Vector3 &p0, Vector3 &p1);
 
 	static bool MeshSphere(const Mesh &f, const Sphere &s);
 	static bool MeshAABB(const Mesh &f, const AABB &aabb);

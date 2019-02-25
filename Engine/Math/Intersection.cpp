@@ -161,6 +161,41 @@ bool Intersection::TriangleAABB(const Triangle & t, const AABB & aabb)
 	return true;
 }
 
+bool Intersection::TrianglePlane(const Triangle & t, const Plane & plane, Vector3 &p0, Vector3 &p1)
+{
+	// debug all references/pointers
+
+	Vector3* points[] = { &p0, &p1 };
+	int last = 0;
+
+	if (SegmentPlane(t.A, t.B, plane, *points[last]))
+	{
+		last++;
+	}
+
+	if (SegmentPlane(t.B, t.C, plane, *points[last]))
+	{
+		last++;
+
+		if (last == 2)
+		{
+			return true;
+		}
+	}
+
+	if (SegmentPlane(t.C, t.A, plane, *points[last]))
+	{
+		last++;
+
+		if (last == 2)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool Intersection::PlaneBoxOverlap(const Vector3 & normal, const Vector3 & vert, const Vector3 & maxbox)
 {
 	Vector3 ovmin, ovmax;
@@ -352,12 +387,12 @@ bool Intersection::RayPlane(const Ray & ray, const Plane & p, Vector3 & point)
 	const float eps = 0.0001f;
 	float denom = Vector3::Dot(ray.GetDirection(), p.GetNormal());
 
-	// If not perpendicular
+	// Are parallel?
 	if (Abs(denom) > eps)
 	{
 		float t = -p.PlaneDot(ray.GetStart()) / denom;
 
-		if (t >= 0)
+		if (t >= 0.0f)
 		{
 			point = ray.GetStart() + ray.GetDirection() * t;
 			return true;
@@ -413,6 +448,28 @@ bool Intersection::SegmentAABB(const Vector3 & p0, const Vector3 & p1, const AAB
 	
 	// No separating axis found; segment must be overlapping AABB
 	return true;
+}
+
+bool Intersection::SegmentPlane(const Vector3 & p0, const Vector3 & p1, const Plane & p, Vector3 & point)
+{
+	const float eps = 0.0001f;
+
+	Vector3 dir = p1 - p0;
+	float denom = Vector3::Dot(dir, p.GetNormal());
+
+	// Are parallel?
+	if (Abs(denom) > eps)
+	{
+		float t = -p.PlaneDot(p0) / denom;
+
+		if (t >= 0.0f && t <= 1.0f)
+		{
+			point = p0 + dir * t;
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool Intersection::SegmentTriangle(const Vector3 & p, const Vector3 & q, const Triangle & tr, Vector3 & barycentric)
