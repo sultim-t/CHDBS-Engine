@@ -15,7 +15,6 @@ public:
 	std::vector<Mesh> meshes;
 	std::vector<ITexture> loadedTextures;
 
-	String directory;
 	String path;
 
 public:

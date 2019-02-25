@@ -1,0 +1,10 @@
+<Entity
+  name="Sun"
+  position="-2 4 -1"
+  euler="-50 30 0">
+
+  <CLight
+    type="dir"
+    static="1"
+    shadows="1"/>
+</Entity>

@@ -2,6 +2,14 @@
 #include <Engine/Rendering/OpenGL.h>
 #include <vector>
 
+Mesh::Mesh(const std::vector<Vertex5> vertices, const std::vector<UINT> indices)
+{
+	this->vertices = vertices;
+	this->indices = indices;
+
+	Init();
+}
+
 Mesh::Mesh(const std::vector<Vertex5> vertices, const std::vector<UINT> indices, const Material &material)
 {
 	this->vertices = vertices;
@@ -53,9 +61,10 @@ void Mesh::BindMaterial(const Material &material)
 	this->material = material;
 }
 
-void Mesh::ActivateMaterial(const Matrix4 &transformation) const
+void Mesh::ActivateMaterial(const Matrix4 &modelTransform) const
 {
-	material.BindModelMatrix(transformation);
+	Matrix4 &globalMeshTransform = modelTransform * transform.GetTransformMatrix();
+	material.BindModelMatrix(globalMeshTransform);
 	material.Activate();
 }
 
@@ -80,7 +89,32 @@ Material &Mesh::GetMaterial()
 	return material;
 }
 
+const Transform & Mesh::GetTransform() const
+{
+	return transform;
+}
+
+Transform & Mesh::GetTransform()
+{
+	return transform;
+}
+
 const Material &Mesh::GetMaterial() const
 {
 	return material;
+}
+
+const String & Mesh::GetName() const
+{
+	return name;
+}
+
+void Mesh::SetTransform(const Transform &transform)
+{
+	this->transform = transform;
+}
+
+void Mesh::SetName(const char * name)
+{
+	this->name = name;
 }

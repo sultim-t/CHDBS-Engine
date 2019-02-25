@@ -1,7 +1,7 @@
 <Entity
   name="Double Barrel"
   position="0 2 1"
-  euler="90 0 0">
+  euler="0 0 90">
   
   <CModel
     path="TEMP/DoubleBarrel/DoubleBarrel.obj"/>

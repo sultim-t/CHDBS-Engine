@@ -23,7 +23,7 @@ bool Frustum::IsInside(const Vector3 &point) const
 {
 	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
 	{
-		if (!planes[i].IsInside(point))
+		if (!planes[i].IsInFront(point))
 		{
 			return false;
 		}
@@ -41,31 +41,11 @@ bool Frustum::IsInside(const Vector3 &center, float radius) const
 {
 	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
 	{
-		if (!planes[i].IsInside(center, radius))
+		if (!planes[i].IsInFront(center, radius))
 		{
 			return false;
 		}
 	}
 
 	return true;
-}
-
-void Frustum::SetFOV(float fov)
-{
-	Init(fov, aspect, near, far);
-}
-
-void Frustum::SetAspect(float aspect)
-{
-	Init(fov, aspect, near, far);
-}
-
-void Frustum::SetNearClipDist(float near)
-{
-	Init(fov, aspect, near, far);
-}
-
-void Frustum::SetFarClipDist(float far)
-{
-	Init(fov, aspect, near, far);
 }

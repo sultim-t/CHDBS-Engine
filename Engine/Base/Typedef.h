@@ -75,6 +75,10 @@ enum class ShapeType;
 class IShape;
 class AABB;
 class Sphere;
+class Frustum;
+class Triangle;
+class Plane;
+class Ray;
 
 // Misc
 class Time;

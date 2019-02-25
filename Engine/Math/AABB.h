@@ -35,6 +35,13 @@ public:
 	AABB GetUnion(const AABB &aabb) const;
 	AABB GetIntersection(const AABB &aabb) const;
 
+	// Returns closest point on the AABB
+	Vector3 GetClosestPoint(const Vector3 &p) const;
+	// Returns squared distance from point to AABB
+	float DistanceSqrTo(const Vector3 &p) const;
+	// Returns distance from point to AABB
+	float DistanceTo(const Vector3 &p) const;
+
 	inline const Vector3 GetCenter() const;
 	inline const Vector3 GetSize() const;
 	inline const Vector3 &GetMin() const;

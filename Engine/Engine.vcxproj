@@ -188,8 +188,9 @@
     <ClCompile Include="Math\Projection.cpp" />
     <ClCompile Include="Math\Sphere.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
+    <ClCompile Include="Math\Triangle.cpp" />
     <ClCompile Include="Memory\SystemAllocator.cpp" />
-    <ClCompile Include="Physics\Intersection.cpp" />
+    <ClCompile Include="Math\Intersection.cpp" />
     <ClCompile Include="Physics\Rigidbody.cpp" />
     <ClCompile Include="Rendering\ArrayMesh.cpp" />
     <ClCompile Include="Rendering\Cubemap.cpp" />
@@ -218,6 +219,8 @@
     <ClInclude Include="Components\CMesh.h" />
     <ClInclude Include="Components\CParticleSystem.h" />
     <ClInclude Include="Math\IShape.h" />
+    <ClInclude Include="Math\Polygon.h" />
+    <ClInclude Include="Math\Triangle.h" />
     <ClInclude Include="Physics\ICollider.h" />
     <ClInclude Include="Components\CLight.h" />
     <ClInclude Include="Base\Message.h" />
@@ -250,7 +253,7 @@
     <ClInclude Include="Memory\SystemAllocator.h" />
     <ClInclude Include="Physics\AABBCollider.h" />
     <ClInclude Include="Physics\CollisionInfo.h" />
-    <ClInclude Include="Physics\Intersection.h" />
+    <ClInclude Include="Math\Intersection.h" />
     <ClInclude Include="Physics\Rigidbody.h" />
     <ClInclude Include="Physics\SphereCollider.h" />
     <ClInclude Include="Rendering\ArrayMesh.h" />

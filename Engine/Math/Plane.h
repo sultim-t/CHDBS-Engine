@@ -25,14 +25,21 @@ public:
 	// Construct plane from normal and point on plane
 	inline Plane(const Vector3 &normal, const Vector3 &point); 
 
-	// Is point in front of the plane?
-	inline bool IsInside(const Vector3 &point) const;
-	// Is sphere in front of the plane?
-	inline bool IsInside(const Sphere &sphere) const;
-	// Is sphere in front of the plane?
-	inline bool IsInside(const Vector3 &point, float radius) const;
+	// Returns closest point on the plane
+	inline Vector3 GetClosestPoint(const Vector3 &from) const;
 
+	// Is point in front of the plane?
+	inline bool IsInFront(const Vector3 &point) const;
+	// Is sphere in front of the plane?
+	inline bool IsInFront(const Sphere &sphere) const;
+	// Is sphere in front of the plane?
+	inline bool IsInFront(const Vector3 &point, float radius) const;
+
+	// Returns signed distance to point
 	inline float PlaneDot(const Vector3 &point) const;
+
+	inline const Vector3 &GetNormal() const;
+	inline float GetD() const;
 };
 
 inline Plane::Plane()
@@ -78,18 +85,26 @@ inline Plane::Plane(const Vector3 &normal, const Vector3 &point)
 	this->distance = Vector3::Dot(this->normal, point);
 }
 
-inline bool Plane::IsInside(const Vector3 &point) const
+inline Vector3 Plane::GetClosestPoint(const Vector3 & from) const
+{
+	// ASSERT(normal.Length() == 1.0f);
+
+	float t = PlaneDot(from);
+	return from - normal * t;
+}
+
+inline bool Plane::IsInFront(const Vector3 &point) const
 {
 	float distToPoint = PlaneDot(point);
 	return distToPoint >= 0;
 }
 
-inline bool Plane::IsInside(const Sphere &sphere) const
+inline bool Plane::IsInFront(const Sphere &sphere) const
 {
-	return IsInside(sphere.GetCenter(), sphere.GetRadius());
+	return IsInFront(sphere.GetCenter(), sphere.GetRadius());
 }
 
-inline bool Plane::IsInside(const Vector3 &point, float radius) const
+inline bool Plane::IsInFront(const Vector3 &point, float radius) const
 {
 	float distToCenter = PlaneDot(point);
 	return distToCenter >= -radius;
@@ -97,5 +112,15 @@ inline bool Plane::IsInside(const Vector3 &point, float radius) const
 
 inline float Plane::PlaneDot(const Vector3 &point) const
 {
-	return normal[0] * point[0] + normal[1] * point[1] + normal[2] * point[2] + distance;
+	return Vector3::Dot(normal, point) + distance;
+}
+
+inline const Vector3 & Plane::GetNormal() const
+{
+	return normal;
+}
+
+inline float Plane::GetD() const
+{
+	return distance;
 }

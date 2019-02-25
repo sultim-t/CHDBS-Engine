@@ -87,10 +87,8 @@ int main()
 
 	for (UINT i = 0; i < terrainEntity->GetComponent<CModel>()->meshes.size(); i++)
 	{
-		terrainEntity->GetComponent<CModel>()->meshes[i].GetMaterial().
-			BindShader(shader);
-		terrainEntity->GetComponent<CModel>()->meshes[i].GetMaterial().
-			AddTexture(reflection);
+		terrainEntity->GetComponent<CModel>()->meshes[i].
+			BindMaterial(mat);
 	}
 
 
@@ -112,13 +110,8 @@ int main()
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
 
-		s += Time::GetDeltaTime();
 		if (Input::IsPressed(Keycode::KeyF) && s >0.01f)
 		{
-			//particles->GetTransform().SetPosition(cameraEntity->GetTransform().GetPosition() + cameraEntity->GetTransform().GetForward());
-			particles->GetTransform().SetRotation(cameraEntity->GetTransform().GetRotation());
-
-			s = 0;
 			particles->GetComponent<CParticleSystem>()->Emit(1);
 		}
 	}

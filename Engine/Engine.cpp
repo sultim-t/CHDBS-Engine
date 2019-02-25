@@ -4,6 +4,7 @@
 #include <Engine/Systems/RenderingSystem.h>
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/Systems/PhysicsSystem.h>
+#include <Engine/Systems/InputSystem.h>
 
 Engine::Engine()
 {
@@ -21,6 +22,7 @@ void Engine::Init()
 	RenderingSystem::Instance().Init();
 	ComponentSystem::Instance().Init();
 	PhysicsSystem::Instance().Init();
+	InputSystem::Instance().Init();
 }
 
 void Engine::MainLoop()
@@ -46,6 +48,7 @@ void Engine::MainLoop()
 
 void Engine::Update()
 {
+	InputSystem::Instance().Update();
 	RenderingSystem::Instance().Update();
 	ComponentSystem::Instance().Update();
 }

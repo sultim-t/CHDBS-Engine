@@ -166,3 +166,54 @@ AABB AABB::GetIntersection(const AABB &aabb) const
 {
 	return GetIntersection(*this, aabb);
 }
+
+inline Vector3 AABB::GetClosestPoint(const Vector3 & p) const
+{
+	Vector3 result;
+
+	for (int i = 0; i < 3; i++)
+	{
+		float v = p[i];
+
+		if (v < minBounds[i])
+		{
+			v = minBounds[i];
+		}
+		
+		if (v > maxBounds[i])
+		{
+			v = maxBounds[i];
+		}
+
+		result[i] = v;
+	}
+
+	return result;
+}
+
+float AABB::DistanceSqrTo(const Vector3 & p) const
+{
+	float sqDist = 0.0f;
+
+	for (int i = 0; i < 3; i++) 
+	{
+		float v = p[i];
+		
+		if (v < minBounds[i])
+		{
+			sqDist += (minBounds[i] - v) * (minBounds[i] - v);
+		}
+		
+		if (v > maxBounds[i])
+		{
+			sqDist += (v - maxBounds[i]) * (v - maxBounds[i]);
+		}
+	}
+
+	return sqDist;
+}
+
+float AABB::DistanceTo(const Vector3 & p) const
+{
+	return Sqrt(DistanceSqrTo(p));
+}

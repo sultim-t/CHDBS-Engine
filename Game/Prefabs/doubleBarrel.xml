@@ -1,0 +1,16 @@
+<Entity
+  name="Double Barrel"
+  position="0 2 1"
+  euler="90 0 0">
+  
+  <CModel
+    path="TEMP/DoubleBarrel/DoubleBarrel.obj"/>
+  
+  <Rigidbody
+    mass="20"
+    velocity="0 10 0"
+    colType="aabb"
+    colMin="-0.6 -0.2 -0.1"
+    colMax="0.6 0.2 0.1"
+    />
+</Entity>

@@ -48,9 +48,39 @@ void CModel::Init()
 	// load model
 	ResourceManager::LoadModel(path, *this);
 }
+float t = 0;
 
 void CModel::Update()
-{ }
+{ 
+	// todo: delete
+	
+	Vector3 poses[] = { Vector3(0.0f), Vector3(-1,1,0), Vector3(0.0f) };
+	Vector3 eulers[] = { Vector3(0, 0, 0), Vector3(0, 30, 0), Vector3(0, 0, 0) };
+	float times[] = { 0, 5.0f / 60.0f, 60.0f / 60.0f };
+
+	t += Time::GetDeltaTime();
+	if (meshes[0].GetName() == "2barrel")
+	{
+		for (int k = 0; k < 3 - 1; k++)
+		{
+			if (t >= times[k] && t < times[k+1])
+			{
+				float time = t - times[k];
+				time /= times[k + 1] - times[k];
+
+				meshes[0].GetTransform().SetPosition(Vector3::Lerp(poses[k], poses[k + 1], time));
+				meshes[0].GetTransform().SetRotation(Vector3::Lerp(eulers[k], eulers[k + 1], time));
+
+				break;
+			}
+		}
+
+		if (t > times[3 - 1])
+		{
+			t = 0.0f;
+		}
+	}
+}
 
 void CModel::SetProperty(const String &key, const String &value)
 {

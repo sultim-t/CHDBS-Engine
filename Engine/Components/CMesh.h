@@ -14,16 +14,24 @@ class Mesh
 
 private:
 	MeshID meshId;
+	
 	UINT vao, vbo, ibo;
 
-private:
+	// data
 	std::vector<Vertex5> vertices;
 	std::vector<UINT> indices;
 
+	// mesh transform only for animations
+	Transform transform;
+	// material to render this mesh
 	Material material;
+
+	// name of this mesh
+	String name;
 	
 public:
 	// Construct mesh from std::vector's
+	Mesh(const std::vector<Vertex5> vertices, const std::vector<UINT> indices);
 	Mesh(const std::vector<Vertex5> vertices, const std::vector<UINT> indices, const Material &material);
 	~Mesh();
 
@@ -32,13 +40,21 @@ public:
 	void BindMaterial(const Material &material);
 
 	// Activates material
-	void ActivateMaterial(const Matrix4 &transformation) const;
+	void ActivateMaterial(const Matrix4 &modelTransform) const;
 	// Renders mesh
 	void Draw() const;
 
 	UINT GetVAO() const;
 	UINT GetVertexCount() const;
-	Material &GetMaterial();
+	const String &GetName() const;
+
 	const Material &GetMaterial() const;
+	Material &GetMaterial();
+
+	const Transform &GetTransform() const;
+	Transform &GetTransform();
+
+	void SetName(const char *name);
+	void SetTransform(const Transform &transform);
 };
 

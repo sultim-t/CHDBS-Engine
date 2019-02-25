@@ -42,16 +42,17 @@ public:
 	inline float GetNearClipDist() const;
 	inline float GetFarClipDist() const;
 	inline const Plane &GetPlane(FrustumPlane side) const;
+	inline const Plane &GetPlane(int side) const;
 
 	// Sets and recalculates planes and vertices
 	// "fov" is in degrees
-	void SetFOV(float fov);
+	inline void SetFOV(float fov);
 	// Sets and recalculates planes and vertices
-	void SetAspect(float aspect);
+	inline void SetAspect(float aspect);
 	// Sets and recalculates planes and vertices
-	void SetNearClipDist(float near);
+	inline void SetNearClipDist(float near);
 	// Sets and recalculates planes and vertices
-	void SetFarClipDist(float far);
+	inline void SetFarClipDist(float far);
 };
 
 inline float Frustum::GetFOV() const
@@ -77,4 +78,29 @@ inline float Frustum::GetFarClipDist() const
 inline const Plane &Frustum::GetPlane(FrustumPlane side) const
 {
 	return planes[(int)side];
+}
+
+inline const Plane &Frustum::GetPlane(int side) const
+{
+	return planes[side];
+}
+
+inline void Frustum::SetFOV(float fov)
+{
+	Init(fov, aspect, near, far);
+}
+
+inline void Frustum::SetAspect(float aspect)
+{
+	Init(fov, aspect, near, far);
+}
+
+inline void Frustum::SetNearClipDist(float near)
+{
+	Init(fov, aspect, near, far);
+}
+
+inline void Frustum::SetFarClipDist(float far)
+{
+	Init(fov, aspect, near, far);
 }
