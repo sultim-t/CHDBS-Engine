@@ -167,7 +167,7 @@ AABB AABB::GetIntersection(const AABB &aabb) const
 	return GetIntersection(*this, aabb);
 }
 
-inline Vector3 AABB::GetClosestPoint(const Vector3 & p) const
+Vector3 AABB::GetClosestPoint(const Vector3 & p) const
 {
 	Vector3 result;
 

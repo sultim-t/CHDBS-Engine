@@ -42,10 +42,11 @@ public:
 	// Returns distance from point to AABB
 	float DistanceTo(const Vector3 &p) const;
 
-	inline const Vector3 GetCenter() const;
-	inline const Vector3 GetSize() const;
+	inline Vector3 GetCenter() const;
+	inline Vector3 GetSize() const;
 	inline const Vector3 &GetMin() const;
 	inline const Vector3 &GetMax() const;
+	inline Vector3 GetExtent() const;
 
 	inline void SetMin(const Vector3 &min);
 	inline void SetMax(const Vector3 &max);
@@ -54,12 +55,12 @@ public:
 	inline ShapeType GetShapeType() const override;
 };
 
-inline const Vector3 AABB::GetCenter() const
+inline Vector3 AABB::GetCenter() const
 {
 	return (minBounds + maxBounds) * 0.5f;
 }
 
-inline const Vector3 AABB::GetSize() const
+inline Vector3 AABB::GetSize() const
 {
 	return maxBounds - minBounds;
 }
@@ -72,6 +73,11 @@ inline const Vector3 &AABB::GetMin() const
 inline const Vector3 &AABB::GetMax() const
 {
 	return maxBounds;
+}
+
+inline Vector3 AABB::GetExtent() const
+{
+	return (maxBounds - minBounds) * 0.5f;
 }
 
 inline void AABB::SetMin(const Vector3 &min)

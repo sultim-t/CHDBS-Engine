@@ -2,7 +2,7 @@
 #include "Vector.h"
 
 // Represents ray: start + t * direction, where t is in range [0, +inf)
-struct Ray
+class Ray
 {
 private:
 	Vector3 start;

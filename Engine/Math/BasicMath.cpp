@@ -11,7 +11,6 @@ double SqrtD(double x)
 	return sqrt(x);
 }
 
-// JohnCarmack's
 float MathReverseSqrt(float x)
 {
 	long i;

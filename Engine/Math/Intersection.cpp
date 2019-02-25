@@ -8,6 +8,64 @@
 
 #include <limits>
 
+#pragma region AABBTriangleTests
+
+#define X 0
+#define Y 1
+#define Z 2
+
+#define AXISTEST_X01(a, b, fa, fb)			   \
+p0 = a*v0[Y] - b*v0[Z];			       	   \
+p2 = a*v2[Y] - b*v2[Z];			       	   \
+if (p0<p2) { min = p0; max = p2; } else { min = p2; max = p0; } \
+rad = fa * boxhalfsize[Y] + fb * boxhalfsize[Z];   \
+if (min>rad || max<-rad) return false;
+
+#define AXISTEST_X2(a, b, fa, fb)			   \
+p0 = a*v0[Y] - b*v0[Z];			           \
+p1 = a*v1[Y] - b*v1[Z];			       	   \
+if (p0<p1) { min = p0; max = p1; } else { min = p1; max = p0; } \
+rad = fa * boxhalfsize[Y] + fb * boxhalfsize[Z];   \
+if (min>rad || max<-rad) return false;
+
+#define AXISTEST_Y02(a, b, fa, fb)			   \
+p0 = -a*v0[X] + b*v0[Z];		      	   \
+p2 = -a*v2[X] + b*v2[Z];	       	       	   \
+if (p0<p2) { min = p0; max = p2; } else { min = p2; max = p0; } \
+rad = fa * boxhalfsize[X] + fb * boxhalfsize[Z];   \
+if (min>rad || max<-rad) return false;
+
+#define AXISTEST_Y1(a, b, fa, fb)			   \
+p0 = -a*v0[X] + b*v0[Z];		      	   \
+p1 = -a*v1[X] + b*v1[Z];	     	       	   \
+if (p0<p1) { min = p0; max = p1; } else { min = p1; max = p0; } \
+rad = fa * boxhalfsize[X] + fb * boxhalfsize[Z];   \
+if (min>rad || max<-rad) return false;
+
+#define AXISTEST_Z12(a, b, fa, fb)			   \
+p1 = a*v1[X] - b*v1[Y];			           \
+p2 = a*v2[X] - b*v2[Y];			       	   \
+if (p2<p1) { min = p2; max = p1; } else { min = p1; max = p2; } \
+rad = fa * boxhalfsize[X] + fb * boxhalfsize[Y];   \
+if (min>rad || max<-rad) return false;
+
+#define AXISTEST_Z0(a, b, fa, fb)			   \
+p0 = a*v0[X] - b*v0[Y];				   \
+p1 = a*v1[X] - b*v1[Y];			           \
+if (p0<p1) { min = p0; max = p1; } else { min = p1; max = p0; } \
+rad = fa * boxhalfsize[X] + fb * boxhalfsize[Y];   \
+if (min>rad || max<-rad) return false;
+
+#define FINDMINMAX(x0,x1,x2,min,max) \
+min = max = x0;   \
+if (x1<min) min = x1; \
+if (x1>max) max = x1; \
+if (x2<min) min = x2; \
+if (x2>max) max = x2;
+
+#pragma endregion
+
+
 bool Intersection::SphereSphere(const Sphere & s1, const Sphere & s2)
 {
 	float d = Vector3::DistanceSqr(s1.GetCenter(), s2.GetCenter());
@@ -22,14 +80,119 @@ bool Intersection::SpherePlane(const Sphere & s, const Plane & p)
 	return distToCenter <= s.GetRadius();
 }
 
-bool Intersection::SphereTriangle(const Sphere & s, const Vector3 & a, const Vector3 & b, const Vector3 & c, Vector3 & point)
+bool Intersection::TriangleSphere(const Triangle &t, const Sphere &s, Vector3 &point)
 {
 	// closest point
-	point = Triangle::GetClosestPoint(s.GetCenter(), a, b, c);
+	point = t.GetClosestPoint(s.GetCenter());
 
 	// distance from closest point on triangle to center
 	Vector3 v = point - s.GetCenter();
 	return v.LengthSqr() <= s.GetRadius() * s.GetRadius();
+}
+
+bool Intersection::TriangleAABB(const Triangle & t, const AABB & aabb)
+{
+	const Vector3 boxcenter = aabb.GetCenter();
+	const Vector3 boxhalfsize = aabb.GetExtent();
+
+	// https://fileadmin.cs.lth.se/cs/Personal/Tomas_Akenine-Moller/pubs/tribox.pdf
+
+	Vector3 v0, v1, v2;
+	float min, max, p0, p1, p2, rad, fex, fey, fez;
+	Vector3 normal, e0, e1, e2;
+
+	v0 = t.A - boxcenter;
+	v1 = t.B - boxcenter;
+	v2 = t.C - boxcenter;
+
+	e0 = v1 - v0;
+	e1 = v2 - v1;
+	e2 = v0 - v2;
+
+	// 9 tests
+	fex = std::abs(e0[0]);
+	fey = std::abs(e0[1]);
+	fez = std::abs(e0[2]);
+	AXISTEST_X01(e0[Z], e0[Y], fez, fey);
+	AXISTEST_Y02(e0[Z], e0[X], fez, fex);
+	AXISTEST_Z12(e0[Y], e0[X], fey, fex);
+
+	fex = std::abs(e1[0]);
+	fey = std::abs(e1[1]);
+	fez = std::abs(e1[2]);
+	AXISTEST_X01(e1[Z], e1[Y], fez, fey);
+	AXISTEST_Y02(e1[Z], e1[X], fez, fex);
+	AXISTEST_Z0(e1[Y], e1[X], fey, fex);
+
+	fex = std::abs(e2[0]);
+	fey = std::abs(e2[1]);
+	fez = std::abs(e2[2]);
+	AXISTEST_X2(e2[Z], e2[Y], fez, fey);
+	AXISTEST_Y1(e2[Z], e2[X], fez, fex);
+	AXISTEST_Z12(e2[Y], e2[X], fey, fex);
+
+	// 3 tests: x, y, z directions
+	FINDMINMAX(v0[X], v1[X], v2[X], min, max);
+	if (min > boxhalfsize[X] || max < -boxhalfsize[X])
+	{
+		return false;
+	}
+
+	FINDMINMAX(v0[Y], v1[Y], v2[Y], min, max);
+	if (min > boxhalfsize[Y] || max < -boxhalfsize[Y])
+	{
+		return false;
+	}
+
+	FINDMINMAX(v0[Z], v1[Z], v2[Z], min, max);
+	if (min > boxhalfsize[Z] || max < -boxhalfsize[Z])
+	{
+		return false;
+	}
+
+	// test box and triangle plane
+	normal = Vector3::Cross(e0, e1);
+	
+	if (!PlaneBoxOverlap(normal, v0, boxhalfsize))
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool Intersection::PlaneBoxOverlap(const Vector3 & normal, const Vector3 & vert, const Vector3 & maxbox)
+{
+	Vector3 ovmin, ovmax;
+	float ov;
+
+	for (int oq = X; oq <= Z; oq++)
+	{
+		ov = vert[oq];
+
+		if (normal[oq] > 0.0f)
+		{
+			ovmin[oq] = -maxbox[oq] - ov;
+			ovmax[oq] = maxbox[oq] - ov;
+		}
+		else
+		{
+			ovmin[oq] = maxbox[oq] - ov;
+			ovmax[oq] = -maxbox[oq] - ov;
+		}
+	}
+
+	if (Vector3::Dot(normal, ovmin) > 0.0f)
+	{
+		return false;
+	}
+
+	if (Vector3::Dot(normal, ovmax) >= 0.0f)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 bool Intersection::AABBSphere(const AABB & aabb, const Sphere & s)
@@ -189,6 +352,7 @@ bool Intersection::RayPlane(const Ray & ray, const Plane & p, Vector3 & point)
 	const float eps = 0.0001f;
 	float denom = Vector3::Dot(ray.GetDirection(), p.GetNormal());
 
+	// If not perpendicular
 	if (Abs(denom) > eps)
 	{
 		float t = -p.PlaneDot(ray.GetStart()) / denom;
@@ -201,6 +365,11 @@ bool Intersection::RayPlane(const Ray & ray, const Plane & p, Vector3 & point)
 	}
 
 	return false;
+}
+
+bool Intersection::RayTriangle(const Ray & ray, const Triangle & t, Vector3 & barycentric)
+{
+	return SegRayTriangle(ray.GetStart(), ray.GetStart() + ray.GetDirection(), t, barycentric, false);
 }
 
 bool Intersection::SegmentAABB(const Vector3 & p0, const Vector3 & p1, const AABB & aabb, Vector3 & point, float & t)
@@ -248,52 +417,7 @@ bool Intersection::SegmentAABB(const Vector3 & p0, const Vector3 & p1, const AAB
 
 bool Intersection::SegmentTriangle(const Vector3 & p, const Vector3 & q, const Triangle & tr, Vector3 & barycentric)
 {
-	float u, v, w; // Barycentric coords of intersection
-	float t;
-
-	Vector3 ab = tr.B - tr.A;
-	Vector3 ac = tr.C - tr.A;
-	Vector3 qp = p - q;
-	
-	// Compute triangle normal. Can be precalculated or cached if
-	// intersecting multiple segments against the same triangle
-	Vector3 n = Vector3::Cross(ab, ac);
-	
-	// Compute denominator d. If d <= 0, segment is parallel to or points
-	// away from triangle, so exit early
-	float d = Vector3::Dot(qp, n);
-	if (d <= 0.0f) { return false; }
-	
-	// Compute intersection t value of pq with plane of triangle. A ray
-	// intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
-	// dividing by d until intersection has been found to pierce triangle
-	Vector3 ap = p - tr.A;
-	t = Vector3::Dot(ap, n);
-	if (t < 0.0f) { return false; }
-	if (t > d) { return false; }	// For segment; exclude this code line for a ray test
-									
-	// Compute barycentric coordinate components and test if within bounds
-	Vector3 e = Vector3::Cross(qp, ap);
-	
-	v = Vector3::Dot(ac, e);
-	if (v < 0.0f || v > d) { return false; }
-
-	w = -Vector3::Dot(ab, e);
-	if (w < 0.0f || v + w > d) { return false; }
-	
-	// Segment/ray intersects triangle. Perform delayed division and
-	// compute the last barycentric coordinate component
-	float ood = 1.0f / d;
-	t *= ood;
-	v *= ood;
-	w *= ood;
-
-	u = 1.0f - v - w;
-
-	barycentric[0] = u;
-	barycentric[1] = v;
-	barycentric[2] = w;
-	return true;
+	return SegRayTriangle(p, q, tr, barycentric, true);
 }
 
 bool Intersection::SphereInsideFrustum(const Frustum & f, const Sphere & s)
@@ -326,5 +450,60 @@ bool Intersection::AABBInsideFrustum(const Frustum & f, const AABB & aabb)
 		}
 	}
 
+	return true;
+}
+
+bool Intersection::SegRayTriangle(const Vector3 & p, const Vector3 & q, const Triangle & tr, Vector3 & barycentric, bool isSegment)
+{
+	float u, v, w; // Barycentric coords of intersection
+	float t;
+
+	Vector3 ab = tr.B - tr.A;
+	Vector3 ac = tr.C - tr.A;
+	Vector3 qp = p - q;
+
+	// Compute triangle normal. Can be precalculated or cached if
+	// intersecting multiple segments against the same triangle
+	Vector3 n = Vector3::Cross(ab, ac);
+
+	// Compute denominator d. If d <= 0, segment is parallel to or points
+	// away from triangle, so exit early
+	float d = Vector3::Dot(qp, n);
+	if (d <= 0.0f) { return false; }
+
+	// Compute intersection t value of pq with plane of triangle. A ray
+	// intersects iff 0 <= t. Segment intersects iff 0 <= t <= 1. Delay
+	// dividing by d until intersection has been found to pierce triangle
+	Vector3 ap = p - tr.A;
+	t = Vector3::Dot(ap, n);
+	if (t < 0.0f) { return false; }
+
+	if (isSegment)
+	{
+		// For segment; exclude this code line for a ray test
+		if (t > d) { return false; }
+	}
+
+	// Compute barycentric coordinate components and test if within bounds
+	Vector3 e = Vector3::Cross(qp, ap);
+
+	v = Vector3::Dot(ac, e);
+	if (v < 0.0f || v > d) { return false; }
+
+	w = -Vector3::Dot(ab, e);
+	if (w < 0.0f || v + w > d) { return false; }
+
+	// Segment/ray intersects triangle. Perform delayed division and
+	// compute the last barycentric coordinate component
+	float ood = 1.0f / d;
+	t *= ood;
+	v *= ood;
+	w *= ood;
+
+	u = 1.0f - v - w;
+
+	barycentric[0] = u;
+	barycentric[1] = v;
+	barycentric[2] = w;
 	return true;
 }
