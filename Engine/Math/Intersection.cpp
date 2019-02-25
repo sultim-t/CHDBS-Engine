@@ -303,8 +303,9 @@ bool Intersection::SphereInsideFrustum(const Frustum & f, const Sphere & s)
 
 	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
 	{
-		const Plane plane = f.GetPlane(i);
-		if (!plane.IsInFront(center, radius))
+		// if sphere doesn't intersect with negative halfspace
+		// i.e. sphere is not inside
+		if (!SpherePlane(s, f.GetPlane(i)))
 		{
 			return false;
 		}
@@ -317,8 +318,9 @@ bool Intersection::AABBInsideFrustum(const Frustum & f, const AABB & aabb)
 {
 	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
 	{
-		const Plane plane = f.GetPlane(i);
-		if (!plane.IsInside(aabb))
+		// if box doesn't intersect with negative halfspace
+		// i.e. box is not inside
+		if (!AABBPlane(aabb, f.GetPlane(i)))
 		{
 			return false;
 		}

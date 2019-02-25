@@ -18,34 +18,3 @@ void Frustum::Init(float fov, float aspect, float near, float far)
 	//planes[(int)FrustumPlane::Near] = Plane(nearVerts[2], nearVerts[1], nearVerts[0]);
 	//planes[(int)FrustumPlane::Near] = Plane(farVerts[0], farVerts[1], farVerts[2]);
 }
-
-bool Frustum::IsInside(const Vector3 &point) const
-{
-	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
-	{
-		if (!planes[i].IsInFront(point))
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-bool Frustum::IsInside(const Sphere &sphere) const
-{
-	return IsInside(sphere.GetCenter(), sphere.GetRadius());
-}
-
-bool Frustum::IsInside(const Vector3 &center, float radius) const
-{
-	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
-	{
-		if (!planes[i].IsInFront(center, radius))
-		{
-			return false;
-		}
-	}
-
-	return true;
-}

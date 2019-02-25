@@ -14,6 +14,7 @@ public:
 	};
 
 private:
+	// normals of planes directed to the outside of frustum
 	Plane planes[FRUSTUM_PLANES_COUNT];
 	
 	Vector3 nearVerts[4];
@@ -28,20 +29,20 @@ public:
 	Frustum();
 
 	// Sets properties and calculates planes, vertices
-	// "fov" is in degrees
+	// "fov" is in Degrees
 	// "aspect" is width/height
 	void Init(float fov, float aspect, float near, float far);
 
-	bool IsInside(const Vector3 &point) const;
-	bool IsInside(const Sphere &sphere) const;
-	bool IsInside(const Vector3 &center, float radius) const;
-
-	// Get field of view in degrees
+	// Get field of view in Degrees
 	inline float GetFOV() const;
 	inline float GetAspect() const;
 	inline float GetNearClipDist() const;
 	inline float GetFarClipDist() const;
+	// Get plane
+	// Note: plane's normal directed to the outside of frustum
 	inline const Plane &GetPlane(FrustumPlane side) const;
+	// Get plane
+	// Note: plane's normal directed to the outside of frustum
 	inline const Plane &GetPlane(int side) const;
 
 	// Sets and recalculates planes and vertices
