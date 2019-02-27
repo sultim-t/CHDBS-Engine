@@ -61,14 +61,17 @@ typedef Vector<float, 3> Vector3;
 typedef Vector<float, 4> Vector4;
 
 typedef Vector<float, 3> Euler;
-#define ROLL  2		// around z axis
-#define PITCH 0		// around x axis
-#define YAW   1		// around y axis
+#define ROLL  0		// around z axis
+#define PITCH 1		// around x axis
+#define YAW   2		// around y axis
 
 // Float color RGB
 typedef Vector<float, 3> Color;
 // Ubyte color RGBA
 typedef Vector<UBYTE, 4> Color4;
+
+struct Vertex;
+struct Vertex5;
 
 // Shapes
 enum class ShapeType;
@@ -84,9 +87,12 @@ class Ray;
 class Time;
 class ContextWindow;
 class Logger;
-class ResourceManager;
 class String;
 typedef char* CString;
+
+// Resources
+class ResourceManager;
+class MeshResource;
 
 // Systems
 class ISystem;
@@ -122,7 +128,8 @@ class Rigidbody;
 class ICollider;
 	class AABBCollider;
 	class SphereCollider;
-	class CapsuleCollider;
+	// class CapsuleCollider;
+	class MeshCollider;
 
 
 

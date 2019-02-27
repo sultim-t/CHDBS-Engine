@@ -3,6 +3,7 @@
 #include "Vector.h"
 #include "Matrix.h"
 
+// Quaternion. [0] is a free component (w)
 struct Quaternion
 {
 private:
@@ -11,7 +12,7 @@ private:
 public:
 	inline Quaternion();
 	inline Quaternion(float a);
-	inline Quaternion(float x, float y, float z, float w);
+	inline Quaternion(float w, float x, float y, float z);
 	// Create from euler angles in Degrees
 	inline Quaternion(const Vector3 &euler);
 	inline Quaternion(const Quaternion &q);
@@ -59,6 +60,9 @@ public:
 	inline void FromAxisAngle(const Vector3 &axis, const float angle);
 	// Convert to axis and angle in Radians
 	inline void ToAxisAngle(Vector3 &axis, float &angle) const;
+
+	// Creates quaternion from direction and up vector
+	static Quaternion FromDirection(const Vector3 &forward, const Vector3 &up = Vector3(0.0f, 1.0f, 0.0f));
 
 	static Matrix3 ToRotationMatrix(const Quaternion &q);
 	inline Matrix3 ToRotationMatrix() const;
@@ -292,6 +296,63 @@ inline void Quaternion::ToAxisAngle(Vector3 &axis, float &angle) const
 		axis[1] = 0.0f;
 		axis[2] = 0.0f;
 	}
+}
+
+inline Quaternion Quaternion::FromDirection(const Vector3 & f, const Vector3 & u)
+{
+	Vector3 forward = f.GetNormalized();
+	Vector3 right = (Vector3::Cross(u, forward)).GetNormalized();
+	Vector3 up = Vector3::Cross(forward, right);
+	float m00 = right[0];
+	float m01 = right[1];
+	float m02 = right[2];
+	float m10 = up[0];
+	float m11 = up[1];
+	float m12 = up[2];
+	float m20 = forward[0];
+	float m21 = forward[1];
+	float m22 = forward[2];
+
+	float num8 = (m00 + m11) + m22;
+	Quaternion quaternion;
+
+	if (num8 > 0.0f)
+	{
+		float num = Sqrt(num8 + 1.0f);
+		quaternion[0] = num * 0.5f;
+		num = 0.5f / num;
+		quaternion[1] = (m12 - m21) * num;
+		quaternion[2] = (m20 - m02) * num;
+		quaternion[3] = (m01 - m10) * num;
+		return quaternion;
+	}
+	if ((m00 >= m11) && (m00 >= m22))
+	{
+		float num7 = Sqrt(((1.0f + m00) - m11) - m22);
+		float num4 = 0.5f / num7;
+		quaternion[1] = 0.5f * num7;
+		quaternion[2] = (m01 + m10) * num4;
+		quaternion[3] = (m02 + m20) * num4;
+		quaternion[0] = (m12 - m21) * num4;
+		return quaternion;
+	}
+	if (m11 > m22)
+	{
+		float num6 = Sqrt(((1.0f + m11) - m00) - m22);
+		float num3 = 0.5f / num6;
+		quaternion[1] = (m10 + m01) * num3;
+		quaternion[2] = 0.5f * num6;
+		quaternion[3] = (m21 + m12) * num3;
+		quaternion[0] = (m20 - m02) * num3;
+		return quaternion;
+	}
+	float num5 = Sqrt(((1.0f + m22) - m00) - m11);
+	float num2 = 0.5f / num5;
+	quaternion[1] = (m20 + m02) * num2;
+	quaternion[2] = (m21 + m12) * num2;
+	quaternion[3] = 0.5f * num5;
+	quaternion[0] = (m01 - m10) * num2;
+	return quaternion;
 }
 
 inline Matrix3 Quaternion::ToRotationMatrix(const Quaternion & q)

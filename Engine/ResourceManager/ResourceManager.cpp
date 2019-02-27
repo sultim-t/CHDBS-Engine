@@ -3,11 +3,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include <ImageLoading\stb_image.h>
 
+#include <Engine/DataStructures/StaticArray.h>
 #include <Engine/Math/Vector.h>
+#include <Engine/Math/Triangle.h>
 #include <Engine/Rendering/Texture.h>
 #include <Engine/Components/CMesh.h>
 #include <Engine/Components/CModel.h>
 #include <Engine/Rendering/Material.h>
+
+#include "MeshResource.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -19,6 +23,19 @@
 #include <string>
 #include <vector>
 
+void ResourceManager::Init()
+{
+	meshResources.Init(128);
+}
+
+ResourceManager::~ResourceManager()
+{
+	// clear data in array
+	for (int i = 0; i < meshResources.GetSize(); i++)
+	{
+		delete meshResources[i];
+	}
+}
 
 UBYTE * ResourceManager::LoadTexture(char const * filename, int * width, int * height, int * comp, int req_comp)
 {
@@ -30,7 +47,7 @@ void ResourceManager::DeleteTexture(void * address)
 	stbi_image_free(address);
 }
 
-void ResourceManager::LoadModel(const char * path, CModel &outModel)
+void ResourceManager::LoadModel(const char *path, CModel &outModel)
 {
 	using namespace std;
 
@@ -48,6 +65,12 @@ void ResourceManager::LoadModel(const char * path, CModel &outModel)
 	ProcessModelNode(scene->mRootNode, scene, outModel);
 }
 
+ResourceManager & ResourceManager::Instance()
+{
+	static ResourceManager instance;
+	return instance;
+}
+
 void ResourceManager::ProcessModelNode(void *n, const void *s, CModel &outModel)
 {
 	aiNode *node = (aiNode*)n;
@@ -60,7 +83,6 @@ void ResourceManager::ProcessModelNode(void *n, const void *s, CModel &outModel)
 
 		Mesh &m = ProcessMesh(mesh, scene, outModel);
 
-		// set name if exist
 		if (node->mName.length != 0)
 		{
 			m.SetName(node->mName.C_Str());
@@ -99,10 +121,25 @@ Mesh ResourceManager::ProcessMesh(void *m, const void *s, CModel &outModel)
 	aiMesh *mesh = (aiMesh*)m;
 	aiScene *scene = (aiScene*)s;
 
-	// data to fill
-	vector<Vertex5> vertices;
-	vector<unsigned int> indices;
-	vector<ITexture> textures;
+	// init
+	StaticArray<Vertex5> vertices;
+	vertices.Init(mesh->mNumVertices);
+
+	// count indices count
+	UINT indexCount = 0;
+	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
+	{
+		indexCount += mesh->mFaces[i].mNumIndices;
+	}
+
+	// init
+	StaticArray<UINT> indices;
+	indices.Init(indexCount);
+
+	// init triangle array
+	StaticArray<Triangle> triangles;
+	triangles.Init(mesh->mNumFaces);
+
 
 	for (unsigned int i = 0; i < mesh->mNumVertices; i++)
 	{
@@ -137,30 +174,57 @@ Mesh ResourceManager::ProcessMesh(void *m, const void *s, CModel &outModel)
 			vertex.TexCoords = Vector2(0.0f, 0.0f);
 		}
 
-		// tangent
-		vector[0] = mesh->mTangents[i].x;
-		vector[1] = mesh->mTangents[i].y;
-		vector[2] = mesh->mTangents[i].z;
-		vertex.Tangent = vector;
+		if (mesh->HasTangentsAndBitangents())
+		{
+			// tangent
+			vector[0] = mesh->mTangents[i].x;
+			vector[1] = mesh->mTangents[i].y;
+			vector[2] = mesh->mTangents[i].z;
+			vertex.Tangent = vector;
 
-		// bitangent
-		vector[0] = mesh->mBitangents[i].x;
-		vector[1] = mesh->mBitangents[i].y;
-		vector[2] = mesh->mBitangents[i].z;
-		vertex.Bitangent = vector;
+			// bitangent
+			vector[0] = mesh->mBitangents[i].x;
+			vector[1] = mesh->mBitangents[i].y;
+			vector[2] = mesh->mBitangents[i].z;
+			vertex.Bitangent = vector;
+		}
 
-		vertices.push_back(vertex);
+		vertices[i] = vertex;
 	}
 
+	// index counter
+	UINT iindex = 0;
+
+	// foreach face
 	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
 	{
 		aiFace face = mesh->mFaces[i];
 		
+		// foreach index
 		for (unsigned int j = 0; j < face.mNumIndices; j++)
 		{
-			indices.push_back(face.mIndices[j]);
+			indices[iindex] = face.mIndices[j];
+			iindex++;
+		}
+
+		// if face is triangle
+		// and there weren't non triangle faces
+		if (face.mNumIndices == 3 && !triangles.IsEmpty())
+		{ 
+			triangles[i].A = vertices[face.mIndices[0]].Position; 
+			triangles[i].B = vertices[face.mIndices[1]].Position;
+			triangles[i].C = vertices[face.mIndices[2]].Position;
+		}
+		else
+		{
+			Logger::Print("Non triangle was found when loading mesh. No collision data created.");
+			triangles.Delete();
 		}
 	}
 
-	return Mesh(vertices, indices);
+	// create resource
+	MeshResource *resource = new MeshResource(mesh->mName.C_Str(), vertices, indices, triangles);
+	meshResources.Push(resource);
+
+	return Mesh(resource);
 }

@@ -35,6 +35,7 @@
 #define PROPERTY_KEY_LIFERAND	"lifetimeRand"
 
 #define PROPERTY_KEY_GRAVMULT	"gravMult"
+#define PROPERTY_KEY_GRAVRAND	"gravMultRand"
 
 #define PROPERTY_KEY_EMITRATE	"emitRate"
 #define PROPERTY_KEY_LOOPING	"isLooping"
@@ -207,7 +208,9 @@ void CParticleSystem::Simulate()
 
 			if (p.life > 0.0f)
 			{
-				p.velocity += Vector3(0.0f, -9.81f, 0.0f) * gravityMultiplier * Time::GetDeltaTime();
+				float g = gravityMultiplier + Random::GetFloat(-gravityMultRandomness, gravityMultRandomness);
+
+				p.velocity += Vector3(0.0f, -9.81f, 0.0f) * g * Time::GetDeltaTime();
 				p.position += p.velocity * Time::GetDeltaTime();
 				
 				positionsAndSizes[count][0] = p.position[0];
@@ -373,6 +376,10 @@ void CParticleSystem::SetProperty(const String &key, const String &value)
 	else if (key == PROPERTY_KEY_GRAVMULT)
 	{
 		gravityMultiplier = value.ToFloat();
+	}
+	else if (key == PROPERTY_KEY_GRAVRAND)
+	{
+		gravityMultRandomness = value.ToFloat();
 	}
 	else if (key == PROPERTY_KEY_EMITRATE)
 	{

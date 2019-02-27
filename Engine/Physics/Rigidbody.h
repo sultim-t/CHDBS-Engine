@@ -32,6 +32,8 @@ public:
 	void FixedUpdate();
 	void SolveCollisions(const ICollider *col);
 
+	const ICollider &GetCollider() const;
+
 public:
 	// Initialization as component
 	void Init() override;

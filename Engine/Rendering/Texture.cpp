@@ -15,7 +15,7 @@ void Texture::Load(const char * path)
 {
 	glGenTextures(1, &graphicsTextureId);
 
-	UBYTE *data = ResourceManager::LoadTexture(path, &width, &height, &channelsNumber, 0);
+	UBYTE *data = ResourceManager::Instance().LoadTexture(path, &width, &height, &channelsNumber, 0);
 
 	if (data)
 	{
@@ -48,7 +48,7 @@ void Texture::Load(const char * path)
 	}
 
 	// data is copied, clear
-	ResourceManager::DeleteTexture(data);
+	ResourceManager::Instance().DeleteTexture(data);
 
 	this->path = path;
 

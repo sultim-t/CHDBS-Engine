@@ -7,7 +7,9 @@
 #include <Engine/ResourceManager/ResourceManager.h>
 #include <Engine/Systems/RenderingSystem.h>
 
-#define PROPERTY_KEY_TYPE "path"
+#define PROPERTY_KEY_TYPE			"path"
+#define PROPERTY_KEY_CASTSHADOWS	"castShadows"
+#define PROPERTY_KEY_RECEIVESHADOWS	"receiveShadows"
 
 CLASSDEFINITION(IComponent, CModel)
 
@@ -41,12 +43,15 @@ const std::vector<Mesh> &CModel::GetMeshes() const
 //	return meshes;
 //}
 
+CModel::CModel() : IsCastingShadows(true), IsReceivingShadows(true)
+{}
+
 void CModel::Init()
 {
 	RenderingSystem::Instance().Register(this);
 
 	// load model
-	ResourceManager::LoadModel(path, *this);
+	ResourceManager::Instance().LoadModel(path, *this);
 }
 float t = 0;
 
@@ -54,7 +59,7 @@ void CModel::Update()
 { 
 	// todo: delete
 	
-	Vector3 poses[] = { Vector3(0.0f), Vector3(-1,1,0), Vector3(0.0f) };
+	Vector3 poses[] = { Vector3(0.0f), Vector3(0,0,1), Vector3(0.0f) };
 	Vector3 eulers[] = { Vector3(0, 0, 0), Vector3(0, 30, 0), Vector3(0, 0, 0) };
 	float times[] = { 0, 5.0f / 60.0f, 60.0f / 60.0f };
 
@@ -87,6 +92,14 @@ void CModel::SetProperty(const String &key, const String &value)
 	if (key == PROPERTY_KEY_TYPE)
 	{
 		path = value;
+	}
+	else if (key == PROPERTY_KEY_CASTSHADOWS)
+	{
+		IsCastingShadows = value.ToBool();
+	}
+	else if (key == PROPERTY_KEY_RECEIVESHADOWS)
+	{
+		IsReceivingShadows = value.ToBool();
 	}
 	else
 	{

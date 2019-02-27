@@ -18,9 +18,10 @@ void Rigidbody::Init()
 
 Rigidbody::~Rigidbody()
 {
+	// free allocated memory
 	if (collider != nullptr)
 	{
-		SYSALLOCATOR.Free(collider);
+		delete collider;
 	}
 }
 
@@ -80,6 +81,11 @@ void Rigidbody::SolveCollisions(const ICollider * col)
 {
 }
 
+const ICollider & Rigidbody::GetCollider() const
+{
+	return *collider;
+}
+
 #define PROPERTY_KEY_MASS		"mass"
 #define PROPERTY_KEY_VELOCITY	"velocity"
 #define PROPERTY_KEY_COLTYPE	"colType"
@@ -108,14 +114,17 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 	}
 	else if (key == PROPERTY_KEY_COLTYPE)
 	{
+		// to create collider, current one must be empty
+		ASSERT(collider == nullptr);
+		
 		if (value == PROPERTY_VAL_COL_AABB)
 		{
-			ASSERT(collider == nullptr);
+			// allocate memory
 			collider = new AABBCollider();
 		}
 		else if (value == PROPERTY_VAL_COL_AABB)
 		{
-			ASSERT(collider == nullptr);
+			// allocate memory
 			collider = new SphereCollider();
 		}
 		else
@@ -125,12 +134,14 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 	}
 	else if (key == PROPERTY_KEY_COLOFFSET)
 	{
-		if (collider->GetShape().GetShapeType() == ShapeType::AABB)
+		ASSERT(collider != nullptr);
+
+		if (collider->GetColliderType() == ColliderType::AABB)
 		{
 			Vector3 offset = value.ToVector3();
-			((AABBCollider*)collider)->GetOffset() = offset;
+			((AABBCollider*)collider)->GetAABB().Move(offset);
 		}
-		else if (collider->GetShape().GetShapeType() == ShapeType::Sphere)
+		else if (collider->GetColliderType() == ColliderType::Sphere)
 		{
 			Vector3 center = value.ToVector3();
 			((SphereCollider*)collider)->GetSphere().SetCenter(center);
@@ -142,26 +153,30 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 	}
 	else if (key == PROPERTY_KEY_COLRADIUS)
 	{
-		ASSERT(collider->GetShape().GetShapeType() == ShapeType::Sphere);
+		ASSERT(collider != nullptr);
+		ASSERT(collider->GetColliderType() == ColliderType::Sphere);
+
 		((SphereCollider*)collider)->GetSphere().SetRadius(value.ToFloat());
 	}
 	else if (key == PROPERTY_KEY_COLMAX)
 	{
-		ASSERT(collider->GetShape().GetShapeType() == ShapeType::AABB);
+		ASSERT(collider != nullptr);
+		ASSERT(collider->GetColliderType() == ColliderType::AABB);
 		
 		Vector3 m = value.ToVector3();
 		((AABBCollider*)collider)->GetAABB().SetMax(m);
 	}
 	else if (key == PROPERTY_KEY_COLMIN)
 	{
-		ASSERT(collider->GetShape().GetShapeType() == ShapeType::AABB);
+		ASSERT(collider != nullptr);
+		ASSERT(collider->GetColliderType() == ColliderType::AABB);
 
 		Vector3 m = value.ToVector3();
 		((AABBCollider*)collider)->GetAABB().SetMin(m);
 	}
 	else
 	{
-		String s = "Wrong Rigidbody property";
+		String s = "Wrong Rigidbody property: ";
 		s += value;
 
 		Logger::Print(s);

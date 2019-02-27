@@ -23,12 +23,16 @@
 #include <Engine/Components/CLight.h>
 #include <Engine/Rendering/Skybox.h>
 #include <Engine/DataStructures/Array.h>
+#include <Engine/Math/Intersection.h>
+#include <Engine/Math/Ray.h>
+#include <Engine/Math/AABB.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/Systems/PhysicsSystem.h>
 #include <Engine/Systems/InputSystem.h>
+#include <Engine/ResourceManager/ResourceManager.h>
 
 int main()
 {
@@ -37,6 +41,7 @@ int main()
 
 	ContextWindow::Instance().Init("Engine", 1280, 720);
 	
+	ResourceManager::Instance().Init();
 	RenderingSystem::Instance().Init();
 	ComponentSystem::Instance().Init();
 	PhysicsSystem::Instance().Init();
@@ -79,16 +84,27 @@ int main()
 
 	Texture textureDB = Texture();
 	textureDB.Load("TEMP/DoubleBarrel/WeaponsPalette.png");
+	Texture textureTR = Texture();
+	textureTR.Load("TEMP/DoubleBarrel/Materials/Textures/TerrainPalette.png");
+
 	Material mat = Material({ textureDB, reflection });
 	mat.BindShader(shader);
-	
-	dbEntity->GetComponent<CModel>()->meshes[0].
-		BindMaterial(mat);
+	Material matTR = Material({ textureTR, reflection });
+	matTR.BindShader(shader);
+
+	dbEntity->GetComponent<CModel>()->meshes[0].BindMaterial(mat);
 
 	for (UINT i = 0; i < terrainEntity->GetComponent<CModel>()->meshes.size(); i++)
 	{
-		terrainEntity->GetComponent<CModel>()->meshes[i].
-			BindMaterial(mat);
+		terrainEntity->GetComponent<CModel>()->meshes[i].BindMaterial(matTR);
+	}
+
+	for (UINT i = 0; i < cameraEntity->GetComponent<CModel>()->meshes.size(); i++)
+	{
+		cameraEntity->GetComponent<CModel>()->meshes[i].BindMaterial(mat);
+		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().Translate(Vector3(0,0, -0.8f));
+		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetRotation(Vector3(0, -90, 0));
+		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetScale(Vector3(3, 3, 3));
 	}
 
 
@@ -110,9 +126,28 @@ int main()
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
 
-		if (Input::IsPressed(Keycode::KeyF) && s >0.01f)
+		AABB aabb = AABB(Vector3(-10000, -10, -10000), Vector3(10000, -4,10000));
+
+		s += Time::GetDeltaTime();
+		if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)
 		{
-			particles->GetComponent<CParticleSystem>()->Emit(1);
+			for (int i = 0; i < 7; i++)
+			{
+				Vector3 point;
+				float temp;
+
+				Vector3 dir = Quaternion(Euler(0, (i - 3) * 6.0f, (i % 2) * 3.0f)) * cameraEntity->GetTransform().GetForward();
+				Ray ray = Ray(cameraEntity->GetTransform().GetPosition(), dir);
+
+				if (Intersection::RayAABB(ray, aabb, point, temp))
+				{
+					particles->GetTransform().SetPosition(point);
+
+					particles->GetComponent<CParticleSystem>()->Emit(15);
+				}
+			}
+
+			s = 0;
 		}
 	}
 

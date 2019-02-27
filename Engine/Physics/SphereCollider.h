@@ -15,8 +15,8 @@ public:
 	inline Sphere &GetSphere();
 	inline const Sphere &GetSphere() const;
 
-	inline bool Intersect(const ICollider &col) const override;
-	inline IShape &GetShape() const override;
+	inline ColliderType GetColliderType() const override;
+	bool Intersect(const ICollider &col) const override;
 };
 
 inline SphereCollider::SphereCollider()
@@ -37,12 +37,7 @@ inline const Sphere &SphereCollider::GetSphere() const
 	return sphere;
 }
 
-inline bool SphereCollider::Intersect(const ICollider &col) const
+inline ColliderType SphereCollider::GetColliderType() const
 {
-	return sphere.Intersect(col.GetShape());
-}
-
-IShape &SphereCollider::GetShape() const
-{
-	return (IShape&)sphere;
+	return ColliderType::Sphere;
 }

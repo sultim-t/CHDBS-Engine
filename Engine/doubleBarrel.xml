@@ -1,10 +1,11 @@
 <Entity
   name="Double Barrel"
   position="0 2 1"
-  euler="0 0 90">
+  euler="90 0 0">
   
   <CModel
-    path="TEMP/DoubleBarrel/DoubleBarrel.obj"/>
+    path="TEMP/DoubleBarrel/DoubleBarrel.obj"
+    castShadows="1"/>
   
   <Rigidbody
     mass="20"

@@ -5,6 +5,6 @@
 class CollisionInfo
 {
 public:
-	Vector3 normal;
+	Vector3 point, normal;
 	ICollider &colliderA, &colliderB;
 };

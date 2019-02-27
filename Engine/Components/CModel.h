@@ -18,6 +18,12 @@ public:
 	String path;
 
 public:
+	bool IsCastingShadows;
+	bool IsReceivingShadows;
+
+public:
+	CModel();
+
 	void Init() override;
 	void Update() override;
 	void SetProperty(const String &key, const String &value) override;

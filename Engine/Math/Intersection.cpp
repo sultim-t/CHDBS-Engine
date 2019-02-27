@@ -6,6 +6,9 @@
 #include "Sphere.h"
 #include "Triangle.h"
 
+#include <Engine/DataStructures/StaticArray.h>
+#include <Engine/ResourceManager/MeshResource.h>
+
 #include <limits>
 
 #pragma region AABBTriangleTests
@@ -196,6 +199,91 @@ bool Intersection::TrianglePlane(const Triangle & t, const Plane & plane, Vector
 	return false;
 }
 
+bool Intersection::MeshSphere(const MeshResource & mesh, const Sphere & s, Vector3 & point)
+{
+	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
+	UINT size = triangles.GetSize();
+
+	for (UINT i = 0; i < size; i++)
+	{
+		if (TriangleSphere(triangles[i], s, point))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Intersection::MeshAABB(const MeshResource & mesh, const AABB & aabb)
+{
+	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
+	UINT size = triangles.GetSize();
+
+	for (UINT i = 0; i < size; i++)
+	{
+		if (TriangleAABB(triangles[i], aabb))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Intersection::MeshPlane(const MeshResource & mesh, const Plane & p, Vector3 & start, Vector3 & end)
+{
+	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
+	UINT size = triangles.GetSize();
+
+	for (UINT i = 0; i < size; i++)
+	{
+		if (TrianglePlane(triangles[i], p, start, end))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Intersection::MeshRay(const MeshResource & mesh, const Ray & ray, Vector3 & worldPoint, Vector3 & normal)
+{
+	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
+	UINT size = triangles.GetSize();
+	Vector3 barycentric;
+
+	for (UINT i = 0; i < size; i++)
+	{
+		if (RayTriangle(ray, triangles[i], barycentric))
+		{
+			worldPoint = triangles[i].GetCartesian(barycentric);
+			normal = triangles[i].GetNormal().GetNormalized();
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Intersection::MeshSegment(const MeshResource & mesh, const Vector3 & start, const Vector3 & end, Vector3 & worldPoint)
+{
+	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
+	UINT size = triangles.GetSize();
+	Vector3 barycentric;
+
+	for (UINT i = 0; i < size; i++)
+	{
+		if (SegmentTriangle(start, end, triangles[i], barycentric))
+		{
+			worldPoint = triangles[i].GetCartesian(barycentric);
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool Intersection::PlaneBoxOverlap(const Vector3 & normal, const Vector3 & vert, const Vector3 & maxbox)
 {
 	Vector3 ovmin, ovmax;
@@ -249,8 +337,8 @@ bool Intersection::AABBSphere(const AABB & aabb, const Sphere & s, Vector3 & poi
 bool Intersection::AABBAABB(const AABB & aabb1, const AABB & aabb2)
 {
 	const Vector3 &mina = aabb1.GetMin();
-	const Vector3 &minb = aabb2.GetMax();
-	const Vector3 &maxa = aabb1.GetMin();
+	const Vector3 &minb = aabb2.GetMin();
+	const Vector3 &maxa = aabb1.GetMax();
 	const Vector3 &maxb = aabb2.GetMax();
 
 	for (int i = 0; i < 3; i++)

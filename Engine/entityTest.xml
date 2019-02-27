@@ -10,4 +10,9 @@
 
   <CFreeMovement 
     speed="7.5" />
+
+  <CModel
+    path="TEMP/obj.obj"
+    castShadows="0"/>
+
 </Entity>

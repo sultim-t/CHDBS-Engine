@@ -191,7 +191,10 @@
     <ClCompile Include="Math\Triangle.cpp" />
     <ClCompile Include="Memory\SystemAllocator.cpp" />
     <ClCompile Include="Math\Intersection.cpp" />
+    <ClCompile Include="Physics\AABBCollider.cpp" />
+    <ClCompile Include="Physics\MeshCollider.cpp" />
     <ClCompile Include="Physics\Rigidbody.cpp" />
+    <ClCompile Include="Physics\SphereCollider.cpp" />
     <ClCompile Include="Rendering\ArrayMesh.cpp" />
     <ClCompile Include="Rendering\Cubemap.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
@@ -218,7 +221,6 @@
     <ClInclude Include="Base\String.h" />
     <ClInclude Include="Components\CMesh.h" />
     <ClInclude Include="Components\CParticleSystem.h" />
-    <ClInclude Include="Math\IShape.h" />
     <ClInclude Include="Math\Polygon.h" />
     <ClInclude Include="Math\Triangle.h" />
     <ClInclude Include="Physics\ICollider.h" />
@@ -254,6 +256,7 @@
     <ClInclude Include="Physics\AABBCollider.h" />
     <ClInclude Include="Physics\CollisionInfo.h" />
     <ClInclude Include="Math\Intersection.h" />
+    <ClInclude Include="Physics\MeshCollider.h" />
     <ClInclude Include="Physics\Rigidbody.h" />
     <ClInclude Include="Physics\SphereCollider.h" />
     <ClInclude Include="Rendering\ArrayMesh.h" />
@@ -272,6 +275,7 @@
     <ClInclude Include="Rendering\Skybox.h" />
     <ClInclude Include="Rendering\Texture.h" />
     <ClInclude Include="Rendering\Vertex.h" />
+    <ClInclude Include="ResourceManager\MeshResource.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />
     <ClInclude Include="Systems\InputSystem.h" />

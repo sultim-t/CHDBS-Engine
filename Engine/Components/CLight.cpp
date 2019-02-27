@@ -26,7 +26,7 @@ void CLight::Recalculate()
 
 	if (ltype == LightType::Directional)
 	{
-		projection = Projection::Ortho(-10, 10, -10, 10, 0.1f, 30);
+		projection = Projection::Ortho(-30, 30, -30, 30, 0.1f, 200);
 	}
 	else if (ltype == LightType::Spot)
 	{

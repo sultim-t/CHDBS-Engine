@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <Engine/Engine.h>
 
-void main()
+void nomain()
 {
 	Engine engine = Engine();
 

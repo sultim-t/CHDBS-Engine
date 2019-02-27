@@ -1,5 +1,4 @@
 #include "AABB.h"
-#include "Sphere.h"
 
 AABB::AABB()
 { }
@@ -76,48 +75,6 @@ bool AABB::IsContained(const AABB &aabb) const
 	for (int i = 0; i < 3; i++)
 	{
 		if (aabb.minBounds[i] > minBounds[i] || aabb.maxBounds[i] < maxBounds[i])
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-bool AABB::Intersect(const AABB &aabb) const
-{
-	for (int i = 0; i < 3; i++)
-	{
-		if (maxBounds[i] < aabb.minBounds[i] || minBounds[i] > aabb.maxBounds[i])
-		{
-			return false;
-		}
-	}
-
-	return true;
-}
-
-/*bool AABB::Contacts(const AABB &aabb, const float eps) const
-{
-	for (int i = 0; i < 3; i++)
-	{
-		if ((maxBounds[i] + eps < aabb.minBounds[i]) || (maxBounds[i] - eps > aabb.maxBounds[i]))
-		{
-			return false;
-		}
-	}
-
-	return true;
-}*/
-
-bool AABB::Intersect(const Sphere &sphere) const
-{
-	const Vector3 &center = sphere.GetCenter();
-	const float radius = sphere.GetRadius();
-
-	for (int i = 0; i < 3; i++)
-	{
-		if ((center[i] + radius < minBounds[i]) || (center[i] - radius > maxBounds[i]))
 		{
 			return false;
 		}

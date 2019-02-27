@@ -4,15 +4,28 @@ Vector3 PhysicsSystem::Gravity = Vector3(0.0f, -9.8f, 0.0f);
 
 void PhysicsSystem::Init()
 {
+	rigidbodies.Init(128);
+	colliders.Init(128);
+	collisions.Init(512);
 }
 
 void PhysicsSystem::Update()
 {
-	FOREACHLINKEDLIST(Rigidbody*, rbPtr, rigidbodies)
-	{
-		Rigidbody *rb = *rbPtr;
+	int size = rigidbodies.GetSize();
 
-		rb->FixedUpdate();
+	for (int i = 0; i < size; i++)
+	{
+		rigidbodies[i]->FixedUpdate();
+	}
+}
+
+void PhysicsSystem::SolveCollisions()
+{
+	int size = rigidbodies.GetSize();
+
+	for (int i = 0; i < size; i++)
+	{
+		
 	}
 }
 
@@ -24,7 +37,7 @@ PhysicsSystem &PhysicsSystem::Instance()
 
 void PhysicsSystem::Register(Rigidbody * rb)
 {
-	rigidbodies.Add(rb);
+	rigidbodies.Push(rb);
 }
 
 void PhysicsSystem::Register(const ICollider * col)

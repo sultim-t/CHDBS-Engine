@@ -1,21 +1,17 @@
 #include "CMesh.h"
 #include <Engine/Rendering/OpenGL.h>
-#include <vector>
 
-Mesh::Mesh(const std::vector<Vertex5> vertices, const std::vector<UINT> indices)
+
+Mesh::Mesh(const MeshResource * resource)
 {
-	this->vertices = vertices;
-	this->indices = indices;
-
+	this->resource = resource;
 	Init();
 }
 
-Mesh::Mesh(const std::vector<Vertex5> vertices, const std::vector<UINT> indices, const Material &material)
+Mesh::Mesh(const MeshResource * resource, const Material & material)
 {
-	this->vertices = vertices;
-	this->indices = indices;
+	this->resource = resource;
 	this->material = material;
-
 	Init();
 }
 
@@ -31,10 +27,10 @@ void Mesh::Init()
 	glBindVertexArray(vao);
 	// load to vertex buffers
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex5), &vertices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, resource->GetVertices().GetSize() * sizeof(Vertex5), resource->GetVertices().GetArray(), GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), &indices[0], GL_STATIC_DRAW);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, resource->GetIndices().GetSize() * sizeof(unsigned int), resource->GetIndices().GetArray(), GL_STATIC_DRAW);
 
 	// set attributes
 	// positions
@@ -61,27 +57,27 @@ void Mesh::BindMaterial(const Material &material)
 	this->material = material;
 }
 
-void Mesh::ActivateMaterial(const Matrix4 &modelTransform) const
+void Mesh::PrepareMaterial(const Matrix4 & modelTransform) const
 {
-	Matrix4 &globalMeshTransform = modelTransform * transform.GetTransformMatrix();
+	Matrix4 &globalMeshTransform = transform.GetTransformMatrix() * modelTransform;
 	material.BindModelMatrix(globalMeshTransform);
+}
+
+void Mesh::ActivateMaterial() const
+{
 	material.Activate();
 }
 
 void Mesh::Draw() const
 {
 	glBindVertexArray(vao);
-	glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, resource->GetIndices().GetSize(), GL_UNSIGNED_INT, 0);
 }
 
-UINT Mesh::GetVAO() const
-{
-	return vao;
-}
 
 UINT Mesh::GetVertexCount() const
 {
-	return vertices.size();
+	return resource->GetVertices().GetSize();
 }
 
 Material &Mesh::GetMaterial()
@@ -97,6 +93,11 @@ const Transform & Mesh::GetTransform() const
 Transform & Mesh::GetTransform()
 {
 	return transform;
+}
+
+const MeshResource & Mesh::GetMeshResource() const
+{
+	return *resource;
 }
 
 const Material &Mesh::GetMaterial() const

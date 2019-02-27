@@ -94,11 +94,12 @@ void RenderingSystem::Update()
 
 					if (shader->IsAffectedByLight())
 					{
-						shader->SetVec3("lightPos", light->GetPosition());
+						shader->SetVec3("lightDir", -light->GetOwner().GetTransform().GetForward());
 						shader->SetMat4("lightSpaceMatrix", light->GetLightSpace());
 					}
 
-					m.ActivateMaterial(model->GetOwner().GetTransform().GetTransformMatrix());
+					m.PrepareMaterial(model->GetOwner().GetTransform().GetTransformMatrix());
+					m.ActivateMaterial();
 					m.Draw();
 				}
 			}
@@ -138,6 +139,11 @@ void RenderingSystem::CreateShadowMap(const CLight &light, FramebufferTexture &s
 	{
 		CModel *model = *modelPtr;
 
+		if (model->IsCastingShadows)
+		{
+			continue;
+		}
+
 		FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
 		{
 			CModel *model = *modelPtr;
@@ -145,7 +151,7 @@ void RenderingSystem::CreateShadowMap(const CLight &light, FramebufferTexture &s
 			for (const Mesh &m : model->GetMeshes())
 			{
 				// manually set transformation
-				depthShader.SetMat4("model", model->GetOwner().GetTransform().GetTransformMatrix());
+				depthShader.SetMat4("model", m.GetTransform().GetTransformMatrix() * model->GetOwner().GetTransform().GetTransformMatrix());
 				// draw without binding its material	
 				m.Draw();
 			}

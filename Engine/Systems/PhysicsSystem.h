@@ -1,19 +1,27 @@
 #pragma once
 #include <Engine/Systems/ISystem.h>
 #include <Engine/Physics/Rigidbody.h>
-#include <Engine/DataStructures/LinkedList.h>
+#include <Engine/Physics/CollisionInfo.h>
 
 class PhysicsSystem : public ISystem
 {
 private:
-	LinkedList<Rigidbody*> rigidbodies;
+	// Stores all rigidbodies with colliders
+	DynamicArray<Rigidbody*> rigidbodies;
+	// Stores all colliders without rigidbodies
+	DynamicArray<Rigidbody*> colliders;
+	// Stores all collisions, changed after each update
+	DynamicArray<CollisionInfo> collisions;
 
 public:
+	// Global gravity
 	static Vector3 Gravity;
 
 public:
 	void Init() override;
 	void Update() override;
+
+	void SolveCollisions();
 
 	// Get instance of system
 	static PhysicsSystem &Instance();
