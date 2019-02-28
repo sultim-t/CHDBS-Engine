@@ -221,6 +221,7 @@
     <ClInclude Include="Base\String.h" />
     <ClInclude Include="Components\CMesh.h" />
     <ClInclude Include="Components\CParticleSystem.h" />
+    <ClInclude Include="DataStructures\StaticStack.h" />
     <ClInclude Include="Math\Polygon.h" />
     <ClInclude Include="Math\Triangle.h" />
     <ClInclude Include="Physics\ICollider.h" />
@@ -274,9 +275,11 @@
     <ClInclude Include="Base\Typedef.h" />
     <ClInclude Include="Rendering\Skybox.h" />
     <ClInclude Include="Rendering\Texture.h" />
+    <ClInclude Include="Rendering\TextureColorFormat.h" />
     <ClInclude Include="Rendering\Vertex.h" />
     <ClInclude Include="ResourceManager\MeshResource.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
+    <ClInclude Include="ResourceManager\TextureResource.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />
     <ClInclude Include="Systems\InputSystem.h" />
     <ClInclude Include="Systems\PhysicsSystem.h" />

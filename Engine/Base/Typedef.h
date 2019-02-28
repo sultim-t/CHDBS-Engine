@@ -40,6 +40,7 @@ typedef UINT		TextureID;
 // Containers
 template <class T, UINT> class Array;
 template <class T> class StaticArray;
+template <class T> class StaticStack;
 template <class T> class DynamicArray;
 template <class T> class LinkedList;
 template <class K, class T> class HashTable;
@@ -93,6 +94,7 @@ typedef char* CString;
 // Resources
 class ResourceManager;
 class MeshResource;
+class TextureResource;
 
 // Systems
 class ISystem;

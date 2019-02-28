@@ -9,7 +9,7 @@
     fov="100" />
 
   <CFreeMovement 
-    speed="7.5" />
+    speed="30" />
 
   <CModel
     path="TEMP/obj.obj"

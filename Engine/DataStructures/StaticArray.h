@@ -6,7 +6,7 @@
 template<class T>
 class StaticArray
 {
-private:
+protected:
 	T *arr;
 	UINT amount;
 	

@@ -12,10 +12,6 @@ private:
 
 	String path;
 	
-//private:
-//	MeshResource(const MeshResource&) = delete;
-//	MeshResource(MeshResource&&) = delete;
-
 public:
 	// Assign 
 	inline MeshResource(const char *path, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles);
