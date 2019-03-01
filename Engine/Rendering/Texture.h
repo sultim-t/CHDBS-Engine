@@ -40,13 +40,11 @@ protected:
 	UINT format;
 
 	TextureType type;
-	const char* path;
 
 public:
 	void Activate(int i) const;
 
 	TextureType GetType() const;
-	const char *GetPath() const;
 	UINT GetID() const;
 	int GetWidth() const;
 	int GetHeight() const;
@@ -57,9 +55,14 @@ public:
 
 class Texture : public ITexture
 {
+private:
+	TextureResource *textureResource;
+
 public:
 	Texture();
 	~Texture();
+
+	const TextureResource &GetTextureResource() const;
 
 	void Load(const char* path);
 };

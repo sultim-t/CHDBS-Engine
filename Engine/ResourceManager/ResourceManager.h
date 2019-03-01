@@ -25,11 +25,12 @@ private:
 public:
 	~ResourceManager();
 	
+	// Init data structures
 	void Init();
+	// Delete loaded resources
+	void Unload();
 
-	UBYTE *LoadTexture(char const *path, int *width, int *height, int *comp, int req_comp);
-	void DeleteTexture(void *address);
-
+	TextureResource		*LoadTexture(char const *path);
 	const ModelResource *LoadModel(const char *path);
 
 	static ResourceManager &Instance();

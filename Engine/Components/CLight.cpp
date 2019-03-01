@@ -40,7 +40,7 @@ Matrix4 CLight::GetProjection() const
 {
 	if (ltype == LightType::Directional)
 	{
-		return Projection::Ortho(-0, 30, -30, 30, 0.1f, 200);
+		return Projection::Ortho(-20, 20, -20, 20, 0.1f, 30);
 	}
 	else if (ltype == LightType::Spot)
 	{

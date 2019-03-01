@@ -5,29 +5,26 @@
 class TextureResource
 {
 private:
-	UINT *data;
+	BYTE *data;
 	
 	int width, height;
 	TextureColorFormat format;
 
 	String path;
 
-private:
-	TextureResource();
-
 public:
-	inline TextureResource(UINT *data, const char *path, int width, int height, int channelsNumber);
+	inline TextureResource(BYTE *data, const char *path, int width, int height, int channelsNumber);
 
 	inline const String &GetPath() const;
-	inline const UINT *GetData() const;
-	inline const int GetWidth() const;
-	inline const int GetHeight() const;
+	inline const BYTE	*GetData() const;
+	inline const int	GetWidth() const;
+	inline const int	GetHeight() const;
 	inline const TextureColorFormat GetFormat() const;
 
 	inline void Delete();
 };
 
-inline TextureResource::TextureResource(UINT *data, const char *path, int width, int height, int channelsNumber)
+inline TextureResource::TextureResource(BYTE *data, const char *path, int width, int height, int channelsNumber)
 {
 	this->data = data;
 	this->path = path;
@@ -37,12 +34,12 @@ inline TextureResource::TextureResource(UINT *data, const char *path, int width,
 		channelsNumber == 3 ? TextureColorFormat::RGB : TextureColorFormat::RGBA;
 }
 
-inline const String & TextureResource::GetPath() const
+inline const String &TextureResource::GetPath() const
 {
 	return path;
 }
 
-inline const UINT * TextureResource::GetData() const
+inline const BYTE *TextureResource::GetData() const
 {
 	return data;
 }

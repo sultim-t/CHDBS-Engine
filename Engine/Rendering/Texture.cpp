@@ -5,54 +5,54 @@
 Texture::Texture()
 {
 	type = TextureType::Diffuse;
+	textureResource = nullptr;
 }
 
 Texture::~Texture()
+{ }
+
+const TextureResource & Texture::GetTextureResource() const
 {
+	return *textureResource;
 }
 
 void Texture::Load(const char * path)
 {
+	textureResource = ResourceManager::Instance().LoadTexture(path);
+
+	if (textureResource == nullptr)
+	{
+		return;
+	}
+
+	width = textureResource->GetWidth();
+	height = textureResource->GetHeight();
+	//channelsNumber = textureResource->GetFormat();
+
+	if (textureResource->GetFormat() == TextureColorFormat::R)
+	{
+		format = GL_RED;
+	}
+	else if (textureResource->GetFormat() == TextureColorFormat::RGB)
+	{
+		format = GL_RGB;
+	}
+	else if (textureResource->GetFormat() == TextureColorFormat::RGBA)
+	{
+		format = GL_RGBA;
+	}
+
 	glGenTextures(1, &graphicsTextureId);
+	glBindTexture(GL_TEXTURE_2D, graphicsTextureId);
+	
+	// copy data
+	glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, textureResource->GetData());
+	glGenerateMipmap(GL_TEXTURE_2D);
 
-	UBYTE *data = ResourceManager::Instance().LoadTexture(path, &width, &height, &channelsNumber, 0);
-
-	if (data)
-	{
-		if (channelsNumber == 1)
-		{
-			format = GL_RED;
-		}
-		else if (channelsNumber == 3)
-		{
-			format = GL_RGB;
-		}
-		else if (channelsNumber == 4)
-		{
-			format = GL_RGBA;
-		}
-
-		glBindTexture(GL_TEXTURE_2D, graphicsTextureId);
-		// copy data
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	}
-	else
-	{
-		Logger::Print("Can't load texture: %s"); //, path);
-	}
-
-	// data is copied, clear
-	ResourceManager::Instance().DeleteTexture(data);
-
-	this->path = path;
-
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
 UINT ITexture::GetID() const
@@ -76,11 +76,6 @@ void ITexture::Activate(int i) const
 TextureType ITexture::GetType() const
 {
 	return type;
-}
-
-const char *ITexture::GetPath() const
-{
-	return path;
 }
 
 int ITexture::GetWidth() const

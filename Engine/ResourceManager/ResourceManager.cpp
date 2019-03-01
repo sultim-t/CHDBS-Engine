@@ -25,11 +25,15 @@
 void ResourceManager::Init()
 {
 	meshResources.Init(128);
+
 	modelResources.Init(32, 8);
 	modelResources.DeclareHashFunction(String::StringHash);
+
+	textureResources.Init(64, 8);
+	textureResources.DeclareHashFunction(String::StringHash);
 }
 
-ResourceManager::~ResourceManager()
+void ResourceManager::Unload()
 {
 	// clear data in array
 	for (int i = 0; i < meshResources.GetSize(); i++)
@@ -49,19 +53,43 @@ ResourceManager::~ResourceManager()
 	}
 }
 
-UBYTE * ResourceManager::LoadTexture(char const * filename, int * width, int * height, int * comp, int req_comp)
-{
-	return stbi_load(filename, width, height, comp, req_comp);
+ResourceManager::~ResourceManager()
+{ 
+	Unload();
 }
 
-void ResourceManager::DeleteTexture(void * address)
+TextureResource *ResourceManager::LoadTexture(char const *path)
 {
-	stbi_image_free(address);
+	TextureResource *outTexture;
+
+	// if already loaded
+	if (textureResources.Find(path, outTexture))
+	{
+		return outTexture;
+	}
+
+	// load through stbi
+	int width, height, chanNum;
+	BYTE* data = (BYTE*)stbi_load(path, &width, &height, &chanNum, 0);
+
+	// allocate data
+	outTexture = new TextureResource(data, path, width, height, chanNum);
+
+	// add to hash table
+	textureResources.Add(path, outTexture);
+
+	return outTexture;
 }
 
 const ModelResource *ResourceManager::LoadModel(const char *path)
 {
-	using namespace std;
+	ModelResource *outModel;
+
+	// if already loaded
+	if (modelResources.Find(path, outModel))
+	{
+		return outModel;
+	}
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -73,19 +101,13 @@ const ModelResource *ResourceManager::LoadModel(const char *path)
 		return nullptr;
 	}
 
-	ModelResource *outModel;
-
-	// if already loaded
-	if (modelResources.Find(path, outModel))
-	{
-		return outModel;
-	}
-
+	// allocate memory
 	outModel = new ModelResource(path);
 
 	// process ASSIMP's root node recursively
 	ProcessModelNode(scene->mRootNode, scene, outModel);
 
+	// add to hash table
 	modelResources.Add(path, outModel);
 
 	return outModel;
