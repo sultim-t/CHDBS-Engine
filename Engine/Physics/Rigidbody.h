@@ -21,6 +21,7 @@ private:
 	DynamicArray<Vector3> allImpulses;
 
 	// current rigidbody collider
+	// which is attached to current entity
 	ICollider *collider;
 	
 public:

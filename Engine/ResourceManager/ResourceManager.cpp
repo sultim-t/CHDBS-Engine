@@ -7,9 +7,8 @@
 #include <Engine/Math/Vector.h>
 #include <Engine/Math/Triangle.h>
 #include <Engine/Rendering/Texture.h>
-#include <Engine/Components/CMesh.h>
-#include <Engine/Components/CModel.h>
 #include <Engine/Rendering/Material.h>
+#include <Engine/Rendering/Vertex.h>
 
 #include "MeshResource.h"
 
@@ -26,6 +25,8 @@
 void ResourceManager::Init()
 {
 	meshResources.Init(128);
+	modelResources.Init(32, 8);
+	modelResources.DeclareHashFunction(String::StringHash);
 }
 
 ResourceManager::~ResourceManager()
@@ -47,7 +48,7 @@ void ResourceManager::DeleteTexture(void * address)
 	stbi_image_free(address);
 }
 
-void ResourceManager::LoadModel(const char *path, CModel &outModel)
+const ModelResource *ResourceManager::LoadModel(const char *path)
 {
 	using namespace std;
 
@@ -58,11 +59,23 @@ void ResourceManager::LoadModel(const char *path, CModel &outModel)
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 	{
 		Logger::Print(importer.GetErrorString());
-		return;
+		return nullptr;
 	}
+
+	ModelResource *outModel;
+
+	// if already loaded
+	if (modelResources.Find(path, outModel))
+	{
+		return outModel;
+	}
+
+	outModel = new ModelResource(path);
 
 	// process ASSIMP's root node recursively
 	ProcessModelNode(scene->mRootNode, scene, outModel);
+
+	return outModel;
 }
 
 ResourceManager & ResourceManager::Instance()
@@ -71,7 +84,7 @@ ResourceManager & ResourceManager::Instance()
 	return instance;
 }
 
-void ResourceManager::ProcessModelNode(void *n, const void *s, CModel &outModel)
+void ResourceManager::ProcessModelNode(void *n, const void *s, ModelResource *outModel)
 {
 	aiNode *node = (aiNode*)n;
 	aiScene *scene = (aiScene*)s;
@@ -81,7 +94,8 @@ void ResourceManager::ProcessModelNode(void *n, const void *s, CModel &outModel)
 	{
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
-		Mesh &m = ProcessMesh(mesh, scene, outModel);
+		MeshResource *meshRes = ProcessMesh(mesh, scene);
+		/*Mesh &m = Mesh(meshRes);
 
 		if (node->mName.length != 0)
 		{
@@ -102,9 +116,9 @@ void ResourceManager::ProcessModelNode(void *n, const void *s, CModel &outModel)
 
 		// set
 		Transform t = Transform(pos, quat, scale);
-		m.SetTransform(t);
+		m.SetTransform(t);*/
 
-		outModel.meshes.push_back(m);
+		outModel->AddMesh(meshRes);
 	}
 
 	// for each child node
@@ -114,7 +128,7 @@ void ResourceManager::ProcessModelNode(void *n, const void *s, CModel &outModel)
 	}
 }
 
-Mesh ResourceManager::ProcessMesh(void *m, const void *s, CModel &outModel)
+MeshResource *ResourceManager::ProcessMesh(void *m, const void *s)
 {
 	using namespace std;
 
@@ -226,5 +240,5 @@ Mesh ResourceManager::ProcessMesh(void *m, const void *s, CModel &outModel)
 	MeshResource *resource = new MeshResource(mesh->mName.C_Str(), vertices, indices, triangles);
 	meshResources.Push(resource);
 
-	return Mesh(resource);
+	return resource;
 }

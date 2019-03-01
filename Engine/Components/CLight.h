@@ -37,10 +37,15 @@ private:
 private:
 	// Recalculates light space matrix
 	void Recalculate();
-	
+	Matrix4 GetLightView() const;
+	Matrix4 GetLightView(const Vector3 &pos) const;
+	Matrix4 GetProjection() const;
+
 public:
 	// Returns light space matrix
 	const Matrix4 &GetLightSpace() const;
+	// Calculate light space matrix from specified position
+	Matrix4 GetLightSpace(const Vector3 &pos) const;
 
 	LightType GetLightType() const;
 	// If static light doesn't calculate matrix each frame

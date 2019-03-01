@@ -2,6 +2,7 @@
 
 #include "IComponent.h"
 #include <Engine/Components/CMesh.h>
+#include <Engine/ResourceManager/ModelResource.h>
 
 class CModel : public IComponent
 {
@@ -14,6 +15,7 @@ public:
 
 	std::vector<Mesh> meshes;
 	std::vector<ITexture> loadedTextures;
+	const ModelResource *modelResource;
 
 	String path;
 

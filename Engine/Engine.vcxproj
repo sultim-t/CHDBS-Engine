@@ -205,6 +205,7 @@
     <ClCompile Include="Math\BasicMath.cpp" />
     <ClCompile Include="Rendering\Skybox.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
+    <ClCompile Include="ResourceManager\ModelResource.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="Systems\ComponentSystem.cpp" />
     <ClCompile Include="Systems\InputSystem.cpp" />
@@ -278,6 +279,7 @@
     <ClInclude Include="Rendering\TextureColorFormat.h" />
     <ClInclude Include="Rendering\Vertex.h" />
     <ClInclude Include="ResourceManager\MeshResource.h" />
+    <ClInclude Include="ResourceManager\ModelResource.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="ResourceManager\TextureResource.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />

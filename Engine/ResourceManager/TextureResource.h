@@ -1,5 +1,6 @@
 #pragma once
 #include <Engine/Rendering/TextureColorFormat.h>
+#include <Engine/Memory/Memory.h>
 
 class TextureResource
 {

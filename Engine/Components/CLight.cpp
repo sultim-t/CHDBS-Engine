@@ -22,26 +22,35 @@ CLASSDEFINITION(IComponent, CLight)
 
 void CLight::Recalculate()
 {
-	Matrix4 projection;
+	lightSpace = GetLightView() * GetProjection();
+}
 
+Matrix4 CLight::GetLightView() const
+{
+	return GetLightView(owner->GetTransform().GetPosition());
+}
+
+Matrix4 CLight::GetLightView(const Vector3 &pos) const
+{
+	Vector3 dir = owner->GetTransform().GetForward();
+	return Transform::LookAt(pos, pos + dir, Vector3(0.0f, 1.0f, 0.0f));
+}
+
+Matrix4 CLight::GetProjection() const
+{
 	if (ltype == LightType::Directional)
 	{
-		projection = Projection::Ortho(-30, 30, -30, 30, 0.1f, 200);
+		return Projection::Ortho(-0, 30, -30, 30, 0.1f, 200);
 	}
 	else if (ltype == LightType::Spot)
 	{
-		projection = Projection::Perspective(coneAngle, 1, 0.1f, range);
+		return Projection::Perspective(coneAngle, 1, 0.1f, range);
 	}
 	else
 	{
 		ASSERT(0);
+		return Matrix4();
 	}
-
-	Vector3 pos = owner->GetTransform().GetPosition();
-	Vector3 at = pos + owner->GetTransform().GetForward();
-
-	Matrix4 view = Transform::LookAt(pos, at, Vector3(0.0f, 1.0f, 0.0f));
-	lightSpace = view * projection;
 }
 
 LightType CLight::GetLightType() const
@@ -52,6 +61,11 @@ LightType CLight::GetLightType() const
 const Matrix4 &CLight::GetLightSpace() const
 {
 	return lightSpace;
+}
+
+Matrix4 CLight::GetLightSpace(const Vector3 &pos) const
+{
+	return GetLightView() * GetProjection();
 }
 
 bool CLight::IsStatic() const

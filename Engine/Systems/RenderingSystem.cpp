@@ -68,7 +68,15 @@ void RenderingSystem::Update()
 			CLight *light = *lightPtr;
 			if (light->IsCastingShadows())
 			{
-				CreateShadowMap(*light, shadowMap);
+				if (light->GetLightType() == LightType::Directional)
+				{
+					CreateShadowMap(light->GetLightSpace(cam->GetPosition()), shadowMap);
+				}
+				else
+				{
+					CreateShadowMap(light->GetLightSpace(), shadowMap);
+				}
+
 				shadowMap.Activate((int)TextureType::Shadowmap);
 			}
 
@@ -125,14 +133,14 @@ void RenderingSystem::Update()
 	ContextWindow::Instance().PollEvents();
 }
 
-void RenderingSystem::CreateShadowMap(const CLight &light, FramebufferTexture &shadowMap)
+void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferTexture &shadowMap)
 {
 	glViewport(0, 0, shadowMap.GetWidth(), shadowMap.GetHeight());
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.GetFBO());
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	depthShader.Use();
-	depthShader.SetMat4("lightSpaceMatrix", light.GetLightSpace());
+	depthShader.SetMat4("lightSpaceMatrix", lightSpace);
 	
 	// draw each model
 	FOREACHLINKEDLIST(CModel*, modelPtr, allModels)

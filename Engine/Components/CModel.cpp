@@ -13,45 +13,32 @@
 
 CLASSDEFINITION(IComponent, CModel)
 
+CModel::CModel() : IsCastingShadows(true), IsReceivingShadows(true), modelResource(nullptr)
+{ }
+
 void CModel::BindPath(const char * path)
 {
 	this->path = path;
 }
-
-//void CModel::Draw()
-//{
-//	if (!IsActive())
-//	{
-//		return;
-//	}
-//
-//	for (unsigned i = 0; i < meshes.size(); i++)
-//	{
-//		meshes[i].GetMaterial().BindModelMatrix(owner->GetTransform()
-//				.GetTransformMatrix());
-//		meshes[i].Draw();
-//	}
-//}
 
 const std::vector<Mesh> &CModel::GetMeshes() const
 {
 	return meshes;
 }
 
-//std::vector<Mesh> &CModel::GetMeshes()
-//{
-//	return meshes;
-//}
-
-CModel::CModel() : IsCastingShadows(true), IsReceivingShadows(true)
-{}
-
 void CModel::Init()
 {
 	RenderingSystem::Instance().Register(this);
 
 	// load model
-	ResourceManager::Instance().LoadModel(path, *this);
+	modelResource = ResourceManager::Instance().LoadModel(path);
+
+	// init meshes
+	auto &meshesSource = modelResource->GetMeshes();
+	for (UINT i = 0; i < meshesSource.size(); i++)
+	{
+		meshes.push_back(Mesh(meshesSource[i]));
+	}
 }
 float t = 0;
 
