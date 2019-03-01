@@ -10,13 +10,13 @@ private:
 	StaticArray<Triangle> triangles;
 
 public:
-	// Assigns
+	// Copies triangle array
 	inline MeshColliderResource(const StaticArray<Triangle> &triangles);
 	// Copies triangle array from mesh
 	inline MeshColliderResource(const MeshResource &mesh);
 
-	// Creates mesh collider with specified transformation
-	// Note:  allocates copy of fields
+	// Calculates triangles with specified transformation into "outTriangles"
+	// Note: memory must be allocated for "outTriangles"
 	inline void TransformCollider(const Transform &t, StaticArray<Triangle> outTriangles) const;
 
 	inline const StaticArray<Triangle> &GetTriangles() const;
@@ -27,7 +27,7 @@ public:
 
 inline MeshColliderResource::MeshColliderResource(const StaticArray<Triangle>& triangles)
 {
-	this->triangles = triangles;
+	this->triangles = triangles.GetCopy();
 }
 
 inline MeshColliderResource::MeshColliderResource(const MeshResource &mesh)
@@ -42,9 +42,9 @@ inline void MeshColliderResource::TransformCollider(const Transform &t, StaticAr
 	UINT size = triangles.GetSize();
 	for (UINT i = 0; i < size; i++)
 	{
-		outTriangles[i].A = Vector3(transform * Vector4(triangles[i].A));
-		outTriangles[i].B = Vector3(transform * Vector4(triangles[i].B));
-		outTriangles[i].C = Vector3(transform * Vector4(triangles[i].C));
+		outTriangles[i].A = t.PointFromLocal(triangles[i].A);
+		outTriangles[i].B = t.PointFromLocal(triangles[i].B);
+		outTriangles[i].C = t.PointFromLocal(triangles[i].C);
 	}
 }
 

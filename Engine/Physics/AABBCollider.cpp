@@ -1,6 +1,7 @@
 #include "AABBCollider.h"
 #include "MeshCollider.h"
 #include "SphereCollider.h"
+#include <Engine/Components/CMesh.h>
 
 bool AABBCollider::Intersect(const ICollider & col) const
 {
@@ -18,8 +19,7 @@ bool AABBCollider::Intersect(const ICollider & col) const
 	}
 	case ColliderType::Mesh:
 	{
-		const MeshResource &other = ((MeshCollider&)col).GetMesh();
-		return Intersection::MeshAABB(other, aabb);
+		return Intersection::MeshAABB(((MeshCollider&)col).GetMesh().GetTriangles(), aabb);
 	}
 	default:
 		ASSERT(0);

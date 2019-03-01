@@ -18,9 +18,12 @@ public:
 	inline Vector(const Type x, const Type y, const Type z);
 	// Init first 4 dimensions
 	inline Vector(const Type x, const Type y, const Type z, const Type w);
-	// Init from another vector
+	// Init from another vector, 0 is setted to uninitialized component
 	template <int ADim>
 	inline Vector(const Vector<Type, ADim> &vec);
+	// Init from another vector, "t" is setted to uninitialized component
+	template <int ADim>
+	inline Vector(const Vector<Type, ADim> &vec, const Type t);
 
 	inline Type &operator[](int index);
 	inline const Type operator[](int index) const;
@@ -59,29 +62,29 @@ public:
 	// Multiplies vectors component-wise
 	static Vector<Type, Dim> Scale(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2);
 
-	inline void Copy(Vector<Type, Dim> &out);
-	inline bool ApproximateCompare(const Vector<Type, Dim> &vec);
+	inline void Copy(Vector<Type, Dim> &out) const;
+	inline bool ApproximateCompare(const Vector<Type, Dim> &vec) const;
 	// Length of this vector
-	inline Type Length();
+	inline Type Length() const;
 	// Sqr length of this vector
-	inline Type LengthSqr();
+	inline Type LengthSqr() const;
 	// Manhattan norm
-	inline Type ManhattanNorm();
+	inline Type ManhattanNorm() const;
 	// Distance between this and vec
-	inline Type Distance(const Vector<Type, Dim> &vec);
+	inline Type Distance(const Vector<Type, Dim> &vec) const;
 	// Sqr distance between this and vec
-	inline Type DistanceSqr(const Vector<Type, Dim> &vec);
+	inline Type DistanceSqr(const Vector<Type, Dim> &vec) const;
 	// Dot product of this and vec
-	inline Type Dot(const Vector<Type, Dim> &vec);
+	inline Type Dot(const Vector<Type, Dim> &vec) const;
 	inline void Normalize();
 	inline Vector<Type, Dim> GetNormalized() const;
 	// Multiply by vector component-wise
-	inline Vector<Type, Dim> Scale(const Vector<Type, Dim> &vec);
+	inline Vector<Type, Dim> Scale(const Vector<Type, Dim> &vec) const;
 
 	static Vector<Type, Dim> Lerp(const Vector<Type, Dim> &start, const Vector<Type, Dim> &end, const float t);
 
 	static Vector<float, 3>Cross(const Vector<Type, Dim> &in1, const  Vector<Type, Dim> &in2);
-	inline Vector<float, 3>Cross(const Vector<Type, Dim> &in);
+	inline Vector<float, 3>Cross(const Vector<Type, Dim> &in) const;
 
 	inline const Type *ToArray() const;
 };
@@ -157,6 +160,23 @@ inline Vector<Type, Dim>::Vector(const Vector<Type, ADim> &vec)
 	for (int i = a; i < b; i++)
 	{
 		vector[i] = (Type)0;
+	}
+}
+
+template<class Type, int Dim>
+template<int ADim>
+inline Vector<Type, Dim>::Vector(const Vector<Type, ADim>& vec, const Type t)
+{
+	int a = Dim <= ADim ? Dim : ADim;
+	int b = a == Dim ? ADim : Dim;
+
+	for (int i = 0; i < a; i++)
+	{
+		vector[i] = vec[i];
+	}
+	for (int i = a; i < b; i++)
+	{
+		vector[i] = t;
 	}
 }
 
@@ -447,49 +467,49 @@ inline Vector<Type, Dim> Vector<Type, Dim>::Scale(const Vector<Type, Dim>& vec1,
 }
 
 template <class Type, int Dim>
-inline void Vector<Type, Dim>::Copy(Vector<Type, Dim>&out)
+inline void Vector<Type, Dim>::Copy(Vector<Type, Dim>&out) const
 {
 	Copy(*this, out);
 }
 
 template <class Type, int Dim>
-inline bool Vector<Type, Dim>::ApproximateCompare(const Vector<Type, Dim>&vec)
+inline bool Vector<Type, Dim>::ApproximateCompare(const Vector<Type, Dim>&vec) const
 {
 	return ApproximateCompare(*this, vec);
 }
 
 template <class Type, int Dim>
-inline Type Vector<Type, Dim>::Length()
+inline Type Vector<Type, Dim>::Length() const
 {
 	return Length(*this);
 }
 
 template <class Type, int Dim>
-Type Vector<Type, Dim>::LengthSqr()
+Type Vector<Type, Dim>::LengthSqr() const
 {
 	return LengthSqr(*this);
 }
 
 template<class Type, int Dim>
-inline Type Vector<Type, Dim>::ManhattanNorm()
+inline Type Vector<Type, Dim>::ManhattanNorm() const
 {
 	return ManhattanNorm(*this);
 }
 
 template <class Type, int Dim>
-inline Type Vector<Type, Dim>::Distance(const Vector<Type, Dim> &vec)
+inline Type Vector<Type, Dim>::Distance(const Vector<Type, Dim> &vec) const
 {
 	return Distance(*this, vec);
 }
 
 template <class Type, int Dim>
-inline Type Vector<Type, Dim>::DistanceSqr(const Vector<Type, Dim> &vec)
+inline Type Vector<Type, Dim>::DistanceSqr(const Vector<Type, Dim> &vec) const
 {
 	return DistanceSqr(*this, vec);
 }
 
 template <class Type, int Dim>
-inline Type Vector<Type, Dim>::Dot(const Vector<Type, Dim>&vec)
+inline Type Vector<Type, Dim>::Dot(const Vector<Type, Dim>&vec) const
 {
 	return Dot(*this, vec);
 }
@@ -509,7 +529,7 @@ inline Vector<Type, Dim> Vector<Type, Dim>::GetNormalized() const
 }
 
 template<class Type, int Dim>
-inline Vector<Type, Dim> Vector<Type, Dim>::Scale(const Vector<Type, Dim>& vec)
+inline Vector<Type, Dim> Vector<Type, Dim>::Scale(const Vector<Type, Dim>& vec) const
 {
 	*this = Scale(*this, vec);
 }
@@ -533,7 +553,7 @@ inline Vector<float, 3> Vector<float, 3>::Cross(const Vector<float, 3>&in1, cons
 }
 
 template <>
-inline Vector<float, 3> Vector<float, 3>::Cross(const Vector<float, 3>&in)
+inline Vector<float, 3> Vector<float, 3>::Cross(const Vector<float, 3>&in) const
 {
 	return Cross(*this, in);
 }

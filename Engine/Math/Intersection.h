@@ -42,16 +42,16 @@ public:
 	// If intersect then result is a segment (p0, p1)
 	static bool TrianglePlane(const Triangle &t, const Plane &plane, Vector3 &start, Vector3 &end);
 
-	static bool MeshSphere(const MeshResource &mesh, const Sphere &s, Vector3 &point);
-	static bool MeshAABB(const MeshResource &mesh, const AABB &aabb);
-	static bool MeshPlane(const MeshResource &mesh, const Plane &p, Vector3 &start, Vector3 &end);
+	static bool MeshSphere(const StaticArray<Triangle> &triangles, const Sphere &s, Vector3 &point);
+	static bool MeshAABB(const StaticArray<Triangle> &triangles, const AABB &aabb);
+	static bool MeshPlane(const StaticArray<Triangle> &triangles, const Plane &p, Vector3 &start, Vector3 &end);
 	// Test mesh and ray.
 	//   "worldPoint" is a intersection point in world space
 	//   "normal" is an intersection normal
-	static bool MeshRay(const MeshResource &mesh, const Ray &ray, Vector3 &worldPoint, Vector3 & normal);
+	static bool MeshRay(const StaticArray<Triangle> &triangles, const Ray &ray, Vector3 &worldPoint, Vector3 & normal);
 	// Test mesh and segment.
 	//   "worldPoint" is a intersection point in world space
-	static bool MeshSegment(const MeshResource &mesh, const Vector3 &start, const Vector3 &end, Vector3 &worldPoint);
+	static bool MeshSegment(const StaticArray<Triangle> &triangles, const Vector3 &start, const Vector3 &end, Vector3 &worldPoint);
 
 private:
 	static bool SegRayTriangle(const Vector3 &p, const Vector3 &q, const Triangle &tr, Vector3 &barycentric, bool isSegment);

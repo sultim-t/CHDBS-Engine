@@ -112,6 +112,25 @@ int main()
 	// Recalculate time, there shouldn't be counted initialization time
 	Time::Init();
 
+	auto &meshes = terrainEntity->GetComponent<CModel>()->GetMeshes();
+
+	StaticArray<StaticArray<Triangle>*> meshtr;
+	meshtr.Init(meshes.size());
+
+	for (UINT j = 0; j < meshes.size(); j++)
+	{
+		const MeshResource &r = meshes[j].GetMeshResource();
+
+		MeshColliderResource res = MeshColliderResource(r);
+		StaticArray<Triangle> *tr = new StaticArray<Triangle>();
+		tr->Init(r.GetTriangles().GetSize());
+
+		res.TransformCollider(terrainEntity->GetTransform(), *tr);
+
+		meshtr[j] = tr;
+	}
+
+
 	float s = 0;
 
 	while (!ContextWindow::Instance().ShouldClose())
@@ -137,12 +156,9 @@ int main()
 				Vector3 dir = Quaternion(Euler(0, (i - 3) * 6.0f, (i % 2) * 3.0f)) * cameraEntity->GetTransform().GetForward();
 				Ray ray = Ray(cameraEntity->GetTransform().GetPosition(), dir);
 
-				auto &meshes = terrainEntity->GetComponent<CModel>()->GetMeshes();
 				for (UINT j = 0; j < meshes.size(); j++)
 				{
-					const MeshResource &r = meshes[j].GetMeshResource();
-
-					if (Intersection::MeshRay(r, ray, point, normal))
+					if (Intersection::MeshRay(*meshtr[j], ray, point, normal))
 					{
 						particles->GetTransform().SetPosition(point);
 						particles->GetTransform().SetRotation(Quaternion::FromDirection(normal));

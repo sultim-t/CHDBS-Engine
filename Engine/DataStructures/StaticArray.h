@@ -44,11 +44,8 @@ public:
 
 
 template<class T>
-inline StaticArray<T>::StaticArray()
-{ 
-	amount = 0;
-	arr = nullptr;
-}
+inline StaticArray<T>::StaticArray() : amount(0), arr(nullptr)
+{ }
 
 template<class T>
 inline void StaticArray<T>::Init(UINT amount)

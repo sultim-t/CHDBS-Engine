@@ -105,8 +105,7 @@ void EntityFactory::SetData(Entity *entity, void *xmlElem)
 	using namespace tinyxml2;
 	XMLElement *elem = (XMLElement*)xmlElem;
 
-	bool setActive = elem->BoolAttribute("active", true);
-	entity->SetActive(setActive);
+	entity->isActive = elem->BoolAttribute("active", true);
 
 	if (const char *val = elem->Attribute("position"))
 	{
@@ -127,6 +126,12 @@ void EntityFactory::SetData(Entity *entity, void *xmlElem)
 	{
 		entity->transform.SetScale(String::ToVector3(val));
 	}
+}
+
+void EntityFactory::SetData(Entity *entity, const Entity *source)
+{
+	entity->isActive = source->isActive;
+	entity->transform = source->transform;
 }
 
 Entity *EntityFactory::PCreateEntity(const char *resource)
@@ -180,13 +185,49 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 	return entity;
 }
 
+Entity * EntityFactory::PCreateEntity(const Entity *source)
+{
+	Entity *entity = new Entity(GetNextEntityID());
+	entity->Init();
+
+	// load main data
+	SetData(entity, source);
+
+	auto &components = source->GetAllComponents();
+
+	// foreach component in source
+	for (int i = 0; i < components.GetSize(); i++)
+	{
+		IComponent *comp = CreateComponent(nullptr);
+
+		comp->isActive = components[i]->isActive;
+
+		// link
+		entity->AddComponent(comp);
+		comp->SetOwner(entity);
+
+		// everything is set up
+		comp->Init();
+	}
+
+	// finally, store entity
+	entities.Push(entity);
+
+	return entity;
+}
+
 EntityFactory &EntityFactory::Instance()
 {
 	static EntityFactory instance;
 	return instance;
 }
 
-Entity *EntityFactory::CreateEntity(const char * resource)
+Entity *EntityFactory::CreateEntity(const char *resource)
 {
 	return EntityFactory::Instance().PCreateEntity(resource);
+}
+
+Entity *EntityFactory::CreateEntity(const Entity *entity)
+{
+	return EntityFactory::Instance().PCreateEntity(entity);
 }

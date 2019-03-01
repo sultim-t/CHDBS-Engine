@@ -4,12 +4,12 @@
 
   <CCamera
     znear="0.1"
-    zfar="3000"
+    zfar="1500"
     proj="persp"
     fov="100" />
 
   <CFreeMovement 
-    speed="30" />
+    speed="10" />
 
   <CModel
     path="TEMP/obj.obj"

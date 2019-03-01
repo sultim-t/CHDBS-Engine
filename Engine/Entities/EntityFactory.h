@@ -32,9 +32,14 @@ private:
 
 	// Sets data to entity from xml node
 	void SetData(Entity *entity, void *xmlElem);
+	// Sets data to entity from xml node
+	void SetData(Entity *entity, const Entity *source);
 
 	// Parses XML file and creates entity
 	Entity *PCreateEntity(const char *resource);
+	// Creates copy of the entity
+	Entity *PCreateEntity(const Entity *entity);
+
 	template<class T>
 	inline void PRegisterComponentType(const String &name);
 	
@@ -44,6 +49,10 @@ private:
 public:
 	// Parses XML file and creates entity
 	static Entity *CreateEntity(const char *resource);
+
+	// Creates copy of the entity
+	static Entity *CreateEntity(const Entity *entity);
+
 	// Call this function to register component type
 	// It will automatically generate a component creator
 	// which will call SetProperty function the component

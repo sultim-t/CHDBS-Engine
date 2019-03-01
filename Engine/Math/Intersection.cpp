@@ -199,9 +199,8 @@ bool Intersection::TrianglePlane(const Triangle & t, const Plane & plane, Vector
 	return false;
 }
 
-bool Intersection::MeshSphere(const MeshResource & mesh, const Sphere & s, Vector3 & point)
+bool Intersection::MeshSphere(const StaticArray<Triangle> &triangles, const Sphere & s, Vector3 & point)
 {
-	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
 	UINT size = triangles.GetSize();
 
 	for (UINT i = 0; i < size; i++)
@@ -215,9 +214,8 @@ bool Intersection::MeshSphere(const MeshResource & mesh, const Sphere & s, Vecto
 	return false;
 }
 
-bool Intersection::MeshAABB(const MeshResource & mesh, const AABB & aabb)
+bool Intersection::MeshAABB(const StaticArray<Triangle> &triangles, const AABB & aabb)
 {
-	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
 	UINT size = triangles.GetSize();
 
 	for (UINT i = 0; i < size; i++)
@@ -231,9 +229,8 @@ bool Intersection::MeshAABB(const MeshResource & mesh, const AABB & aabb)
 	return false;
 }
 
-bool Intersection::MeshPlane(const MeshResource & mesh, const Plane & p, Vector3 & start, Vector3 & end)
+bool Intersection::MeshPlane(const StaticArray<Triangle> &triangles, const Plane & p, Vector3 & start, Vector3 & end)
 {
-	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
 	UINT size = triangles.GetSize();
 
 	for (UINT i = 0; i < size; i++)
@@ -247,9 +244,8 @@ bool Intersection::MeshPlane(const MeshResource & mesh, const Plane & p, Vector3
 	return false;
 }
 
-bool Intersection::MeshRay(const MeshResource & mesh, const Ray & ray, Vector3 & worldPoint, Vector3 & normal)
+bool Intersection::MeshRay(const StaticArray<Triangle> &triangles, const Ray & ray, Vector3 & worldPoint, Vector3 & normal)
 {
-	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
 	UINT size = triangles.GetSize();
 	Vector3 barycentric;
 
@@ -266,9 +262,8 @@ bool Intersection::MeshRay(const MeshResource & mesh, const Ray & ray, Vector3 &
 	return false;
 }
 
-bool Intersection::MeshSegment(const MeshResource & mesh, const Vector3 & start, const Vector3 & end, Vector3 & worldPoint)
+bool Intersection::MeshSegment(const StaticArray<Triangle> &triangles, const Vector3 & start, const Vector3 & end, Vector3 & worldPoint)
 {
-	const StaticArray<Triangle> &triangles = mesh.GetTriangles();
 	UINT size = triangles.GetSize();
 	Vector3 barycentric;
 

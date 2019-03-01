@@ -16,8 +16,7 @@ UINT HashUnsigned(UINT i)
 
 RenderingSystem::RenderingSystem()
 {
-	lastMeshId = lastMaterialId
-		= lastShaderId = lastTextureId = 0;
+	lastMeshId = lastMaterialId	= lastShaderId = lastTextureId = 0;
 }
 
 RenderingSystem::~RenderingSystem()
@@ -40,6 +39,12 @@ void RenderingSystem::Init()
 	matTextures.Init(32, 8);
 	matShaders.Init(32, 8);
 
+	cameras.Init(8);
+	lights.Init(8);
+	allShaders.Init(16);
+	allModels.Init(64);
+	particleSystems.Init(64);
+
 	shadowMap = FramebufferTexture();
 	shadowMap.Create(1024, 1024);
 	shadowMap.SetType(TextureType::Shadowmap);
@@ -51,11 +56,13 @@ void RenderingSystem::Init()
 void RenderingSystem::Update()
 {
 	glClearColor(0.5f, 0.85f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	FOREACHLINKEDLIST(CCamera*, camPtr, cameras)
+	for (int i = 0; i < cameras.GetSize(); i++)
 	{
-		CCamera *cam = *camPtr;
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		CCamera *cam = cameras[i];
 
 		cam->SetAspect((float)ContextWindow::Instance().GetWidth(), (float)ContextWindow::Instance().GetHeight());
 		Matrix4 projM = cam->GetProjectionMatrix();
@@ -63,14 +70,15 @@ void RenderingSystem::Update()
 
 		Matrix4 camSpace = viewM * projM;
 
-		FOREACHLINKEDLIST(CLight*, lightPtr, lights)
+		for (int l = 0; l < lights.GetSize(); l++)
 		{
-			CLight *light = *lightPtr;
+			CLight *light = lights[l];
+
 			if (light->IsCastingShadows())
 			{
 				if (light->GetLightType() == LightType::Directional)
 				{
-					CreateShadowMap(light->GetLightSpace(cam->GetPosition()), shadowMap);
+					CreateShadowMap(light->GetLightSpace(), shadowMap);
 				}
 				else
 				{
@@ -80,9 +88,9 @@ void RenderingSystem::Update()
 				shadowMap.Activate((int)TextureType::Shadowmap);
 			}
 
-			FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
+			for (int m = 0; m < allModels.GetSize(); m++)
 			{
-				CModel *model = *modelPtr;
+				CModel *model = allModels[m];
 
 				for (const Mesh &m : model->GetMeshes())
 				{
@@ -120,9 +128,9 @@ void RenderingSystem::Update()
 		skyCamSpace *= projM;
 		Skybox::Instance().Draw(skyCamSpace);
 	
-		FOREACHLINKEDLIST(CParticleSystem*, psPtr, particleSystems)
+		for (int p = 0; p < particleSystems.GetSize(); p++)
 		{
-			CParticleSystem *ps = *psPtr;
+			CParticleSystem *ps = particleSystems[p];
 
 			ps->BindCamera(cam);
 			ps->Render();
@@ -143,26 +151,21 @@ void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferText
 	depthShader.SetMat4("lightSpaceMatrix", lightSpace);
 	
 	// draw each model
-	FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
+	for (int m = 0; m < allModels.GetSize(); m++)
 	{
-		CModel *model = *modelPtr;
+		CModel *model = allModels[m];
 
 		if (model->IsCastingShadows)
 		{
 			continue;
 		}
 
-		FOREACHLINKEDLIST(CModel*, modelPtr, allModels)
+		for (const Mesh &m : model->GetMeshes())
 		{
-			CModel *model = *modelPtr;
-
-			for (const Mesh &m : model->GetMeshes())
-			{
-				// manually set transformation
-				depthShader.SetMat4("model", m.GetTransform().GetTransformMatrix() * model->GetOwner().GetTransform().GetTransformMatrix());
-				// draw without binding its material	
-				m.Draw();
-			}
+			// manually set transformation
+			depthShader.SetMat4("model", m.GetTransform().GetTransformMatrix() * model->GetOwner().GetTransform().GetTransformMatrix());
+			// draw without binding its material	
+			m.Draw();
 		}
 	}
 
@@ -205,7 +208,7 @@ void RenderingSystem::Register(Shader *shader)
 	shaders.Add(lastShaderId, shader);
 	lastShaderId++;
 
-	allShaders.Add(shader);
+	allShaders.Push(shader);
 }
 
 void RenderingSystem::Register(Mesh *mesh, const Material &material)
@@ -216,22 +219,22 @@ void RenderingSystem::Register(Mesh *mesh, const Material &material)
 
 void RenderingSystem::Register(CModel * model)
 {
-	allModels.Add(model);
+	allModels.Push(model);
 }
 
 void RenderingSystem::Register(CLight * light)
 {
-	lights.Add(light);
+	lights.Push(light);
 }
 
 void RenderingSystem::Register(CCamera * camera)
 {
-	cameras.Add(camera);
+	cameras.Push(camera);
 }
 
 void RenderingSystem::Register(CParticleSystem * ps)
 {
-	particleSystems.Add(ps);
+	particleSystems.Push(ps);
 }
 
 Mesh *RenderingSystem::GetMesh(MeshID id) const

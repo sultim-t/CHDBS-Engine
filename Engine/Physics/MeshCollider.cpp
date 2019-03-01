@@ -1,6 +1,7 @@
 #include "MeshCollider.h"
 #include "AABBCollider.h"
 #include "SphereCollider.h"
+#include <Engine/Components/CMesh.h>
 
 bool MeshCollider::Intersect(const ICollider & col) const
 {
@@ -9,13 +10,13 @@ bool MeshCollider::Intersect(const ICollider & col) const
 	case ColliderType::AABB:
 	{
 		AABB &other = ((AABBCollider&)col).GetAABB();
-		return Intersection::MeshAABB(*mesh, other);
+		return Intersection::MeshAABB(mesh->GetTriangles(), other);
 	}
 	case ColliderType::Sphere:
 	{
 		Vector3 point;
 		Sphere &other = ((SphereCollider&)col).GetSphere();
-		return Intersection::MeshSphere(*mesh, other, point);
+		return Intersection::MeshSphere(mesh->GetTriangles(), other, point);
 	}
 	default:
 		// other intersections are not implemeted

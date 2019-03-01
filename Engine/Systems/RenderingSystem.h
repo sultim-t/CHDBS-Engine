@@ -2,6 +2,7 @@
 #include "ISystem.h"
 
 #include <Engine/DataStructures/StaticArray.h>
+#include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/DataStructures/LinkedList.h>
 #include <Engine/DataStructures/HashTable.h>
 
@@ -29,11 +30,11 @@ private:
 
 	// Sorted camera list
 	// First element is first to render
-	LinkedList<CCamera*>			cameras;
-	LinkedList<CLight*>				lights;
-	LinkedList<Shader*>				allShaders;
-	LinkedList<CModel*>				allModels;
-	LinkedList<CParticleSystem*>	particleSystems;
+	DynamicArray<CCamera*>			cameras;
+	DynamicArray<CLight*>			lights;
+	DynamicArray<Shader*>			allShaders;
+	DynamicArray<CModel*>			allModels;
+	DynamicArray<CParticleSystem*>	particleSystems;
 
 	UINT lastMeshId;
 	UINT lastMaterialId;

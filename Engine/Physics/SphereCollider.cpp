@@ -1,6 +1,7 @@
 #include "SphereCollider.h"
 #include "MeshCollider.h"
 #include "AABBCollider.h"
+#include <Engine/Components/CMesh.h>
 
 bool SphereCollider::Intersect(const ICollider &col) const
 {
@@ -19,8 +20,7 @@ bool SphereCollider::Intersect(const ICollider &col) const
 	case ColliderType::Mesh:
 	{
 		Vector3 point;
-		const MeshResource &other = ((MeshCollider&)col).GetMesh();
-		return Intersection::MeshSphere(other, sphere, point);
+		return Intersection::MeshSphere(((MeshCollider&)col).GetMesh().GetTriangles(), sphere, point);
 	}
 	default:
 		ASSERT(0);
