@@ -6,9 +6,9 @@
 class MeshResource
 {
 private:
-	StaticArray<Vertex5> vertices;
-	StaticArray<UINT> indices;
-	StaticArray<Triangle> triangles;
+	StaticArray<Vertex5>	vertices;
+	StaticArray<UINT>		indices;
+	StaticArray<Triangle>	triangles;
 
 	String path;
 	
@@ -16,10 +16,13 @@ public:
 	// Assign 
 	inline MeshResource(const char *path, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles);
 
-	inline const StaticArray<Vertex5> &GetVertices() const;
-	inline const StaticArray<UINT> &GetIndices() const;
-	inline const StaticArray<Triangle> &GetTriangles() const;
-	inline const String &GetPath() const;
+	inline const StaticArray<Vertex5>	&GetVertices() const;
+	inline const StaticArray<UINT>		&GetIndices() const;
+	inline const StaticArray<Triangle>	&GetTriangles() const;
+	inline const String					&GetPath() const;
+
+	// Clear all data
+	inline void Delete();
 };
 
 inline MeshResource::MeshResource(const char * path, const StaticArray<Vertex5>& vertices, const StaticArray<UINT>& indices, const StaticArray<Triangle>& triangles)
@@ -48,4 +51,11 @@ inline const StaticArray<Triangle>& MeshResource::GetTriangles() const
 inline const String & MeshResource::GetPath() const
 {
 	return path;
+}
+
+inline void MeshResource::Delete()
+{
+	vertices.Delete();
+	indices.Delete();
+	triangles.Delete();
 }

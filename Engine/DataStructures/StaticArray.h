@@ -30,8 +30,16 @@ public:
 
 	// Frees allocated memory
 	inline void Delete();
+
+	// Copy all elements to this array from "source"
+	// Note: memory is not allocated, use Init()
+	inline void CopyFrom(const StaticArray<T> &source);
 	// Copy "n" elements to this array from "source"
+	// Note: memory is not allocated, use Init()
 	inline void CopyFrom(const StaticArray<T> &source, UINT n);
+
+	// Allocates memory for copy, and returns it
+	inline StaticArray<T> GetCopy() const;
 };
 
 
@@ -108,13 +116,30 @@ inline void StaticArray<T>::Delete()
 }
 
 template<class T>
+inline void StaticArray<T>::CopyFrom(const StaticArray<T>& source)
+{
+	CopyFrom(source, source.GetSize());
+}
+
+template<class T>
 inline void StaticArray<T>::CopyFrom(const StaticArray<T>& source, UINT n)
 {
+	ASSERT(source.arr != this->arr);
 	ASSERT(source.GetSize() <= n && source.arr != nullptr);
 	ASSERT(this->GetSize() >= n && this->arr != nullptr);
 
-	for (UINT i = 0; i < n; i++)
-	{
-		arr[i] = source.arr[i];
-	}
+	int bytesToCopy = n * sizeof(T);
+
+	memcpy_s(this->arr, bytesToCopy, source.arr, bytesToCopy);
+}
+
+template<class T>
+inline StaticArray<T> StaticArray<T>::GetCopy() const
+{
+	StaticArray<T> copy = StaticArray<T>();
+	copy.Init(this->amount);
+
+	copy.CopyFrom(*this);
+
+	return copy;
 }

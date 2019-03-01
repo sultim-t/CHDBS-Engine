@@ -18,6 +18,9 @@ public:
 	inline Vector(const Type x, const Type y, const Type z);
 	// Init first 4 dimensions
 	inline Vector(const Type x, const Type y, const Type z, const Type w);
+	// Init from another vector
+	template <int ADim>
+	inline Vector(const Vector<Type, ADim> &vec);
 
 	inline Type &operator[](int index);
 	inline const Type operator[](int index) const;
@@ -113,33 +116,47 @@ inline Vector<Type, Dim>::Vector(const Type x)
 template<class Type, int Dim>
 inline Vector<Type, Dim>::Vector(const Type x, const Type y)
 {
-	if (Dim >= 2)
-	{
-		vector[0] = x;
-		vector[1] = y;
-	}
+	ASSERT(Dim >= 2);
+
+	vector[0] = x;
+	vector[1] = y;
 }
 
 template<class Type, int Dim>
 inline Vector<Type, Dim>::Vector(const Type x, const Type y, const Type z)
 {
-	if (Dim >= 3)
-	{
-		vector[0] = x;
-		vector[1] = y;
-		vector[2] = z;
-	}
+	ASSERT(Dim >= 3);
+
+	vector[0] = x;
+	vector[1] = y;
+	vector[2] = z;
 }
 
 template<class Type, int Dim>
 inline Vector<Type, Dim>::Vector(const Type x, const Type y, const Type z, const Type w)
 {
-	if (Dim >= 4)
+	ASSERT(Dim >= 4);
+
+	vector[0] = x;
+	vector[1] = y;
+	vector[2] = z;
+	vector[3] = w;
+}
+
+template<class Type, int Dim>
+template<int ADim>
+inline Vector<Type, Dim>::Vector(const Vector<Type, ADim> &vec)
+{
+	int a = Dim <= ADim ? Dim : ADim;
+	int b = a == Dim ? ADim : Dim;
+
+	for (int i = 0; i < a; i++)
 	{
-		vector[0] = x;
-		vector[1] = y;
-		vector[2] = z;
-		vector[3] = w;
+		vector[i] = vec[i];
+	}
+	for (int i = a; i < b; i++)
+	{
+		vector[i] = (Type)0;
 	}
 }
 

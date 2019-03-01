@@ -25,6 +25,10 @@ private:
 			this->Value = value;
 		}
 
+		// Empty destructor
+		HTElement()
+		{ }
+
 		void operator=(HTElement &elem)
 		{
 			this->Key = elem.Key;
@@ -58,6 +62,9 @@ public:
 
 	void DeclareHashFunction(HashFunction hashFunc);
 
+	T operator[](UINT index);
+	const T operator[](UINT index) const;
+
 	// Calculates key's hash and adds to table
 	void Add(const K &key, const T &value);
 	// Calculates key's hash and removes from table
@@ -71,6 +78,9 @@ public:
 	// Slow if "maxChainSize" is big
 	bool Find(const K &key, T &outValue) const;
 
+	// Count all elements in hash table
+	UINT GetSize() const;
+
 	// Clears hash table
 	// Note: doesn't frees memory
 	// Note: doesn't destroy objects in hash table
@@ -78,6 +88,9 @@ public:
 	// Frees memory for hash table
 	// Note: doesn't destroy objects in hash table
 	void Delete();
+	//// Destroys all objects in hash table
+	//// Note: doesn't frees memory
+	//void DestroyObjects();
 };
 
 template<class K, class T>
@@ -117,6 +130,28 @@ template<class K, class T>
 inline void HashTable<K, T>::DeclareHashFunction(HashFunction hashFunc)
 {
 	this->hashFunc = hashFunc;
+}
+
+template<class K, class T>
+inline T HashTable<K, T>::operator[](UINT index)
+{
+	ASSERT(index < GetSize());
+
+	UINT chainIndex = 0;
+
+	while (index >= chainSizes[chainIndex])
+	{
+		index -= chainSizes[chainIndex];
+		chainIndex++;
+	}
+
+	return ((HTElement<K, T>)chains[chainIndex][index]).Value;
+}
+
+template<class K, class T>
+inline const T HashTable<K, T>::operator[](UINT index) const
+{
+	return operator[](index);
 }
 
 template<class K, class T>
@@ -195,6 +230,19 @@ inline bool HashTable<K, T>::Find(const K &key, T &outValue) const
 }
 
 template<class K, class T>
+inline UINT HashTable<K, T>::GetSize() const
+{
+	UINT result = 0;
+
+	for (UINT i = 0; i < chainCount; i++)
+	{
+		result += chainSizes[i];
+	}
+
+	return result;
+}
+
+template<class K, class T>
 inline void HashTable<K, T>::Resize()
 {
 	UINT prevCount = chainCount;
@@ -260,3 +308,19 @@ inline void HashTable<K, T>::Delete()
 	SYSALLOCATOR.Free(chains);
 	SYSALLOCATOR.Free(chainSizes);
 }
+
+//template<class K, class T>
+//inline void HashTable<K, T>::DestroyObjects()
+//{
+//	for (UINT i = 0; i < chainCount; i++)
+//	{
+//		UINT chainSize = chainSizes[i];
+//
+//		for (UINT j = 0; j < chainSize; j++)
+//		{
+//			// call destructors foreach element in hashtable
+//			((HTElement<K, T>)chains[i][j]).Key.~K();
+//			((HTElement<K, T>)chains[i][j]).Value.~T();
+//		}
+//	}
+//}

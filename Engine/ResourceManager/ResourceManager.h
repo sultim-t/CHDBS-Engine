@@ -3,6 +3,7 @@
 #include "MeshResource.h"
 #include "TextureResource.h"
 #include "ModelResource.h"
+#include "MeshColliderResource.h"
 
 #include <Engine/Rendering/Texture.h>
 #include <Engine/DataStructures/HashTable.h>
@@ -12,9 +13,9 @@ class ResourceManager
 {
 private:	
 	// Stores all loaded meshes
-	DynamicArray<MeshResource*> meshResources;
-
-	HashTable<String, ModelResource*> modelResources;
+	DynamicArray<MeshResource*>			meshResources;
+	DynamicArray<MeshColliderResource*> meshColliderResources;
+	HashTable<String, ModelResource*>	modelResources;
 
 private:
 	void ProcessModelNode(void *n, const void *s, ModelResource *outModel);
@@ -26,7 +27,7 @@ public:
 	
 	void Init();
 
-	UBYTE *LoadTexture(char const *filename, int *width, int *height, int *comp, int req_comp);
+	UBYTE *LoadTexture(char const *path, int *width, int *height, int *comp, int req_comp);
 	void DeleteTexture(void *address);
 
 	const ModelResource *LoadModel(const char *path);

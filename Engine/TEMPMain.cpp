@@ -26,6 +26,7 @@
 #include <Engine/Math/Intersection.h>
 #include <Engine/Math/Ray.h>
 #include <Engine/Math/AABB.h>
+#include <Engine/Physics/MeshCollider.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
@@ -126,24 +127,28 @@ int main()
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
 
-		AABB aabb = AABB(Vector3(-10000, -10, -10000), Vector3(10000, -4,10000));
-
 		s += Time::GetDeltaTime();
 		if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)
 		{
 			for (int i = 0; i < 7; i++)
 			{
-				Vector3 point;
-				float temp;
+				Vector3 point, normal;
 
 				Vector3 dir = Quaternion(Euler(0, (i - 3) * 6.0f, (i % 2) * 3.0f)) * cameraEntity->GetTransform().GetForward();
 				Ray ray = Ray(cameraEntity->GetTransform().GetPosition(), dir);
 
-				if (Intersection::RayAABB(ray, aabb, point, temp))
+				auto &meshes = terrainEntity->GetComponent<CModel>()->GetMeshes();
+				for (UINT j = 0; j < meshes.size(); j++)
 				{
-					particles->GetTransform().SetPosition(point);
+					const MeshResource &r = meshes[j].GetMeshResource();
 
-					particles->GetComponent<CParticleSystem>()->Emit(15);
+					if (Intersection::MeshRay(r, ray, point, normal))
+					{
+						particles->GetTransform().SetPosition(point);
+						particles->GetTransform().SetRotation(Quaternion::FromDirection(normal));
+
+						particles->GetComponent<CParticleSystem>()->Emit(15);
+					}
 				}
 			}
 

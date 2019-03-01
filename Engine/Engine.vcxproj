@@ -278,6 +278,7 @@
     <ClInclude Include="Rendering\Texture.h" />
     <ClInclude Include="Rendering\TextureColorFormat.h" />
     <ClInclude Include="Rendering\Vertex.h" />
+    <ClInclude Include="ResourceManager\MeshColliderResource.h" />
     <ClInclude Include="ResourceManager\MeshResource.h" />
     <ClInclude Include="ResourceManager\ModelResource.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />

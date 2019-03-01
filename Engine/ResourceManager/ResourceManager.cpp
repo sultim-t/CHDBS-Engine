@@ -36,6 +36,17 @@ ResourceManager::~ResourceManager()
 	{
 		delete meshResources[i];
 	}
+
+	for (int i = 0; i < meshColliderResources.GetSize(); i++)
+	{
+		delete meshColliderResources[i];
+	}
+
+	UINT size = modelResources.GetSize();
+	for (UINT i = 0; i < size; i++)
+	{
+		delete modelResources[i];
+	}
 }
 
 UBYTE * ResourceManager::LoadTexture(char const * filename, int * width, int * height, int * comp, int req_comp)
@@ -74,6 +85,8 @@ const ModelResource *ResourceManager::LoadModel(const char *path)
 
 	// process ASSIMP's root node recursively
 	ProcessModelNode(scene->mRootNode, scene, outModel);
+
+	modelResources.Add(path, outModel);
 
 	return outModel;
 }
