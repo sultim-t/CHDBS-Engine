@@ -5,20 +5,21 @@
 
   <CParticleSystem
     maxCount="500" 
-    lifetime="1"
-    lifetimeRand="0.1"
+    lifetime="2"
+    lifetimeRand="0.3"
     
-    size="0.1"
+    size="0.14"
     sizeRand="0.04"
-    colr="255"
-    colg="245"
-    colb="79"
-    cola="230"
     
-    vel="0 0 5"
-    velRand="1 1 1"
+    colr="235"
+    colg="235"
+    colb="235"
+    cola="220"
     
-    gravMult="1.5"
+    vel="0 0 7"
+    velRand="1.5 1.5 2"
+    
+    gravMult="1"
     gravMultRand="0.2"
 
     vertPath="TEMP/particle.vs"

@@ -155,7 +155,7 @@ void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferText
 	{
 		CModel *model = allModels[m];
 
-		if (model->IsCastingShadows)
+		if (!model->IsCastingShadows)
 		{
 			continue;
 		}

@@ -49,12 +49,13 @@ int main()
 	InputSystem::Instance().Init();
 
 	Array<const char*, 6> skyNames;
-	skyNames[0] = "TEMP/DoubleBarrel/Skybox/right.jpg";
-	skyNames[1] = "TEMP/DoubleBarrel/Skybox/left.jpg";
-	skyNames[2] = "TEMP/DoubleBarrel/Skybox/top.jpg";
-	skyNames[3] = "TEMP/DoubleBarrel/Skybox/bottom.jpg";
-	skyNames[4] = "TEMP/DoubleBarrel/Skybox/front.jpg";
-	skyNames[5] = "TEMP/DoubleBarrel/Skybox/back.jpg";
+	skyNames[4] = "TEMP/DoubleBarrel/Skybox/desertsky_rt.tga";
+	skyNames[5] = "TEMP/DoubleBarrel/Skybox/desertsky_lf.tga";
+	skyNames[2] = "TEMP/DoubleBarrel/Skybox/desertsky_up.tga";
+	skyNames[3] = "TEMP/DoubleBarrel/Skybox/desertsky_dn.tga";
+	skyNames[0] = "TEMP/DoubleBarrel/Skybox/desertsky_ft.tga";
+	skyNames[1] = "TEMP/DoubleBarrel/Skybox/desertsky_bk.tga";
+
 
 	Array<const char*, 6> reflName;
 	reflName[0] = "TEMP/DoubleBarrel/chrome.jpg";
@@ -145,6 +146,22 @@ int main()
 		InputSystem::Instance().Update();
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
+
+		for (UINT j = 0; j < meshes.size(); j++)
+		{
+			Vector3 point, normal;
+			Ray ray(cameraEntity->GetTransform().GetPosition(), Vector3(0,-1,0));
+
+			if (Intersection::MeshRay(*meshtr[j], ray, point, normal))
+			{
+				Vector3 p = cameraEntity->GetTransform().GetPosition();
+				p[1] = point[1] + 2.0f;
+
+				cameraEntity->GetTransform().SetPosition(p);
+
+				break;
+			}
+		}
 
 		s += Time::GetDeltaTime();
 		if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)
