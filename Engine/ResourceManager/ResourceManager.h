@@ -5,7 +5,6 @@
 #include "ModelResource.h"
 #include "MeshColliderResource.h"
 
-#include <Engine/Rendering/Texture.h>
 #include <Engine/DataStructures/HashTable.h>
 #include <Engine/DataStructures/DynamicArray.h>
 
@@ -16,6 +15,7 @@ private:
 	DynamicArray<MeshResource*>			meshResources;
 	DynamicArray<MeshColliderResource*> meshColliderResources;
 	HashTable<String, ModelResource*>	modelResources;
+	HashTable<String, TextureResource*> textureResources;
 
 private:
 	void ProcessModelNode(void *n, const void *s, ModelResource *outModel);
