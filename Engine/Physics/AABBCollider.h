@@ -18,7 +18,7 @@ public:
 	inline const AABB &GetAABB() const;
 
 	inline ColliderType GetColliderType() const override;
-	bool Intersect(const ICollider & col) const override;
+	bool Intersect(const ICollider & col, CollisionInfo &info) const override;
 };
 
 inline AABBCollider::AABBCollider()

@@ -8,6 +8,8 @@
 class Entity
 {
 	friend class EntityFactory;
+	//temp
+	friend class Rigidbody;
 
 private:
 	EntityID entityId;

@@ -13,6 +13,11 @@ void Rigidbody::Init()
 	allForces.Init(8);
 	allImpulses.Init(8);
 
+	if (collider->GetColliderType() == ColliderType::Sphere)
+	{
+		((SphereCollider*)collider)->SetTransform(transform);
+	}
+
 	PhysicsSystem::Instance().Register(this);
 }
 
@@ -62,23 +67,13 @@ void Rigidbody::FixedUpdate()
 	Vector3 acceleration = force / mass + PhysicsSystem::Gravity;
 	velocity += acceleration * Time::GetFixedDeltaTime();
 	Vector3 pos = transform->GetPosition() + velocity * Time::GetFixedDeltaTime();
-	
-	AABBCollider col = AABBCollider(AABB(Vector3(-10000, -10, -10000), Vector3(10000, -4, 10000)));
-
-	AABBCollider c1 = AABBCollider(*((AABBCollider*)collider));
-	c1.GetAABB().Move(pos);
-
-	if (c1.Intersect(col))
-	{
-		pos[1] = -4.0f;
-		velocity = 0;
-	}
 
 	transform->GetPosition() = pos;
 }
 
-void Rigidbody::SolveCollisions(const ICollider * col)
+void Rigidbody::SolveCollisions(const CollisionInfo &info)
 {
+	velocity += info.Normal.GetNormalized();
 }
 
 const ICollider & Rigidbody::GetCollider() const
@@ -122,7 +117,7 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 			// allocate memory
 			collider = new AABBCollider();
 		}
-		else if (value == PROPERTY_VAL_COL_AABB)
+		else if (value == PROPERTY_VAL_COL_SPHERE)
 		{
 			// allocate memory
 			collider = new SphereCollider();
@@ -144,7 +139,7 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 		else if (collider->GetColliderType() == ColliderType::Sphere)
 		{
 			Vector3 center = value.ToVector3();
-			((SphereCollider*)collider)->GetSphere().SetCenter(center);
+			((SphereCollider*)collider)->GetSphereRef().SetCenter(center);
 		}
 		else
 		{
@@ -156,7 +151,7 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 		ASSERT(collider != nullptr);
 		ASSERT(collider->GetColliderType() == ColliderType::Sphere);
 
-		((SphereCollider*)collider)->GetSphere().SetRadius(value.ToFloat());
+		((SphereCollider*)collider)->GetSphereRef().SetRadius(value.ToFloat());
 	}
 	else if (key == PROPERTY_KEY_COLMAX)
 	{

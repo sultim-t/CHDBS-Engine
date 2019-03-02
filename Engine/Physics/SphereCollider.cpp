@@ -3,24 +3,49 @@
 #include "AABBCollider.h"
 #include <Engine/Components/CMesh.h>
 
-bool SphereCollider::Intersect(const ICollider &col) const
+bool SphereCollider::Intersect(const ICollider &col, CollisionInfo &info) const
 {
 	switch (col.GetColliderType())
 	{
 	case ColliderType::AABB:
 	{
 		AABB &other = ((AABBCollider&)col).GetAABB();
-		return Intersection::AABBSphere(other, sphere);
+
+		if (!Intersection::AABBSphere(other, GetSphere(), info.Point, info.Normal))
+		{
+			return false;
+		}
+
+		info.CollThis = this;
+		info.CollOther = &col;
+
+		return true;
 	}
 	case ColliderType::Sphere:
 	{
 		Sphere &other = ((SphereCollider&)col).GetSphere();
-		return Intersection::SphereSphere(sphere, other);
+
+		if (!Intersection::SphereSphere(GetSphere(), other, info.Point, info.Normal))
+		{
+			return false;
+		}
+
+		info.CollThis = this;
+		info.CollOther = &col;
+
+		return true;
 	}
 	case ColliderType::Mesh:
 	{
-		Vector3 point;
-		return Intersection::MeshSphere(((MeshCollider&)col).GetMesh().GetTriangles(), sphere, point);
+		if (!Intersection::MeshSphere(((MeshCollider&)col).GetTriangles(), GetSphere(), info.Point, info.Normal))
+		{
+			return false;
+		}
+
+		info.CollThis = this;
+		info.CollOther = &col;
+
+		return true;
 	}
 	default:
 		ASSERT(0);

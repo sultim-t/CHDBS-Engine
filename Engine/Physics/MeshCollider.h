@@ -1,35 +1,44 @@
 #pragma once
 #include "ICollider.h"
+#include <Engine/ResourceManager/MeshColliderResource.h>
+#include <Engine/DataStructures/StaticArray.h>
 
 class MeshCollider : public ICollider
 {
 private:
-	const MeshResource *mesh;
+	const StaticArray<Triangle> *triangles;
 
 public:
 	// Empty constructor
 	inline MeshCollider();
-	inline MeshCollider(const MeshResource *mesh);
+	inline MeshCollider(const MeshColliderResource *mesh);
+	inline MeshCollider(const StaticArray<Triangle> *tr);
 
-	inline const MeshResource &GetMesh() const;
+	inline const MeshColliderResource &GetMesh() const;
+	inline const StaticArray<Triangle> &GetTriangles() const;
 
 	inline ColliderType GetColliderType() const override;
-	bool Intersect(const ICollider & col) const override;
+	bool Intersect(const ICollider &col, CollisionInfo &info) const override;
 };
 
 inline MeshCollider::MeshCollider()
 {
-	this->mesh = nullptr;
+	this->triangles = nullptr;
 }
 
-inline MeshCollider::MeshCollider(const MeshResource * mesh)
+inline MeshCollider::MeshCollider(const MeshColliderResource *mesh)
 {
-	this->mesh = mesh;
+	this->triangles = &mesh->GetTriangles();
 }
 
-inline const MeshResource & MeshCollider::GetMesh() const
+inline MeshCollider::MeshCollider(const StaticArray<Triangle>* tr)
 {
-	return *mesh;
+	triangles = tr;
+}
+
+inline const StaticArray<Triangle>& MeshCollider::GetTriangles() const
+{
+	return *triangles;
 }
 
 inline ColliderType MeshCollider::GetColliderType() const

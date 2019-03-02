@@ -129,6 +129,9 @@ int main()
 		res.TransformCollider(terrainEntity->GetTransform(), *tr);
 
 		meshtr[j] = tr;
+
+		MeshCollider *col = new MeshCollider(meshtr[j]);
+		PhysicsSystem::Instance().Register(col);
 	}
 
 
@@ -147,22 +150,6 @@ int main()
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
 
-		for (UINT j = 0; j < meshes.size(); j++)
-		{
-			Vector3 point, normal;
-			Ray ray(cameraEntity->GetTransform().GetPosition(), Vector3(0,-1,0));
-
-			if (Intersection::MeshRay(*meshtr[j], ray, point, normal))
-			{
-				Vector3 p = cameraEntity->GetTransform().GetPosition();
-				p[1] = point[1] + 2.0f;
-
-				cameraEntity->GetTransform().SetPosition(p);
-
-				break;
-			}
-		}
-
 		s += Time::GetDeltaTime();
 		if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)
 		{
@@ -170,7 +157,7 @@ int main()
 			{
 				Vector3 point, normal;
 
-				Vector3 dir = Quaternion(Euler(0, (i - 3) * 6.0f, (i % 2) * 3.0f)) * cameraEntity->GetTransform().GetForward();
+				Vector3 dir = Quaternion(Euler(0, (i - 3) * 6.0f, (i % 2) * 6.0f)) * cameraEntity->GetTransform().GetForward();
 				Ray ray = Ray(cameraEntity->GetTransform().GetPosition(), dir);
 
 				for (UINT j = 0; j < meshes.size(); j++)

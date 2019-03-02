@@ -223,7 +223,6 @@
     <ClInclude Include="Components\CMesh.h" />
     <ClInclude Include="Components\CParticleSystem.h" />
     <ClInclude Include="DataStructures\StaticStack.h" />
-    <ClInclude Include="Math\Polygon.h" />
     <ClInclude Include="Math\Triangle.h" />
     <ClInclude Include="Physics\ICollider.h" />
     <ClInclude Include="Components\CLight.h" />

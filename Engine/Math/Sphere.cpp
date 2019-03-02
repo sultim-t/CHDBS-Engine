@@ -9,7 +9,7 @@ Sphere::Sphere(const float radius) : Sphere::Sphere((0.0f, 0.0f, 0.0f), radius)
 
 Sphere::Sphere(const Vector3 &center, const float radius)
 {
-	ASSERT(radius <= 0);
+	ASSERT(radius > 0);
 
 	this->center = center;
 	this->radius = radius;

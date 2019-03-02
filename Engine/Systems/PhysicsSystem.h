@@ -7,11 +7,11 @@ class PhysicsSystem : public ISystem
 {
 private:
 	// Stores all rigidbodies with colliders
-	DynamicArray<Rigidbody*> rigidbodies;
+	DynamicArray<Rigidbody*>	rigidbodies;
 	// Stores all colliders without rigidbodies
-	DynamicArray<Rigidbody*> colliders;
+	DynamicArray<ICollider*>	colliders;
 	// Stores all collisions, changed after each update
-	DynamicArray<CollisionInfo> collisions;
+	// DynamicArray<CollisionInfo> collisions;
 
 public:
 	// Global gravity
@@ -30,5 +30,5 @@ public:
 	// Register dynamic physics object
 	void Register(Rigidbody *rb);
 	// Register static physics object
-	void Register(const ICollider *col);
+	void Register(ICollider *col);
 };

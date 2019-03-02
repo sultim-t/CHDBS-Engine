@@ -1,4 +1,5 @@
 #pragma once
+#include "CollisionInfo.h"
 
 enum class ColliderType
 {
@@ -10,6 +11,6 @@ enum class ColliderType
 class ICollider
 {
 public:
-	virtual bool Intersect(const ICollider &col) const = 0;
+	virtual bool Intersect(const ICollider &col, CollisionInfo &info) const = 0;
 	virtual ColliderType GetColliderType() const = 0;
 };

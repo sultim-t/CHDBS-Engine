@@ -1,9 +1,10 @@
 #pragma once
+#include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/Components/IComponent.h>
 #include <Engine/Math/Vector.h>
 #include <Engine/Math/Transform.h>
-#include <Engine/DataStructures/DynamicArray.h>
 #include "ICollider.h"
+#include "CollisionInfo.h"
 
 class Rigidbody : public IComponent
 {
@@ -31,7 +32,7 @@ public:
 	void AddImpulse(const Vector3 &impulse);
 
 	void FixedUpdate();
-	void SolveCollisions(const ICollider *col);
+	void SolveCollisions(const CollisionInfo &info);
 
 	const ICollider &GetCollider() const;
 

@@ -74,7 +74,19 @@ bool Intersection::SphereSphere(const Sphere & s1, const Sphere & s2)
 	float d = Vector3::DistanceSqr(s1.GetCenter(), s2.GetCenter());
 	float radiusSum = s1.GetRadius() + s2.GetRadius();
 	
-	return d <= radiusSum *radiusSum;
+	return d <= radiusSum * radiusSum;
+}
+
+bool Intersection::SphereSphere(const Sphere & s1, const Sphere & s2, Vector3 & point, Vector3 & normal)
+{
+	Vector3 delta = s2.GetCenter() - s1.GetCenter();
+
+	float d = delta.Length();
+
+	normal = delta / d;
+	point = s1.GetCenter() + normal * s1.GetRadius();
+
+	return d <= s1.GetRadius() + s2.GetRadius();
 }
 
 bool Intersection::SpherePlane(const Sphere & s, const Plane & p)
@@ -164,6 +176,14 @@ bool Intersection::TriangleAABB(const Triangle & t, const AABB & aabb)
 	return true;
 }
 
+bool Intersection::TriangleAABB(const Triangle & t, const AABB & aabb, Vector3 & point, Vector3 & normal)
+{
+	normal = t.GetNormal();
+	point = t.GetClosestPoint(aabb.GetCenter());
+
+	return TriangleAABB(t, aabb);
+}
+
 bool Intersection::TrianglePlane(const Triangle & t, const Plane & plane, Vector3 &p0, Vector3 &p1)
 {
 	// debug all references/pointers
@@ -199,7 +219,7 @@ bool Intersection::TrianglePlane(const Triangle & t, const Plane & plane, Vector
 	return false;
 }
 
-bool Intersection::MeshSphere(const StaticArray<Triangle> &triangles, const Sphere & s, Vector3 & point)
+bool Intersection::MeshSphere(const StaticArray<Triangle> &triangles, const Sphere & s, Vector3 & point, Vector3 &normal)
 {
 	UINT size = triangles.GetSize();
 
@@ -207,6 +227,7 @@ bool Intersection::MeshSphere(const StaticArray<Triangle> &triangles, const Sphe
 	{
 		if (TriangleSphere(triangles[i], s, point))
 		{
+			normal = triangles[i].GetNormal();
 			return true;
 		}
 	}
@@ -221,6 +242,21 @@ bool Intersection::MeshAABB(const StaticArray<Triangle> &triangles, const AABB &
 	for (UINT i = 0; i < size; i++)
 	{
 		if (TriangleAABB(triangles[i], aabb))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool Intersection::MeshAABB(const StaticArray<Triangle>& triangles, const AABB & aabb, Vector3 & point, Vector3 & normal)
+{
+	UINT size = triangles.GetSize();
+
+	for (UINT i = 0; i < size; i++)
+	{
+		if (TriangleAABB(triangles[i], aabb, point, normal))
 		{
 			return true;
 		}
@@ -319,21 +355,26 @@ bool Intersection::AABBSphere(const AABB & aabb, const Sphere & s)
 	return sqDist <= s.GetRadius() * s.GetRadius();
 }
 
-bool Intersection::AABBSphere(const AABB & aabb, const Sphere & s, Vector3 & point)
+bool Intersection::AABBSphere(const AABB & aabb, const Sphere & s, Vector3 & point, Vector3 & normal)
 {
 	// closest point on aabb to sphere's center
 	point = aabb.GetClosestPoint(s.GetCenter());
 
 	// distance from closest point on aabb to center
-	Vector3 v = point - s.GetCenter();
-	return v.LengthSqr() <= s.GetRadius() * s.GetRadius();
+	Vector3 v = s.GetCenter() - point;
+	float length = v.Length();
+
+	// normalize
+	normal = v / length;
+
+	return length <= s.GetRadius();
 }
 
 bool Intersection::AABBAABB(const AABB & aabb1, const AABB & aabb2)
 {
 	const Vector3 &mina = aabb1.GetMin();
-	const Vector3 &minb = aabb2.GetMin();
 	const Vector3 &maxa = aabb1.GetMax();
+	const Vector3 &minb = aabb2.GetMin();
 	const Vector3 &maxb = aabb2.GetMax();
 
 	for (int i = 0; i < 3; i++)
@@ -343,6 +384,28 @@ bool Intersection::AABBAABB(const AABB & aabb1, const AABB & aabb2)
 			return false;
 		}
 	}
+
+	return true;
+}
+
+bool Intersection::AABBAABB(const AABB & aabb1, const AABB & aabb2, Vector3 & point, Vector3 & normal)
+{
+	const Vector3 &mina = aabb1.GetMin();
+	const Vector3 &maxa = aabb1.GetMax();
+	const Vector3 &minb = aabb2.GetMin();
+	const Vector3 &maxb = aabb2.GetMax();
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (maxa[i] < minb[i] || mina[i] > maxb[i])
+		{
+			return false;
+		}
+	}
+
+	Vector3 e = aabb2.GetCenter() - aabb1.GetCenter();
+	normal = e.GetNormalized();
+	point = aabb1.GetCenter() + e * 0.5f;
 
 	return true;
 }

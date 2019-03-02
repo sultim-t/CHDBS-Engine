@@ -4,13 +4,15 @@ class Intersection
 {
 public:
 	static bool SphereSphere(const Sphere &s1, const Sphere &s2);
+	static bool SphereSphere(const Sphere &s1, const Sphere &s2, Vector3 &point, Vector3 &normal);
 	// Does sphere intersects with negative halfspace of plane?
 	// Note: consider that negative halfspace is solid
 	static bool SpherePlane(const Sphere &s, const Plane &p);
 
 	static bool AABBSphere(const AABB &aabb, const Sphere &s);
-	static bool AABBSphere(const AABB &aabb, const Sphere &s, Vector3 &point);
+	static bool AABBSphere(const AABB &aabb, const Sphere &s, Vector3 &point, Vector3 &normal);
 	static bool AABBAABB(const AABB &aabb1, const AABB &aabb2);
+	static bool AABBAABB(const AABB &aabb1, const AABB &aabb2, Vector3 &point, Vector3 &normal);
 	// Does AABB intersects with negative halfspace of plane?
 	// Note: consider that negative halfspace is solid
 	static bool AABBPlane(const AABB &aabb, const Plane &p);
@@ -38,12 +40,14 @@ public:
 	//   "point" is a closest point on triangle from sphere center
 	static bool TriangleSphere(const Triangle &t, const Sphere &s, Vector3 &point);
 	static bool TriangleAABB(const Triangle &t, const AABB &aabb);
+	static bool TriangleAABB(const Triangle &t, const AABB &aabb, Vector3 &point, Vector3 &normal);
 	// Test triangle and plane intersection
 	// If intersect then result is a segment (p0, p1)
 	static bool TrianglePlane(const Triangle &t, const Plane &plane, Vector3 &start, Vector3 &end);
 
-	static bool MeshSphere(const StaticArray<Triangle> &triangles, const Sphere &s, Vector3 &point);
+	static bool MeshSphere(const StaticArray<Triangle> &triangles, const Sphere &s, Vector3 &point, Vector3 &normal);
 	static bool MeshAABB(const StaticArray<Triangle> &triangles, const AABB &aabb);
+	static bool MeshAABB(const StaticArray<Triangle> &triangles, const AABB &aabb, Vector3 &point, Vector3 &normal);
 	static bool MeshPlane(const StaticArray<Triangle> &triangles, const Plane &p, Vector3 &start, Vector3 &end);
 	// Test mesh and ray.
 	//   "worldPoint" is a intersection point in world space
