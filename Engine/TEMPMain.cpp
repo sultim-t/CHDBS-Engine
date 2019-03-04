@@ -165,9 +165,7 @@ int main()
 					if (Intersection::MeshRay(*meshtr[j], ray, point, normal))
 					{
 						particles->GetTransform().SetPosition(point);
-						particles->GetTransform().SetRotation(Quaternion::FromDirection(normal));
-
-						particles->GetComponent<CParticleSystem>()->Emit(15);
+						particles->GetComponent<CParticleSystem>()->Emit(15, normal * 7.0f);
 					}
 				}
 			}

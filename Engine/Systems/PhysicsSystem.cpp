@@ -65,3 +65,13 @@ void PhysicsSystem::Register(ICollider * col)
 {
 	colliders.Push(col);
 }
+
+bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, const float distance, RaycastInfo & info)
+{
+	return false;
+}
+
+bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, RaycastInfo & info)
+{
+	return false;
+}

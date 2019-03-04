@@ -31,4 +31,11 @@ public:
 	void Register(Rigidbody *rb);
 	// Register static physics object
 	void Register(ICollider *col);
+
+	// Check segment from pos to pos+dir*distance
+	// If returns true, result of cast will be in info
+	bool Raycast(const Vector3 &pos, const Vector3 &dir, const float distance, RaycastInfo &info);
+	// Check ray from pos with direction dir
+	// If returns true, result of cast will be in info
+	bool Raycast(const Vector3 &pos, const Vector3 &dir, RaycastInfo &info);
 };

@@ -5,14 +5,24 @@
 class Triangle
 {
 public:
-	Vector3 A, B, C;
-
+	union
+	{
+		Vector3 ABC[3];
+		struct
+		{
+			Vector3 A, B, C;
+		};
+	};
+	
 private:
 	Triangle(const Triangle&) = delete;
 	//void operator=(const Triangle&) = delete;
 
 public:
 	Triangle(const Vector3 & a, const Vector3 & b, const Vector3 & c);
+
+	inline Vector3 &operator[](int index);
+	inline const Vector3 &operator[](int index) const;
 
 	// Get closest point on triangle abc
 	static Vector3 GetClosestPoint(const Vector3 &p, const Vector3 &a, const Vector3 &b, const Vector3 &c);
@@ -40,4 +50,16 @@ inline Vector3 Triangle::GetNormal() const
 	Vector3 ac = C - A;
 
 	return Vector3::Cross(ab, ac);
+}
+
+inline Vector3 &Triangle::operator[](int index)
+{
+	ASSERT(index >= 0 && index <= 2);
+	return ABC[index];
+}
+
+inline const Vector3 & Triangle::operator[](int index) const
+{
+	ASSERT(index >= 0 && index <= 2);
+	return ABC[index];
 }

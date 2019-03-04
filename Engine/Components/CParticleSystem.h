@@ -79,6 +79,8 @@ public:
 	void Start();
 	// Emit particles
 	void Emit(UINT count);
+	// Emit particles with specified velocity
+	void Emit(UINT count, const Vector3 &velocity);
 
 	// Bind camera to render
 	void BindCamera(const CCamera *cam);

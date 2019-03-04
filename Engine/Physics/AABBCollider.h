@@ -8,17 +8,25 @@ class AABBCollider : public ICollider
 {
 private:
 	AABB aabb;
+	const Transform *t;
 
 public:
 	// Empty constructor
 	inline AABBCollider();
 	inline AABBCollider(const AABB &aabb);
 	
-	inline AABB &GetAABB();
-	inline const AABB &GetAABB() const;
+	inline void SetTransform(const Transform *t);
+
+	// Get AABB with current transformations
+	inline AABB GetAABB();
+	// Get AABB with current transformations
+	inline const AABB GetAABB() const;
+	// Get current AABB
+	inline AABB &GetAABBRef();
 
 	inline ColliderType GetColliderType() const override;
 	bool Intersect(const ICollider & col, CollisionInfo &info) const override;
+	Sphere GetBoundingSphere() const override;
 };
 
 inline AABBCollider::AABBCollider()
@@ -29,12 +37,25 @@ inline AABBCollider::AABBCollider(const AABB &aabb)
 	this->aabb = aabb;
 }
 
-inline AABB &AABBCollider::GetAABB()
+inline void AABBCollider::SetTransform(const Transform *t)
 {
-	return aabb;
+	this->t = t;
 }
 
-inline const AABB &AABBCollider::GetAABB() const
+inline AABB AABBCollider::GetAABB()
+{
+	AABB result = AABB(aabb);
+	result.Move(t->GetPosition());
+	
+	return result;
+}
+
+inline const AABB AABBCollider::GetAABB() const
+{
+	return GetAABB();
+}
+
+inline AABB &AABBCollider::GetAABBRef()
 {
 	return aabb;
 }
@@ -42,4 +63,15 @@ inline const AABB &AABBCollider::GetAABB() const
 inline ColliderType AABBCollider::GetColliderType() const
 {
 	return ColliderType::AABB;
+}
+
+inline Sphere AABBCollider::GetBoundingSphere() const
+{
+	Vector3 center;
+	float radius;
+
+	center = aabb.GetCenter() + t->GetPosition();
+	radius = aabb.GetSize().Length() * 0.5f;
+
+	return Sphere(center, radius);
 }

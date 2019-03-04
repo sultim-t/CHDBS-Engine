@@ -78,6 +78,18 @@ void CParticleSystem::Emit(UINT count)
 	}
 }
 
+void CParticleSystem::Emit(UINT count, const Vector3 & velocity)
+{
+	for (UINT i = 0; i < count; i++)
+	{
+		float life = startLifetime + Random::GetFloat(-lifetimeRandomness, lifetimeRandomness);
+		float rot = startRotation + Random::GetFloat(-rotationRandomness, rotationRandomness);
+		float size = startSize + Random::GetFloat(-sizeRandomness, sizeRandomness);
+
+		GenerateParticle(transform->GetPosition(), velocity, startColor, life, rot, size);
+	}
+}
+
 void CParticleSystem::BindCamera(const CCamera * cam)
 {
 	this->cam = cam;

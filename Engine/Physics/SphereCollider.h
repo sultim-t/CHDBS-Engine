@@ -16,12 +16,16 @@ public:
 
 	inline void SetTransform(const Transform *t);
 
+	// Get sphere with current transformations
 	inline Sphere GetSphere();
+	// Get sphere with current transformations
 	inline const Sphere GetSphere() const;
+	// Get current sphere
 	inline Sphere &GetSphereRef();
 
 	inline ColliderType GetColliderType() const override;
 	bool Intersect(const ICollider &col, CollisionInfo &info) const override;
+	inline Sphere GetBoundingSphere() const override;
 };
 
 inline SphereCollider::SphereCollider()
@@ -55,4 +59,9 @@ inline Sphere & SphereCollider::GetSphereRef()
 inline ColliderType SphereCollider::GetColliderType() const
 {
 	return ColliderType::Sphere;
+}
+
+inline Sphere SphereCollider::GetBoundingSphere() const
+{
+	return Sphere(sphere.GetCenter() + t->GetPosition(), sphere.GetRadius());
 }

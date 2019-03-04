@@ -76,7 +76,6 @@ struct Vertex5;
 
 // Shapes
 enum class ShapeType;
-class IShape;
 class AABB;
 class Sphere;
 class Frustum;
@@ -132,6 +131,7 @@ class ICollider;
 	class SphereCollider;
 	// class CapsuleCollider;
 	class MeshCollider;
+	struct RaycastInfo;
 
 
 
