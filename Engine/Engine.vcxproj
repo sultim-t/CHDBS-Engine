@@ -286,6 +286,7 @@
     <ClInclude Include="ResourceManager\ModelResource.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="ResourceManager\TextureResource.h" />
+    <ClInclude Include="SceneManager\Scene.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />
     <ClInclude Include="Systems\InputSystem.h" />
     <ClInclude Include="Systems\PhysicsSystem.h" />

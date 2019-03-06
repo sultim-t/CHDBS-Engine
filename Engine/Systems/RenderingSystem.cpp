@@ -77,18 +77,7 @@ void RenderingSystem::Update()
 
 			if (light->IsCastingShadows())
 			{
-				if (light->GetLightType() == LightType::Directional)
-				{
-					Matrix4 dirLiightSpace = light->GetLightSpace();
-					dirLiightSpace.SetRow(0, Vector4(cam->GetPosition(), 1.0f));
-					
-					CreateShadowMap(dirLiightSpace, shadowMap);
-				}
-				else
-				{
-					CreateShadowMap(light->GetLightSpace(), shadowMap);
-				}
-
+				CreateShadowMap(light->GetLightSpace(), shadowMap);
 				shadowMap.Activate((int)TextureType::Shadowmap);
 			}
 
@@ -152,7 +141,6 @@ void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferText
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	depthShader.Use();
-	depthShader.SetMat4("lightSpaceMatrix", lightSpace);
 	
 	// draw each model
 	for (int m = 0; m < allModels.GetSize(); m++)
@@ -164,11 +152,14 @@ void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferText
 			continue;
 		}
 
+		Matrix4 modelWorldSpace = model->GetOwner().GetTransform().GetTransformMatrix() * lightSpace;
+
 		for (const Mesh &m : model->GetMeshes())
 		{
 			// manually set transformation
-			depthShader.SetMat4("model", m.GetTransform().GetTransformMatrix() * model->GetOwner().GetTransform().GetTransformMatrix());
-			// draw without binding its material	
+			depthShader.SetMat4("MVP", m.GetTransform().GetTransformMatrix() * modelWorldSpace);
+			
+			// draw without binding its material
 			m.Draw();
 		}
 	}

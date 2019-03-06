@@ -81,6 +81,10 @@ public:
 	// Multiply by vector component-wise
 	inline Vector<Type, Dim> Scale(const Vector<Type, Dim> &vec) const;
 
+	// Reflect vector along normal
+	// Note: normal can be unnormalized
+	static Vector<Type, Dim> Reflect(const Vector<Type, Dim> &vec, const Vector<Type, Dim> &normal);
+
 	static Vector<Type, Dim> Lerp(const Vector<Type, Dim> &start, const Vector<Type, Dim> &end, const float t);
 
 	static Vector<float, 3>Cross(const Vector<Type, Dim> &in1, const  Vector<Type, Dim> &in2);
@@ -532,6 +536,13 @@ template<class Type, int Dim>
 inline Vector<Type, Dim> Vector<Type, Dim>::Scale(const Vector<Type, Dim>& vec) const
 {
 	*this = Scale(*this, vec);
+}
+
+template<class Type, int Dim>
+inline Vector<Type, Dim> Vector<Type, Dim>::Reflect(const Vector<Type, Dim>& vec, const Vector<Type, Dim>& normal)
+{
+	ASSERT(normal.LengthSqr() != 0.0f);
+	return vec - normal * 2 * Dot(vec, normal) / normal.LengthSqr();
 }
 
 template<class Type, int Dim>

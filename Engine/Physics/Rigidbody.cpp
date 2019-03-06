@@ -73,7 +73,7 @@ void Rigidbody::FixedUpdate()
 
 void Rigidbody::SolveCollisions(const CollisionInfo &info)
 {
-	velocity += info.Normal.GetNormalized();
+	velocity = Vector3::Reflect(velocity, info.Normal);
 }
 
 const ICollider & Rigidbody::GetCollider() const

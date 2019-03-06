@@ -198,16 +198,7 @@ Entity * EntityFactory::PCreateEntity(const Entity *source)
 	// foreach component in source
 	for (int i = 0; i < components.GetSize(); i++)
 	{
-		IComponent *comp = CreateComponent(nullptr);
-
-		comp->isActive = components[i]->isActive;
-
-		// link
-		entity->AddComponent(comp);
-		comp->SetOwner(entity);
-
-		// everything is set up
-		comp->Init();
+		ASSERT(0);
 	}
 
 	// finally, store entity

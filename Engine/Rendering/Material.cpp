@@ -27,7 +27,7 @@ void Material::Activate() const
 		const ITexture &t = textures[i];
 
 		// bind to correct texture unit
-		const char *tname;
+		const char *tname = nullptr;
 		TextureType ttype = t.GetType();
 		int type = (int)ttype;
 		int count = textureCounts[type];

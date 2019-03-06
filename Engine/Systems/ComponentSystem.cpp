@@ -12,7 +12,6 @@ void ComponentSystem::Init()
 
 void ComponentSystem::Update()
 {
-
 	for (int i = 0; i < entities->GetSize(); i++)
 	{
 		Entity *entity = entities->operator[](i);
