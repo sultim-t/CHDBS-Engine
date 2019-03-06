@@ -68,7 +68,7 @@ void Skybox::Init()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-	shader.Load("Systems/Skybox.vs", "Systems/Skybox.fs");
+	shader.Load("Shaders/Skybox.vs", "Shaders/Skybox.fs");
 	shader.Use();
 	shader.SetInt("skybox", 0);
 	shader.Stop();

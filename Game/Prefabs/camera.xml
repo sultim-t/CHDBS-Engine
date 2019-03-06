@@ -4,10 +4,15 @@
 
   <CCamera
     znear="0.1"
-    zfar="3000"
+    zfar="1500"
     proj="persp"
     fov="100" />
 
   <CFreeMovement 
-    speed="7.5" />
+    speed="10" />
+
+  <CModel
+    path="Models/obj.obj"
+    castShadows="0"/>
+
 </Entity>

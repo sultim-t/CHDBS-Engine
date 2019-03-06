@@ -49,7 +49,8 @@ void RenderingSystem::Init()
 	shadowMap.Create(1024, 1024);
 	shadowMap.SetType(TextureType::Shadowmap);
 
-	depthShader.Load("Systems/ShadowMapping.vs", "Systems/ShadowMapping.fs");
+	depthShader.Load("Shaders/ShadowMapping.vs", "Shaders/ShadowMapping.fs");
+
 	Skybox::Instance().Init();
 }
 
@@ -78,7 +79,10 @@ void RenderingSystem::Update()
 			{
 				if (light->GetLightType() == LightType::Directional)
 				{
-					CreateShadowMap(light->GetLightSpace(), shadowMap);
+					Matrix4 dirLiightSpace = light->GetLightSpace();
+					dirLiightSpace.SetRow(0, Vector4(cam->GetPosition(), 1.0f));
+					
+					CreateShadowMap(dirLiightSpace, shadowMap);
 				}
 				else
 				{

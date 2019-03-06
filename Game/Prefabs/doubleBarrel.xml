@@ -4,13 +4,14 @@
   euler="90 0 0">
   
   <CModel
-    path="TEMP/DoubleBarrel/DoubleBarrel.obj"/>
+    path="Models/DoubleBarrel.obj"
+    castShadows="1"/>
   
   <Rigidbody
     mass="20"
     velocity="0 10 0"
-    colType="aabb"
-    colMin="-0.6 -0.2 -0.1"
-    colMax="0.6 0.2 0.1"
+    colType="sphere"
+    offset="0 0 0"
+    colRadius="2"
     />
 </Entity>

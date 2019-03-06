@@ -4,4 +4,5 @@
 void Logger::Print(const char * message)
 {
 	printf(message);
+	printf("\n");
 }

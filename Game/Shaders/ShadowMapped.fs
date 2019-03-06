@@ -12,7 +12,7 @@ uniform sampler2D t_diff0;
 uniform sampler2D t_shdw0;
 uniform samplerCube t_cube0;
 
-uniform vec3 lightPos;
+uniform vec3 lightDir;
 uniform vec3 viewPos;
 
 float ShadowCalculation(vec4 fragPosLightSpace)
@@ -27,7 +27,6 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float currentDepth = projCoords.z;
     // calculate bias (based on depth map resolution and slope)
     vec3 normal = normalize(fs_in.Normal);
-    vec3 lightDir = normalize(lightPos - fs_in.FragPos);
     float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.005);
    
     // check whether current frag pos is in shadow
@@ -35,15 +34,15 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     // PCF
     float shadow = 0.0;
     vec2 texelSize = 1.0 / textureSize(t_shdw0, 0);
-    for(int x = -2; x <= 2; ++x)
+    for(int x = -4; x <= 4; ++x)
     {
-        for(int y = -2; y <= 2; ++y)
+        for(int y = -4; y <= 4; ++y)
         {
             float pcfDepth = texture(t_shdw0, projCoords.xy + vec2(x, y) * texelSize).r; 
             shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;        
         }    
     }
-    shadow /= 25.0;
+    shadow /= 81.0;
     
     // keep the shadow at 0.0 when outside the far_plane region of the light's frustum.
     if(projCoords.z > 1.0)
@@ -60,7 +59,6 @@ void main()
     // ambient
     vec3 ambient = vec3(0.5);
     // diffuse
-    vec3 lightDir = normalize(lightPos); // - fs_in.FragPos);  // for point
     float diff = max(dot(lightDir, normal), 0.0);
     vec3 diffuse = diff * lightColor;
     // calculate shadow

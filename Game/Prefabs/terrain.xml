@@ -1,8 +1,8 @@
 <Entity
   name="Terrain"
   position="-20 26 20"
-  euler="0 180 90">
+  euler="-90 0 0">
 
   <CModel
-    path="TEMP/DoubleBarrel/beacj.fbx"/>
+    path="Models/Beach.fbx"/>
 </Entity>

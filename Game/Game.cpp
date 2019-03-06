@@ -49,21 +49,21 @@ int main()
 	InputSystem::Instance().Init();
 
 	Array<const char*, 6> skyNames;
-	skyNames[4] = "TEMP/DoubleBarrel/Skybox/desertsky_rt.tga";
-	skyNames[5] = "TEMP/DoubleBarrel/Skybox/desertsky_lf.tga";
-	skyNames[2] = "TEMP/DoubleBarrel/Skybox/desertsky_up.tga";
-	skyNames[3] = "TEMP/DoubleBarrel/Skybox/desertsky_dn.tga";
-	skyNames[0] = "TEMP/DoubleBarrel/Skybox/desertsky_ft.tga";
-	skyNames[1] = "TEMP/DoubleBarrel/Skybox/desertsky_bk.tga";
+	skyNames[4] = "Textures/Skybox/desertsky_rt.tga";
+	skyNames[5] = "Textures/Skybox/desertsky_lf.tga";
+	skyNames[2] = "Textures/Skybox/desertsky_up.tga";
+	skyNames[3] = "Textures/Skybox/desertsky_dn.tga";
+	skyNames[0] = "Textures/Skybox/desertsky_ft.tga";
+	skyNames[1] = "Textures/Skybox/desertsky_bk.tga";
 
 
 	Array<const char*, 6> reflName;
-	reflName[0] = "TEMP/DoubleBarrel/chrome.jpg";
-	reflName[1] = "TEMP/DoubleBarrel/chrome.jpg";
-	reflName[2] = "TEMP/DoubleBarrel/chrome.jpg";
-	reflName[3] = "TEMP/DoubleBarrel/chrome.jpg";
-	reflName[4] = "TEMP/DoubleBarrel/chrome.jpg";
-	reflName[5] = "TEMP/DoubleBarrel/chrome.jpg";
+	reflName[0] = "Textures/chrome.jpg";
+	reflName[1] = "Textures/chrome.jpg";
+	reflName[2] = "Textures/chrome.jpg";
+	reflName[3] = "Textures/chrome.jpg";
+	reflName[4] = "Textures/chrome.jpg";
+	reflName[5] = "Textures/chrome.jpg";
 
 	Cubemap sky = Cubemap();
 	sky.LoadCubemap(skyNames);
@@ -72,22 +72,21 @@ int main()
 	Cubemap reflection = Cubemap();
 	reflection.LoadCubemap(reflName);
 
+	// From XML
+	Entity *cameraEntity =	EntityFactory::CreateEntity("Prefabs/camera.xml");
+	Entity *lightEntity =	EntityFactory::CreateEntity("Prefabs/light.xml");
+	Entity *terrainEntity = EntityFactory::CreateEntity("Prefabs/terrain.xml");
+	Entity *dbEntity =		EntityFactory::CreateEntity("Prefabs/doubleBarrel.xml");
+	Entity *particles =		EntityFactory::CreateEntity("Prefabs/particleSystem.xml");
+
 	Shader shader = Shader();
 	shader.Init();
-	shader.Load("TEMP/3.1.3.shadow_mapping.vs.txt", "TEMP/3.1.3.shadow_mapping.fs.txt");
-
-	// From XML
-	Entity *cameraEntity = EntityFactory::CreateEntity("entityTest.xml");
-	Entity *lightEntity = EntityFactory::CreateEntity("light.xml");
-	Entity *terrainEntity = EntityFactory::CreateEntity("terrain.xml");
-	Entity *dbEntity = EntityFactory::CreateEntity("doubleBarrel.xml");
-	Entity *particles = EntityFactory::CreateEntity("particleSystem.xml");
-
+	shader.Load("Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
 
 	Texture textureDB = Texture();
-	textureDB.Load("TEMP/DoubleBarrel/WeaponsPalette.png");
+	textureDB.Load("Textures/WeaponsPalette.png");
 	Texture textureTR = Texture();
-	textureTR.Load("TEMP/DoubleBarrel/Materials/Textures/TerrainPalette.png");
+	textureTR.Load("Textures/TerrainPalette.png");
 
 	Material mat = Material({ textureDB, reflection });
 	mat.BindShader(shader);
@@ -156,8 +155,9 @@ int main()
 			for (int i = 0; i < 7; i++)
 			{
 				Vector3 point, normal;
-
-				Vector3 dir = Quaternion(Euler(0, (i - 3) * 6.0f, (i % 2) * 6.0f)) * cameraEntity->GetTransform().GetForward();
+				
+				Vector3 localDir = Vector3( (i-3) / 3.0f * 0.2f, (i % 2 - 0.5f) * 0.1f, 1);
+				Vector3 dir = cameraEntity->GetTransform().DirectionFromLocal(localDir);
 				Ray ray = Ray(cameraEntity->GetTransform().GetPosition(), dir);
 
 				for (UINT j = 0; j < meshes.size(); j++)

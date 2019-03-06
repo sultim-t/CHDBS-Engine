@@ -9,32 +9,6 @@
 #include <sstream>
 #include <iostream>
 
-#pragma region default shader strings
-const char* vertexDefaultShader =
-"#version 330 core\n"
-"layout (location = 0) in vec3 position;\n"
-"layout (location = 1) in vec2 inTexCoord;\n"
-"out vec2 texCoord;"
-"uniform mat4 model;\n"
-"uniform mat4 view;\n"
-"uniform mat4 projection;\n"
-"void main()\n"
-"{\n"
-"	gl_Position = projection * view * model * vec4(position, 1.0f);\n"
-"	texCoord = vec2(inTexCoord.x, 1.0 - inTexCoord.y);\n"
-"}\0";
-
-const char* fragmentDefaultShader =
-"#version 330 core\n"
-"out vec4 fragColor;\n"
-"in vec2 texCoord;\n"
-"uniform sampler2D mainTexture;;\n"
-"void main()\n"
-"{\n"
-"	fragColor = texture(mainTexture, texCoord);\n"
-"}\n\0";
-#pragma endregion
-
 Shader::Shader()
 { }
 
@@ -97,12 +71,13 @@ void Shader::Load(const char * vertexPath, const char * fragmentPath, const char
 	}
 	catch (std::ifstream::failure e)
 	{
-		printf("SHADERS: Can't read shader code\n");
+		Logger::Print("Shaders::Can't read shader code");
 	}
 
 	const char* vertexShader = vertexCode.c_str();
 	const char* fragmentShader = fragmentCode.c_str();
 
+	char log[256];
 	int success;
 
 	// vertex shader
@@ -115,7 +90,10 @@ void Shader::Load(const char * vertexPath, const char * fragmentPath, const char
 	glGetShaderiv(vertId, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		printf("Vertex shader compilation error!\n");
+		Logger::Print("Shaders::Vertex shader compilation error");
+		
+		glGetShaderInfoLog(vertId, 256, NULL, log);
+		Logger::Print(log);
 	}
 
 	// fragment shader
@@ -127,7 +105,10 @@ void Shader::Load(const char * vertexPath, const char * fragmentPath, const char
 	glGetShaderiv(fragId, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		printf("Vertex fragment compilation error!\n");
+		Logger::Print("Shaders::Fragment shader compilation error");
+	
+		glGetShaderInfoLog(fragId, 256, NULL, log);
+		Logger::Print(log);
 	}
 
 	unsigned int geometry;

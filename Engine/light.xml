@@ -1,9 +1,0 @@
-<Entity
-  name="Sun"
-  euler="50 -30 0">
-
-  <CLight
-    type="dir"
-    static="1"
-    shadows="1"/>
-</Entity>
