@@ -211,6 +211,7 @@
     <ClCompile Include="Rendering\Texture.cpp" />
     <ClCompile Include="ResourceManager\ModelResource.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />
+    <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Systems\ComponentSystem.cpp" />
     <ClCompile Include="Systems\InputSystem.cpp" />
     <ClCompile Include="Systems\PhysicsSystem.cpp" />
@@ -287,6 +288,8 @@
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="ResourceManager\TextureResource.h" />
     <ClInclude Include="SceneManager\Scene.h" />
+    <ClInclude Include="SceneManager\SceneInfo.h" />
+    <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />
     <ClInclude Include="Systems\InputSystem.h" />
     <ClInclude Include="Systems\PhysicsSystem.h" />
