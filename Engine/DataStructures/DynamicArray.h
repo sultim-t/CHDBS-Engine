@@ -43,8 +43,12 @@ public:
 template<class T>
 inline void DynamicArray<T>::Expand()
 {
+	int oldSize = sizeof(T) * allocated;
+
 	allocated *= DYNARRAY_INCMULT;
-	buffer = (T*)realloc(buffer, sizeof(T) * allocated);
+	int newSize = sizeof(T) * allocated;
+
+	buffer = (T*)SYSALLOCATOR.Reallocate(buffer, oldSize, newSize);
 }
 
 template<class T>
