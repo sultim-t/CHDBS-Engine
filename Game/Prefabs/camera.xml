@@ -12,7 +12,7 @@
     speed="10" />
 
   <CModel
-    path="Models/obj.obj"
+    path="Models/shot.obj"
     castShadows="0"/>
 
 </Entity>
