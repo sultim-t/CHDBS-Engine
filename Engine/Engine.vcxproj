@@ -135,12 +135,13 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <CompileAs>CompileAsCpp</CompileAs>
       <ForcedIncludeFiles>$(SolutionDir)Engine\Base\Typedef.h;$(SolutionDir)Engine\Base\Assert.h;$(SolutionDir)Engine\Base\Time.h;$(SolutionDir)Engine\Base\String.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -156,12 +157,13 @@
       <WarningLevel>Level3</WarningLevel>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <CompileAs>CompileAsCpp</CompileAs>
       <ForcedIncludeFiles>$(SolutionDir)Engine\Base\Typedef.h;$(SolutionDir)Engine\Base\Assert.h;$(SolutionDir)Engine\Base\Time.h;$(SolutionDir)Engine\Base\String.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -180,6 +182,7 @@
     <ClCompile Include="Components\CFreeMovement.cpp" />
     <ClCompile Include="Components\CMesh.cpp" />
     <ClCompile Include="Components\CParticleSystem.cpp" />
+    <ClCompile Include="Components\CSkinnedModel.cpp" />
     <ClCompile Include="Components\IComponent.cpp" />
     <ClCompile Include="Components\CModel.cpp" />
     <ClCompile Include="Entities\EntityFactory.cpp" />
@@ -226,6 +229,7 @@
     <ClInclude Include="Base\String.h" />
     <ClInclude Include="Components\CMesh.h" />
     <ClInclude Include="Components\CParticleSystem.h" />
+    <ClInclude Include="Components\CSkinnedModel.h" />
     <ClInclude Include="DataStructures\StaticStack.h" />
     <ClInclude Include="Math\Triangle.h" />
     <ClInclude Include="Physics\ICollider.h" />

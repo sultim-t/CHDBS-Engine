@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Base/Assert.h"
 #include "Vector.h"
 
 // square matrix
