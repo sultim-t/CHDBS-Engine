@@ -56,7 +56,7 @@ public:
 class Texture : public ITexture
 {
 private:
-	TextureResource *textureResource;
+	const TextureResource *textureResource;
 
 public:
 	Texture();
@@ -64,5 +64,5 @@ public:
 
 	const TextureResource &GetTextureResource() const;
 
-	void Load(const char* path);
+	void Init(const char* path);
 };

@@ -180,7 +180,7 @@
     <ClCompile Include="Base\String.cpp" />
     <ClCompile Include="Components\CCamera.cpp" />
     <ClCompile Include="Components\CFreeMovement.cpp" />
-    <ClCompile Include="Components\CMesh.cpp" />
+    <ClCompile Include="Components\Mesh.cpp" />
     <ClCompile Include="Components\CParticleSystem.cpp" />
     <ClCompile Include="Components\CSkinnedModel.cpp" />
     <ClCompile Include="Components\IComponent.cpp" />
@@ -227,7 +227,7 @@
     <ClInclude Include="Base\Hash.h" />
     <ClInclude Include="Base\Random.h" />
     <ClInclude Include="Base\String.h" />
-    <ClInclude Include="Components\CMesh.h" />
+    <ClInclude Include="Components\Mesh.h" />
     <ClInclude Include="Components\CParticleSystem.h" />
     <ClInclude Include="Components\CSkinnedModel.h" />
     <ClInclude Include="DataStructures\StaticStack.h" />

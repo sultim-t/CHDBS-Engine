@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Engine/Memory/Memory.h>
+#include <string> // for memcpy_s
 
 // An array with dynamic allocation
 template<class T>

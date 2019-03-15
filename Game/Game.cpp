@@ -84,9 +84,9 @@ int main()
 	shader.Load("Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
 
 	Texture textureDB = Texture();
-	textureDB.Load("Textures/WeaponsPalette.png");
+	textureDB.Init("Textures/WeaponsPalette.png");
 	Texture textureTR = Texture();
-	textureTR.Load("Textures/TerrainPalette.png");
+	textureTR.Init("Textures/TerrainPalette.png");
 
 	Material mat = Material({ textureDB, reflection });
 	mat.BindShader(shader);

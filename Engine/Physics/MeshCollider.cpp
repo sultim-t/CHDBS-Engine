@@ -1,7 +1,6 @@
 #include "MeshCollider.h"
 #include "AABBCollider.h"
 #include "SphereCollider.h"
-#include <Engine/Components/CMesh.h>
 
 bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IComponent.h"
-#include <Engine/Components/CMesh.h>
+#include <Engine/Components/Mesh.h>
 #include <Engine/ResourceManager/ModelResource.h>
 
 class CModel : public IComponent
@@ -13,9 +13,8 @@ class CModel : public IComponent
 public:
 	UINT modelId;
 
-	std::vector<Mesh> meshes;
-	std::vector<ITexture> loadedTextures;
-	const ModelResource *modelResource;
+	std::vector<Mesh>		meshes;
+	const ModelResource		*modelResource;
 
 	String path;
 

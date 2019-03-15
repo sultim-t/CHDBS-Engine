@@ -6,7 +6,7 @@ class Cubemap : public ITexture
 public:
 	Cubemap();
 
-	// Load cubemap from 6 files.
+	// Init cubemap from 6 files.
 	// Order: right, left, top, bottom, front, back
 	void LoadCubemap(const Array<const char*, 6> &paths);
 	void ActivateCubemap(int index) const;

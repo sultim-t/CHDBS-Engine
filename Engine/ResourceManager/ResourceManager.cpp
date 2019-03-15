@@ -58,7 +58,7 @@ ResourceManager::~ResourceManager()
 	Unload();
 }
 
-TextureResource *ResourceManager::LoadTexture(char const *path)
+const TextureResource *ResourceManager::LoadTexture(char const *path)
 {
 	TextureResource *outTexture;
 
@@ -113,7 +113,7 @@ const ModelResource *ResourceManager::LoadModel(const char *path)
 	return outModel;
 }
 
-ResourceManager & ResourceManager::Instance()
+ResourceManager &ResourceManager::Instance()
 {
 	static ResourceManager instance;
 	return instance;
@@ -123,47 +123,43 @@ void ResourceManager::ProcessModelNode(void *n, const void *s, ModelResource *ou
 {
 	aiNode *node = (aiNode*)n;
 	aiScene *scene = (aiScene*)s;
-	
+
+	// get tranformations for a mesh relative to parent
+	aiVector3D aipos;
+	aiQuaternion aiquat;
+	aiVector3D aiscale;
+	node->mTransformation.Decompose(aiscale, aiquat, aipos);
+
+	// convert
+	Vector3 pos((float)aipos.x, (float)aipos.y, (float)aipos.z);
+	Quaternion quat((float)aiquat.w, (float)aiquat.x, (float)aiquat.y, (float)aiquat.z);
+	Vector3 scale((float)aiscale.x, (float)aiscale.y, (float)aiscale.z);
+
+	// current node tranformations
+	Transform currentTransform = Transform(pos, quat, scale);
+
 	// for each mesh
 	for (unsigned int i = 0; i < node->mNumMeshes; i++)
 	{
+		// mesh to process
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 
-		MeshResource *meshRes = ProcessMesh(mesh, scene);
-		/*Mesh &m = Mesh(meshRes);
+		// process data from mesh
+		MeshResource *meshRes = ProcessMesh(mesh, scene, node->mName.C_Str(), currentTransform);
 
-		if (node->mName.length != 0)
-		{
-			m.SetName(node->mName.C_Str());
-		}
-
-		// get tranformations for a mesh relative to parent
-		// NOTE: parent transformation are not included (temporary)
-		aiVector3D aipos;
-		aiQuaternion aiquat;
-		aiVector3D aiscale;
-		node->mTransformation.Decompose(aiscale, aiquat, aipos);
-
-		// convert
-		Vector3 pos((float)aipos.x, (float)aipos.y, (float)aipos.z);
-		Quaternion quat((float)aiquat.w, (float)aiquat.x, (float)aiquat.y, (float)aiquat.z);
-		Vector3 scale((float)aiscale.x, (float)aiscale.y, (float)aiscale.z);
-
-		// set
-		Transform t = Transform(pos, quat, scale);
-		m.SetTransform(t);*/
-
+		// add mesh to model
 		outModel->AddMesh(meshRes);
 	}
 
 	// for each child node
 	for (unsigned int i = 0; i < node->mNumChildren; i++)
 	{
+		// process nodes recursively
 		ProcessModelNode(node->mChildren[i], scene, outModel);
 	}
 }
 
-MeshResource *ResourceManager::ProcessMesh(void *m, const void *s)
+MeshResource *ResourceManager::ProcessMesh(void *m, const void *s, const char* name, const Transform &transform)
 {
 	using namespace std;
 
@@ -272,7 +268,9 @@ MeshResource *ResourceManager::ProcessMesh(void *m, const void *s)
 	}
 
 	// create resource
-	MeshResource *resource = new MeshResource(mesh->mName.C_Str(), vertices, indices, triangles);
+	MeshResource *resource = new MeshResource(name, transform, vertices, indices, triangles);
+
+	// register pointer for deallocation
 	meshResources.Push(resource);
 
 	return resource;

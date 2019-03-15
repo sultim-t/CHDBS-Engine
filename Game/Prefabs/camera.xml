@@ -12,7 +12,7 @@
     speed="10" />
 
   <CModel
-    path="Models/shot.obj"
+    path="Models/MinigunRig.FBX"
     castShadows="0"/>
 
 </Entity>

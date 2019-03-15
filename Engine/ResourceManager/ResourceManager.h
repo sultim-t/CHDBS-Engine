@@ -18,11 +18,14 @@ private:
 	HashTable<String, TextureResource*> textureResources;
 
 private:
+	// Process node
 	void ProcessModelNode(void *n, const void *s, ModelResource *outModel);
-	MeshResource *ProcessMesh(void *m, const void *s);
+	// Loads data from mesh
+	MeshResource *ProcessMesh(void *m, const void *s, const char *name, const Transform &transform);
 	// std::vector<ITexture> LoadMaterialTextures(void * m, int t, TextureType myType, CModel &outModel);
 	
 public:
+	// Deallocates allocated memory
 	~ResourceManager();
 	
 	// Init data structures
@@ -30,8 +33,8 @@ public:
 	// Delete loaded resources
 	void Unload();
 
-	TextureResource		*LoadTexture(char const *path);
-	const ModelResource *LoadModel(const char *path);
+	const TextureResource	*LoadTexture(char const *path);
+	const ModelResource		*LoadModel(const char *path);
 
 	static ResourceManager &Instance();
 };
