@@ -1,7 +1,9 @@
 Debug/
 Release/
+x86/
 x64/
 .vs/
 *.opendb
 *.suo
-tempresources/
+*.VC.db
+*.VC.VC.opendb
