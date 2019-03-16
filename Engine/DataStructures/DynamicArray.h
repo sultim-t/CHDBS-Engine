@@ -34,7 +34,7 @@ public:
 	// Returns elements count
 	int GetSize() const;
 	// Clear array
-	// Note: doesn't frees memory, doesn't destroy elements
+	// Note: doesn't free memory, doesn't destroy elements
 	void Clear();
 	// Frees allocated memory
 	void Delete();

@@ -7,6 +7,7 @@
 
 #include <Engine/DataStructures/HashTable.h>
 #include <Engine/DataStructures/DynamicArray.h>
+#include <Engine/Rendering/ModelHierarchy.h>
 
 class ResourceManager
 {
@@ -14,8 +15,14 @@ private:
 	// Stores all loaded meshes
 	DynamicArray<MeshResource*>			meshResources;
 	DynamicArray<MeshColliderResource*> meshColliderResources;
-	HashTable<String, ModelResource*>	modelResources;
+
+	// Stores all loaded textures
 	HashTable<String, TextureResource*> textureResources;
+	// Stores all loaded models
+	HashTable<String, ModelHierarchy*>	models;
+
+	// TODO: delete
+	HashTable<String, ModelResource*>	modelResources;
 
 private:
 	// Process node
@@ -34,6 +41,9 @@ public:
 	void Unload();
 
 	const TextureResource	*LoadTexture(char const *path);
+	const ModelHierarchy	*LoadModelF(const char *path);
+
+	// TODO: delete
 	const ModelResource		*LoadModel(const char *path);
 
 	static ResourceManager &Instance();

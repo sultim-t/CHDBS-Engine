@@ -29,6 +29,9 @@ void ResourceManager::Init()
 	modelResources.Init(32, 8);
 	modelResources.DeclareHashFunction(String::StringHash);
 
+	models.Init(32, 8);
+	models.DeclareHashFunction(String::StringHash);
+
 	textureResources.Init(64, 8);
 	textureResources.DeclareHashFunction(String::StringHash);
 }
@@ -79,6 +82,11 @@ const TextureResource *ResourceManager::LoadTexture(char const *path)
 	textureResources.Add(path, outTexture);
 
 	return outTexture;
+}
+
+const ModelHierarchy *ResourceManager::LoadModelF(const char * path)
+{
+	return nullptr;
 }
 
 const ModelResource *ResourceManager::LoadModel(const char *path)

@@ -1,5 +1,6 @@
 #pragma once
 
+// Represens constant size array which is allocated in stack, not in a heap
 template<class T, UINT Size>
 class Array
 {
@@ -7,12 +8,17 @@ private:
 	T arr[Size];
 
 public:
+	// Empty constructor
 	inline Array();
 
+	// Copies elements from "source"
 	inline void operator=(const Array<T, Size> &source);
+	// Get element reference by index
 	inline const T &operator[](UINT index) const;
+	// Get element reference by index
 	inline T &operator[](UINT index);
 
+	// Get size of array
 	inline UINT GetSize() const;
 
 	// Copy elements to this array from "source"

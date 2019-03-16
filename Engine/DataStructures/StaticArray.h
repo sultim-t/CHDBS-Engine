@@ -12,7 +12,7 @@ protected:
 	UINT amount;
 	
 public:
-	// Empty constructor
+	// Default constructor, everything is set to null
 	inline StaticArray();
 
 	// Allocates memory for "amount" elements of type T

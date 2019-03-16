@@ -116,7 +116,19 @@ typedef IComponent *(*IComponentCreator)(void* xmlElem);
 class CCamera;
 class CFreeMovement;
 class CModel;
+	class ModelHierarchy;
 	class Mesh;
+
+	class Bone;
+	struct VertexWeight;
+
+	class Animation;
+	class AnimationNode;
+	template <class T> struct AnimationKey;
+	typedef AnimationKey<Vector3> AKeyPosition;
+	typedef AnimationKey<Vector3> AKeyRotation;
+	typedef AnimationKey<Vector3> AKeyScale;
+
 	class Material;
 	class Shader;
 	class Texture;

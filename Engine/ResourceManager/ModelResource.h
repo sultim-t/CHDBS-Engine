@@ -1,10 +1,14 @@
 #pragma once
+
+#include <Engine/Rendering/ModelHierarchy.h>
 #include <vector>
 
 class ModelResource
 {
 private:
 	typedef std::vector<const MeshResource*> MeshesContainer;
+
+	ModelHierarchy *hierarchy;
 
 	MeshesContainer meshes;
 	String path;
