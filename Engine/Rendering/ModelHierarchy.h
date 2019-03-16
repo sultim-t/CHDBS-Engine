@@ -11,7 +11,7 @@
 // Note: doesn't contain cameras and lights
 class ModelHierarchy
 {
-private:
+public:
 	// Root node of model
 	ModelNode *rootNode;
 
@@ -21,8 +21,28 @@ private:
 	StaticArray<Animation*>		animations;
 
 public:
+	inline ModelHierarchy(
+		ModelNode *rootNode, 
+		const StaticArray<MeshResource*> &meshes,
+		const StaticArray<Animation*> &animations);
+	inline ~ModelHierarchy();
+
 	inline bool IsAnimated() const;
 };
+
+inline ModelHierarchy::ModelHierarchy(ModelNode *rootNode, const StaticArray<MeshResource*>& meshes, const StaticArray<Animation*>& animations)
+{
+	this->rootNode = rootNode;
+	this->meshes = meshes;
+	this->animations = animations;
+}
+
+inline ModelHierarchy::~ModelHierarchy()
+{
+	// delete root node
+	// all children nodes will be deleted in ModelNode class
+	delete rootNode;
+}
 
 inline bool ModelHierarchy::IsAnimated() const
 {

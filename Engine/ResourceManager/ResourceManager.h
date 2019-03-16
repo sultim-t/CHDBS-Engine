@@ -31,6 +31,13 @@ private:
 	MeshResource *ProcessMesh(void *m, const void *s, const char *name, const Transform &transform);
 	// std::vector<ITexture> LoadMaterialTextures(void * m, int t, TextureType myType, CModel &outModel);
 	
+	// Allocates mesh resource and copies data
+	void CopyMesh(void *from, MeshResource *to);
+	// Allocates animation and copies data
+	void CopyAnimation(void *from, void *to);
+	// Allocates model nodes and copies data
+	ModelNode *ProcessModelNodeF(void *n, const void *s, ModelNode *parent);
+
 public:
 	// Deallocates allocated memory
 	~ResourceManager();

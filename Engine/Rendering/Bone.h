@@ -8,26 +8,28 @@ class Bone
 {
 private:
 	// Matrix for tranformation from bone to mesh space
-	Matrix4 boneMesh;
+	Matrix4			boneMesh;
 
 	// How many weights to use
-	int weightCount;
+	int				weightCount;
 	// Array of weights
-	VertexWeight weights[BONE_MAX_WEIGHTS];
+	VertexWeight	weights[BONE_MAX_WEIGHTS];
 
 public:
 	// Constructor
 	inline Bone(int weightCount, const Matrix4 &boneMesh);
 
-	// Setter
+	// Set weight, "index" is index of weight
 	inline void SetWeight(int index, const VertexWeight &weight);
-	// Getter
+
+	// Get weight, "index" is index of weight
 	inline const VertexWeight &GetWeight(int index) const;
+	inline const Matrix4 &GetMatrix() const;
 };
 
 inline Bone::Bone(int weightCount, const Matrix4 &boneMesh)
 {
-	ASSERT(weightCount > 0);
+	ASSERT(weightCount > 0 && weightCount <= BONE_MAX_WEIGHTS);
 
 	this->weightCount = weightCount;
 	this->boneMesh = boneMesh;
@@ -43,4 +45,9 @@ inline const VertexWeight & Bone::GetWeight(int index) const
 {
 	ASSERT(index >= 0 && index < weightCount);
 	return weights[index];
+}
+
+inline const Matrix4 &Bone::GetMatrix() const
+{
+	return boneMesh;
 }

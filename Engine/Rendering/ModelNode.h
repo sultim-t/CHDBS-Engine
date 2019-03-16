@@ -30,18 +30,32 @@ public:
 		const Matrix4 &transformMatrix,
 		const StaticArray<int> &meshes);
 
+	inline ~ModelNode();
+
 	inline const ModelNode			&GetParent() const;
 	inline const Matrix4			&GetTransform() const;
 	inline const StaticArray<int>	&GetMeshes() const;
 	inline const StaticArray<ModelNode*> &GetChildNodes() const;
 };
 
-inline ModelNode::ModelNode(const ModelNode *parent, const StaticArray<ModelNode*> &childNodes, const Matrix4 &transformMatrix, const StaticArray<int> &meshes)
+inline ModelNode::ModelNode(const ModelNode *parent, const StaticArray<ModelNode*> &childNodes, const Matrix4 &transformMatrix, const StaticArray<int> &meshes) :
+	parent(parent),
+	childNodes(childNodes),
+	transformMatrix(transformMatrix),
+	meshes(meshes) { }
+
+inline ModelNode::~ModelNode()
 {
-	this->parent = parent;
-	this->childNodes = childNodes;
-	this->transformMatrix = transformMatrix;
-	this->meshes = meshes;
+	for (UINT i = 0; i < childNodes.GetSize(); i++)
+	{
+		// delete recursively
+		delete childNodes[i];
+	}
+
+	if (parent != nullptr)
+	{
+		delete parent;
+	}
 }
 
 inline const ModelNode &ModelNode::GetParent() const

@@ -17,15 +17,15 @@ private:
 	// Bones for current mesh
 	StaticArray<Bone>		bones;
 
-	// Original transform
+	// Original transform -- TODO: delete
 	Transform transform;
 
-	String path;
+	String path; // -- TODO: delete?
 	
 public:
 	// Assign 
 	inline MeshResource(const char *path, const Transform &transform, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles);
-	inline MeshResource(const char *path, const Transform &transform, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles, const StaticArray<Bone> &bones);
+	inline MeshResource(const char *path, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles, const StaticArray<Bone> &bones);
 
 	inline const StaticArray<Vertex5>	&GetVertices() const;
 	inline const StaticArray<UINT>		&GetIndices() const;
@@ -38,6 +38,7 @@ public:
 	inline void Delete();
 };
 
+// TODO: delete
 inline MeshResource::MeshResource(const char *path, const Transform &transform, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles)
 {
 	this->path = path;
@@ -47,7 +48,7 @@ inline MeshResource::MeshResource(const char *path, const Transform &transform, 
 	this->triangles = triangles;
 }
 
-inline MeshResource::MeshResource(const char *path, const Transform &transform, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles, const StaticArray<Bone> &bones)
+inline MeshResource::MeshResource(const char *path, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles, const StaticArray<Bone> &bones)
 {
 	this->path = path;
 	this->transform = transform;

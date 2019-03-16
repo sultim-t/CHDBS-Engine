@@ -126,7 +126,7 @@ class CModel;
 	class AnimationNode;
 	template <class T> struct AnimationKey;
 	typedef AnimationKey<Vector3> AKeyPosition;
-	typedef AnimationKey<Vector3> AKeyRotation;
+	typedef AnimationKey<Quaternion> AKeyRotation;
 	typedef AnimationKey<Vector3> AKeyScale;
 
 	class Material;
