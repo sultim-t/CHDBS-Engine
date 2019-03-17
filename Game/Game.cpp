@@ -103,9 +103,9 @@ int main()
 	for (UINT i = 0; i < cameraEntity->GetComponent<CModel>()->meshes.size(); i++)
 	{
 		cameraEntity->GetComponent<CModel>()->meshes[i].BindMaterial(mat);
-		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().Translate(Vector3(0, 0, -0.8f));
+		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().Translate(Vector3(0, 0, -0.2f));
 		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetRotation(Vector3(0, -90, -90));
-		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetScale(Vector3(3, 3, 3));
+		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetScale(Vector3(3, -3, 3));
 	}
 
 

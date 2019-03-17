@@ -1,11 +1,11 @@
 #pragma once
-#include "StaticArray.h"
-#include "LinkedList.h"
 
 #include <Engine/Memory/Memory.h>
 
 #define HASH_TABLE_INC_MULT 2
 
+// Represents hash table
+// T should be a primitive type or a pointer
 template <class K, class T>
 class HashTable
 {
@@ -42,14 +42,20 @@ private:
 	};
 
 private:
+	// 2D array
 	HTElement<K, T> **chains;
+	// Hash function to use
 	HashFunction hashFunc;
 
 	UINT chainCount;
 	UINT maxChainSize;
+	// Stores all chain sizes
 	UINT *chainSizes;
 
 private:
+	// Disable assignment
+	inline void operator=(const HashTable<K, T>&) = delete;
+
 	// Very expensive
 	// To avoid use bigger chainCount
 	void Resize();
@@ -94,11 +100,9 @@ public:
 };
 
 template<class K, class T>
-inline HashTable<K, T>::HashTable()
-{ 
-	chains = NULL;
-	chainSizes = NULL;
-}
+inline HashTable<K, T>::HashTable() : 
+	chains(nullptr), chainSizes(nullptr)
+{ }
 
 template<class K, class T>
 inline HashTable<K, T>::~HashTable()
@@ -109,8 +113,8 @@ inline HashTable<K, T>::~HashTable()
 template<class K, class T>
 inline void HashTable<K, T>::Init(UINT chainCount, UINT maxChainSize)
 {
-	ASSERT(chains == NULL);
-	ASSERT(chainSizes == NULL);
+	ASSERT(chains == nullptr);
+	ASSERT(chainSizes == nullptr);
 
 	this->chainCount = chainCount;
 	this->maxChainSize = maxChainSize;

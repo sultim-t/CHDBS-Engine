@@ -1,7 +1,9 @@
 #pragma once
 
+#include <memory>
+
 #define FOREACHLINKEDLIST(baseclass, member, list) \
-for (baseclass *member = list.PointToHead(); member != NULL; member = list.GetNext())
+for (baseclass *member = list.PointToHead(); member != nullptr; member = list.GetNext())
 
 
 template <class T>
@@ -20,46 +22,60 @@ private:
 		}
 	};
 
-	LinkedListNode *head;
+	std::shared_ptr<LinkedListNode> head;
 	LinkedListNode *last;
 	int size;
 
 	// For iterator
 	mutable LinkedListNode *pointer;
 public:
-	LinkedList();
-	~LinkedList();
+	inline LinkedList();
+	inline ~LinkedList();
 
-	T &operator[](unsigned index);
-	const T &operator[](unsigned index) const;
+	// Copies pointers
+	// Note: doesn't copy elements from source
+	inline void operator=(const LinkedList<T> &source);
+	inline T &operator[](unsigned index);
+	inline const T &operator[](unsigned index) const;
 
 	// Allocates memory for node, adds it to list
-	void Add(T data);
-	void Remove(const T &data);
-	bool Find(const T &data);
+	inline void Add(T data);
+	inline void Remove(const T &data);
+	inline bool Find(const T &data);
 
-	int GetSize() const;
-	void Clear();
+	inline int GetSize() const;
+	inline void Delete();
 
 	// Reset iterator
-	T *PointToHead() const;
+	inline T *PointToHead() const;
 	// Iterate over list
-	T *GetNext() const;
-	T *GetHead() const;
-	T *GetTail() const;
+	inline T *GetNext() const;
+	inline T *GetHead() const;
+	inline T *GetTail() const;
 };
 
 template<class T>
-inline LinkedList<T>::LinkedList()
-{
-	head = last = NULL;
-	size = 0;
-}
+inline LinkedList<T>::LinkedList() :
+	last(nullptr),
+	size(0)
+{ }
 
 template<class T>
 inline LinkedList<T>::~LinkedList()
 {
-	Clear();
+	Delete();
+}
+
+template<class T>
+inline void LinkedList<T>::operator=(const LinkedList<T> &source)
+{
+	// copy shared ptr
+	this->head = source.head;
+	
+	// copy other data
+	this->last = source.last;
+	this->pointer = source.pointer;
+	this->size = source.size;
 }
 
 template<class T>
@@ -67,7 +83,7 @@ inline T &LinkedList<T>::operator[](unsigned index)
 {
 	ASSERT(index >= size);
 
-	LinkedListNode *p = head;
+	LinkedListNode *p = head.get();
 	for (unsigned i = 0; i < index; i++)
 	{	
 		p = p->next;
@@ -81,7 +97,7 @@ inline const T &LinkedList<T>::operator[](unsigned index) const
 {
 	ASSERT(index >= size);
 
-	LinkedListNode *p = head;
+	LinkedListNode *p = head.get();
 	for (unsigned i = 0; i < index; i++)
 	{
 		p = p->next;
@@ -102,16 +118,17 @@ inline void LinkedList<T>::Remove(const T &data)
 	if (head->data == data)
 	{
 		LinkedListNode *newHead = head->next;
-		delete head;
 
-		head = newHead;
+		// delete head if possible
+		// and reassign
+		head.reset(newHead);
 
         size--;
         return;
 	}
 
 	// not head
-	LinkedListNode *p = head;
+	LinkedListNode *p = head.get();
 	while (p->next != last)
 	{
 		if (p->next->data == data)
@@ -139,7 +156,7 @@ inline void LinkedList<T>::Remove(const T &data)
 
 		// "p" is previous of "last"
 		last = p;
-		last->next = NULL;
+		last->next = nullptr;
 
 		size--;
 		return;
@@ -149,9 +166,9 @@ inline void LinkedList<T>::Remove(const T &data)
 template<class T>
 inline bool LinkedList<T>::Find(const T &data)
 {
-	LinkedListNode *p = head;
+	LinkedListNode *p = head.get();
 
-	while (p != NULL)
+	while (p != nullptr)
 	{
 		if (p->data == data)
 		{
@@ -167,16 +184,17 @@ inline bool LinkedList<T>::Find(const T &data)
 template<class T>
 inline void LinkedList<T>::Add(T data)
 {
-	LinkedListNode *newNode = new LinkedListNode(data, NULL);
+	LinkedListNode *newNode = new LinkedListNode(data, nullptr);
 
-	if (last != NULL)
+	if (last != nullptr)
 	{
 		last->next = newNode;
 		last = newNode;
 	}
 	else
 	{
-		head = last = newNode;
+		head.reset(newNode);
+		last = newNode;
 	}
 
 	size++;
@@ -189,19 +207,21 @@ inline int LinkedList<T>::GetSize() const
 }
 
 template<class T>
-inline void LinkedList<T>::Clear()
+inline void LinkedList<T>::Delete()
 {
 	// delete all nodes
 	LinkedListNode *p = head;
 
-	while (p != NULL)
+	while (p != nullptr)
 	{
 		LinkedListNode *toRemove = p;
 		p = p->next;
 		delete toRemove;
 	}
 
-	head = last = NULL;
+	// to defaults
+	head.reset();
+	last = nullptr;
 	size = 0;
 }
 
@@ -210,14 +230,14 @@ inline T *LinkedList<T>::GetNext() const
 {
 	LinkedListNode *next = pointer->next;
 
-	if (next != NULL)
+	if (next != nullptr)
 	{
 		pointer = next;
 		return &(next->data);
 	}
 	else
 	{
-		return NULL;
+		return nullptr;
 	}
 }
 
@@ -236,6 +256,6 @@ inline T * LinkedList<T>::GetTail() const
 template<class T>
 inline T * LinkedList<T>::PointToHead() const
 {
-	pointer = head;
+	pointer = head.get();
 	return &(head->data);
 }
