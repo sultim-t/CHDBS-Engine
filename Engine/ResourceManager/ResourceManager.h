@@ -19,24 +19,15 @@ private:
 	// Stores all loaded textures
 	HashTable<String, TextureResource*> textureResources;
 	// Stores all loaded models
-	HashTable<String, ModelHierarchy*>	models;
-
-	// TODO: delete
 	HashTable<String, ModelResource*>	modelResources;
 
-private:
-	// Process node
-	void ProcessModelNode(void *n, const void *s, ModelResource *outModel);
-	// Loads data from mesh
-	MeshResource *ProcessMesh(void *m, const void *s, const char *name, const Transform &transform);
-	// std::vector<ITexture> LoadMaterialTextures(void * m, int t, TextureType myType, CModel &outModel);
-	
+private:	
 	// Allocates mesh resource and copies data
 	void CopyMesh(void *from, MeshResource *to);
 	// Allocates animation and copies data
 	void CopyAnimation(void *from, void *to);
 	// Allocates model nodes and copies data
-	ModelNode *ProcessModelNodeF(void *n, const void *s, ModelNode *parent);
+	ModelNode *ProcessModelNode(void *n, const void *s, ModelNode *parent);
 
 public:
 	// Deallocates allocated memory
@@ -48,9 +39,6 @@ public:
 	void Unload();
 
 	const TextureResource	*LoadTexture(char const *path);
-	const ModelHierarchy	*LoadModelF(const char *path);
-
-	// TODO: delete
 	const ModelResource		*LoadModel(const char *path);
 
 	static ResourceManager &Instance();

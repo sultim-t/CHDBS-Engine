@@ -4,8 +4,8 @@
   euler="90 0 0">
   
   <CModel
-    path="Models/DoubleBarrel.obj"
-    castShadows="1"/>
+    Path="Models/DoubleBarrel.obj"
+    CastShadows="1"/>
   
   <Rigidbody
     mass="20"

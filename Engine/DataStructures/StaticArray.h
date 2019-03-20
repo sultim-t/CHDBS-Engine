@@ -15,6 +15,7 @@ protected:
 public:
 	// Default constructor, everything is set to null
 	inline StaticArray();
+	// If there are no more references, deallocates memory
 	inline ~StaticArray();
 
 	// Allocates memory for "amount" elements of type T

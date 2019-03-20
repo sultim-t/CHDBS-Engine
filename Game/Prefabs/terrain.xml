@@ -4,5 +4,5 @@
   euler="-90 0 0">
 
   <CModel
-    path="Models/Beach.fbx"/>
+    Path="Models/Beach.fbx"/>
 </Entity>

@@ -1,12 +1,16 @@
 #pragma once
 
 #include <Engine/DataStructures/StaticArray.h>
-#include <Engine/Math/Transform.h>
 #include <Engine/Rendering/Bone.h>
 
 // Mesh holder
 class MeshResource
 {
+	// Memory is deallocated there where it was allocated.
+	// Resource manager just loads info to this class
+	// but doesn't allocates current StaticArrays.
+	friend class ResourceManager;
+
 private:
 	StaticArray<Vertex5>	vertices;
 	StaticArray<UINT>		indices;
@@ -16,46 +20,37 @@ private:
 	
 	// Bones for current mesh
 	StaticArray<Bone>		bones;
-
-	// Original transform -- TODO: delete
-	Transform transform;
-
-	String path; // -- TODO: delete?
+	bool hasBones;
 	
 public:
-	// Assign 
-	inline MeshResource(const char *path, const Transform &transform, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles);
-	inline MeshResource(const char *path, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles, const StaticArray<Bone> &bones);
+	// Init arrays
+	inline MeshResource(int verticesSize, int indicesSize, int trianglesSize, int bonesSize);
 
 	inline const StaticArray<Vertex5>	&GetVertices() const;
 	inline const StaticArray<UINT>		&GetIndices() const;
 	inline const StaticArray<Triangle>	&GetTriangles() const;
 	inline const StaticArray<Bone>		&GetBones() const;
-	inline const Transform				&GetTransform() const;
-	inline const String					&GetPath() const;
+
+	inline bool HasBones() const;
 
 	// Clear all data
 	inline void Delete();
 };
 
-// TODO: delete
-inline MeshResource::MeshResource(const char *path, const Transform &transform, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles)
+inline MeshResource::MeshResource(int verticesSize, int indicesSize, int trianglesSize, int bonesSize)
 {
-	this->path = path;
-	this->transform = transform;
-	this->vertices = vertices;
-	this->indices = indices;
-	this->triangles = triangles;
-}
+	ASSERT(verticesSize >= 0 && indicesSize >= 0 && trianglesSize >= 0 && bonesSize >= 0);
 
-inline MeshResource::MeshResource(const char *path, const StaticArray<Vertex5> &vertices, const StaticArray<UINT> &indices, const StaticArray<Triangle> &triangles, const StaticArray<Bone> &bones)
-{
-	this->path = path;
-	this->transform = transform;
-	this->vertices = vertices;
-	this->indices = indices;
-	this->triangles = triangles;
-	this->bones = bones;
+	vertices.Init(verticesSize);
+	indices.Init(indicesSize);
+	triangles.Init(trianglesSize);
+
+	hasBones = bonesSize != 0;
+
+	if (hasBones)
+	{
+		bones.Init(bonesSize);
+	}
 }
 
 inline const StaticArray<Vertex5> &MeshResource::GetVertices() const
@@ -75,17 +70,13 @@ inline const StaticArray<Triangle> &MeshResource::GetTriangles() const
 
 inline const StaticArray<Bone> &MeshResource::GetBones() const
 {
+	ASSERT(hasBones);
 	return bones;
 }
 
-inline const Transform &MeshResource::GetTransform() const
+inline bool MeshResource::HasBones() const
 {
-	return transform;
-}
-
-inline const String &MeshResource::GetPath() const
-{
-	return path;
+	return hasBones;
 }
 
 inline void MeshResource::Delete()

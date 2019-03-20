@@ -35,7 +35,6 @@ void RenderingSystem::Init()
 	textures.DeclareHashFunction(HashUnsigned);
 	shaders.DeclareHashFunction(HashUnsigned);
 
-	matMeshes.Init(32, 8);
 	matTextures.Init(32, 8);
 	matShaders.Init(32, 8);
 
@@ -85,31 +84,34 @@ void RenderingSystem::Update()
 			{
 				CModel *model = allModels[m];
 
-				for (const Mesh &m : model->GetMeshes())
+				for (UINT k = 0; k < model->GetMeshes().GetSize(); k++)
 				{
-				 	const Shader *shader = &m.GetMaterial().GetShader();
-					shader->Use();
+					const Shader &shader = model->GetMaterials()[k]->GetShader();
+					shader.Use();
 
 					if (light->IsCastingShadows())
 					{
-						shader->SetInt(TEXTURE_NAME_SHADOWMAP, (int)TextureType::Shadowmap);
+						shader.SetInt(TEXTURE_NAME_SHADOWMAP, (int)TextureType::Shadowmap);
 					}
 
-					if (shader->Is3D())
+					if (shader.Is3D())
 					{
-						shader->SetMat4("spaceM", camSpace);
-						shader->SetVec3("viewPos", cam->GetPosition());
+						shader.SetMat4("spaceM", camSpace);
+						shader.SetVec3("viewPos", cam->GetPosition());
 					}
 
-					if (shader->IsAffectedByLight())
+					if (shader.IsAffectedByLight())
 					{
-						shader->SetVec3("lightDir", -light->GetOwner().GetTransform().GetForward());
-						shader->SetMat4("lightSpaceMatrix", light->GetLightSpace());
+						shader.SetVec3("lightDir", -light->GetOwner().GetTransform().GetForward());
+						shader.SetMat4("lightSpaceMatrix", light->GetLightSpace());
 					}
 
-					m.PrepareMaterial(model->GetOwner().GetTransform().GetTransformMatrix());
-					m.ActivateMaterial();
-					m.Draw();
+					// todo: delete mesh class, import its functions to modelreosurce
+
+					model->GetMaterials()[k]->
+					model->GetMeshes()[k]->PrepareMaterial(model->GetOwner().GetTransform().GetTransformMatrix());
+					model->GetMeshes()[k]->ActivateMaterial();
+					model->GetMeshes()[k]->Draw();
 				}
 			}
 		}
@@ -206,12 +208,6 @@ void RenderingSystem::Register(Shader *shader)
 	allShaders.Push(shader);
 }
 
-void RenderingSystem::Register(Mesh *mesh, const Material &material)
-{
-	LinkedList<Mesh*> *list = GetMatMesh(material.materialId);
-	list->Add(mesh);
-}
-
 void RenderingSystem::Register(CModel * model)
 {
 	allModels.Push(model);
@@ -260,22 +256,6 @@ Shader *RenderingSystem::GetShader(ShaderID id) const
 {
 	Shader *result;
 	shaders.Find(id, result);
-
-	return result;
-}
-
-const LinkedList<Mesh*> *RenderingSystem::GetMatMesh(MaterialID id) const
-{
-	LinkedList<Mesh*> *result;
-	matMeshes.Find(id, result);
-
-	return result;
-}
-
-inline LinkedList<Mesh*>* RenderingSystem::GetMatMesh(MaterialID id)
-{
-	LinkedList<Mesh*> *result;
-	matMeshes.Find(id, result);
 
 	return result;
 }

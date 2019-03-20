@@ -6,23 +6,28 @@
 #include <Engine/ResourceManager/ResourceManager.h>
 #include <Engine/Systems/RenderingSystem.h>
 
-#define PROPERTY_KEY_TYPE			"path"
-#define PROPERTY_KEY_CASTSHADOWS	"castShadows"
-#define PROPERTY_KEY_RECEIVESHADOWS	"receiveShadows"
+#define PROPERTY_KEY_TYPE			"Path"
+#define PROPERTY_KEY_CASTSHADOWS	"CastShadows"
+#define PROPERTY_KEY_RECEIVESHADOWS	"ReceiveShadows"
 
 CLASSDEFINITION(IComponent, CModel)
 
 CModel::CModel() : IsCastingShadows(true), IsReceivingShadows(true), modelResource(nullptr)
 { }
 
-void CModel::BindPath(const char *path)
+const StaticArray<MeshResource*> &CModel::GetMeshes() const
 {
-	this->path = path;
+	return modelResource->GetHierarchy().GetMeshes();
 }
 
-const std::vector<Mesh> &CModel::GetMeshes() const
+const StaticArray<Material*>& CModel::GetMaterials() const
 {
-	return meshes;
+	return modelResource->GetMaterials();
+}
+
+const StaticArray<UINT>& CModel::GetVAO() const
+{
+	return modelResource->GetVAO();
 }
 
 void CModel::Init()
@@ -31,13 +36,6 @@ void CModel::Init()
 
 	// load model
 	modelResource = ResourceManager::Instance().LoadModel(path);
-
-	// init meshes
-	auto &meshesSource = modelResource->GetMeshes();
-	for (UINT i = 0; i < meshesSource.size(); i++)
-	{
-		meshes.push_back(Mesh(meshesSource[i]));
-	}
 }
 
 void CModel::Update()

@@ -21,10 +21,13 @@ private:
 	HashTable<TextureID	, ITexture*	>	textures;
 	HashTable<ShaderID	, Shader*	>	shaders;
 
-	// Stores all meshes that have same material
-	HashTable<MaterialID, LinkedList<Mesh*>*>		matMeshes;
+	// Stores array of arrays with same models (Only static),
+	// therefore same meshes, same material
+	DynamicArray<DynamicArray<CModel*>>	batchedModels;
+	
 	// Stores all textures used in this material
 	HashTable<MaterialID, LinkedList<ITexture*>*>	matTextures;
+	
 	// Shader used in material
 	HashTable<MaterialID, ShaderID			>		matShaders;
 
@@ -98,7 +101,7 @@ public:
 	// Get mesh by its ID
 	Shader *GetShader(ShaderID id) const;
 	// Get list of IDs of meshes with same material
-	const LinkedList<Mesh*> *GetMatMesh(MaterialID id) const;
+	// const LinkedList<Mesh*> *GetMatMesh(MaterialID id) const;
 	// Get list of IDs of meshes with same material
-	inline LinkedList<Mesh*> *GetMatMesh(MaterialID id);
+	// inline LinkedList<Mesh*> *GetMatMesh(MaterialID id);
 };
