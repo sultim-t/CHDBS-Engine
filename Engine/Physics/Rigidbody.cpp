@@ -4,6 +4,8 @@
 #include <Engine/Memory/Memory.h>
 #include <Engine/Systems/PhysicsSystem.h>
 
+#include <Engine/Base/Random.h>
+
 CLASSDEFINITION(IComponent, Rigidbody)
 
 void Rigidbody::Init()
@@ -73,7 +75,46 @@ void Rigidbody::FixedUpdate()
 
 void Rigidbody::SolveCollisions(const CollisionInfo &info)
 {
-	velocity = Vector3::Reflect(velocity, info.Normal);
+	// TODO: info with pointers to other rigidbodies/colliders
+	// TODO: penetration value
+
+	float penetration = 0.1f;
+	Vector3 normal = info.Normal.GetNormalized();
+
+	// position correction
+	float slop = 0.01f;
+	float percent = 0.2f;
+
+	float invMassThis = 1.0f / this->mass;
+	float invMassOther = 0.0f;
+
+	Vector3 correction = normal * std::fmaxf(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
+
+	transform->Translate(correction * invMassThis);
+	// rbOther->transform->Translate(correction * (-invMassOther));
+
+	Vector3 relativeVelocity = this->velocity /*- otherVelocty*/;
+	float contactVel = Vector3::Dot(relativeVelocity, normal);
+
+	// velocities are separating
+	if (contactVel > 0)
+	{
+		return;
+	}
+
+	// calculate restitution
+	float restitutionThis = 0.5f; /*info.CollThis->GetRestitution();*/
+	float restitutionOther = 0.5f; /*info.CollOther->GetRestitution();*/
+	float r = std::fminf(restitutionThis, restitutionOther);
+
+	// calculate impulse scalar
+	float i = -contactVel * (1.0f + r);
+	i /= invMassThis /*+ invMassOther*/;
+
+	Vector3 impulse = normal * i;
+
+	// otherVelocity -= impulse / otherMass;
+	this->velocity += impulse * invMassThis;
 }
 
 const ICollider & Rigidbody::GetCollider() const

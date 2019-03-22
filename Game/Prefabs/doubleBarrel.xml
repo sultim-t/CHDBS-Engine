@@ -8,8 +8,8 @@
     CastShadows="1"/>
   
   <Rigidbody
-    mass="20"
-    velocity="0 10 0"
+    mass="100000"
+    velocity="0 0 0"
     colType="sphere"
     offset="0 0 0"
     colRadius="2"

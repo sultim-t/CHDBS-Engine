@@ -90,8 +90,8 @@ inline bool ModelHierarchy::IsAnimated() const
 
 inline void ModelHierarchy::GetTranformsFromNode(const ModelNode *node, const Matrix4 &parentGlobal) const
 {
-	// current node's global transformation
-	const Matrix4 &current =  parentGlobal * node->GetTransform();
+	// current node's transformation
+	const Matrix4 &current = /*node->GetTransform() * */ parentGlobal;
 
 	// get meshes' indices
 	auto &nodeMeshes = node->GetMeshes();

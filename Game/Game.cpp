@@ -27,6 +27,7 @@
 #include <Engine/Math/Ray.h>
 #include <Engine/Math/AABB.h>
 #include <Engine/Physics/MeshCollider.h>
+#include <Engine/Physics/AABBCollider.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
@@ -124,6 +125,10 @@ int main()
 		PhysicsSystem::Instance().Register(col);
 	}
 
+	AABBCollider c = AABBCollider(AABB(Vector3(-100,-10,-100), Vector3(100,0,100)));
+	Transform setd = Transform();
+	c.SetTransform(&setd);
+	PhysicsSystem::Instance().Register(&c);
 
 	float s = 0;
 
