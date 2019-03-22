@@ -6,6 +6,7 @@
 #include <Engine/Components/CModel.h>
 #include <Engine/Rendering/OpenGL.h>
 #include <Engine/Rendering/Skybox.h>
+#include <Engine/ResourceManager/MeshResource.h>
 
 // Identity function
 // Use ONLY if keys are ordered natural numbers
@@ -84,9 +85,19 @@ void RenderingSystem::Update()
 			{
 				CModel *model = allModels[m];
 
-				for (UINT k = 0; k < model->GetMeshes().GetSize(); k++)
+
+				// get meshes
+				auto &modelMeshes = model->GetMeshes();
+				auto &materials = model->GetMaterials();
+				auto &vaos = model->GetVAO();
+
+				// recalculate tranforms relative to global space
+				auto &meshesTranforms = model->GetTranforms();
+
+				UINT count = modelMeshes.GetSize();
+				for (UINT j = 0; j < count; j++)
 				{
-					const Shader &shader = model->GetMaterials()[k]->GetShader();
+					const Shader &shader = materials[j]->GetShader();
 					shader.Use();
 
 					if (light->IsCastingShadows())
@@ -106,12 +117,12 @@ void RenderingSystem::Update()
 						shader.SetMat4("lightSpaceMatrix", light->GetLightSpace());
 					}
 
-					// todo: delete mesh class, import its functions to modelreosurce
+					// bind tranform
+					materials[j]->BindModelMatrix(meshesTranforms[j]);
+					materials[j]->Activate();
 
-					model->GetMaterials()[k]->
-					model->GetMeshes()[k]->PrepareMaterial(model->GetOwner().GetTransform().GetTransformMatrix());
-					model->GetMeshes()[k]->ActivateMaterial();
-					model->GetMeshes()[k]->Draw();
+					// draw
+					DrawMesh(vaos[j], modelMeshes[j]->GetIndices().GetSize());
 				}
 			}
 		}
@@ -136,6 +147,12 @@ void RenderingSystem::Update()
 	ContextWindow::Instance().PollEvents();
 }
 
+void RenderingSystem::DrawMesh(UINT vao, UINT indicesCount)
+{
+	glBindVertexArray(vao);
+	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
+}
+
 void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferTexture &shadowMap)
 {
 	glViewport(0, 0, shadowMap.GetWidth(), shadowMap.GetHeight());
@@ -154,15 +171,21 @@ void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferText
 			continue;
 		}
 
-		Matrix4 modelWorldSpace = model->GetOwner().GetTransform().GetTransformMatrix() * lightSpace;
+		// get meshes
+		auto &modelMeshes = model->GetMeshes();
+		auto &vaos = model->GetVAO();
+		
+		// recalculate tranforms relative to light
+		auto &meshesTranforms = model->GetTranforms(lightSpace);
 
-		for (const Mesh &m : model->GetMeshes())
+		UINT count = modelMeshes.GetSize();
+		for (UINT i = 0; i < count; i++)
 		{
-			// manually set transformation
-			depthShader.SetMat4("MVP", m.GetTransform().GetTransformMatrix() * modelWorldSpace);
+			// set transformation
+			depthShader.SetMat4("MVP", meshesTranforms[i]);
 			
-			// draw without binding its material
-			m.Draw();
+			// draw
+			DrawMesh(vaos[i], modelMeshes[i]->GetIndices().GetSize());
 		}
 	}
 
@@ -176,13 +199,6 @@ RenderingSystem &RenderingSystem::Instance()
 {
 	static RenderingSystem instance;
 	return instance;
-}
-
-void RenderingSystem::Register(Mesh *mesh)
-{
-	mesh->meshId = lastMeshId;
-	meshes.Add(lastMeshId, mesh);
-	lastMeshId++;
 }
 
 void RenderingSystem::Register(Material *material)

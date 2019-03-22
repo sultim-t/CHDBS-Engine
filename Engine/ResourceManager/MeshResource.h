@@ -2,6 +2,8 @@
 
 #include <Engine/DataStructures/StaticArray.h>
 #include <Engine/Rendering/Bone.h>
+#include <Engine/Rendering/Vertex.h>
+#include <Engine/Math/Triangle.h>
 
 // Mesh holder
 class MeshResource

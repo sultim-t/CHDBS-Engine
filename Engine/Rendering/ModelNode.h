@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Engine/DataStructures/StaticArray.h>
-#include <Engine/Math/Transform.h>
 #include <Engine/Math/Matrix.h>
 
 class ModelNode
@@ -13,8 +12,6 @@ private:
 	// Child nodes
 	StaticArray<ModelNode*> childNodes;
 
-	// Current node transformation
-	Transform transform;
 	// Current node transformation
 	Matrix4 transformMatrix;
 

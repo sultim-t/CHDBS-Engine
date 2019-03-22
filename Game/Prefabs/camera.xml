@@ -12,7 +12,7 @@
     speed="10" />
 
   <CModel
-    Path="Models/DoubleBarrelRig.obj"
+    Path="Models/DoubleBarrelRig.FBX"
     CastShadows="0"/>
 
 </Entity>

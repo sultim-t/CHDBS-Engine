@@ -2,7 +2,7 @@
 
 #include "ModelNode.h"
 #include <Engine/DataStructures/StaticArray.h>
-#include <Engine/Math/Transform.h>
+#include <Engine/DataStructures/Array.h>
 #include <Engine/Math/Matrix.h>
 
 // Represents hierachy of meshes
@@ -25,6 +25,14 @@ private:
 	// All animation in this model
 	StaticArray<Animation*>		animations;
 
+	// All temporary tranformations in this model
+	// Must be recalculated before rendering
+	mutable StaticArray<Matrix4> tranforms;
+
+private:
+	// Processes node's global transformations
+	void GetTranformsFromNode(const ModelNode *node, const Matrix4 &parentGlobal) const;
+
 public:
 	// Allocates memory
 	inline ModelHierarchy(ModelNode *rootNode, int meshesCount, int animationsCount);
@@ -38,6 +46,12 @@ public:
 	// Note: animations can't be deformed
 	inline const StaticArray<Animation*> &GetAnimations() const;
 
+	// Calculate tranformation matrices foreach mesh
+	//    "global" is global tranformation matrix
+	// Note: memory is not allocated,
+	//       returns reference to class member
+	const StaticArray<Matrix4> &GetTranforms(const Matrix4 &global) const;
+
 	inline bool IsAnimated() const;
 };
 
@@ -47,6 +61,7 @@ inline ModelHierarchy::ModelHierarchy(ModelNode * rootNode, int meshesCount, int
 	// allocate
 	meshes.Init(meshesCount); 
 	animations.Init(animationsCount);
+	tranforms.Init(meshesCount);
 }
 
 inline ModelHierarchy::~ModelHierarchy()
@@ -71,4 +86,37 @@ inline const StaticArray<Animation*> &ModelHierarchy::GetAnimations() const
 inline bool ModelHierarchy::IsAnimated() const
 {
 	return animations.GetSize() > 0;
+}
+
+inline void ModelHierarchy::GetTranformsFromNode(const ModelNode *node, const Matrix4 &parentGlobal) const
+{
+	// current node's global transformation
+	const Matrix4 &current =  parentGlobal * node->GetTransform();
+
+	// get meshes' indices
+	auto &nodeMeshes = node->GetMeshes();
+
+	// bind foreach mesh in current node
+	for (UINT i = 0; i < nodeMeshes.GetSize(); i++)
+	{
+		tranforms[nodeMeshes[i]] = current;
+	}
+
+	// get all child nodes
+	auto &children = node->GetChildNodes();
+
+	// process them
+	for (UINT i = 0; i < children.GetSize(); i++)
+	{
+		GetTranformsFromNode(children[i], current);
+	}
+}
+
+inline const StaticArray<Matrix4> &ModelHierarchy::GetTranforms(const Matrix4 &global) const
+{
+	// recalulate tranforms wiht current global tranformation
+	GetTranformsFromNode(rootNode, global);
+
+	// return classs member
+	return tranforms;
 }

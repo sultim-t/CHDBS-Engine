@@ -118,8 +118,20 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 
 	// copy mesh from assimp
 	for (UINT i = 0; i < scene->mNumMeshes; i++)
-	{
-		CopyMesh(scene->mMeshes[i], meshes[i]);
+	{	
+		aiMesh *sourceMesh = scene->mMeshes[i];
+
+		// count indices count
+		UINT indexCount = 0;
+		for (unsigned int i = 0; i < sourceMesh->mNumFaces; i++)
+		{
+			indexCount += sourceMesh->mFaces[i].mNumIndices;
+		}
+
+		// allocate memory
+		meshes[i] = new MeshResource(sourceMesh->mNumVertices, indexCount, sourceMesh->mNumFaces, sourceMesh->mNumBones);
+
+		CopyMesh(sourceMesh, meshes[i]);
 	}
 
 	// copy animations from assimp
@@ -140,16 +152,6 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 void ResourceManager::CopyMesh(void *from, MeshResource *to)
 {
 	aiMesh *mesh = (aiMesh*)from;
-
-	// count indices count
-	UINT indexCount = 0;
-	for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-	{
-		indexCount += mesh->mFaces[i].mNumIndices;
-	}
-
-	// allocate memory
-	to = new MeshResource(mesh->mNumVertices, indexCount, mesh->mNumFaces, mesh->mNumBones);
 
 	StaticArray<Vertex5>	&vertices	= to->vertices;
 	StaticArray<UINT>		&indices	= to->indices;
@@ -256,14 +258,31 @@ void ResourceManager::CopyMesh(void *from, MeshResource *to)
 				}
 			}
 
+			int weightsCount = orig->mNumWeights > BONE_MAX_WEIGHTS ? BONE_MAX_WEIGHTS : orig->mNumWeights;
+
 			// create bone
-			bones[i] = Bone(orig->mNumWeights, m);
+			bones[i] = Bone(weightsCount, m);
 
 			// foreach weight in bone
-			for (UINT w = 0; w < orig->mNumWeights; w++)
+			for (int w = 0; w < weightsCount; w++)
 			{
+				// if weights more than max allowed, clamp
+				if (w == weightsCount - 1 && weightsCount != orig->mNumWeights)
+				{
+					float clampedWeight = 1.0f;
+					for (int j = 0; j < weightsCount - 1; j++)
+					{
+						clampedWeight -= orig->mWeights[j].mWeight;
+					}
+
+					VertexWeight vweight = VertexWeight(orig->mWeights[w].mVertexId, clampedWeight);
+					bones[i].SetWeight((int)w, vweight);
+
+					break;
+				}
+
 				VertexWeight vweight = VertexWeight(orig->mWeights[w].mVertexId, orig->mWeights[w].mWeight);
-				bones[i].SetWeight((int)i, vweight);
+				bones[i].SetWeight((int)w, vweight);
 			}
 		}
 	}

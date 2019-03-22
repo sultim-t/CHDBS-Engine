@@ -11,31 +11,30 @@ private:
 
 	// All materials in this model
 	// Must be bijection with meshes 
+	// TEMP mutable
+	mutable
 	StaticArray<Material*> materials;
 
-	// Arrays for rendering
-	StaticArray<UINT> vaos, vbos, ibos;
-
 	String path;
-
-private:
-	void InitMesh(const MeshResource *resource, UINT &vao, UINT &vbo, UINT &ibo, bool useTan, bool dynamic);
 
 public:
 	inline ModelResource(const char *path, ModelHierarchy *hierarchy);
 
-	// Init as static model
-	void InitStatic();
-	// Init as dynamic (deformable) model
-	void InitDynamic();
-
 	template <UINT Size>
 	inline void SetMaterials(const Array<Material*, Size> &materials);
+	// Set all materials
+	inline void SetMaterials(Material *material) const
+	{
+		for (UINT i = 0; i < hierarchy->GetMeshes().GetSize(); i++)
+		{
+			this->materials[i] = material;
+		}
+	}
 
 	inline const ModelHierarchy &GetHierarchy() const;
 	inline const String &GetPath() const;
 	inline const StaticArray<Material*> &GetMaterials() const;
-	inline const StaticArray<UINT> &GetVAO() const;
+	inline UINT GetMeshesCount() const;
 };
 
 inline ModelResource::ModelResource(const char *path, ModelHierarchy *hierarchy)
@@ -46,9 +45,6 @@ inline ModelResource::ModelResource(const char *path, ModelHierarchy *hierarchy)
 	UINT meshesCount = hierarchy->GetMeshes().GetSize();
 
 	this->materials.Init(meshesCount);
-	this->vaos.Init(meshesCount);
-	this->vbos.Init(meshesCount);
-	this->ibos.Init(meshesCount);
 }
 
 inline const ModelHierarchy &ModelResource::GetHierarchy() const
@@ -66,9 +62,9 @@ inline const StaticArray<Material*> &ModelResource::GetMaterials() const
 	return materials;
 }
 
-inline const StaticArray<UINT> &ModelResource::GetVAO() const
+inline UINT ModelResource::GetMeshesCount() const
 {
-	return vaos;
+	return hierarchy->GetMeshes().GetSize();
 }
 
 template<UINT Size>

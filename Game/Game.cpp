@@ -73,11 +73,11 @@ int main()
 	reflection.LoadCubemap(reflName);
 
 	// From XML
-	Entity *cameraEntity =	EntityFactory::CreateEntity("Prefabs/camera.xml");
-	Entity *lightEntity =	EntityFactory::CreateEntity("Prefabs/light.xml");
+	Entity *cameraEntity = EntityFactory::CreateEntity("Prefabs/camera.xml");
+	Entity *lightEntity = EntityFactory::CreateEntity("Prefabs/light.xml");
 	Entity *terrainEntity = EntityFactory::CreateEntity("Prefabs/terrain.xml");
-	Entity *dbEntity =		EntityFactory::CreateEntity("Prefabs/doubleBarrel.xml");
-	Entity *particles =		EntityFactory::CreateEntity("Prefabs/particleSystem.xml");
+	Entity *dbEntity = EntityFactory::CreateEntity("Prefabs/doubleBarrel.xml");
+	Entity *particles = EntityFactory::CreateEntity("Prefabs/particleSystem.xml");
 
 	Shader shader = Shader();
 	shader.Init();
@@ -93,21 +93,13 @@ int main()
 	Material matTR = Material({ textureTR, reflection });
 	matTR.BindShader(shader);
 
-	dbEntity->GetComponent<CModel>()->meshes[0].BindMaterial(mat);
+	dbEntity->GetComponent<CModel>()->modelResource->SetMaterials(&mat);
+	terrainEntity->GetComponent<CModel>()->modelResource->SetMaterials(&matTR);
+	cameraEntity->GetComponent<CModel>()->modelResource->SetMaterials(&mat);
 
-	for (UINT i = 0; i < terrainEntity->GetComponent<CModel>()->meshes.size(); i++)
-	{
-		terrainEntity->GetComponent<CModel>()->meshes[i].BindMaterial(matTR);
-	}
-
-	for (UINT i = 0; i < cameraEntity->GetComponent<CModel>()->meshes.size(); i++)
-	{
-		cameraEntity->GetComponent<CModel>()->meshes[i].BindMaterial(mat);
-		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().Translate(Vector3(0, 0, -0.2f));
-		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetRotation(Vector3(0, -90, -90));
-		cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetScale(Vector3(3, -3, 3));
-	}
-
+	//cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().Translate(Vector3(0, 0, -0.2f));
+	//cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetRotation(Vector3(0, -90, -90));
+	//cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetScale(Vector3(3, -3, 3));
 
 	// Recalculate time, there shouldn't be counted initialization time
 	Time::Init();
@@ -115,15 +107,14 @@ int main()
 	auto &meshes = terrainEntity->GetComponent<CModel>()->GetMeshes();
 
 	StaticArray<StaticArray<Triangle>*> meshtr;
-	meshtr.Init(meshes.size());
+	meshtr.Init(meshes.GetSize());
 
-	for (UINT j = 0; j < meshes.size(); j++)
+	for (UINT j = 0; j < meshes.GetSize(); j++)
 	{
-		const MeshResource &r = meshes[j].GetMeshResource();
+		MeshColliderResource res = MeshColliderResource(meshes[j]->GetTriangles());
 
-		MeshColliderResource res = MeshColliderResource(r);
 		StaticArray<Triangle> *tr = new StaticArray<Triangle>();
-		tr->Init(r.GetTriangles().GetSize());
+		tr->Init(meshes[j]->GetTriangles().GetSize());
 
 		res.TransformCollider(terrainEntity->GetTransform(), *tr);
 
@@ -155,12 +146,12 @@ int main()
 			for (int i = 0; i < 7; i++)
 			{
 				Vector3 point, normal;
-				
-				Vector3 localDir = Vector3( (i-3) / 3.0f * 0.2f, (i % 2 - 0.5f) * 0.1f, 1);
+
+				Vector3 localDir = Vector3((i - 3) / 3.0f * 0.2f, (i % 2 - 0.5f) * 0.1f, 1);
 				Vector3 dir = cameraEntity->GetTransform().DirectionFromLocal(localDir);
 				Ray ray = Ray(cameraEntity->GetTransform().GetPosition(), dir);
 
-				for (UINT j = 0; j < meshes.size(); j++)
+				for (UINT j = 0; j < meshes.GetSize(); j++)
 				{
 					if (Intersection::MeshRay(*meshtr[j], ray, point, normal))
 					{

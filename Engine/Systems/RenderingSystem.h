@@ -57,20 +57,18 @@ private:
 	RenderingSystem(RenderingSystem&&) = delete;
 	RenderingSystem &operator=(const RenderingSystem&) = delete;
 
+	void DrawMesh(UINT vao, UINT indicesCount);
+	void CreateShadowMap(const Matrix4 &lightSpace, FramebufferTexture &shadowMap);
+
 public:
 	// Init structures
 	void Init() override;
 	// Render frame
 	void Update() override;
 
-	void CreateShadowMap(const Matrix4 &lightSpace, FramebufferTexture &shadowMap);
-
 	// Get instance of system
 	static RenderingSystem &Instance();
 
-	// Register mesh by calculating its ID
-	// and saving the pointer
-	void Register(Mesh *mesh);
 	// Register material by calculating its ID
 	// and saving the pointer
 	void Register(Material *material);
