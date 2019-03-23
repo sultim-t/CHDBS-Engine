@@ -6,7 +6,10 @@
 class SphereCollider : public ICollider
 {
 private:
+	// Main shape
 	Sphere sphere;
+
+	// Every dynamic collider must have tranformation
 	const Transform *t;
 
 public:
@@ -31,10 +34,7 @@ public:
 inline SphereCollider::SphereCollider()
 { }
 
-inline SphereCollider::SphereCollider(const Sphere &sphere)
-{
-	this->sphere = sphere;
-}
+inline SphereCollider::SphereCollider(const Sphere &source) : sphere(source) { }
 
 inline void SphereCollider::SetTransform(const Transform * t)
 {

@@ -10,10 +10,11 @@ private:
 	// Triangles doesn't change
 	const StaticArray<Triangle> *triangles;
 	// Calculated bounding sphere
+	// Note: generated only once
 	Sphere boundingSphere;
 
 private:
-	inline void CalculateBoundingSphere();
+	void CalculateBoundingSphere();
 
 public:
 	// Empty constructor
@@ -31,53 +32,18 @@ public:
 	inline Sphere GetBoundingSphere() const override;
 };
 
-inline void MeshCollider::CalculateBoundingSphere()
-{
-	UINT size = triangles->GetSize();
-
-	Vector3 min = Vector3(0.0f); 
-	Vector3 max = Vector3(0.0f);
-
-	for (UINT t = 0; t < size; t++)
-	{
-		for (int i = 0; i < 3; i++)
-		{
-			for (int j = 0; j < 3; j++)
-			{
-				float d = triangles->operator[](t)[i][j];
-				
-				if (d < min[j])
-				{
-					min[j] = d;
-				}
-
-				if (d > max[j])
-				{
-					max[j] = d;
-				}
-			}
-		}
-	}
-
-	Vector3 center = (max + min) * 0.5f;
-	float radius = (max - min).Length() * 0.5f;
-
-	boundingSphere = Sphere(center, radius);
-}
-
-inline MeshCollider::MeshCollider()
-{
-	this->triangles = nullptr;
-}
+inline MeshCollider::MeshCollider() : triangles(nullptr) { }
 
 inline MeshCollider::MeshCollider(const MeshColliderResource *mesh)
 {
 	this->triangles = &mesh->GetTriangles();
+	CalculateBoundingSphere();
 }
 
 inline MeshCollider::MeshCollider(const StaticArray<Triangle> *triangles)
 {
 	this->triangles = triangles;
+	CalculateBoundingSphere();
 }
 
 inline const StaticArray<Triangle> &MeshCollider::GetTriangles() const

@@ -42,3 +42,44 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 
 	return false;
 }
+
+void MeshCollider::CalculateBoundingSphere()
+{
+	UINT size = triangles->GetSize();
+
+	Vector3 min = Vector3(0.0f);
+	Vector3 max = Vector3(0.0f);
+
+	// for each triangle
+	for (UINT t = 0; t < size; t++)
+	{
+		const Triangle &triangle = triangles->operator[](t);
+
+		// for each vertex in triangle
+		for (int i = 0; i < 3; i++)
+		{
+			const Vector3 &vertex = triangle[i];
+
+			// for each dimension in vector
+			for (int j = 0; j < 3; j++)
+			{
+				float d = vertex[j];
+
+				if (d < min[j])
+				{
+					min[j] = d;
+				}
+
+				if (d > max[j])
+				{
+					max[j] = d;
+				}
+			}
+		}
+	}
+
+	Vector3 center = (max + min) * 0.5f;
+	float radius = (max - min).Length() * 0.5f;
+
+	boundingSphere = Sphere(center, radius);
+}

@@ -128,7 +128,7 @@ int main()
 	AABBCollider c = AABBCollider(AABB(Vector3(-100,-10,-100), Vector3(100,0,100)));
 	Transform setd = Transform();
 	c.SetTransform(&setd);
-	PhysicsSystem::Instance().Register(&c);
+	//PhysicsSystem::Instance().Register(&c);
 
 	float s = 0;
 
