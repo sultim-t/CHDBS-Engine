@@ -10,8 +10,10 @@ private:
 	DynamicArray<Rigidbody*>	rigidbodies;
 	// Stores all colliders without rigidbodies
 	DynamicArray<ICollider*>	colliders;
-	// Stores all collisions, changed after each update
-	// DynamicArray<CollisionInfo> collisions;
+
+	// Stores all collisions, from broad phase
+	// They will be potentially resolved in main phase
+	DynamicArray<BroadCollisionInfo>	collisions;
 
 public:
 	// Global gravity
@@ -21,6 +23,9 @@ public:
 	void Init() override;
 	void Update() override;
 
+	// Broad phase of collision detection
+	void GetApproximateCollisions();
+	// Main phase of collision detection
 	void SolveCollisions();
 
 	// Get instance of system

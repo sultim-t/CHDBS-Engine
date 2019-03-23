@@ -231,6 +231,8 @@
     <ClInclude Include="Components\CSkinnedModel.h" />
     <ClInclude Include="DataStructures\StaticStack.h" />
     <ClInclude Include="Math\Triangle.h" />
+    <ClInclude Include="Physics\BroadCollisionInfo.h" />
+    <ClInclude Include="Physics\CollisionType.h" />
     <ClInclude Include="Physics\ICollider.h" />
     <ClInclude Include="Components\CLight.h" />
     <ClInclude Include="Base\Message.h" />

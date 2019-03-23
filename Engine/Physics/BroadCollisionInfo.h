@@ -1,18 +1,12 @@
 #pragma once
 #include "CollisionType.h"
-#include "BroadCollisionInfo.h"
-#include <Engine/Math/Vector.h>
 
-// Contains collision info
-struct CollisionInfo
+// Contains collision info from broad phase
+struct BroadCollisionInfo
 {
 	// Type of collision
 	// Note: if collision is between rigidbody and static collider, RbOther is null
 	CollisionType Type;
-
-	Vector3 Point;
-	Vector3 Normal;
-	float Penetration;
 
 	// Collider of this rigidbody
 	const ICollider *CollThis;
@@ -26,20 +20,10 @@ struct CollisionInfo
 	// Note: can be modified in collision solving
 	Rigidbody *RbOther;
 
-	inline CollisionInfo(CollisionType type) : 
-		Type(type), 
+	inline BroadCollisionInfo(CollisionType type) :
+		Type(type),
 		CollThis(nullptr),
 		CollOther(nullptr),
 		RbThis(nullptr),
 		RbOther(nullptr) {}
-
-	inline CollisionInfo(const BroadCollisionInfo &info)
-	{
-		Type = info.Type;
-		CollThis = info.CollThis;
-		CollOther = info.CollOther;
-		RbThis = info.RbThis;
-		RbOther = info.RbOther;
-	}
 };
-

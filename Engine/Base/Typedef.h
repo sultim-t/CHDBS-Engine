@@ -144,6 +144,9 @@ class ICollider;
 	// class CapsuleCollider;
 	class MeshCollider;
 	struct RaycastInfo;
+	enum class CollisionType;
+	struct CollisionInfo;
+	struct BroadCollisionInfo;
 
 
 

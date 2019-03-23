@@ -75,25 +75,32 @@ void Rigidbody::FixedUpdate()
 
 void Rigidbody::SolveCollisions(const CollisionInfo &info)
 {
-	// TODO: info with pointers to other rigidbodies/colliders
-	// TODO: penetration value
+	// TODO : restitution of colliders
 
-	float penetration = 0.1f;
+	ASSERT(this == info.RbThis);
+
+	float penetration = info.Penetration;
 	Vector3 normal = info.Normal.GetNormalized();
+	Rigidbody *rbOther = info.RbOther;
 
 	// position correction
 	float slop = 0.01f;
 	float percent = 0.2f;
 
+	// if other is a static collider, then assume that its mass = Inf 
+	float invMassOther = rbOther == nullptr ? 0.0f : rbOther->mass;
 	float invMassThis = 1.0f / this->mass;
-	float invMassOther = 0.0f;
 
 	Vector3 correction = normal * std::fmaxf(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
 
 	transform->Translate(correction * invMassThis);
-	// rbOther->transform->Translate(correction * (-invMassOther));
+	
+	if (rbOther != nullptr)
+	{
+		rbOther->transform->Translate(correction * (-invMassOther));
+	}
 
-	Vector3 relativeVelocity = this->velocity /*- otherVelocty*/;
+	Vector3 relativeVelocity = rbOther != nullptr ? this->velocity - rbOther->velocity : this->velocity;
 	float contactVel = Vector3::Dot(relativeVelocity, normal);
 
 	// velocities are separating
@@ -109,34 +116,40 @@ void Rigidbody::SolveCollisions(const CollisionInfo &info)
 
 	// calculate impulse scalar
 	float i = -contactVel * (1.0f + r);
-	i /= invMassThis /*+ invMassOther*/;
+	i /= invMassThis + invMassOther;
 
 	Vector3 impulse = normal * i;
 
-	// otherVelocity -= impulse / otherMass;
+	// if exist other rigidbody
+	if (rbOther != nullptr)
+	{
+		// change its velocity
+		rbOther->velocity -= impulse * invMassOther;
+	}
+
 	this->velocity += impulse * invMassThis;
 }
 
-const ICollider & Rigidbody::GetCollider() const
+const ICollider &Rigidbody::GetCollider() const
 {
 	return *collider;
 }
 
-#define PROPERTY_KEY_MASS		"mass"
-#define PROPERTY_KEY_VELOCITY	"velocity"
-#define PROPERTY_KEY_COLTYPE	"colType"
+#define PROPERTY_KEY_MASS		"Mass"
+#define PROPERTY_KEY_VELOCITY	"Velocity"
+#define PROPERTY_KEY_COLTYPE	"ColliderType"
 
-#define PROPERTY_VAL_COL_AABB	"aabb"
-#define PROPERTY_VAL_COL_SPHERE	"sphere"
+#define PROPERTY_VAL_COL_AABB	"AABB"
+#define PROPERTY_VAL_COL_SPHERE	"Sphere"
 
-#define PROPERTY_KEY_COLOFFSET	"offset"
+#define PROPERTY_KEY_COLOFFSET	"ColliderOffset"
 
 // for spheres
-#define PROPERTY_KEY_COLRADIUS	"colRadius"
+#define PROPERTY_KEY_COLRADIUS	"SphereRadius"
 
 // for aabbs
-#define PROPERTY_KEY_COLMAX		"colMax"
-#define PROPERTY_KEY_COLMIN		"colMin"
+#define PROPERTY_KEY_COLMAX		"AABBMax"
+#define PROPERTY_KEY_COLMIN		"AABBMin"
 
 void Rigidbody::SetProperty(const String &key, const String &value)
 {

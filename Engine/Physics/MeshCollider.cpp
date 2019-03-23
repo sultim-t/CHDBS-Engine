@@ -10,7 +10,7 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 	{
 		AABB &other = ((AABBCollider&)col).GetAABB();
 
-		if (!Intersection::MeshAABB(*triangles, other, info.Point, info.Normal))
+		if (!Intersection::MeshAABB(*triangles, other, info.Point, info.Normal, info.Penetration))
 		{
 			return false;
 		}
@@ -24,7 +24,7 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 	{
 		Sphere &other = ((SphereCollider&)col).GetSphere();
 
-		if (!Intersection::MeshSphere(*triangles, other, info.Point, info.Normal))
+		if (!Intersection::MeshSphere(*triangles, other, info.Point, info.Normal, info.Penetration))
 		{
 			return false;
 		}

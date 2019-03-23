@@ -1,4 +1,5 @@
 #include "PhysicsSystem.h"
+#include <Engine/Math/Intersection.h>
 
 Vector3 PhysicsSystem::Gravity = Vector3(0.0f, -9.8f, 0.0f);
 
@@ -6,7 +7,7 @@ void PhysicsSystem::Init()
 {
 	rigidbodies.Init(128);
 	colliders.Init(128);
-	//collisions.Init(512);
+	collisions.Init(128);
 }
 
 void PhysicsSystem::Update()
@@ -17,37 +18,108 @@ void PhysicsSystem::Update()
 	{
 		rigidbodies[i]->FixedUpdate();
 	}
-
+	
+	GetApproximateCollisions();
 	SolveCollisions();
+}
+
+void PhysicsSystem::GetApproximateCollisions()
+{	
+	// approximate spape to use
+	typedef Sphere AShape;
+	// intersect function for approximate shapes
+	bool(*AIntersect)(const AShape&, const AShape&) = Intersection::SphereSphere;
+
+	int dynamicCount = rigidbodies.GetSize();
+	int staticCount = colliders.GetSize();
+
+	// for each rigidbody
+	for (int i = 0; i < dynamicCount; i++)
+	{
+		// get data from this rigidbody
+		Rigidbody *rbThis = rigidbodies[i];
+		const ICollider &colThis = rbThis->GetCollider();
+		AShape &boundingThis = colThis.GetBoundingSphere();
+
+		// create collision between rigidbodies
+		auto info = BroadCollisionInfo(CollisionType::Rigidbodies);
+		info.CollThis = &colThis;
+		info.RbThis = rbThis;
+
+		// for each other rigidbody
+		for (int j = dynamicCount - 1; j > i; j++)
+		{
+			Rigidbody *rbOther = rigidbodies[i];
+			const ICollider &colOther = rbOther->GetCollider();
+		
+			// get approximate shape
+			AShape &boundingOther = colOther.GetBoundingSphere();
+
+			if (!AIntersect(boundingThis, boundingOther))
+			{
+				// ignore non intersected
+				continue;
+			}
+
+			info.RbOther = rbOther;
+			info.CollOther = &colOther;
+
+			// add info to process
+			collisions.Push(info);
+		}
+		
+		// create collision between dynamic and static
+		info.Type = CollisionType::RigidbodyStatic;
+
+		// for each static collider
+		for (int j = 0; j < staticCount; j++)
+		{
+			const ICollider *colOther = colliders[j];
+
+			// get approximate shape
+			AShape &boundingOther = colOther->GetBoundingSphere();
+
+			if (!AIntersect(boundingThis, boundingOther))
+			{
+				// ignore non intersected
+				continue;
+			}
+
+			info.CollOther = colOther;
+
+			// add info to process
+			collisions.Push(info);
+		}
+	}
 }
 
 void PhysicsSystem::SolveCollisions()
 {
-	int size = rigidbodies.GetSize();
-
-	for (int i = 0; i < size; i++)
+	int collisionCount = collisions.GetSize();
+	
+	// for each collision, detected in broad phase
+	for (int i = 0; i < collisionCount; i++)
 	{
-		for (int j = size - 1; j >= 0 && i != j; j++)
-		{
-			CollisionInfo info;
-			if (rigidbodies[i]->GetCollider().Intersect(rigidbodies[j]->GetCollider(), info))
-			{
-				rigidbodies[i]->SolveCollisions(info);
-				//collisions.Push(info);
-			}
-		}
+		BroadCollisionInfo &current = collisions[i];
 
-		int staticSize = colliders.GetSize();
-		for (int j = 0; j < staticSize; j++)
+		// there must be rigidbody and colliders
+		ASSERT(current.RbThis != nullptr);
+		ASSERT(current.CollThis != nullptr);
+		ASSERT(current.CollOther != nullptr);
+
+		// copy from broad phase
+		CollisionInfo info = CollisionInfo(current);
+
+		// get actual collision info
+		if (current.CollThis->Intersect(*current.CollOther, info))
 		{
-			CollisionInfo info;
-			if (rigidbodies[i]->GetCollider().Intersect(*colliders[j], info))
-			{
-				rigidbodies[i]->SolveCollisions(info);
-				//collisions.Push(info);
-			}
+			// solve collision, type is processed there
+			current.RbThis->SolveCollisions(info);
 		}
 	}
+
+	// clear collisions from this frame
+	collisions.Clear();
 }
 
 PhysicsSystem &PhysicsSystem::Instance()
