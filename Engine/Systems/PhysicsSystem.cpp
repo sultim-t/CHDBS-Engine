@@ -25,7 +25,7 @@ void PhysicsSystem::Update()
 
 void PhysicsSystem::GetApproximateCollisions()
 {	
-	// approximate spape to use
+	// approximate shape to use
 	typedef Sphere AShape;
 	// intersect function for approximate shapes
 	bool(*AIntersect)(const AShape&, const AShape&) = Intersection::SphereSphere;

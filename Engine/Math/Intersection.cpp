@@ -483,6 +483,18 @@ bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point)
 	return true;
 }
 
+bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point, Vector3 & normal)
+{
+	if (!RaySphere(ray, s, point))
+	{
+		return false;
+	}
+
+	normal = (point - s.GetCenter()).GetNormalized();
+
+	return true;
+}
+
 bool Intersection::RayAABB(const Ray & ray, const AABB & aabb, Vector3 & point, float & t)
 {
 	const Vector3 &p = ray.GetStart();

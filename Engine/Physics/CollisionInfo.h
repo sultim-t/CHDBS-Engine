@@ -33,6 +33,7 @@ struct CollisionInfo
 		RbThis(nullptr),
 		RbOther(nullptr) {}
 
+	// Copy collision info from broad phase
 	inline CollisionInfo(const BroadCollisionInfo &info)
 	{
 		Type = info.Type;

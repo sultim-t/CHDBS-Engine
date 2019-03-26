@@ -12,6 +12,8 @@ void Rigidbody::Init()
 {
 	transform = &GetOwner().GetTransform();
 
+	acceleration = Vector3(0.0f);
+
 	allForces.Init(8);
 	allImpulses.Init(8);
 
@@ -42,12 +44,30 @@ void Rigidbody::AddImpulse(const Vector3 &impulse)
 	allImpulses.Push(impulse);
 }
 
+Vector3 &Rigidbody::GetVelocity()
+{
+	return velocity;
+}
+
+const Vector3 &Rigidbody::GetVelocity() const
+{
+	return velocity;
+}
+
+const Vector3 &Rigidbody::GetAcceleration() const
+{
+	return acceleration;
+}
+
 void Rigidbody::FixedUpdate()
 {
 	if (mass == 0.0f)
 	{
 		return;
 	}
+
+	// update position
+	transform->GetPosition() += velocity * Time::GetFixedDeltaTime();
 
 	Vector3 force(0.0f, 0.0f, 0.0f);
 
@@ -66,11 +86,8 @@ void Rigidbody::FixedUpdate()
 	// and clear list
 	allImpulses.Clear();
 
-	Vector3 acceleration = force / mass + PhysicsSystem::Gravity;
+	acceleration = force / mass + PhysicsSystem::Gravity;
 	velocity += acceleration * Time::GetFixedDeltaTime();
-	Vector3 pos = transform->GetPosition() + velocity * Time::GetFixedDeltaTime();
-
-	transform->GetPosition() = pos;
 }
 
 void Rigidbody::SolveCollisions(const CollisionInfo &info)

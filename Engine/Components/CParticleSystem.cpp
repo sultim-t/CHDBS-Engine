@@ -78,15 +78,20 @@ void CParticleSystem::Emit(UINT count)
 	}
 }
 
-void CParticleSystem::Emit(UINT count, const Vector3 & velocity)
+void CParticleSystem::Emit(UINT count, const Vector3 &direction)
 {
+	Vector3 tempVel = direction.GetNormalized() * startVelocity.Length();
+	Vector3 tempVelR = velocityRandomness;
+
 	for (UINT i = 0; i < count; i++)
 	{
+		Vector3 vel = tempVel + Random::GetInsideBox(tempVelR);
+
 		float life = startLifetime + Random::GetFloat(-lifetimeRandomness, lifetimeRandomness);
 		float rot = startRotation + Random::GetFloat(-rotationRandomness, rotationRandomness);
 		float size = startSize + Random::GetFloat(-sizeRandomness, sizeRandomness);
 
-		GenerateParticle(transform->GetPosition(), velocity, startColor, life, rot, size);
+		GenerateParticle(transform->GetPosition(), vel, startColor, life, rot, size);
 	}
 }
 

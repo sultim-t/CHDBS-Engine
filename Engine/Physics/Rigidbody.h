@@ -16,6 +16,7 @@ private:
 	// pointer to current transform
 	Transform	*transform;
 	Vector3		velocity;
+	Vector3		acceleration;
 	float		mass;
 
 	DynamicArray<Vector3> allForces;
@@ -30,6 +31,10 @@ public:
 
 	void AddForce(const Vector3 &force);
 	void AddImpulse(const Vector3 &impulse);
+
+	Vector3 &GetVelocity();
+	const Vector3 &GetVelocity() const;
+	const Vector3 &GetAcceleration() const;
 
 	void FixedUpdate();
 	void SolveCollisions(const CollisionInfo &info);
