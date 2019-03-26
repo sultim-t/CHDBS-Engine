@@ -10,8 +10,8 @@
   <Rigidbody
     Mass="20"
     Velocity="0 3 0"
-    ColliderType="Sphere"
-    ColliderOffset="0 0 0"
-    SphereRadius="2"
+    ColliderType="AABB"
+    AABBMin="-2 -2 -2"
+    AABBMax="2 2 2"
     />
 </Entity>

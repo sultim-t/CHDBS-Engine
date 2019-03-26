@@ -21,6 +21,10 @@ void Rigidbody::Init()
 	{
 		((SphereCollider*)collider)->SetTransform(transform);
 	}
+	else if(collider->GetColliderType() == ColliderType::AABB)
+	{
+		((AABBCollider*)collider)->SetTransform(transform);
+	}
 
 	PhysicsSystem::Instance().Register(this);
 }
@@ -44,6 +48,11 @@ void Rigidbody::AddImpulse(const Vector3 &impulse)
 	allImpulses.Push(impulse);
 }
 
+void Rigidbody::RemoveAllForces()
+{
+	allForces.Clear();
+}
+
 Vector3 &Rigidbody::GetVelocity()
 {
 	return velocity;
@@ -59,17 +68,28 @@ const Vector3 &Rigidbody::GetAcceleration() const
 	return acceleration;
 }
 
+const float Rigidbody::GetMass() const
+{
+	return 1.0f / inversedMass;
+}
+
+const float Rigidbody::GetInversedMass() const
+{
+	return inversedMass;
+}
+
+void Rigidbody::SetMass(float mass)
+{
+	ASSERT(mass != 0.0f);
+	inversedMass = 1.0f / mass;
+}
+
 void Rigidbody::FixedUpdate()
 {
-	if (mass == 0.0f)
-	{
-		return;
-	}
-
 	// update position
 	transform->GetPosition() += velocity * Time::GetFixedDeltaTime();
 
-	Vector3 force(0.0f, 0.0f, 0.0f);
+	Vector3 force(0.0f);
 
 	// add constant forces
 	for (int i = 0; i < allForces.GetSize(); i++)
@@ -86,7 +106,7 @@ void Rigidbody::FixedUpdate()
 	// and clear list
 	allImpulses.Clear();
 
-	acceleration = force / mass + PhysicsSystem::Gravity;
+	acceleration = force * inversedMass + PhysicsSystem::Gravity;
 	velocity += acceleration * Time::GetFixedDeltaTime();
 }
 
@@ -96,8 +116,8 @@ void Rigidbody::SolveCollisions(const CollisionInfo &info)
 
 	ASSERT(this == info.RbThis);
 
-	float penetration = info.Penetration;
-	Vector3 normal = info.Normal.GetNormalized();
+	float penetration = info.Contact.Penetration;
+	Vector3 normal = info.Contact.Normal.GetNormalized();
 	Rigidbody *rbOther = info.RbOther;
 
 	// position correction
@@ -105,8 +125,8 @@ void Rigidbody::SolveCollisions(const CollisionInfo &info)
 	float percent = 0.2f;
 
 	// if other is a static collider, then assume that its mass = Inf 
-	float invMassOther = rbOther == nullptr ? 0.0f : rbOther->mass;
-	float invMassThis = 1.0f / this->mass;
+	float invMassOther = rbOther == nullptr ? 0.0f : rbOther->inversedMass;
+	float invMassThis = this->inversedMass;
 
 	Vector3 correction = normal * std::fmaxf(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
 
@@ -172,7 +192,7 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 {
 	if (key == PROPERTY_KEY_MASS)
 	{
-		mass = value.ToFloat();
+		inversedMass = 1.0f / value.ToFloat();
 	}
 	else if (key == PROPERTY_KEY_VELOCITY)
 	{
@@ -205,7 +225,7 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 		if (collider->GetColliderType() == ColliderType::AABB)
 		{
 			Vector3 offset = value.ToVector3();
-			((AABBCollider*)collider)->GetAABB().Move(offset);
+			((AABBCollider*)collider)->GetAABBRef().Move(offset);
 		}
 		else if (collider->GetColliderType() == ColliderType::Sphere)
 		{
@@ -230,7 +250,7 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 		ASSERT(collider->GetColliderType() == ColliderType::AABB);
 		
 		Vector3 m = value.ToVector3();
-		((AABBCollider*)collider)->GetAABB().SetMax(m);
+		((AABBCollider*)collider)->GetAABBRef().SetMax(m);
 	}
 	else if (key == PROPERTY_KEY_COLMIN)
 	{
@@ -238,7 +258,7 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 		ASSERT(collider->GetColliderType() == ColliderType::AABB);
 
 		Vector3 m = value.ToVector3();
-		((AABBCollider*)collider)->GetAABB().SetMin(m);
+		((AABBCollider*)collider)->GetAABBRef().SetMin(m);
 	}
 	else
 	{

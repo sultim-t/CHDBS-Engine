@@ -46,13 +46,16 @@ inline AABB AABBCollider::GetAABB()
 {
 	AABB result = AABB(aabb);
 	result.Move(t->GetPosition());
-	
+
 	return result;
 }
 
 inline const AABB AABBCollider::GetAABB() const
 {
-	return GetAABB();
+	AABB result = AABB(aabb);
+	result.Move(t->GetPosition());
+
+	return result;
 }
 
 inline AABB &AABBCollider::GetAABBRef()

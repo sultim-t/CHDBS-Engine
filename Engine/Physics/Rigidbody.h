@@ -17,7 +17,7 @@ private:
 	Transform	*transform;
 	Vector3		velocity;
 	Vector3		acceleration;
-	float		mass;
+	float		inversedMass;
 
 	DynamicArray<Vector3> allForces;
 	DynamicArray<Vector3> allImpulses;
@@ -26,22 +26,39 @@ private:
 	// which is attached to current entity
 	ICollider *collider;
 	
-public:
-	~Rigidbody();
-
-	void AddForce(const Vector3 &force);
-	void AddImpulse(const Vector3 &impulse);
-
-	Vector3 &GetVelocity();
-	const Vector3 &GetVelocity() const;
-	const Vector3 &GetAcceleration() const;
-
+private:
 	void FixedUpdate();
 	void SolveCollisions(const CollisionInfo &info);
 
-	const ICollider &GetCollider() const;
-
 public:
+	~Rigidbody();
+
+	// Add a continuous force to this rigidbody, using its mass
+	void AddForce(const Vector3 &force);
+	// Add an instant impulse to this rigidbody, using its mass
+	void AddImpulse(const Vector3 &impulse);
+	// Add a continuous acceleration to this rigidbody, ignoring its mass
+	// void AddAcceleration(const Vector3 &acceleration);
+
+	// Remove all forced applided to this rigidbody
+	void RemoveAllForces();
+
+	// Get current velocity
+	Vector3 &GetVelocity();
+	// Get current velocity
+	const Vector3 &GetVelocity() const;
+	// Get current acceleration
+	const Vector3 &GetAcceleration() const;
+	// Get collider attached to current entity
+	const ICollider &GetCollider() const;
+	// Get mass of rigidbody
+	const float GetMass() const;
+	// Get inversed mass of rigidbody
+	const float GetInversedMass() const;
+	
+	// Set mass of this rigidbody
+	void SetMass(float mass);
+
 	// Initialization as component
 	void Init() override;
 	// Empty update function

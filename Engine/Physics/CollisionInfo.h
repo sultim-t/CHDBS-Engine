@@ -1,4 +1,5 @@
 #pragma once
+#include "CollisionContact.h"
 #include "CollisionType.h"
 #include "BroadCollisionInfo.h"
 #include <Engine/Math/Vector.h>
@@ -10,9 +11,7 @@ struct CollisionInfo
 	// Note: if collision is between rigidbody and static collider, RbOther is null
 	CollisionType Type;
 
-	Vector3 Point;
-	Vector3 Normal;
-	float Penetration;
+	CollisionContact Contact;
 
 	// Collider of this rigidbody
 	const ICollider *CollThis;
