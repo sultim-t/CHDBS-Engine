@@ -28,6 +28,7 @@
 #include <Engine/Math/AABB.h>
 #include <Engine/Physics/MeshCollider.h>
 #include <Engine/Physics/AABBCollider.h>
+#include <Engine/Rendering/Materials/StandartMaterial.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
@@ -89,10 +90,25 @@ int main()
 	Texture textureTR = Texture();
 	textureTR.Init("Textures/TerrainPalette.png");
 
-	Material mat = Material({ textureDB, reflection });
+	
+	/*Material mat = Material({ textureDB, reflection });
 	mat.BindShader(shader);
 	Material matTR = Material({ textureTR, reflection });
+	matTR.BindShader(shader);*/
+
+	StandartMaterial mat = StandartMaterial();
+	StandartMaterial matTR = StandartMaterial();
+	mat.AddTexture(textureDB);
+	mat.AddTexture(reflection);
+	matTR.AddTexture(textureTR);
+	matTR.AddTexture(reflection);
+
+	mat.BindShader(shader);
 	matTR.BindShader(shader);
+
+	mat.InitUniformLocations();
+	matTR.InitUniformLocations();
+
 
 	dbEntity->GetComponent<CModel>()->modelResource->SetMaterials(&mat);
 	terrainEntity->GetComponent<CModel>()->modelResource->SetMaterials(&matTR);

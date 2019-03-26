@@ -22,15 +22,14 @@ public:
 	// Init material from XML element
 	bool Init(void* xmlElem);
 
-	// Activate material
-	void Activate() const;
+	void Use();
+	// Activate material's textures
+	void ActivateTextures() const;
 	// Add texture to material
 	void AddTexture(const ITexture &t);
+
 	// Bind shader
 	void BindShader(const Shader &shader);
-
-	// Bind model matrix
-	void BindModelMatrix(const Matrix4 &model) const;
 
 	// Getters
 	Shader &GetShader();

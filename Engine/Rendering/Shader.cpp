@@ -135,9 +135,6 @@ void Shader::Load(const char * vertexPath, const char * fragmentPath, const char
 	glDeleteShader(fragId);
 	if (geometryPath != nullptr)
 		glDeleteShader(geometry);
-
-	BindAttributes();
-	InitUniformLocations();
 }
 
 void Shader::BindAttribute(int attribute, const char * name) const
@@ -220,17 +217,27 @@ void Shader::SetMat4(const char * name, const Matrix4 &mat) const
 	glUniformMatrix4fv(glGetUniformLocation(graphicsProgramId, name), 1, GL_FALSE, mat.ToArray());
 }
 
+void Shader::SetInt(int location, int value) const
+{
+	glUniform1i(location, value);
+}
+
+void Shader::SetFloat(int location, float value) const
+{
+	glUniform1f(location, value);
+}
+
+void Shader::SetVec3(int location, const Vector3 & vec) const
+{
+	glUniform3fv(location, 1, vec.ToArray());
+}
+
+void Shader::SetMat4(int location, const Matrix4 & mat) const
+{
+	glUniformMatrix4fv(location, 1, GL_FALSE, mat.ToArray());
+}
+
 int Shader::GetProgramID() const
 {
 	return graphicsProgramId;
-}
-
-bool Shader::IsAffectedByLight() const
-{
-	return isAffectedByLight;
-}
-
-bool Shader::Is3D() const
-{
-	return is3D;
 }

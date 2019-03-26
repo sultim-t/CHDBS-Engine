@@ -13,9 +13,6 @@ private:
 	UINT vertId;
 	UINT fragId;
 
-	bool isAffectedByLight;
-	bool is3D;
-
 public:
 	// Reads and builds the shader
 	void Load(const char *vertexPath, const char *fragmentPath, const char *geometryPath = nullptr);
@@ -27,8 +24,6 @@ public:
 
 	// Get uniform location
 	int GetUniformLocation(const char *name) const;
-	// Get all uniform locations
-	virtual void InitUniformLocations() {};
 
 	// Uniform functions
 	void SetBool(const char *name, bool value) const;
@@ -46,6 +41,11 @@ public:
 	void SetMat3(const char *name, const Matrix3 &mat) const;
 	void SetMat4(const char *name, const Matrix4 &mat) const;
 
+	void SetInt(int location, int value) const;
+	void SetFloat(int location, float value) const;
+	void SetVec3(int location, const Vector3 &vec) const;
+	void SetMat4(int location, const Matrix4 &mat) const;
+
 public:
 	Shader();
 	// Destructor
@@ -60,6 +60,4 @@ public:
 	void Stop() const;
 
 	int GetProgramID() const;
-	bool IsAffectedByLight() const;
-	bool Is3D() const;
 };

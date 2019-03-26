@@ -7,6 +7,7 @@
 #include <Engine/Rendering/OpenGL.h>
 #include <Engine/Rendering/Skybox.h>
 #include <Engine/ResourceManager/MeshResource.h>
+#include <Engine/Rendering/Materials/StandardMaterial.h>
 
 // Identity function
 // Use ONLY if keys are ordered natural numbers
@@ -97,29 +98,26 @@ void RenderingSystem::Update()
 				UINT count = modelMeshes.GetSize();
 				for (UINT j = 0; j < count; j++)
 				{
-					const Shader &shader = materials[j]->GetShader();
-					shader.Use();
+					StandardMaterial *mat = (StandardMaterial*)materials[j];
+
+					const Shader &shader = mat->GetShader();
+
+					mat->Use();
 
 					if (light->IsCastingShadows())
 					{
-						shader.SetInt(TEXTURE_NAME_SHADOWMAP, (int)TextureType::Shadowmap);
+						mat->ActivateShadowMap();
 					}
 
-					if (shader.Is3D())
-					{
-						shader.SetMat4("spaceM", camSpace);
-						shader.SetVec3("viewPos", cam->GetPosition());
-					}
+					mat->SetCameraSpace(camSpace);
+					mat->SetCameraPosition(cam->GetPosition());
 
-					if (shader.IsAffectedByLight())
-					{
-						shader.SetVec3("lightDir", -light->GetOwner().GetTransform().GetForward());
-						shader.SetMat4("lightSpaceMatrix", light->GetLightSpace());
-					}
+					mat->SetLightDirection(-light->GetOwner().GetTransform().GetForward());
+					mat->SetLightSpace(light->GetLightSpace());
 
 					// bind tranform
-					materials[j]->BindModelMatrix(meshesTranforms[j]);
-					materials[j]->Activate();
+					mat->SetModel(meshesTranforms[j]);
+					mat->ActivateTextures();
 
 					// draw
 					DrawMesh(vaos[j], modelMeshes[j]->GetIndices().GetSize());

@@ -14,7 +14,12 @@ bool Material::Init(void * xmlElem)
 	return true;
 }
 
-void Material::Activate() const
+void Material::Use()
+{
+	shader.Use();
+}
+
+void Material::ActivateTextures() const
 {
 	UINT textureCounts[TEXTURE_TYPES_COUNT];
 	for (int i = 0; i < TEXTURE_TYPES_COUNT; i++)
@@ -99,11 +104,6 @@ void Material::AddTexture(const ITexture &t)
 void Material::BindShader(const Shader &shader)
 {
 	this->shader = shader;
-}
-
-void Material::BindModelMatrix(const Matrix4 &model) const
-{
-	shader.SetMat4("model", model);
 }
 
 Shader &Material::GetShader()

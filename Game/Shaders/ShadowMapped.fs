@@ -12,8 +12,8 @@ uniform sampler2D t_diff0;
 uniform sampler2D t_shdw0;
 uniform samplerCube t_cube0;
 
-uniform vec3 lightDir;
-uniform vec3 viewPos;
+uniform vec3 u_LightDirection;
+uniform vec3 u_CameraPosition;
 
 float ShadowCalculation(vec4 fragPosLightSpace)
 {
@@ -27,7 +27,7 @@ float ShadowCalculation(vec4 fragPosLightSpace)
     float currentDepth = projCoords.z;
     // calculate bias (based on depth map resolution and slope)
     vec3 normal = normalize(fs_in.Normal);
-    float bias = max(0.005 * (1.0 - dot(normal, lightDir)), 0.005);
+    float bias = max(0.005 * (1.0 - dot(normal, u_LightDirection)), 0.005);
    
     // check whether current frag pos is in shadow
     // float shadow = currentDepth - bias > closestDepth  ? 1.0 : 0.0;
@@ -59,12 +59,12 @@ void main()
     // ambient
     vec3 ambient = vec3(0.5);
     // diffuse
-    float diff = max(dot(lightDir, normal), 0.0);
+    float diff = max(dot(u_LightDirection, normal), 0.0);
     vec3 diffuse = diff * lightColor;
     // calculate shadow
     float shadow = ShadowCalculation(fs_in.FragPosLightSpace);                      
 
-	vec3 I = normalize(fs_in.FragPos - viewPos);
+	vec3 I = normalize(fs_in.FragPos - u_CameraPosition);
 	vec3 R = reflect(I, normal);
 	vec3 reflection = texture(t_cube0, R).rgb * 2;
 

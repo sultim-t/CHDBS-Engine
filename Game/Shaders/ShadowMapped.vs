@@ -12,15 +12,15 @@ out VS_OUT {
     vec4 FragPosLightSpace;
 } vs_out;
 
-uniform mat4 spaceM;
-uniform mat4 model;
-uniform mat4 lightSpaceMatrix;
+uniform mat4 u_CameraSpace;
+uniform mat4 u_Model;
+uniform mat4 u_LightSpace;
 
 void main()
 {
-    vs_out.FragPos = vec3(model * vec4(aPos, 1.0));
-    vs_out.Normal = transpose(inverse(mat3(model))) * aNormal;
+    vs_out.FragPos = vec3(u_Model * vec4(aPos, 1.0));
+    vs_out.Normal = transpose(inverse(mat3(u_Model))) * aNormal;
     vs_out.TexCoords = aTexCoords;
-    vs_out.FragPosLightSpace = lightSpaceMatrix * vec4(vs_out.FragPos, 1.0);
-    gl_Position = spaceM * model * vec4(aPos, 1.0);
+    vs_out.FragPosLightSpace = u_LightSpace * vec4(vs_out.FragPos, 1.0);
+    gl_Position = u_CameraSpace * u_Model * vec4(aPos, 1.0);
 }
