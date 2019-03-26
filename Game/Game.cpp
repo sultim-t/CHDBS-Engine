@@ -156,12 +156,24 @@ int main()
 				Vector3 dir = cameraEntity->GetTransform().DirectionFromLocal(localDir);
 				Ray ray = Ray(cameraEntity->GetTransform().GetPosition(), dir);
 
+				if (Intersection::RaySphere(ray, dbEntity->GetComponent<Rigidbody>()->GetCollider().GetBoundingSphere(), point, normal))
+				{
+					particles->GetTransform().SetPosition(point);
+					particles->GetComponent<CParticleSystem>()->Emit(15, normal);
+
+					dbEntity->GetComponent<Rigidbody>()->AddImpulse(dir.GetNormalized() * 2000.0f);
+
+					continue;
+				}
+
 				for (UINT j = 0; j < meshes.GetSize(); j++)
 				{
 					if (Intersection::MeshRay(*meshtr[j], ray, point, normal))
 					{
 						particles->GetTransform().SetPosition(point);
-						particles->GetComponent<CParticleSystem>()->Emit(15);
+						particles->GetComponent<CParticleSystem>()->Emit(15, normal);
+
+						break;
 					}
 				}
 			}

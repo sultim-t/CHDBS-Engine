@@ -9,7 +9,7 @@
     fov="100" />
 
   <CFreeMovement 
-    speed="10" />
+    speed="20" />
 
   <CModel
     Path="Models/DoubleBarrel.obj"
