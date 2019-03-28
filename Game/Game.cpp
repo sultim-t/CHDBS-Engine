@@ -28,7 +28,7 @@
 #include <Engine/Math/AABB.h>
 #include <Engine/Physics/MeshCollider.h>
 #include <Engine/Physics/AABBCollider.h>
-#include <Engine/Rendering/Materials/StandartMaterial.h>
+#include <Engine/Rendering/Materials/StandardMaterial.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
@@ -96,8 +96,8 @@ int main()
 	Material matTR = Material({ textureTR, reflection });
 	matTR.BindShader(shader);*/
 
-	StandartMaterial mat = StandartMaterial();
-	StandartMaterial matTR = StandartMaterial();
+	StandardMaterial mat = StandardMaterial();
+	StandardMaterial matTR = StandardMaterial();
 	mat.AddTexture(textureDB);
 	mat.AddTexture(reflection);
 	matTR.AddTexture(textureTR);

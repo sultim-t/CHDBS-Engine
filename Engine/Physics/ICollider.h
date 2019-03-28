@@ -1,5 +1,6 @@
 #pragma once
 #include "CollisionInfo.h"
+#include "PhysicMaterial.h"
 #include <Engine/Math/Sphere.h>
 
 enum class ColliderType
@@ -13,7 +14,7 @@ enum class ColliderType
 class ICollider
 {
 protected:
-	float restitution;
+	PhysicMaterial physicMaterial;
 
 public:
 	// Get current collider type

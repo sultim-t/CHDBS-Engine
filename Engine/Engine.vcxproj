@@ -269,6 +269,7 @@
     <ClInclude Include="Physics\CollisionInfo.h" />
     <ClInclude Include="Math\Intersection.h" />
     <ClInclude Include="Physics\MeshCollider.h" />
+    <ClInclude Include="Physics\PhysicMaterial.h" />
     <ClInclude Include="Physics\RaycastInfo.h" />
     <ClInclude Include="Physics\Rigidbody.h" />
     <ClInclude Include="Physics\SphereCollider.h" />
