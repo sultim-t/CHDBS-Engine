@@ -17,6 +17,7 @@ public:
 	inline Quaternion(const Vector3 &euler);
 	inline Quaternion(const Quaternion &q);
 	inline Quaternion(const Vector3 &axis, float angle);
+	inline Quaternion(const Matrix3 &rotationMatrix);
 
 	inline const float operator[](int index) const;
 	inline float& operator[](int index);
@@ -67,6 +68,8 @@ public:
 	static Matrix3 ToRotationMatrix(const Quaternion &q);
 	inline Matrix3 ToRotationMatrix() const;
 
+	inline void FromRotationMatrix(const Matrix3 &m);
+
 	// Interpolates between a and b, normalizes the result, t is clamped to [0,1]
 	static Quaternion Lerp(const Quaternion &a, const Quaternion &b, const float t);
 	// Spherically interpolates between a and b, t is clamped to [0,1]
@@ -112,6 +115,11 @@ inline Quaternion::Quaternion(const Quaternion &q)
 inline Quaternion::Quaternion(const Vector3 & axis, float angle)
 {
 	FromAxisAngle(axis, angle);
+}
+
+inline Quaternion::Quaternion(const Matrix3 & rotationMatrix)
+{
+	FromRotationMatrix(rotationMatrix);
 }
 
 inline const float Quaternion::operator[](int index) const
@@ -387,6 +395,60 @@ inline Matrix3 Quaternion::ToRotationMatrix(const Quaternion & q)
 inline Matrix3 Quaternion::ToRotationMatrix() const
 {
 	return ToRotationMatrix(*this);
+}
+
+inline void Quaternion::FromRotationMatrix(const Matrix3 &m)
+{
+	/*float w = Sqrt(1.0f + m(0,0) + m(1, 1) + m(2, 2)) / 2.0f;
+	float w4 = 4.0f * w;
+
+	this->quat[0] = w;
+	this->quat[1] = (-m(2, 1) + m(1, 2)) / w4; // x
+	this->quat[2] = (-m(0, 2) + m(2, 0)) / w4; // y
+	this->quat[3] = (-m(1, 0) + m(0, 1)) / w4; // z*/
+
+	float trace = m(0, 0) + m(1, 1) + m(2, 2);
+
+	if (trace > 0)
+	{
+		float s = Sqrt(trace + 1.0f) * 2.0f;
+		
+		// Note: engine is using transposed matrices
+		this->quat[0] = 0.25f * s;
+		this->quat[1] = (-m(2, 1) + m(1, 2)) / s; // x
+		this->quat[2] = (-m(0, 2) + m(2, 0)) / s; // y
+		this->quat[3] = (-m(1, 0) + m(0, 1)) / s; // z
+	}
+	else if (m(0, 0) > m(1, 1) && m(0, 0) > m(2, 2))
+	{
+		float s = Sqrt(1.0f + m(0, 0) - m(1, 1) - m(2, 2)) * 2.0f;
+
+		// Note: engine is using transposed matrices
+		this->quat[0] = (-m(2, 1) + m(1, 2)) / s;
+		this->quat[1] = 0.25f * s;
+		this->quat[2] = (m(0, 1) + m(1, 0)) / s;
+		this->quat[3] = (m(0, 2) + m(2, 0)) / s;
+	}
+	else if (m(1, 1) > m(2, 2))
+	{
+		float s = Sqrt(1.0f + m(1, 1) - m(0, 0) - m(2, 2)) * 2.0f;
+
+		// Note: engine is using transposed matrices
+		this->quat[0] = (-m(0, 2) + m(2, 0)) / s;
+		this->quat[1] = (m(0, 1) + m(1, 0)) / s;
+		this->quat[2] = 0.25f * s;
+		this->quat[3] = (m(1, 2) + m(2, 1)) / s;
+	}
+	else
+	{
+		float s = Sqrt(1.0f + m(2, 2) - m(0, 0) - m(1, 1)) * 2.0f;
+
+		// Note: engine is using transposed matrices
+		this->quat[0] = (-m(1, 0) + m(0, 1)) / s;
+		this->quat[1] = (m(0, 2) + m(2, 0)) / s;
+		this->quat[2] = (m(1, 2) + m(2, 1)) / s;
+		this->quat[3] = 0.25f * s;
+	}
 }
 
 inline float Quaternion::Dot(const Quaternion &a, const Quaternion &b)

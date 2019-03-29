@@ -370,7 +370,8 @@ ModelNode *ResourceManager::ProcessModelNode(void *n, const void *s, ModelNode *
 	{
 		for (int y = 0; y < 4; y++)
 		{
-			transformation(x, y) = source->mTransformation[x][y];
+			// engine is using transposed matries
+			transformation(x, y) = source->mTransformation[y][x];
 		}
 	}
 

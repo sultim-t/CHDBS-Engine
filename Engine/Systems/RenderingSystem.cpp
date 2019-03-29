@@ -149,6 +149,8 @@ void RenderingSystem::DrawMesh(UINT vao, UINT indicesCount)
 {
 	glBindVertexArray(vao);
 	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
+
+	glBindVertexArray(0);
 }
 
 void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferTexture &shadowMap)

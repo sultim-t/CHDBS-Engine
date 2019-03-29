@@ -91,7 +91,7 @@ inline bool ModelHierarchy::IsAnimated() const
 inline void ModelHierarchy::GetTranformsFromNode(const ModelNode *node, const Matrix4 &parentGlobal) const
 {
 	// current node's transformation
-	const Matrix4 &current = /*node->GetTransform() * */ parentGlobal;
+	Matrix4 current = node->GetTransform() * parentGlobal;
 
 	// get meshes' indices
 	auto &nodeMeshes = node->GetMeshes();
@@ -99,7 +99,7 @@ inline void ModelHierarchy::GetTranformsFromNode(const ModelNode *node, const Ma
 	// bind foreach mesh in current node
 	for (UINT i = 0; i < nodeMeshes.GetSize(); i++)
 	{
-		tranforms[nodeMeshes[i]] = current;
+		tranforms[nodeMeshes[i]] = parentGlobal;
 	}
 
 	// get all child nodes

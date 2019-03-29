@@ -17,6 +17,7 @@ public:
 	Transform();
 	Transform(const Vector3 &pos, const Vector3 &eulerAngles = (0.0f, 0.0f, 0.0f), const Vector3 &scale = (1.0f, 1.0f, 1.0f));
 	Transform(const Vector3 &pos, const Quaternion &rot, const Vector3 &scale = (1.0f, 1.0f, 1.0f));
+	Transform(const Matrix4 &m);
 
 	// Translate transform
 	void Translate(const Vector3 &vec);
@@ -78,6 +79,8 @@ public:
 	static Matrix4 ScaleMatrix(const Matrix4& mat, const Vector3& vec);
 
 	static Matrix4 LookAt(const Vector3 &position, const Vector3 &target, const Vector3 &up);
+
+	void FromMatrix(const Matrix4 &m);
 
 	// Transform direction from local space to world
 	// Returns dir in world space

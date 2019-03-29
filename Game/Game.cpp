@@ -125,6 +125,7 @@ int main()
 
 	StaticArray<StaticArray<Triangle>*> meshtr;
 	meshtr.Init(meshes.GetSize());
+	auto &transformsArr = terrainEntity->GetComponent<CModel>()->GetTranforms();
 
 	for (UINT j = 0; j < meshes.GetSize(); j++)
 	{
@@ -133,7 +134,7 @@ int main()
 		StaticArray<Triangle> *tr = new StaticArray<Triangle>();
 		tr->Init(meshes[j]->GetTriangles().GetSize());
 
-		res.TransformCollider(terrainEntity->GetTransform(), *tr);
+		res.TransformCollider(transformsArr[j], *tr);
 
 		meshtr[j] = tr;
 

@@ -36,6 +36,8 @@ public:
 	inline Matrix<Type, Dim> operator/(const Type scalar) const;
 	inline Matrix<Type, Dim> &operator/=(const Type scalar);
 
+	inline Matrix<Type, Dim> GetTransposed() const;
+
 	inline const Type *ToArray() const;
 	inline void SetRow(int i, const Vector<Type, Dim> &vec);
 };
@@ -244,6 +246,22 @@ inline Matrix<Type, Dim>& Matrix<Type, Dim>::operator/=(const Type scalar)
 {
 	(*this) *= (1 / scalar);
 	return *this;
+}
+
+template<class Type, int Dim>
+inline Matrix<Type, Dim> Matrix<Type, Dim>::GetTransposed() const
+{
+	Matrix<Type, Dim> result;
+
+	for (int i = 0; i < Dim; i++)
+	{
+		for (int j = 0; j < Dim; j++)
+		{
+			result(i, j) = this->matrix[j][i];
+		}
+	}
+
+	return result;
 }
 
 template<class Type, int Dim>

@@ -5,26 +5,31 @@ Transform::Transform()
 	Reset();
 }
 
-Transform::Transform(const Vector3& pos, const Vector3& euler, const Vector3 &s)
+Transform::Transform(const Vector3 &pos, const Vector3 &euler, const Vector3 &s)
 {
 	position = pos;
 	quat.FromEuler(euler);
 	scale = s;
 }
 
-Transform::Transform(const Vector3& pos, const Quaternion &q, const Vector3 &s)
+Transform::Transform(const Vector3 &pos, const Quaternion &q, const Vector3 &s)
 {
 	position = pos;
 	quat = q;
 	scale = s;
 }
 
-void Transform::Translate(const Vector3& vec)
+Transform::Transform(const Matrix4 &m)
+{
+	FromMatrix(m);
+}
+
+void Transform::Translate(const Vector3 &vec)
 {
 	position += vec;
 }
 
-void Transform::Rotate(const Vector3& euler)
+void Transform::Rotate(const Vector3 &euler)
 {
 	Rotate(Quaternion(euler));
 }
@@ -275,39 +280,28 @@ Matrix4 Transform::ScaleMatrix(const Matrix4& mat, const Vector3 &vec)
 	return result;
 }
 
+void Transform::FromMatrix(const Matrix4 &m)
+{
+	// decompose position
+	position = Vector3(m(3, 0), m(3, 1), m(3, 2));
 
-// left handed lookat
-/*
-		Matrix4 mat;
-
-		Vector3 f, s, u;
-
-		// front
-		f = target - position;
-		f.Normalize();
-
-		// left
-		s = Vector3::Cross(up, f);
-		s.Normalize();
-
-		// up
-		u = Vector3::Cross(f, s);
-
-		for (int i = 0; i < 3; i++)
+	// decompose scale
+	float s[3];
+	s[0] = Vector3(m(0, 0), m(0, 1), m(0, 2)).Length();
+	s[1] = Vector3(m(1, 0), m(1, 1), m(1, 2)).Length();
+	s[2] = Vector3(m(2, 0), m(2, 1), m(2, 2)).Length();
+	scale = Vector3(s[0], s[1], s[2]);
+	
+	// decompose rotaion matrix
+	Matrix3 rotationMatrix;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
 		{
-			mat(i, 0) = s[i];
-			mat(i, 1) = u[i];
-			mat(i, 2) = f[i];
+			rotationMatrix(i, j) = m(i, j) / s[i];
 		}
+	}
 
-		mat(3, 0) = -Vector3::Dot(s, position);
-		mat(3, 1) = -Vector3::Dot(u, position);
-		mat(3, 2) = -Vector3::Dot(f, position);
-
-		mat(0, 3) = 0.0f;
-		mat(1, 3) = 0.0f;
-		mat(2, 3) = 0.0f;
-		mat(3, 3) = 1.0f;
-
-		return mat;
-*/
+	// convert to quaternion
+	quat = Quaternion(rotationMatrix);
+}
