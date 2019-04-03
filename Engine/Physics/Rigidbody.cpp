@@ -68,12 +68,12 @@ const Vector3 &Rigidbody::GetAcceleration() const
 	return acceleration;
 }
 
-const float Rigidbody::GetMass() const
+float Rigidbody::GetMass()
 {
 	return 1.0f / inversedMass;
 }
 
-const float Rigidbody::GetInversedMass() const
+float Rigidbody::GetInversedMass()
 {
 	return inversedMass;
 }
@@ -112,8 +112,6 @@ void Rigidbody::FixedUpdate()
 
 void Rigidbody::SolveCollisions(const CollisionInfo &info)
 {
-	// TODO : restitution of colliders
-
 	ASSERT(this == info.RbThis);
 
 	float penetration = info.Contact.Penetration;
@@ -147,12 +145,10 @@ void Rigidbody::SolveCollisions(const CollisionInfo &info)
 	}
 
 	// calculate restitution
-	float restitutionThis = 0.5f; /*info.CollThis->GetRestitution();*/
-	float restitutionOther = 0.5f; /*info.CollOther->GetRestitution();*/
-	float r = std::fminf(restitutionThis, restitutionOther);
+	float restitution = info.GetRestitution();
 
 	// calculate impulse scalar
-	float i = -contactVel * (1.0f + r);
+	float i = -contactVel * (1.0f + restitution);
 	i /= invMassThis + invMassOther;
 
 	Vector3 impulse = normal * i;

@@ -291,7 +291,7 @@ inline void Quaternion::ToAxisAngle(Vector3 &axis, float &angle) const
 
 	float s = Sqrt(1.0f - quat[0] * quat[0]);
 
-	if (ABS(s) >= 0.0001f)
+	if (Abs(s) >= 0.0001f)
 	{
 		axis[0] = quat[1] / s;
 		axis[1] = quat[2] / s;

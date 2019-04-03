@@ -12,10 +12,13 @@ private:
 	UINT graphicsProgramId;
 	UINT vertId;
 	UINT fragId;
+	UINT geomId;
 
 public:
 	// Reads and builds the shader
 	void Load(const char *vertexPath, const char *fragmentPath, const char *geometryPath = nullptr);
+	// Load shader from strings
+	void LoadFromStrings(const char *vertex, const char *fragment, const char *geometry = nullptr);
 
 	// Bind attribute
 	void BindAttribute(int attribute, const char *name) const;
@@ -51,7 +54,7 @@ public:
 	// Destructor
 	~Shader();
 
-	// Initializes vertex and fragment shader
+	// Register shader in rendering system
 	virtual void Init();
 
 	// Use/activate the shader

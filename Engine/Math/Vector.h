@@ -154,14 +154,13 @@ template<class Type, int Dim>
 template<int ADim>
 inline Vector<Type, Dim>::Vector(const Vector<Type, ADim> &vec)
 {
-	int a = Dim <= ADim ? Dim : ADim;
-	int b = a == Dim ? ADim : Dim;
+	int i = 0;
 
-	for (int i = 0; i < a; i++)
+	for (; i < ADim; i++)
 	{
 		vector[i] = vec[i];
 	}
-	for (int i = a; i < b; i++)
+	for (; i < Dim && i < ADim; i++)
 	{
 		vector[i] = (Type)0;
 	}

@@ -3,10 +3,10 @@
   position="-10 0 0">
 
   <CCamera
-    znear="0.1"
-    zfar="1500"
-    proj="persp"
-    fov="100" />
+    ZNear="0.1"
+    ZFar="1500"
+    Projection="Perspective"
+    FOV="100" />
 
   <CFreeMovement 
     speed="20" />

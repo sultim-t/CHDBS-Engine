@@ -77,55 +77,52 @@ inline float ATan2(float y, float x)
 	return atan2f(y, x);
 }
 
-/*
-// Taylor series
-float SinRad(float x)
+float Min(float x, float y)
 {
-	// clamp
-	float x0 = x - (int)(x / (float)PI) * (float)PI;
-
-	// first iter with n = 0
-	float result = x0; 
-
-	for (int n = 1; n <= 4; n++)
-	{
-		float p = MinusOnePower(n) * x0;
-
-		// calculating factorial and power
-		for (int i = 2; i <= 2 * n + 1; i++) 
-		{
-			p *= x0;
-			p /= i;
-		}
-
-		result += p;
-	}
-
-	return result;
+	return fminf(x, y);
 }
 
-float CosRad(float x)
+float Max(float x, float y)
 {
-	// clamp
-	float x0 = x - (int)(x / (float)PI) * (float)PI; 
-
-	// first iter with n = 0
-	float result = 1; 
-
-	for (int n = 1; n <= 4; n++)
-	{
-		float p = MinusOnePower(n) * x0;
-
-		// calculating factorial and power
-		for (int i = 2; i <= 2 * n; i++) 
-		{
-			p *= x0;
-			p /= i;
-		}
-
-		result += p;
-	}
-
-	return result;
+	return fmaxf(x, y);
 }
-*/
+
+float Round(float x)
+{
+	return roundf(x);
+}
+
+float Ceil(float x)
+{
+	return ceilf(x);
+}
+
+float Floor(float x)
+{
+	return floorf(x);
+}
+
+float Mod(float x, float y)
+{
+	return fmodf(x,y);
+}
+
+float Exp(float x)
+{
+	return expf(x);
+}
+
+float Log(float x)
+{
+	return logf(x);
+}
+
+float Log10(float x)
+{
+	return log10f(x);
+}
+
+float Pow(float base, float exp)
+{
+	return powf(base, exp);
+}

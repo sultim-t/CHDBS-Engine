@@ -10,12 +10,12 @@
 // Use this to declare component
 #define CLASSDECLARATION( classname )                                                       \
 public:                                                                                     \
-    static const ComponentID Type;                                                          \
+    static const UINT Type;																	\
     virtual bool IsClassType( const ComponentID classType ) const override;                 \
 
 // Use this to define child component
 #define CLASSDEFINITION( parentclass, childclass )                                          \
-const ComponentID childclass::Type = HASHSTRING( TOSTRING( childclass ) ); \
+const UINT childclass::Type = HASHSTRING( TOSTRING( childclass ) ); \
 bool childclass::IsClassType( const ComponentID classType ) const {                         \
         if ( classType == childclass::Type )                                                \
             return true;                                                                    \
@@ -32,7 +32,7 @@ protected:
 	bool isActive;
 
 public:
-	static const ComponentID Type;
+	static const UINT Type;
 	virtual bool IsClassType(const ComponentID classType) const
 	{
 		return classType == Type;

@@ -199,11 +199,13 @@
     <ClCompile Include="Memory\SystemAllocator.cpp" />
     <ClCompile Include="Math\Intersection.cpp" />
     <ClCompile Include="Physics\AABBCollider.cpp" />
+    <ClCompile Include="Physics\CollisionInfo.cpp" />
     <ClCompile Include="Physics\MeshCollider.cpp" />
     <ClCompile Include="Physics\Rigidbody.cpp" />
     <ClCompile Include="Physics\SphereCollider.cpp" />
     <ClCompile Include="Rendering\ArrayMesh.cpp" />
     <ClCompile Include="Rendering\Cubemap.cpp" />
+    <ClCompile Include="Rendering\DebugDrawer.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
     <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\ContextWindow.cpp" />
@@ -222,6 +224,7 @@
     <ClCompile Include="TEMP\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Rendering\DebugDrawer.h" />
     <ClInclude Include="Base\Logger.h" />
     <ClInclude Include="Base\Empty.h" />
     <ClInclude Include="Base\Hash.h" />

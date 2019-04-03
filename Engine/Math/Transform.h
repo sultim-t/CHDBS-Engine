@@ -77,9 +77,17 @@ public:
 	static Matrix4 RotateMatrix(const Matrix4& mat, const  Vector3& axis, const float radians);
 	// Returns scaled matrix
 	static Matrix4 ScaleMatrix(const Matrix4& mat, const Vector3& vec);
-
+	// Create LookAt matrix
 	static Matrix4 LookAt(const Vector3 &position, const Vector3 &target, const Vector3 &up);
+	
+	// Decompose position from matrix
+	static Vector3 DecomposePosition(const Matrix4 &m);
+	// Decompose rotation from matrix
+	static Quaternion DecomposeRotation(const Matrix4 &m);
+	// Decompose scale from matrix
+	static Vector3 DecomposeScale(const Matrix4 &m);
 
+	// Decompose tranform from matrix
 	void FromMatrix(const Matrix4 &m);
 
 	// Transform direction from local space to world

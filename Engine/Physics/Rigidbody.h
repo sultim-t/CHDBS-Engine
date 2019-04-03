@@ -52,9 +52,9 @@ public:
 	// Get collider attached to current entity
 	const ICollider &GetCollider() const;
 	// Get mass of rigidbody
-	const float GetMass() const;
+	float GetMass();
 	// Get inversed mass of rigidbody
-	const float GetInversedMass() const;
+	float GetInversedMass();
 	
 	// Set mass of this rigidbody
 	void SetMass(float mass);

@@ -73,17 +73,26 @@ void Shader::Load(const char * vertexPath, const char * fragmentPath, const char
 	{
 		Logger::Print("Shaders::Can't read shader code");
 	}
+	
+	if (geometryPath == nullptr)
+	{
+		LoadFromStrings(vertexCode.c_str(), fragmentCode.c_str(), nullptr);
+	}
+	else
+	{
+		LoadFromStrings(vertexCode.c_str(), fragmentCode.c_str(), geometryCode.c_str());
+	}
+}
 
-	const char* vertexShader = vertexCode.c_str();
-	const char* fragmentShader = fragmentCode.c_str();
-
+void Shader::LoadFromStrings(const char * vertex, const char * fragment, const char * geometry)
+{
 	char log[256];
 	int success;
 
 	// vertex shader
 	vertId = glCreateShader(GL_VERTEX_SHADER);
 
-	glShaderSource(vertId, 1, &vertexShader, NULL);
+	glShaderSource(vertId, 1, &vertex, NULL);
 	glCompileShader(vertId);
 
 	// check errors
@@ -91,14 +100,14 @@ void Shader::Load(const char * vertexPath, const char * fragmentPath, const char
 	if (!success)
 	{
 		Logger::Print("Shaders::Vertex shader compilation error");
-		
+
 		glGetShaderInfoLog(vertId, 256, NULL, log);
 		Logger::Print(log);
 	}
 
 	// fragment shader
 	fragId = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragId, 1, &fragmentShader, NULL);
+	glShaderSource(fragId, 1, &fragment, NULL);
 	glCompileShader(fragId);
 
 	// check errors
@@ -106,35 +115,35 @@ void Shader::Load(const char * vertexPath, const char * fragmentPath, const char
 	if (!success)
 	{
 		Logger::Print("Shaders::Fragment shader compilation error");
-	
+
 		glGetShaderInfoLog(fragId, 256, NULL, log);
 		Logger::Print(log);
 	}
 
-	unsigned int geometry;
-	if (geometryPath != nullptr)
+	if (geometry != nullptr)
 	{
-		const char * gShaderCode = geometryCode.c_str();
-		geometry = glCreateShader(GL_GEOMETRY_SHADER);
-		glShaderSource(geometry, 1, &gShaderCode, NULL);
-		glCompileShader(geometry);
+		geomId = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(geomId, 1, &geometry, NULL);
+		glCompileShader(geomId);
 	}
 
 	// shader Program
 	graphicsProgramId = glCreateProgram();
 	glAttachShader(graphicsProgramId, vertId);
 	glAttachShader(graphicsProgramId, fragId);
-	if (geometryPath != nullptr)
+	if (geometry != nullptr)
 	{
-		glAttachShader(graphicsProgramId, geometry);
+		glAttachShader(graphicsProgramId, geomId);
 	}
 
 	glLinkProgram(graphicsProgramId);
 
 	glDeleteShader(vertId);
 	glDeleteShader(fragId);
-	if (geometryPath != nullptr)
-		glDeleteShader(geometry);
+	if (geometry != nullptr)
+	{
+		glDeleteShader(geomId);
+	}
 }
 
 void Shader::BindAttribute(int attribute, const char * name) const

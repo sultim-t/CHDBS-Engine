@@ -27,6 +27,7 @@ public:
 	inline const Vector3 &GetCenter() const;
 	inline float GetRadius() const;
 
+	inline void Move(const Vector3 &vec);
 	inline void SetCenter(const Vector3 &vec);
 	inline void SetRadius(float radius);
 };
@@ -39,6 +40,11 @@ inline const Vector3 &Sphere::GetCenter() const
 inline float Sphere::GetRadius() const
 {
 	return radius;
+}
+
+inline void Sphere::Move(const Vector3 &vec)
+{
+	center += vec;
 }
 
 inline void Sphere::SetCenter(const Vector3 &vec)

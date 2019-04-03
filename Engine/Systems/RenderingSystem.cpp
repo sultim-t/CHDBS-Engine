@@ -1,13 +1,15 @@
 #include "RenderingSystem.h"
+#include <Engine/Components/CCamera.h>
+#include <Engine/Components/CModel.h>
 #include <Engine/Rendering/FramebufferTexture.h>
 #include <Engine/Rendering/OpenGL.h>
 #include <Engine/Rendering/ContextWindow.h>
-#include <Engine/Components/CCamera.h>
-#include <Engine/Components/CModel.h>
 #include <Engine/Rendering/OpenGL.h>
 #include <Engine/Rendering/Skybox.h>
-#include <Engine/ResourceManager/MeshResource.h>
 #include <Engine/Rendering/Materials/StandardMaterial.h>
+#include <Engine/Rendering/DebugDrawer.h>
+#include <Engine/Math/Intersection.h>
+#include <Engine/ResourceManager/MeshResource.h>
 
 // Identity function
 // Use ONLY if keys are ordered natural numbers
@@ -66,11 +68,18 @@ void RenderingSystem::Update()
 
 		CCamera *cam = cameras[i];
 
+		// reset aspect
 		cam->SetAspect((float)ContextWindow::Instance().GetWidth(), (float)ContextWindow::Instance().GetHeight());
+		
+		// caluclate matrices
 		Matrix4 projM = cam->GetProjectionMatrix();
 		Matrix4 viewM = cam->GetViewMatrix();
 
+		// calculate camera space matrix
 		Matrix4 camSpace = viewM * projM;
+		
+		// get frustum for culling
+		Frustum frustum = cam->GetFrustum();
 
 		for (int l = 0; l < lights.GetSize(); l++)
 		{
@@ -86,7 +95,6 @@ void RenderingSystem::Update()
 			{
 				CModel *model = allModels[m];
 
-
 				// get meshes
 				auto &modelMeshes = model->GetMeshes();
 				auto &materials = model->GetMaterials();
@@ -98,6 +106,17 @@ void RenderingSystem::Update()
 				UINT count = modelMeshes.GetSize();
 				for (UINT j = 0; j < count; j++)
 				{
+					// get bounding sphre
+					Sphere transformedSphere = modelMeshes[j]->GetBoundingSphere();
+					// and move it according to its global transformation
+					transformedSphere.Move(Transform::DecomposePosition(meshesTranforms[j]));
+
+					//if (!Intersection::SphereInsideFrustum(frustum, transformedSphere))
+					{
+						//Logger::Print(model->path);
+						//continue;
+					}
+
 					StandardMaterial *mat = (StandardMaterial*)materials[j];
 
 					const Shader &shader = mat->GetShader();
@@ -125,6 +144,7 @@ void RenderingSystem::Update()
 			}
 		}
 		
+		// Render skybox
 		Matrix4 skyCamSpace = viewM;
 		// reset position
 		// to make skybox feel infinitely far
@@ -132,6 +152,7 @@ void RenderingSystem::Update()
 		skyCamSpace *= projM;
 		Skybox::Instance().Draw(skyCamSpace);
 	
+		// Render all particle systems
 		for (int p = 0; p < particleSystems.GetSize(); p++)
 		{
 			CParticleSystem *ps = particleSystems[p];
@@ -139,6 +160,10 @@ void RenderingSystem::Update()
 			ps->BindCamera(cam);
 			ps->Render();
 		}
+
+		// Render debug objects
+		DebugDrawer::Instance().BindSpaceMatrix(camSpace);
+		DebugDrawer::Instance().DrawQueues();
 	}
 
 	ContextWindow::Instance().SwapBuffers();

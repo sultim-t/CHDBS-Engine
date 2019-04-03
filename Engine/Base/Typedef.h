@@ -89,6 +89,7 @@ class ContextWindow;
 class Logger;
 class String;
 typedef char* CString;
+class DebugDrawer;
 
 // Resources
 class ResourceManager;

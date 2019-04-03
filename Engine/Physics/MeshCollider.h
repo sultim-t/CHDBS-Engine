@@ -12,51 +12,24 @@ private:
 	// Calculated bounding sphere
 	// Note: generated only once
 	Sphere boundingSphere;
+	PhysicMaterial physicMaterial;
 
 private:
 	void CalculateBoundingSphere();
 
 public:
 	// Empty constructor
-	inline MeshCollider();
+	MeshCollider();
 	// Save pointer to mesh collider's triangles
-	inline MeshCollider(const MeshColliderResource *mesh);
+	MeshCollider(const MeshColliderResource *mesh);
 	// Savee pointer to array of triangles
-	inline MeshCollider(const StaticArray<Triangle> *triangles);
+	MeshCollider(const StaticArray<Triangle> *triangles);
 
 	// Get triangles
-	inline const StaticArray<Triangle> &GetTriangles() const;
+	const StaticArray<Triangle> &GetTriangles() const;
 
-	inline ColliderType GetColliderType() const override;
+	ColliderType GetColliderType() const override;
 	bool Intersect(const ICollider &col, CollisionInfo &info) const override;
-	inline Sphere GetBoundingSphere() const override;
+	Sphere GetBoundingSphere() const override;
+	PhysicMaterial GetPhysicMaterial() const override;
 };
-
-inline MeshCollider::MeshCollider() : triangles(nullptr) { }
-
-inline MeshCollider::MeshCollider(const MeshColliderResource *mesh)
-{
-	this->triangles = &mesh->GetTriangles();
-	CalculateBoundingSphere();
-}
-
-inline MeshCollider::MeshCollider(const StaticArray<Triangle> *triangles)
-{
-	this->triangles = triangles;
-	CalculateBoundingSphere();
-}
-
-inline const StaticArray<Triangle> &MeshCollider::GetTriangles() const
-{
-	return *triangles;
-}
-
-inline ColliderType MeshCollider::GetColliderType() const
-{
-	return ColliderType::Mesh;
-}
-
-inline Sphere MeshCollider::GetBoundingSphere() const
-{
-	return boundingSphere;
-}

@@ -9,8 +9,13 @@ private:
 	// Unique index of scene
 	int sceneId;
 	String name;
+
 	// Stores all entities
-	DynamicArray<Entity*> entities;
+	DynamicArray<Entity*>		entities;
+	// Stores all rigidbodies with colliders
+	DynamicArray<Rigidbody*>	rigidbodies;
+	// Stores all colliders without rigidbodies
+	DynamicArray<ICollider*>	colliders;
 
 public:
 	bool IsLoaded;

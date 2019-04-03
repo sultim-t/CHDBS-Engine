@@ -34,7 +34,7 @@ Sphere Sphere::GetUnion(const Sphere &sphere1, const Sphere &sphere2)
 Sphere Sphere::GetIntersection(const Sphere &sphere1, const Sphere &sphere2)
 {
 	Vector3 newCenter = (sphere1.center + sphere2.center) * 0.5f;
-	float newRadius = ABS(sphere2.radius - sphere1.radius) * 0.5f;
+	float newRadius = Abs(sphere2.radius - sphere1.radius) * 0.5f;
 
 	return Sphere(newCenter, newRadius);
 }

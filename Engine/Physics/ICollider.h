@@ -13,9 +13,6 @@ enum class ColliderType
 // Represents collider
 class ICollider
 {
-protected:
-	PhysicMaterial physicMaterial;
-
 public:
 	// Get current collider type
 	virtual ColliderType GetColliderType() const = 0;
@@ -25,4 +22,7 @@ public:
 
 	// Intersect this collider with other one, collision info is generated
 	virtual bool Intersect(const ICollider &col, CollisionInfo &info) const = 0;
+
+	// Get physic material of this collider
+	virtual PhysicMaterial GetPhysicMaterial() const = 0;
 };

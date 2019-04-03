@@ -1,6 +1,8 @@
 #pragma once
 #include "CollisionContact.h"
 #include "CollisionType.h"
+#include "ICollider.h"
+#include "PhysicMaterial.h"
 #include "BroadCollisionInfo.h"
 #include <Engine/Math/Vector.h>
 
@@ -10,8 +12,6 @@ struct CollisionInfo
 	// Type of collision
 	// Note: if collision is between rigidbody and static collider, RbOther is null
 	CollisionType Type;
-
-	CollisionContact Contact;
 
 	// Collider of this rigidbody
 	const ICollider *CollThis;
@@ -25,21 +25,19 @@ struct CollisionInfo
 	// Note: can be modified in collision solving
 	Rigidbody *RbOther;
 
-	inline CollisionInfo(CollisionType type) : 
-		Type(type), 
-		CollThis(nullptr),
-		CollOther(nullptr),
-		RbThis(nullptr),
-		RbOther(nullptr) {}
+	CollisionContact Contact;
+
+public:
+	CollisionInfo(CollisionType type);
 
 	// Copy collision info from broad phase
-	inline CollisionInfo(const BroadCollisionInfo &info)
-	{
-		Type = info.Type;
-		CollThis = info.CollThis;
-		CollOther = info.CollOther;
-		RbThis = info.RbThis;
-		RbOther = info.RbOther;
-	}
+	CollisionInfo(const BroadCollisionInfo &info);
+
+	// Get restitution according to combine option in CollThis
+	float GetRestitution() const;
+	// Get static friction according to combine option in CollThis
+	float GetStaticFriction() const;
+	// Get dynamic friction according to combine option in CollThis
+	float GetDynamicFriction() const;
 };
 

@@ -2,6 +2,40 @@
 #include "AABBCollider.h"
 #include "SphereCollider.h"
 
+MeshCollider::MeshCollider() : triangles(nullptr) { }
+
+MeshCollider::MeshCollider(const MeshColliderResource *mesh)
+{
+	this->triangles = &mesh->GetTriangles();
+	CalculateBoundingSphere();
+}
+
+MeshCollider::MeshCollider(const StaticArray<Triangle> *triangles)
+{
+	this->triangles = triangles;
+	CalculateBoundingSphere();
+}
+
+const StaticArray<Triangle> &MeshCollider::GetTriangles() const
+{
+	return *triangles;
+}
+
+ColliderType MeshCollider::GetColliderType() const
+{
+	return ColliderType::Mesh;
+}
+
+Sphere MeshCollider::GetBoundingSphere() const
+{
+	return boundingSphere;
+}
+
+PhysicMaterial MeshCollider::GetPhysicMaterial() const
+{
+	return physicMaterial;
+}
+
 bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 {
 	switch (col.GetColliderType())

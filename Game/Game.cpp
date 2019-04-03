@@ -29,6 +29,7 @@
 #include <Engine/Physics/MeshCollider.h>
 #include <Engine/Physics/AABBCollider.h>
 #include <Engine/Rendering/Materials/StandardMaterial.h>
+#include <Engine/Rendering/DebugDrawer.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
@@ -49,6 +50,8 @@ int main()
 	ComponentSystem::Instance().Init();
 	PhysicsSystem::Instance().Init();
 	InputSystem::Instance().Init();
+
+	DebugDrawer::Instance().Init("Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
 
 	Array<const char*, 6> skyNames;
 	skyNames[4] = "Textures/Skybox/desertsky_rt.tga";
@@ -161,6 +164,8 @@ int main()
 		InputSystem::Instance().Update();
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
+
+		DebugDrawer::Instance().Draw(Vector3(0.0f), Vector3(10.0f), Color4(255, 0, 0, 128));
 
 		s += Time::GetDeltaTime();
 		if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)

@@ -305,3 +305,38 @@ void Transform::FromMatrix(const Matrix4 &m)
 	// convert to quaternion
 	quat = Quaternion(rotationMatrix);
 }
+
+Vector3 Transform::DecomposePosition(const Matrix4 & m)
+{
+	return Vector3(m(3, 0), m(3, 1), m(3, 2));
+}
+
+Quaternion Transform::DecomposeRotation(const Matrix4 & m)
+{
+	// decompose scale
+	float s[3];
+	s[0] = Vector3(m(0, 0), m(0, 1), m(0, 2)).Length();
+	s[1] = Vector3(m(1, 0), m(1, 1), m(1, 2)).Length();
+	s[2] = Vector3(m(2, 0), m(2, 1), m(2, 2)).Length();
+
+	// decompose rotaion matrix
+	Matrix3 rotationMatrix;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			rotationMatrix(i, j) = m(i, j) / s[i];
+		}
+	}
+
+	// convert to quaternion
+	return Quaternion(rotationMatrix);
+}
+
+Vector3 Transform::DecomposeScale(const Matrix4 & m)
+{
+	return Vector3(
+		Vector3(m(0, 0), m(0, 1), m(0, 2)).Length(), 
+		Vector3(m(1, 0), m(1, 1), m(1, 2)).Length(),
+		Vector3(m(2, 0), m(2, 1), m(2, 2)).Length());
+}
