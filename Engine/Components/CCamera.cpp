@@ -5,17 +5,17 @@
 #include <Engine/Entities/Entity.h>
 #include <Engine/Systems/RenderingSystem.h>
 
-#define PROPERTY_KEY_PROJ	"proj"
-#define PROPERTY_KEY_ZNEAR	"znear"
-#define PROPERTY_KEY_ZFAR	"zfar"
-#define PROPERTY_KEY_FOV	"fov"
-#define PROPERTY_KEY_ORTHL	"orthl"
-#define PROPERTY_KEY_ORTHR	"orthr"
-#define PROPERTY_KEY_ORTHU	"orthu"
-#define PROPERTY_KEY_ORTHB	"orthb"
+#define PROPERTY_KEY_PROJ	"Projection"
+#define PROPERTY_KEY_ZNEAR	"ZNear"
+#define PROPERTY_KEY_ZFAR	"ZFar"
+#define PROPERTY_KEY_FOV	"FOV"
+#define PROPERTY_KEY_ORTHL	"OrthoL"
+#define PROPERTY_KEY_ORTHR	"OrthoR"
+#define PROPERTY_KEY_ORTHU	"OrthoU"
+#define PROPERTY_KEY_ORTHB	"OrthoB"
 
-#define PROPERTY_VAL_PROJORTHO	"ortho"
-#define PROPERTY_VAL_PROJPERSP	"persp"
+#define PROPERTY_VAL_PROJORTHO	"Ortho"
+#define PROPERTY_VAL_PROJPERSP	"Perspective"
 
 #define DEFAULT_FOV		80.0f;
 #define DEFAULT_ZNEAR	0.1f;
@@ -42,6 +42,10 @@ void CCamera::Init()
 	if (fov <= 0)
 	{
 		fov = DEFAULT_FOV;
+	}
+	if (aspect <= 0)
+	{
+		aspect = 1.0f;
 	}
 }
 
@@ -120,4 +124,83 @@ Matrix4 CCamera::GetProjectionMatrix() const
 	{
 		return Projection::Ortho(orthoLeft, orthoRight, orthoBottom, orthoUp, zNear, zFar);
 	}
+}
+
+CameraProjection CCamera::GetProjection() const
+{
+	return projection;
+}
+
+float CCamera::GetFOV() const
+{
+	return fov;
+}
+
+float CCamera::GetNearClipDist() const
+{
+	return zNear;
+}
+
+float CCamera::GetFarClipDist() const
+{
+	return zFar;
+}
+
+float CCamera::GetAspect() const
+{
+	return aspect;
+}
+
+const Vector3 &CCamera::GetPosition() const
+{
+	ASSERT(owner != nullptr);
+
+	return owner->GetTransform().GetPosition();
+}
+
+Frustum CCamera::GetFrustum() const
+{
+	if (projection == CameraProjection::Perspective)
+	{
+		Frustum frustum;
+		frustum.Init(fov, aspect, zNear, zFar, GetOwner().GetTransform().GetTransformMatrix());
+
+		return frustum;
+	}
+	else
+	{
+		// todo
+		Logger::Print("Ortho camera frustum not implemented");
+		return Frustum();
+	}
+}
+
+void CCamera::SetProjection(CameraProjection p)
+{
+	this->projection = p;
+}
+
+void CCamera::SetFOV(float fov)
+{
+	ASSERT(fov > 0);
+	ASSERT(projection == CameraProjection::Perspective);
+
+	this->fov = fov;
+}
+
+void CCamera::SetNearClipDist(float zNear)
+{
+	ASSERT(zNear > 0);
+	this->zNear = zNear;
+}
+
+void CCamera::SetFarClipDist(float zFar)
+{
+	ASSERT(zFar > 0);
+	this->zFar = zFar;
+}
+
+void CCamera::SetAspect(float width, float height)
+{
+	aspect = width / height;
 }

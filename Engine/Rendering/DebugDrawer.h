@@ -63,9 +63,9 @@ public:
 	void DrawQueues();
 
 	// Add sphere to render queue
-	void Draw(const Sphere &sphere, const Vector3 &position = Vector3(0.0f), const Color4 &color = Color4(0, 255, 0, 255));
+	void Draw(const Sphere &sphere, const Color4 &color = Color4(0, 255, 0, 255));
 	// Add AABB to render queue
-	void Draw(const AABB &aabb, const Vector3 &position = Vector3(0.0f), const Color4 &color = Color4(0, 255, 0, 255));
+	void Draw(const AABB &aabb, const Color4 &color = Color4(0, 255, 0, 255));
 	// Add line to render queue
 	void Draw(const Vector3 &a, const Vector3 &b, const Color4 &color = Color4(0, 255, 0, 255));
 

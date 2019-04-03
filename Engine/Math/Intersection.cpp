@@ -656,9 +656,6 @@ bool Intersection::SegmentTriangle(const Vector3 & p, const Vector3 & q, const T
 
 bool Intersection::SphereInsideFrustum(const Frustum & f, const Sphere & s)
 {
-	const Vector3 &center = s.GetCenter();
-	const float radius = s.GetRadius();
-
 	for (int i = 0; i < FRUSTUM_PLANES_COUNT; i++)
 	{
 		// if sphere doesn't intersect with negative halfspace

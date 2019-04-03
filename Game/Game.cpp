@@ -28,8 +28,10 @@
 #include <Engine/Math/AABB.h>
 #include <Engine/Physics/MeshCollider.h>
 #include <Engine/Physics/AABBCollider.h>
+#include <Engine/Physics/SphereCollider.h>
 #include <Engine/Rendering/Materials/StandardMaterial.h>
 #include <Engine/Rendering/DebugDrawer.h>
+#include <Engine/Physics/Rigidbody.h>
 
 #include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
@@ -164,8 +166,9 @@ int main()
 		InputSystem::Instance().Update();
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
-
-		DebugDrawer::Instance().Draw(Vector3(0.0f), Vector3(10.0f), Color4(255, 0, 0, 128));
+		
+		const SphereCollider &dbCollider = (const SphereCollider&)(dbEntity->GetComponent<Rigidbody>()->GetCollider());
+		DebugDrawer::Instance().Draw(dbCollider.GetSphere());
 
 		s += Time::GetDeltaTime();
 		if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)

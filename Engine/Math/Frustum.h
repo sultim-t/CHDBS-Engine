@@ -1,5 +1,6 @@
 #pragma once
 #include "Plane.h"
+#include "Matrix.h"
 
 #define FRUSTUM_PLANES_COUNT 6
 
@@ -32,6 +33,12 @@ public:
 	// "fov" is in Degrees
 	// "aspect" is width/height
 	void Init(float fov, float aspect, float near, float far);
+
+	// Sets properties and calculates planes, vertices
+	// "fov" is in Degrees
+	// "aspect" is width/height
+	// "transform" is matrix to transform vertices of frustum
+	void Init(float fov, float aspect, float near, float far, const Matrix4 &transform);
 
 	// Get field of view in Degrees
 	inline float GetFOV() const;
