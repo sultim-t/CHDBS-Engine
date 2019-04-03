@@ -33,9 +33,9 @@ public:
 
 	// Is point in front of the plane?
 	inline bool IsInFront(const Vector3 &point) const;
-	// Is sphere in front of the plane?
+	// Does sphere touch front halfspace of the plane?
 	inline bool IsInFront(const Sphere &sphere) const;
-	// Is sphere in front of the plane?
+	// Does sphere touch front halfspace of the plane?
 	inline bool IsInFront(const Vector3 &point, float radius) const;
 
 	// Returns signed distance to point
@@ -87,7 +87,7 @@ inline Plane::Plane(const Vector3 &p1, const Vector3 &p2, const Vector3 &p3)
 inline Plane::Plane(const Vector3 &normal, const Vector3 &point)
 {
 	this->normal = normal.GetNormalized();
-	this->distance = Vector3::Dot(this->normal, point);
+	this->distance = -Vector3::Dot(this->normal, point);
 }
 
 inline void Plane::FromPoints(const Vector3 & p1, const Vector3 & p2, const Vector3 & p3)
@@ -95,7 +95,7 @@ inline void Plane::FromPoints(const Vector3 & p1, const Vector3 & p2, const Vect
 	normal = Vector3::Cross((p3 - p2), (p2 - p1));
 	normal.Normalize();
 
-	distance = Vector3::Dot(normal, p1);
+	distance = -Vector3::Dot(normal, p1);
 }
 
 inline Vector3 Plane::GetClosestPoint(const Vector3 & from) const

@@ -41,74 +41,28 @@ public:
 	void Init(float fov, float aspect, float near, float far, const Matrix4 &transform);
 
 	// Get field of view in Degrees
-	inline float GetFOV() const;
-	inline float GetAspect() const;
-	inline float GetNearClipDist() const;
-	inline float GetFarClipDist() const;
+	float GetFOV() const;
+	float GetAspect() const;
+	float GetNearClipDist() const;
+	float GetFarClipDist() const;
+
 	// Get plane
 	// Note: plane's normal directed to the outside of frustum
-	inline const Plane &GetPlane(FrustumPlane side) const;
+	const Plane &GetPlane(FrustumPlane side) const;
 	// Get plane
 	// Note: plane's normal directed to the outside of frustum
-	inline const Plane &GetPlane(int side) const;
+	const Plane &GetPlane(int side) const;
+	
+	const Vector3 *GetNearVerts() const;
+	const Vector3 *GetFarVerts() const;
 
 	// Sets and recalculates planes and vertices
 	// "fov" is in degrees
-	inline void SetFOV(float fov);
+	void SetFOV(float fov);
 	// Sets and recalculates planes and vertices
-	inline void SetAspect(float aspect);
+	void SetAspect(float aspect);
 	// Sets and recalculates planes and vertices
-	inline void SetNearClipDist(float near);
+	void SetNearClipDist(float near);
 	// Sets and recalculates planes and vertices
-	inline void SetFarClipDist(float far);
+	void SetFarClipDist(float far);
 };
-
-inline float Frustum::GetFOV() const
-{
-	return fov;
-}
-
-inline float Frustum::GetAspect() const
-{
-	return aspect;
-}
-
-inline float Frustum::GetNearClipDist() const
-{
-	return near;
-}
-
-inline float Frustum::GetFarClipDist() const
-{
-	return far;
-}
-
-inline const Plane &Frustum::GetPlane(FrustumPlane side) const
-{
-	return planes[(int)side];
-}
-
-inline const Plane &Frustum::GetPlane(int side) const
-{
-	return planes[side];
-}
-
-inline void Frustum::SetFOV(float fov)
-{
-	Init(fov, aspect, near, far);
-}
-
-inline void Frustum::SetAspect(float aspect)
-{
-	Init(fov, aspect, near, far);
-}
-
-inline void Frustum::SetNearClipDist(float near)
-{
-	Init(fov, aspect, near, far);
-}
-
-inline void Frustum::SetFarClipDist(float far)
-{
-	Init(fov, aspect, near, far);
-}

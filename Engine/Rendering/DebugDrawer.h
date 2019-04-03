@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Engine/Math/AABB.h>
-#include <Engine/Math/Sphere.h>
 #include <Engine/Math/Matrix.h>
 #include <Engine/DataStructures/StaticStack.h>
 #include <Engine/Rendering/Shader.h>
@@ -50,6 +48,8 @@ private:
 	void InitBuffers();
 	void InitShader(const char *vertPath, const char *fragPath);
 
+	// Draw box from 8 points
+	void DrawBox(const Vector3 *points, const Color4 &color);
 	// Draw all lines from buffer
 	void DrawAllLines();
 
@@ -66,6 +66,8 @@ public:
 	void Draw(const Sphere &sphere, const Color4 &color = Color4(0, 255, 0, 255));
 	// Add AABB to render queue
 	void Draw(const AABB &aabb, const Color4 &color = Color4(0, 255, 0, 255));
+	// Add frustum to render queue
+	void Draw(const Frustum &frustum, const Color4 &color = Color4(0, 255, 0, 255));
 	// Add line to render queue
 	void Draw(const Vector3 &a, const Vector3 &b, const Color4 &color = Color4(0, 255, 0, 255));
 

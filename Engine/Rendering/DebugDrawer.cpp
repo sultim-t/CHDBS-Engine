@@ -1,5 +1,8 @@
 #include "DebugDrawer.h"
 #include "OpenGL.h"
+#include <Engine/Math/AABB.h>
+#include <Engine/Math/Sphere.h>
+#include <Engine/Math/Frustum.h>
 
 #define SHADER_MVP_MATRIX_NAME "u_MVP"
 
@@ -164,6 +167,39 @@ void DebugDrawer::Draw(const AABB & aabb, const Color4 & color)
 	}
 
 	// add lines
+}
+
+void DebugDrawer::Draw(const Frustum & frustum, const Color4 & color)
+{
+	const Vector3 *near = frustum.GetNearVerts();
+	const Vector3 *far = frustum.GetFarVerts();
+
+	Vector3 points[8];
+	points[0] = near[0];
+	points[1] = near[1];
+	points[2] = near[2];
+	points[3] = near[3];
+	points[4] = far[0];
+	points[5] = far[1];
+	points[6] = far[2];
+	points[7] = far[3];
+
+	DrawBox(points, color);
+}
+
+void DebugDrawer::DrawBox(const Vector3 * points, const Color4 & color)
+{
+	// Vertices should be indexed like that:
+	//
+	// 7------6
+	// | \    | \
+	// |  4---+--5
+	// |  |   |  |
+	// 3--+---2  |
+	//   \|     \|
+	//    0------1
+	// 
+
 	for (int i = 0; i < 4; i++)
 	{
 		DebugDrawLine line1(points[i], points[(i + 1) % 4], color);

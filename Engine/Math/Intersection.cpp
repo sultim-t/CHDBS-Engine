@@ -858,15 +858,23 @@ bool Intersection::MeshSphere(const StaticArray<Triangle>& triangles, const Sphe
 {
 	UINT size = triangles.GetSize();
 
+	Vector3 center = s.GetCenter();
+	float radius = s.GetRadius();
+	float radiusSqr = radius * radius;
+
 	for (UINT i = 0; i < size; i++)
 	{
-		if (TriangleSphere(triangles[i], s, point))
+		// closest point
+		point = triangles[i].GetClosestPoint(center);
+
+		// from closest point on triangle to center
+		Vector3 v = point - center;
+		float lengthSqr = v.LengthSqr();
+
+		if (lengthSqr <= radiusSqr)
 		{
 			normal = triangles[i].GetNormal();
-
-			Vector3 &v = triangles[i].GetClosestPoint(s.GetCenter());
-
-			penetration = s.GetRadius() - v.Length();
+			penetration = radius - v.Length();
 			return true;
 		}
 	}
