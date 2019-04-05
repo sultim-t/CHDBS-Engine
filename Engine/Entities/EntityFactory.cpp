@@ -3,6 +3,7 @@
 #include <Engine/Components/CCamera.h>
 #include <Engine/Components/CFreeMovement.h>
 #include <Engine/Components/CModel.h>
+#include <Engine/Components/CSkinnedModel.h>
 #include <Engine/Components/CLight.h>
 #include <Engine/Components/CParticleSystem.h>
 #include <Engine/Physics/Rigidbody.h>
@@ -51,6 +52,7 @@ EntityFactory::EntityFactory()
 	PRegisterComponentType<CFreeMovement>("CFreeMovement");
 	PRegisterComponentType<CLight>("CLight");
 	PRegisterComponentType<CModel>("CModel");
+	PRegisterComponentType<CSkinnedModel>("CSkinnedModel");
 	PRegisterComponentType<CParticleSystem>("CParticleSystem");
 	PRegisterComponentType<Rigidbody>("Rigidbody");
 }
@@ -82,9 +84,6 @@ IComponent *EntityFactory::CreateComponent(void *xmlElemP)
 
 	IComponent *comp;
 
-	// auto found = componentCreators.find(compName);
-	// if (found != componentCreators.end())
-	
 	IComponentCreator foundCreator;
 	if (compCreators.Find(compName, foundCreator))
 	{
@@ -105,24 +104,24 @@ void EntityFactory::SetData(Entity *entity, void *xmlElem)
 	using namespace tinyxml2;
 	XMLElement *elem = (XMLElement*)xmlElem;
 
-	entity->isActive = elem->BoolAttribute("active", true);
+	entity->isActive = elem->BoolAttribute("Active", true);
 
-	if (const char *val = elem->Attribute("position"))
+	if (const char *val = elem->Attribute("Position"))
 	{
 		entity->transform.SetPosition(String::ToVector3(val));
 	}
 
-	if (const char *val = elem->Attribute("euler"))
+	if (const char *val = elem->Attribute("Euler"))
 	{
 		entity->transform.SetRotation(String::ToVector3(val));
 	}
 
-	if (const char *val = elem->Attribute("quat"))
+	if (const char *val = elem->Attribute("Quaternion"))
 	{
 		entity->transform.SetRotation(String::ToQuaternion(val));
 	}
 
-	if (const char *val = elem->Attribute("scale"))
+	if (const char *val = elem->Attribute("Scale"))
 	{
 		entity->transform.SetScale(String::ToVector3(val));
 	}
@@ -164,7 +163,7 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 		// if component created
 		ASSERT(comp != nullptr);
 
-		if (node->BoolAttribute("active", true))
+		if (node->BoolAttribute("Active", true))
 		{
 			// must be activated through the field
 			// else will be activated as a component

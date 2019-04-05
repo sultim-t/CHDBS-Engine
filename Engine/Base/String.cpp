@@ -3,15 +3,13 @@
 #include <Engine/Math/Quaternion.h>
 #include <string>
 
-String::String(const char * orig)
-{
-	string = AllocateString(orig);
-	length = strlen(string);
-}
+String::String(const char * orig) :
+	string(AllocateString(orig)),
+	length(strlen(string)) { }
 
 String::~String()
 {
-	SYSALLOCATOR.Free(string);
+	SystemAllocator::Free(string);
 }
 
 char * String::AllocateString(const char * orig)
@@ -21,16 +19,22 @@ char * String::AllocateString(const char * orig)
 	UINT size = strlen(orig);
 
 	// allocate memory for copy, +1 for '\0'
-	char *copy = (char*)SYSALLOCATOR.Allocate(size + 1);
+	char *copy = (char*)SystemAllocator::Allocate(size + 1);
 	// copy, +1 for '\0'
 	memcpy(copy, orig, size + 1);
 
 	return copy;
 }
 
-bool String::operator==(const char * b) const
+void String::Init(const char *str)
 {
-	return strcmp(string, b) == 0;
+	string = AllocateString(str);
+	length = strlen(string);
+}
+
+inline void String::Delete()
+{
+	SystemAllocator::Free(string);
 }
 
 String &String::operator=(const char * b)
@@ -43,7 +47,7 @@ String &String::operator=(const char * b)
 	if (string != NULL)
 	{
 		// then deallocate current
-		SYSALLOCATOR.Free(string);
+		SystemAllocator::Free(string);
 	}
 
 	// and reassign
@@ -64,7 +68,7 @@ String String::operator+(const char * b) const
 	UINT size = curSize + bSize;
 
 	// +1 for '\0'
-	copy.string = (char*)SYSALLOCATOR.Allocate(size + 1);
+	copy.string = (char*)SystemAllocator::Allocate(size + 1);
 
 	// copy from this to copy without '\0'
 	memcpy(copy.string, string, curSize);
@@ -87,7 +91,7 @@ String &String::operator+=(const char * b)
 	UINT size = curSize + bSize;
 
 	// +1 for '\0'
-	string = (char*)SYSALLOCATOR.Reallocate((void*)string, curSize + 1, size + 1);
+	string = (char*)SystemAllocator::Reallocate((void*)string, curSize + 1, size + 1);
 
 	// copy from b to string
 	// strcat(string, b);
@@ -113,7 +117,7 @@ void String::Remove(UINT fromLeft, UINT fromRight)
 		string[newLength] = '\0';
 
 		// +1 for '\0'
-		string = (char*)SYSALLOCATOR.Reallocate(string, length + 1, newLength + 1);
+		string = (char*)SystemAllocator::Reallocate(string, length + 1, newLength + 1);
 
 		// reassign length
 		length = newLength;
@@ -129,26 +133,11 @@ void String::Remove(UINT fromLeft, UINT fromRight)
 		memmove(string, &string[newLength], newLength + 1);
 
 		// +1 for '\0'
-		string = (char*)SYSALLOCATOR.Reallocate(string, length + 1, newLength + 1);
+		string = (char*)SystemAllocator::Reallocate(string, length + 1, newLength + 1);
 
 		// reassign length
 		length = newLength;
 	}
-}
-
-bool String::ToBool(const char *str)
-{
-	return ToInt(str) != 0;
-}
-
-int String::ToInt(const char *str)
-{
-	return atoi(str);
-}
-
-float String::ToFloat(const char *str)
-{
-	return (float)atof(str);
 }
 
 Vector3 String::ToVector3(const char *str)
@@ -158,10 +147,11 @@ Vector3 String::ToVector3(const char *str)
 	Vector3 result;
 	UINT index = 0;
 
-	String temp(str);
+	// create copy
+	char *temp = AllocateString(str);
 
 	// pointer to the beginning of float to parse
-	const char *ptr = temp.GetCharPtr();
+	const char *ptr = temp;
 
 	UINT length = strlen(str);
 
@@ -182,6 +172,9 @@ Vector3 String::ToVector3(const char *str)
 			index++;
 		}
 	}
+
+	// delete copy
+	SystemAllocator::Free(temp);
 
 	// convert unparsed to zero
 	for (UINT i = index; i < Dim; i++)
@@ -199,10 +192,11 @@ Quaternion String::ToQuaternion(const char * str)
 	Quaternion result;
 	UINT index = 0;
 
-	String temp(str);
+	// create copy
+	char *temp = AllocateString(str);
 
 	// pointer to the beginning of float to parse
-	const char *ptr = temp.GetCharPtr();
+	const char *ptr = temp;
 
 	UINT length = strlen(str);
 
@@ -224,6 +218,9 @@ Quaternion String::ToQuaternion(const char * str)
 		}
 	}
 
+	// delete copy
+	SystemAllocator::Free(temp);
+
 	// convert unparsed to zero
 	for (UINT i = index; i < Dim; i++)
 	{
@@ -231,6 +228,26 @@ Quaternion String::ToQuaternion(const char * str)
 	}
 
 	return result;
+}
+
+bool String::operator==(const char * b) const
+{
+	return strcmp(string, b) == 0;
+}
+
+bool String::ToBool(const char *str)
+{
+	return ToInt(str) != 0;
+}
+
+int String::ToInt(const char *str)
+{
+	return atoi(str);
+}
+
+float String::ToFloat(const char *str)
+{
+	return (float)atof(str);
 }
 
 Vector3 String::ToVector3() const

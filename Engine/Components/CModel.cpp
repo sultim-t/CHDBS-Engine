@@ -1,9 +1,6 @@
 #include "CModel.h"
 
-#include <Engine/Math/Vector.h>
-#include <Engine/Entities/Entity.h>
 #include <Engine/Systems/RenderingSystem.h>
-#include <Engine/Rendering/Material.h>
 #include <Engine/Rendering/OpenGL.h>
 #include <Engine/Rendering/Vertex.h>
 #include <Engine/ResourceManager/ResourceManager.h>
@@ -145,15 +142,5 @@ inline void CModel::InitStatic()
 	{
 		// init for rendering
 		InitMesh(modelResource->GetHierarchy().GetMeshes()[i], vaos[i], vbos[i], ibos[i], true, false);
-	}
-}
-
-inline void CModel::InitDynamic()
-{
-	UINT meshesCount = modelResource->GetMeshesCount();
-	for (UINT i = 0; i < meshesCount; i++)
-	{
-		// init for rendering
-		InitMesh(modelResource->GetHierarchy().GetMeshes()[i], vaos[i], vbos[i], ibos[i], true, true);
 	}
 }

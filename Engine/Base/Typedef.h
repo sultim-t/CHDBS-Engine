@@ -29,8 +29,6 @@ typedef unsigned long long	UINT64;
 
 // IDs
 typedef UINT		EntityID;
-typedef UINT		MessageID;
-typedef UINT		ComponentID;
 typedef UINT		ModelID;
 typedef UINT		MeshID;
 typedef UINT		MaterialID;

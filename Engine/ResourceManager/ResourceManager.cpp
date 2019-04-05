@@ -137,7 +137,7 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 	// copy animations from assimp
 	for (UINT i = 0; i < scene->mNumAnimations; i++)
 	{
-		CopyAnimation(scene->mAnimations[i], animations[i]);
+		CopyAnimation(scene->mAnimations[i], (void**)&animations[i]);
 	}
 
 	// allocate
@@ -291,10 +291,10 @@ void ResourceManager::CopyMesh(void *from, MeshResource *to)
 	meshResources.Push(to);
 }
 
-void ResourceManager::CopyAnimation(void *f, void *t)
+void ResourceManager::CopyAnimation(void *f, void **t)
 {
 	aiAnimation *from = (aiAnimation*)f;
-	Animation *to = (Animation*)t;
+	Animation **to = (Animation**)t;
 
 	// allocate array for animation nodes
 	StaticArray<AnimationNode*> animNodes;
@@ -348,7 +348,7 @@ void ResourceManager::CopyAnimation(void *f, void *t)
 	}
 
 	// allocate animation
-	to = new Animation((float)from->mDuration, (float)from->mTicksPerSecond, animNodes);
+	*to = new Animation((float)from->mDuration, (float)from->mTicksPerSecond, animNodes);
 }
 
 ModelNode *ResourceManager::ProcessModelNode(void *n, const void *s, ModelNode *parentNode)

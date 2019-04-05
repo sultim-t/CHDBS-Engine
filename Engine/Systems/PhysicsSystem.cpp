@@ -42,14 +42,14 @@ void PhysicsSystem::GetApproximateCollisions()
 		AShape &boundingThis = colThis.GetBoundingSphere();
 
 		// create collision between rigidbodies
-		auto info = BroadCollisionInfo(CollisionType::Rigidbodies);
+		BroadCollisionInfo info = BroadCollisionInfo(CollisionType::Rigidbodies);
 		info.CollThis = &colThis;
 		info.RbThis = rbThis;
 
 		// for each other rigidbody
-		for (int j = dynamicCount - 1; j > i; j++)
+		for (int j = dynamicCount - 1; j > i; j--)
 		{
-			Rigidbody *rbOther = rigidbodies[i];
+			Rigidbody *rbOther = rigidbodies[j];
 			const ICollider &colOther = rbOther->GetCollider();
 		
 			// get approximate shape
@@ -69,7 +69,9 @@ void PhysicsSystem::GetApproximateCollisions()
 		}
 		
 		// create collision between dynamic and static
-		info.Type = CollisionType::RigidbodyStatic;
+		BroadCollisionInfo infoStatic = BroadCollisionInfo(CollisionType::RigidbodyStatic);
+		infoStatic.CollThis = &colThis;
+		infoStatic.RbThis = rbThis;
 
 		// for each static collider
 		for (int j = 0; j < staticCount; j++)
@@ -85,10 +87,10 @@ void PhysicsSystem::GetApproximateCollisions()
 				continue;
 			}
 
-			info.CollOther = colOther;
+			infoStatic.CollOther = colOther;
 
 			// add info to process
-			collisions.Push(info);
+			collisions.Push(infoStatic);
 		}
 	}
 }

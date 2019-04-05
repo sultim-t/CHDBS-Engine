@@ -1,10 +1,11 @@
-<Material name="YellowPicture">
+<Material 
+  Name="YellowPicture">
 
   <Shader
-    pathvert="3.1.3.shadow_mapping.vs.txt"
-    pathfrag="3.1.3.shadow_mapping.fs.txt"/>
+    PathVert="3.1.3.shadow_mapping.vs.txt"
+    PathFrag="3.1.3.shadow_mapping.fs.txt"/>
 
   <Texture
-    type="Diffuse"
-    path="Simple.bmp"/>
+    Type="Diffuse"
+    Path="Simple.bmp"/>
 </Material>

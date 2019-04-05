@@ -216,6 +216,7 @@
     <ClCompile Include="Rendering\Skybox.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />
+    <ClCompile Include="SceneManager\Scene.cpp" />
     <ClCompile Include="SceneManager\SceneManager.cpp" />
     <ClCompile Include="Systems\ComponentSystem.cpp" />
     <ClCompile Include="Systems\InputSystem.cpp" />

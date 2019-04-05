@@ -1,7 +1,17 @@
 #include "IComponent.h"
 
 // Init value
-const ComponentID IComponent::Type = HASHSTRING(TOSTRING(IComponent));
+const UINT IComponent::Type = HASHSTRING(TOSTRING(IComponent));
+
+bool IComponent::IsClassType(const UINT classType) const
+{
+	return classType == Type;
+}
+
+void IComponent::SetOwner(Entity * owner)
+{
+	this->owner = owner;
+}
 
 void IComponent::Enable()
 {

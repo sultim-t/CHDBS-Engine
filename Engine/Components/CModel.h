@@ -10,6 +10,7 @@ class CModel : public IComponent
 {
 	CLASSDECLARATION(CModel)
 
+//protected:
 public:
 	UINT modelId;
 
@@ -28,12 +29,10 @@ public:
 	// Does model receive shadows?
 	bool IsReceivingShadows;
 
-private:
-	void InitMesh(const MeshResource *resource, UINT &vao, UINT &vbo, UINT &ibo, bool useTan, bool dynamic);
+protected:
+	static void InitMesh(const MeshResource *resource, UINT &vao, UINT &vbo, UINT &ibo, bool useTan, bool dynamic);
 	// Init as static model
 	void InitStatic();
-	// Init as dynamic (deformable) model
-	void InitDynamic();
 
 public:
 	// Default constructor
@@ -44,17 +43,17 @@ public:
 	void Update() override;
 	void SetProperty(const String &key, const String &value) override;
 
-	const StaticArray<MeshResource*> &GetMeshes() const;
-	const StaticArray<Material*> &GetMaterials() const;
-	const StaticArray<UINT> &GetVAO() const;
+	const StaticArray<MeshResource*>	&GetMeshes() const;
+	const StaticArray<Material*>		&GetMaterials() const;
+	const StaticArray<UINT>				&GetVAO() const;
 
 	// Calculate tranformation matrices foreach mesh
 	// with current entity's tranform
-	const StaticArray<Matrix4> &GetTranforms() const;
+	const StaticArray<Matrix4>			&GetTranforms() const;
 
 	// Calculate tranformation matrices foreach mesh
 	// with current entity's tranform converted to global space
-	const StaticArray<Matrix4> &GetTranforms(const Matrix4 &global) const;
+	const StaticArray<Matrix4>			&GetTranforms(const Matrix4 &global) const;
 };
 
 inline const StaticArray<Matrix4> &CModel::GetTranforms() const

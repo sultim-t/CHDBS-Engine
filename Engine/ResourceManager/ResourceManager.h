@@ -25,7 +25,7 @@ private:
 	// Allocates mesh resource and copies data
 	void CopyMesh(void *from, MeshResource *to);
 	// Allocates animation and copies data
-	void CopyAnimation(void *from, void *to);
+	void CopyAnimation(void *from, void **to);
 	// Allocates model nodes and copies data
 	ModelNode *ProcessModelNode(void *n, const void *s, ModelNode *parent);
 

@@ -17,10 +17,10 @@ private:
 	UINT allocCalls, freeCalls, reallocCalls;
 
 public:
-	void *Allocate(UINT size);
-	void *CAllocate(UINT count, UINT size);
-	void *Reallocate(void *old, UINT oldSize, UINT newSize);
-	void Free(void *address);
+	static void *Allocate(UINT size);
+	static void *CAllocate(UINT count, UINT size);
+	static void *Reallocate(void *old, UINT oldSize, UINT newSize);
+	static void Free(void *address);
 
 	// Get size of all allocated memory (without freed)
 	UINT GetAllocatedSize();

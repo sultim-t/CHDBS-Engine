@@ -55,9 +55,6 @@ bool SphereCollider::Intersect(const ICollider &col, CollisionInfo &info) const
 			return false;
 		}
 
-		info.CollThis = this;
-		info.CollOther = &col;
-
 		return true;
 	}
 	case ColliderType::Sphere:
@@ -69,9 +66,6 @@ bool SphereCollider::Intersect(const ICollider &col, CollisionInfo &info) const
 			return false;
 		}
 
-		info.CollThis = this;
-		info.CollOther = &col;
-
 		return true;
 	}
 	case ColliderType::Mesh:
@@ -80,9 +74,6 @@ bool SphereCollider::Intersect(const ICollider &col, CollisionInfo &info) const
 		{
 			return false;
 		}
-
-		info.CollThis = this;
-		info.CollOther = &col;
 
 		return true;
 	}

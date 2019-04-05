@@ -79,7 +79,7 @@ bool Intersection::SphereSphere(const Sphere & s1, const Sphere & s2)
 
 bool Intersection::SphereSphere(const Sphere & s1, const Sphere & s2, Vector3 & point, Vector3 & normal)
 {
-	Vector3 delta = s2.GetCenter() - s1.GetCenter();
+	Vector3 delta = s1.GetCenter() - s2.GetCenter();
 
 	float d = delta.LengthSqr();
 	float radiusSum = s1.GetRadius() + s2.GetRadius();
@@ -88,7 +88,7 @@ bool Intersection::SphereSphere(const Sphere & s1, const Sphere & s2, Vector3 & 
 	if (d <= radiusSum * radiusSum)
 	{
 		normal = delta / Sqrt(d);
-		point = s1.GetCenter() + normal * s1.GetRadius();
+		point = s1.GetCenter() - normal * s1.GetRadius();
 
 		return true;
 	}
@@ -741,7 +741,7 @@ bool Intersection::SegRayTriangle(const Vector3 & p, const Vector3 & q, const Tr
 
 bool Intersection::SphereSphere(const Sphere & s1, const Sphere & s2, Vector3 & point, Vector3 & normal, float & penetration)
 {
-	Vector3 delta = s2.GetCenter() - s1.GetCenter();
+	Vector3 delta = s1.GetCenter() - s2.GetCenter();
 
 	float d = delta.LengthSqr();
 	float radiusSum = s1.GetRadius() + s2.GetRadius();
@@ -753,7 +753,7 @@ bool Intersection::SphereSphere(const Sphere & s1, const Sphere & s2, Vector3 & 
 
 		// normalize
 		normal = delta / d;
-		point = s1.GetCenter() + normal * s1.GetRadius();
+		point = s1.GetCenter() - normal * s1.GetRadius();
 
 		penetration = radiusSum - d;
 

@@ -20,11 +20,12 @@ public:
 	inline Bone(int weightCount, const Matrix4 &boneMesh);
 
 	// Set weight, "index" is index of weight
-	inline void SetWeight(int index, const VertexWeight &weight);
+	inline void					SetWeight(int index, const VertexWeight &weight);
 
 	// Get weight, "index" is index of weight
-	inline const VertexWeight &GetWeight(int index) const;
-	inline const Matrix4 &GetMatrix() const;
+	inline const VertexWeight	&GetWeight(int index) const;
+	inline int					GetWeightCount() const;
+	inline const Matrix4		&GetMatrix() const;
 };
 
 inline Bone::Bone(int weightCount, const Matrix4 &boneMesh)
@@ -45,6 +46,11 @@ inline const VertexWeight & Bone::GetWeight(int index) const
 {
 	ASSERT(index >= 0 && index < weightCount);
 	return weights[index];
+}
+
+inline int Bone::GetWeightCount() const
+{
+	return weightCount;
 }
 
 inline const Matrix4 &Bone::GetMatrix() const

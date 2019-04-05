@@ -1,6 +1,6 @@
 #pragma once
 
-// Null terminated string, memory is allocated in a heap
+// Null terminated string allocated in a heap
 class String
 {
 private:
@@ -10,7 +10,7 @@ private:
 
 private:
 	// Allocates new string
-	static char *AllocateString(const char* orig);
+	static char				*AllocateString(const char* orig);
 
 public:
 	// Creates empty string ("")
@@ -22,61 +22,63 @@ public:
 	// Destructor
 	~String();
 
-	inline char &operator[](UINT i);
-	inline char operator[](UINT i) const;
+	inline char				&operator[](UINT i);
+	inline char				operator[](UINT i) const;
 
-	inline bool operator==(const String &b) const;
-	bool operator==(const char *b) const;
-	inline bool operator!=(const String &b) const;
-	inline bool operator!=(const char *b) const;
+	inline bool				operator==(const String &b) const;
+	bool					operator==(const char *b) const;
+	inline bool				operator!=(const String &b) const;
+	inline bool				operator!=(const char *b) const;
 
-	inline String &operator=(const String &b);
-	String &operator=(const char *b);
+	inline String			&operator=(const String &b);
+	String					&operator=(const char *b);
 
 	// Overloaded cast to const char*
 	inline operator const char * () const;
 
 	// Concatenate
-	inline String operator+(const String &b) const;
+	inline String			operator+(const String &b) const;
 	// Concatenate
-	String operator+(const char *b) const;
+	String					operator+(const char *b) const;
 	// Concatenate
-	inline String &operator+=(const String &b);
+	inline String			&operator+=(const String &b);
 	// Concatenate
-	String &operator+=(const char *b);
+	String					&operator+=(const char *b);
 
 	// Returns length of this string
-	inline UINT Length() const;
+	inline UINT				Length() const;
 
 	// Makes string empty
-	inline void Clear();
+	inline void				Clear();
 	// Splits this string by pos
 	// Char with index "pos" will be in "b"
-	inline void Split(UINT pos, String &a, String &b) const;
+	inline void				Split(UINT pos, String &a, String &b) const;
 	// Removes chars from right
-	inline void Remove(UINT fromRight);
+	inline void				Remove(UINT fromRight);
 	// Removes chars
-	void Remove(UINT fromLeft, UINT fromRight);
+	void					Remove(UINT fromLeft, UINT fromRight);
 
-	static bool ToBool(const char *str);
-	static int ToInt(const char *str);
-	static float ToFloat(const char *str);
-	static Vector3 ToVector3(const char *str);
-	static Quaternion ToQuaternion(const char *str);
-	// template <int Dim>
-	// static Vector<float, Dim> ToVector(const char *str);
+	static bool				ToBool(const char *str);
+	static int				ToInt(const char *str);
+	static float			ToFloat(const char *str);
+	static Vector3			ToVector3(const char *str);
+	static Quaternion		ToQuaternion(const char *str);
 
-	inline bool ToBool() const;
-	inline int ToInt() const;
-	inline float ToFloat() const;
-	Vector3 ToVector3() const;
-	Quaternion ToQuaternion() const;
+	inline bool				ToBool() const;
+	inline int				ToInt() const;
+	inline float			ToFloat() const;
+	Vector3					ToVector3() const;
+	Quaternion				ToQuaternion() const;
 
-	inline const char *GetCharPtr() const;
+	inline const char		*GetCharPtr() const;
 
 	// Hash function for a string
-	// Can be used in hash table
-	static UINT StringHash(String toHash);
+	static UINT				StringHash(String toHash);
+
+	// Use this function ONLY if it was allocated manually
+	void					Init(const char *str);
+	// Free string memory
+	void					Delete();
 };
 
 inline String::String() : String("")

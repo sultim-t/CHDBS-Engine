@@ -12,8 +12,8 @@ void * SystemAllocator::Allocate(UINT size)
 	void *allocated = malloc(size);
 	ASSERT(allocated != nullptr);
 
-	allocCalls++;
-	allocatedSize += size;
+	Instance().allocCalls++;
+	Instance().allocatedSize += size;
 
 	return allocated;
 }
@@ -23,8 +23,8 @@ void * SystemAllocator::CAllocate(UINT count, UINT size)
 	void *allocated = calloc(count, size);
 	ASSERT(allocated != nullptr);
 
-	allocCalls++;
-	allocatedSize += size * count;
+	Instance().allocCalls++;
+	Instance().allocatedSize += size * count;
 
 	return allocated;
 }
@@ -34,8 +34,8 @@ void * SystemAllocator::Reallocate(void * old, UINT oldSize, UINT newSize)
 	void *reallocated = realloc(old, newSize);
 	ASSERT(reallocated != nullptr);
 
-	reallocCalls++;
-	allocatedSize += newSize - oldSize;
+	Instance().reallocCalls++;
+	Instance().allocatedSize += newSize - oldSize;
 
 	return reallocated;
 }
@@ -43,7 +43,7 @@ void * SystemAllocator::Reallocate(void * old, UINT oldSize, UINT newSize)
 void SystemAllocator::Free(void * address)
 {
 	free(address);
-	freeCalls++;
+	Instance().freeCalls++;
 }
 
 UINT SystemAllocator::GetAllocatedSize()

@@ -2,6 +2,7 @@
 #include <Engine/Input/Input.h>
 #include <Engine/Entities/Entity.h>
 #include <Engine/Components/CCamera.h>
+#include <Engine/Physics/Rigidbody.h>
 
 #define MOVE_FORWARD	0
 #define MOVE_BACK		1
@@ -74,7 +75,7 @@ void CFreeMovement::ProcessKeyboard()
 	if (Input::IsPressed(Keycode::KeyE))
 		offset += up * velocity;
 
-	t.Translate(offset);
+	owner->GetComponent<Rigidbody>()->GetVelocity() += offset;
 }
 
 void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)

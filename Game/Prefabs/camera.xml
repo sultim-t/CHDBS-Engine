@@ -1,6 +1,6 @@
 <Entity 
-  name="Camera"
-  position="-10 0 0">
+  Name="Camera"
+  Position="-10 0 0">
 
   <CCamera
     ZNear="0.1"
@@ -14,5 +14,11 @@
   <CModel
     Path="Models/DoubleBarrel.obj"
     CastShadows="0"/>
+
+  <Rigidbody
+    Mass="20"
+    Velocity="0 0 0"
+    ColliderType="Sphere"
+    SphereRadius="2"/>
 
 </Entity>

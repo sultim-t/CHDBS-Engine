@@ -61,7 +61,7 @@ void Frustum::Init(float fov, float aspect, float near, float far, const Matrix4
 	this->aspect = aspect;
 	this->near = near;
 	this->far = far;
-	float tanfov = Tan(DEG2RAD(fov) * 0.5f);
+	float tanfov = Tan(DEG2RAD(fov));
 
 	// half widths, heights
 	float nearHWidth = tanfov * near;
@@ -70,9 +70,7 @@ void Frustum::Init(float fov, float aspect, float near, float far, const Matrix4
 	float farHHeight = farHWidth / aspect;
 
 	// transpose matrix to tranform vertices from local to gloval space
-	Matrix4 transform = transformMatrix;// .GetTransposed();
-	transform.SetRow(3, 0);
-	transform = transform.GetTransposed();
+	Matrix4 transform = transformMatrix.GetTransposed();
 
 	// from upper right, counter clockwise
 	nearVerts[0] = transform * Vector4(nearHWidth, nearHHeight, near, 1.0f);

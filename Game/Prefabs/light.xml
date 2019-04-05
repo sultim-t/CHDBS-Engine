@@ -1,6 +1,6 @@
 <Entity
-  name="Sun"
-  euler="50 -30 0">
+  Name="Sun"
+  Euler="50 -30 0">
 
   <CLight
     type="dir"

@@ -25,6 +25,9 @@ private:
 	// current rigidbody collider
 	// which is attached to current entity
 	ICollider *collider;
+
+public:
+	bool NoGravity;
 	
 private:
 	void FixedUpdate();

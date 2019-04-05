@@ -106,7 +106,13 @@ void Rigidbody::FixedUpdate()
 	// and clear list
 	allImpulses.Clear();
 
-	acceleration = force * inversedMass + PhysicsSystem::Gravity;
+	acceleration = force * inversedMass;
+
+	if (!NoGravity)
+	{
+		acceleration = PhysicsSystem::Gravity;
+	}
+
 	velocity += acceleration * Time::GetFixedDeltaTime();
 }
 
@@ -126,7 +132,9 @@ void Rigidbody::SolveCollisions(const CollisionInfo &info)
 	float invMassOther = rbOther == nullptr ? 0.0f : rbOther->inversedMass;
 	float invMassThis = this->inversedMass;
 
-	Vector3 correction = normal * std::fmaxf(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
+
+
+	Vector3 correction = normal * Max(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
 
 	transform->Translate(correction * invMassThis);
 	
@@ -134,6 +142,8 @@ void Rigidbody::SolveCollisions(const CollisionInfo &info)
 	{
 		rbOther->transform->Translate(correction * (-invMassOther));
 	}
+
+
 
 	Vector3 relativeVelocity = rbOther != nullptr ? this->velocity - rbOther->velocity : this->velocity;
 	float contactVel = Vector3::Dot(relativeVelocity, normal);
@@ -153,6 +163,23 @@ void Rigidbody::SolveCollisions(const CollisionInfo &info)
 
 	Vector3 impulse = normal * i;
 
+
+
+	// inertia tensor
+	float I = 1.0f / 32.0f; // hard coded for sphere
+
+	// friction
+	Vector3 tanDir = relativeVelocity - normal * (Vector3::Dot(relativeVelocity, normal));
+	tanDir.Normalize();
+	Vector3 r = info.Contact.Point - transform->GetPosition();
+	Vector3 frictionImpulse = tanDir * (-info.GetStaticFriction());
+	frictionImpulse /= inversedMass + 1.0f / 32.0f * Vector3::Dot(Vector3::Cross(Vector3::Cross(r, tanDir), r), tanDir);
+
+	impulse += frictionImpulse;
+
+
+
+
 	// if exist other rigidbody
 	if (rbOther != nullptr)
 	{
@@ -170,8 +197,9 @@ const ICollider &Rigidbody::GetCollider() const
 
 #define PROPERTY_KEY_MASS		"Mass"
 #define PROPERTY_KEY_VELOCITY	"Velocity"
-#define PROPERTY_KEY_COLTYPE	"ColliderType"
+#define PROPERTY_KEY_NOGRAVITY	"NoGravity"
 
+#define PROPERTY_KEY_COLTYPE	"ColliderType"
 #define PROPERTY_VAL_COL_AABB	"AABB"
 #define PROPERTY_VAL_COL_SPHERE	"Sphere"
 
@@ -255,6 +283,10 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 
 		Vector3 m = value.ToVector3();
 		((AABBCollider*)collider)->GetAABBRef().SetMin(m);
+	}
+	else if (key == PROPERTY_KEY_NOGRAVITY)
+	{
+		NoGravity = true;
 	}
 	else
 	{
