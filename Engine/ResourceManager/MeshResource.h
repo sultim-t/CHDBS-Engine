@@ -32,6 +32,7 @@ private:
 public:
 	// Init arrays
 	inline MeshResource(int verticesSize, int indicesSize, int trianglesSize, int bonesSize);
+	inline ~MeshResource();
 
 	inline const StaticArray<Vertex5>	&GetVertices() const;
 	inline const StaticArray<UINT>		&GetIndices() const;
@@ -60,6 +61,11 @@ inline MeshResource::MeshResource(int verticesSize, int indicesSize, int triangl
 	{
 		bones.Init(bonesSize);
 	}
+}
+
+inline MeshResource::~MeshResource()
+{
+	Delete();
 }
 
 inline const StaticArray<Vertex5> &MeshResource::GetVertices() const

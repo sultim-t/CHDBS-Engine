@@ -5,30 +5,36 @@
 
 class Animation
 {
+	friend class ResourceManager;
+
 private:
 	float duration;
 	float ticksPerSecond;
 
 	StaticArray<AnimationNode*> animationNodes;
 
-	// String name;
+	String name;
 
 public:
-	inline Animation(float duration, float ticksPerSecond, const StaticArray<AnimationNode*> &animationNodes);
+	inline Animation(const char *name, float duration, float ticksPerSecond, int animNodesCount);
 	inline ~Animation();
 
+	inline const String &GetName() const;
 	inline float GetDuration() const;
 	inline float GetTicksPerSecond() const;
 	inline const StaticArray<AnimationNode*> &GetAnimationNodes() const;
 };
 
-inline Animation::Animation(float duration, float ticksPerSecond, const StaticArray<AnimationNode*>& animationNodes)
+inline Animation::Animation(const char *name, float duration, float ticksPerSecond, int animNodesCount)
 {
 	ASSERT(duration >= 0.0f && ticksPerSecond >= 0.0f);
 
+	this->name.Init(name);
+
 	this->duration = duration;
 	this->ticksPerSecond = ticksPerSecond;
-	this->animationNodes = animationNodes;
+
+	this->animationNodes.Init(animNodesCount);
 }
 
 inline Animation::~Animation()
@@ -37,6 +43,11 @@ inline Animation::~Animation()
 	{
 		delete animationNodes[i];
 	}
+}
+
+inline const String & Animation::GetName() const
+{
+	return name;
 }
 
 inline float Animation::GetDuration() const

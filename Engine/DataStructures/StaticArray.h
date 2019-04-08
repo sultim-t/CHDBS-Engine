@@ -70,7 +70,11 @@ inline void StaticArray<T>::Init(UINT amount)
 	ASSERT(this->GetSize() == 0 && !ptr);
 
 	this->amount = amount;
-	ptr.reset((T*)SYSALLOCATOR.Allocate(sizeof(T) * amount));
+
+	if (amount != 0)
+	{
+		ptr.reset((T*)SYSALLOCATOR.Allocate(sizeof(T) * amount));
+	}
 }
 
 template<class T>

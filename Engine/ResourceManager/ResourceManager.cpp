@@ -21,16 +21,8 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <string>
-#include <vector>
-
 void ResourceManager::Init()
 {
-	meshResources.Init(128);
-
 	modelResources.Init(32, 8);
 	modelResources.DeclareHashFunction(String::StringHash);
 
@@ -40,12 +32,6 @@ void ResourceManager::Init()
 
 void ResourceManager::Unload()
 {
-	// clear data in arrays
-	for (int i = 0; i < meshResources.GetSize(); i++)
-	{
-		delete meshResources[i];
-	}
-
 	for (int i = 0; i < meshColliderResources.GetSize(); i++)
 	{
 		delete meshColliderResources[i];
@@ -95,8 +81,6 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 		return resultModel;
 	}
 
-	ModelHierarchy *hierarchy;
-
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
@@ -111,7 +95,7 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 	ModelNode *rootNode = ProcessModelNode(scene->mRootNode, scene, nullptr);
 
 	// allocate memory
-	hierarchy = new ModelHierarchy(rootNode, scene->mNumMeshes, scene->mNumAnimations);
+	ModelHierarchy *hierarchy = new ModelHierarchy(rootNode, scene->mNumMeshes, scene->mNumAnimations);
 
 	StaticArray<MeshResource*> &meshes = hierarchy->meshes;
 	StaticArray<Animation*>	&animations = hierarchy->animations;
@@ -123,7 +107,7 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 
 		// count indices count
 		UINT indexCount = 0;
-		for (unsigned int i = 0; i < sourceMesh->mNumFaces; i++)
+		for (UINT i = 0; i < sourceMesh->mNumFaces; i++)
 		{
 			indexCount += sourceMesh->mFaces[i].mNumIndices;
 		}
@@ -132,12 +116,39 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 		meshes[i] = new MeshResource(sourceMesh->mNumVertices, indexCount, sourceMesh->mNumFaces, sourceMesh->mNumBones);
 
 		CopyMesh(sourceMesh, meshes[i]);
+
+		// if there are bones
+		if (meshes[i]->HasBones())
+		{
+			CopyBones(sourceMesh, hierarchy, meshes[i]);
+		}
 	}
 
 	// copy animations from assimp
 	for (UINT i = 0; i < scene->mNumAnimations; i++)
 	{
-		CopyAnimation(scene->mAnimations[i], (void**)&animations[i]);
+		aiAnimation *from = scene->mAnimations[i];
+
+		// allocate memory for animation
+		animations[i] = new Animation(
+			from->mName.C_Str(),
+			(float)from->mDuration,
+			(float)from->mTicksPerSecond,
+			(int)from->mNumChannels);
+
+		// allocate memory for animation nodes
+		for (UINT j = 0; j < from->mNumChannels; j++)
+		{
+			aiNodeAnim *fromNode = from->mChannels[j];
+
+			animations[i]->animationNodes[j] = new AnimationNode(
+				fromNode->mNumPositionKeys, 
+				fromNode->mNumRotationKeys,
+				fromNode->mNumScalingKeys);
+		}
+
+		// fill data
+		CopyAnimation(from, animations[i]);
 	}
 
 	// allocate
@@ -217,7 +228,7 @@ void ResourceManager::CopyMesh(void *from, MeshResource *to)
 		aiFace face = mesh->mFaces[i];
 
 		// foreach index
-		for (unsigned int j = 0; j < face.mNumIndices; j++)
+		for (UINT j = 0; j < face.mNumIndices; j++)
 		{
 			indices[iindex] = face.mIndices[j];
 			iindex++;
@@ -237,82 +248,96 @@ void ResourceManager::CopyMesh(void *from, MeshResource *to)
 			triangles.Delete();
 		}
 	}
-
-	// if has bones, process them
-	if (to->HasBones())
-	{
-		StaticArray<Bone> &bones = to->bones;
-
-		// foreach bone
-		for (UINT i = 0; i < mesh->mNumBones; i++)
-		{
-			aiBone *orig = mesh->mBones[i];
-			Matrix4 m;
-
-			// copy matrix
-			for (int x = 0; x < 4; x++)
-			{
-				for (int y = 0; y < 4; y++)
-				{
-					m(x, y) = orig->mOffsetMatrix[x][y];
-				}
-			}
-
-			int weightsCount = orig->mNumWeights > BONE_MAX_WEIGHTS ? BONE_MAX_WEIGHTS : orig->mNumWeights;
-
-			// create bone
-			bones[i] = Bone(weightsCount, m);
-
-			// foreach weight in bone
-			for (int w = 0; w < weightsCount; w++)
-			{
-				// if weights more than max allowed, clamp
-				if (w == weightsCount - 1 && weightsCount != orig->mNumWeights)
-				{
-					float clampedWeight = 1.0f;
-					for (int j = 0; j < weightsCount - 1; j++)
-					{
-						clampedWeight -= orig->mWeights[j].mWeight;
-					}
-
-					VertexWeight vweight = VertexWeight(orig->mWeights[w].mVertexId, clampedWeight);
-					bones[i].SetWeight((int)w, vweight);
-
-					break;
-				}
-
-				VertexWeight vweight = VertexWeight(orig->mWeights[w].mVertexId, orig->mWeights[w].mWeight);
-				bones[i].SetWeight((int)w, vweight);
-			}
-		}
-	}
-
-	// register pointer for deallocation
-	meshResources.Push(to);
 }
 
-void ResourceManager::CopyAnimation(void *f, void **t)
+void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshResource * to)
+{
+	aiMesh *mesh = (aiMesh*)from;
+
+	StaticArray<Bone> &bones = to->bones;
+
+	// foreach bone
+	for (UINT i = 0; i < mesh->mNumBones; i++)
+	{
+		aiBone *orig = mesh->mBones[i];
+		const char *boneName = orig->mName.C_Str();
+
+		// copy matrix
+		Matrix4 m;
+		for (int x = 0; x < 4; x++)
+		{
+			for (int y = 0; y < 4; y++)
+			{
+				m(x, y) = orig->mOffsetMatrix[x][y];
+			}
+		}
+
+		int weightsCountInModel = (int)orig->mNumWeights;
+		int weightsCount = weightsCountInModel > BONE_MAX_WEIGHTS ? BONE_MAX_WEIGHTS : weightsCountInModel;
+
+		// find bone node and parent bone
+		const ModelNode *boneNode = hierarchy->FindNode(boneName);
+		const Bone *parentBone = nullptr;
+
+		// if not a root node
+		if (boneNode->parent != nullptr)
+		{
+			// get bone's parent node name
+			const String &parentNodeName = boneNode->parent->GetName();
+
+			// try to find bone with the same name
+			for (UINT i = 0; i < mesh->mNumBones; i++)
+			{
+				// if names are equal
+				if (parentNodeName == mesh->mBones[i]->mName.C_Str())
+				{
+					// save its address
+					parentBone = &bones[i];
+					break;
+				}
+			}
+		}
+
+		// create bone
+		bones[i] = Bone(boneName, parentBone, boneNode, weightsCount, m);
+
+		// if weights in model more they will be normalized
+		float sum = 0.0f;
+
+		// get sum
+		for (int w = 0; w < weightsCount; w++)
+		{
+			sum += orig->mWeights[w].mWeight;
+		}
+
+		// set normalized weights
+		for (int w = 0; w < weightsCount; w++)
+		{
+			VertexWeight vweight = VertexWeight(orig->mWeights[w].mVertexId, orig->mWeights[w].mWeight / sum);
+			bones[i].SetWeight((int)w, vweight);
+		}
+	}
+}
+
+void ResourceManager::CopyAnimation(void *f, Animation *to)
 {
 	aiAnimation *from = (aiAnimation*)f;
-	Animation **to = (Animation**)t;
 
 	// allocate array for animation nodes
-	StaticArray<AnimationNode*> animNodes;
-	animNodes.Init(from->mNumChannels);
+	StaticArray<AnimationNode*> &animNodes = to->animationNodes;
 	
 	// copy data
 	for (UINT i = 0; i < from->mNumChannels; i++)
 	{
+		// source
 		aiNodeAnim *source = from->mChannels[i];
 		
-		// init data to set
-		StaticArray<AKeyPosition>	positionKeys;
-		StaticArray<AKeyRotation>	rotationKeys;
-		StaticArray<AKeyScale>		scaleKeys;
-		positionKeys.Init((UINT)source->mNumPositionKeys);
-		rotationKeys.Init((UINT)source->mNumRotationKeys);
-		scaleKeys	.Init((UINT)source->mNumScalingKeys);
+		// destination
+		StaticArray<AKeyPosition>	&positionKeys	= animNodes[i]->positionKeys;
+		StaticArray<AKeyRotation>	&rotationKeys	= animNodes[i]->rotationKeys;
+		StaticArray<AKeyScale>		&scaleKeys		= animNodes[i]->scaleKeys;
 
+		// copy positions
 		for (UINT k = 0; k < source->mNumPositionKeys; k++)
 		{
 			positionKeys[k].Time = (float)source->mPositionKeys[k].mTime;
@@ -323,6 +348,7 @@ void ResourceManager::CopyAnimation(void *f, void **t)
 			}
 		}
 
+		// copy rotations
 		for (UINT k = 0; k < source->mNumRotationKeys; k++)
 		{
 			rotationKeys[k].Time = (float)source->mRotationKeys[k].mTime;
@@ -333,6 +359,7 @@ void ResourceManager::CopyAnimation(void *f, void **t)
 			rotationKeys[k].Value[3] = source->mRotationKeys[k].mValue.z;
 		}
 
+		// copy scales
 		for (UINT k = 0; k < source->mNumScalingKeys; k++)
 		{
 			scaleKeys[k].Time = (float)source->mScalingKeys[k].mTime;
@@ -342,13 +369,7 @@ void ResourceManager::CopyAnimation(void *f, void **t)
 				scaleKeys[k].Value[j] = source->mScalingKeys[k].mValue[j];
 			}
 		}
-
-		// set
-		animNodes[i] = new AnimationNode(positionKeys, rotationKeys, scaleKeys);
 	}
-
-	// allocate animation
-	*to = new Animation((float)from->mDuration, (float)from->mTicksPerSecond, animNodes);
 }
 
 ModelNode *ResourceManager::ProcessModelNode(void *n, const void *s, ModelNode *parentNode)
@@ -356,35 +377,32 @@ ModelNode *ResourceManager::ProcessModelNode(void *n, const void *s, ModelNode *
 	aiNode *source = (aiNode*)n;
 	aiScene *scene = (aiScene*)s;
 
-	// allocate data to fill
-	Matrix4 transformation;
-
-	StaticArray<int> meshes;
-	meshes.Init(source->mNumMeshes);
-
-	StaticArray<ModelNode*> childNodes;
-	childNodes.Init(source->mNumChildren);
-
 	// copy transformation
+	Matrix4 transformation;
 	for (int x = 0; x < 4; x++)
 	{
 		for (int y = 0; y < 4; y++)
 		{
-			// engine is using transposed matries
+			// engine is using transposed transformation matrices
 			transformation(x, y) = source->mTransformation[y][x];
 		}
 	}
 
+	// allocate data for model node
+	ModelNode *node = new ModelNode(source->mName.C_Str(), parentNode, transformation, source->mNumChildren, source->mNumMeshes);
+
+	// data to fill
+	StaticArray<int>		&meshes		= node->meshes;
+	StaticArray<ModelNode*> &childNodes = node->childNodes;
+
 	// copy mesh indices
-	for (unsigned int i = 0; i < source->mNumMeshes; i++)
+	for (UINT i = 0; i < source->mNumMeshes; i++)
 	{
-		meshes[i] = source->mMeshes[i];
+		meshes[i] = (int)source->mMeshes[i];
 	}
 
-	ModelNode *node = new ModelNode(parentNode, childNodes, transformation, meshes);
-
 	// copy child nodes
-	for (unsigned int i = 0; i < source->mNumChildren; i++)
+	for (UINT i = 0; i < source->mNumChildren; i++)
 	{
 		// process nodes recursively
 		childNodes[i] = ProcessModelNode(source->mChildren[i], scene, node);

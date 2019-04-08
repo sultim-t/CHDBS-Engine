@@ -148,6 +148,7 @@ const Matrix4 Transform::GetTransformMatrix() const
 
 	quat.ToAxisAngle(axis, angle);
 
+	// inversed
 	result = TranslateMatrix(result, position);
 	result = RotateMatrix(result, axis, angle);
 	result = ScaleMatrix(result, scale);

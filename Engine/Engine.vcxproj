@@ -298,6 +298,7 @@
     <ClInclude Include="Math\Matrix.h" />
     <ClInclude Include="Math\Vector.h" />
     <ClInclude Include="Base\Typedef.h" />
+    <ClInclude Include="Rendering\Skeleton.h" />
     <ClInclude Include="Rendering\Skybox.h" />
     <ClInclude Include="Rendering\Texture.h" />
     <ClInclude Include="Rendering\TextureColorFormat.h" />

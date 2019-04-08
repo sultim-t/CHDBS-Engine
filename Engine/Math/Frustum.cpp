@@ -69,7 +69,8 @@ void Frustum::Init(float fov, float aspect, float near, float far, const Matrix4
 	float farHWidth = tanfov * far;
 	float farHHeight = farHWidth / aspect;
 
-	// transpose matrix to tranform vertices from local to gloval space
+	// tranform vertices from local to gloval space
+	// transpose matrix to calculate final vert position as Matrix*Vector
 	Matrix4 transform = transformMatrix.GetTransposed();
 
 	// from upper right, counter clockwise

@@ -2,19 +2,19 @@
 
 #include "AnimationKey.h"
 #include <Engine/DataStructures/StaticArray.h>
+#include <Engine/Math/Quaternion.h>
 
 class AnimationNode
 {
+	friend class ResourceManager;
+
 private:
 	StaticArray<AKeyPosition>	positionKeys;
 	StaticArray<AKeyRotation>	rotationKeys;
 	StaticArray<AKeyScale>		scaleKeys;
 
 public:
-	inline AnimationNode(
-		const StaticArray<AKeyPosition>	&positionKeys,
-		const StaticArray<AKeyRotation>	&rotationKeys,
-		const StaticArray<AKeyScale>	&scaleKeys);
+	inline AnimationNode(int positionKeysCount, int rotationKeysCount, int scaleKeysCount);
 
 	const StaticArray<AKeyPosition>	&GetPositionKeys() const;
 	const StaticArray<AKeyRotation>	&GetRotationKeys() const;
@@ -25,11 +25,11 @@ public:
 	bool GetInterpolatedScale(float t, Vector3 &outScale) const;
 };
 
-inline AnimationNode::AnimationNode(const StaticArray<AKeyPosition>& positionKeys, const StaticArray<AKeyRotation>& rotationKeys, const StaticArray<AKeyScale>& scaleKeys)
+inline AnimationNode::AnimationNode(int positionKeysCount, int rotationKeysCount, int scaleKeysCount)
 {
-	this->positionKeys	= positionKeys;
-	this->rotationKeys	= rotationKeys;
-	this->scaleKeys		= scaleKeys;
+	positionKeys.Init(positionKeysCount);
+	rotationKeys.Init(rotationKeysCount);
+	scaleKeys	.Init(scaleKeysCount);
 }
 
 inline const StaticArray<AKeyPosition>& AnimationNode::GetPositionKeys() const

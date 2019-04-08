@@ -19,6 +19,7 @@ private:
 
 public:
 	inline ModelResource(const char *path, ModelHierarchy *hierarchy);
+	inline ~ModelResource();
 
 	template <UINT Size>
 	inline void SetMaterials(const Array<Material*, Size> &materials);
@@ -45,6 +46,11 @@ inline ModelResource::ModelResource(const char *path, ModelHierarchy *hierarchy)
 	UINT meshesCount = hierarchy->GetMeshes().GetSize();
 
 	this->materials.Init(meshesCount);
+}
+
+inline ModelResource::~ModelResource()
+{
+	delete hierarchy;
 }
 
 inline const ModelHierarchy &ModelResource::GetHierarchy() const

@@ -110,7 +110,7 @@ void Rigidbody::FixedUpdate()
 
 	if (!NoGravity)
 	{
-		acceleration = PhysicsSystem::Gravity;
+		acceleration += PhysicsSystem::Gravity;
 	}
 
 	velocity += acceleration * Time::GetFixedDeltaTime();

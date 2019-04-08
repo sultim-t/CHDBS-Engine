@@ -76,6 +76,7 @@ public:
 	static UINT				StringHash(String toHash);
 
 	// Use this function ONLY if it was allocated manually
+	// (through malloc or other, there is garbage in the memory to set in)
 	void					Init(const char *str);
 	// Free string memory
 	void					Delete();

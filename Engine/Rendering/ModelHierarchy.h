@@ -1,9 +1,11 @@
 #pragma once
 
 #include "ModelNode.h"
+#include "Animation.h"
 #include <Engine/DataStructures/StaticArray.h>
 #include <Engine/DataStructures/Array.h>
 #include <Engine/Math/Matrix.h>
+#include <Engine/ResourceManager/MeshResource.h>
 
 // Represents hierachy of meshes
 // Note: doesn't contain textures and materials,
@@ -32,6 +34,8 @@ private:
 private:
 	// Processes node's global transformations
 	void GetTranformsFromNode(const ModelNode *node, const Matrix4 &parentGlobal) const;
+	// Find node with given name
+	inline const ModelNode *FindNode(const char *name, const ModelNode *current) const;
 
 public:
 	// Allocates memory
@@ -50,9 +54,16 @@ public:
 	//    "global" is global tranformation matrix
 	// Note: memory is not allocated,
 	//       returns reference to class member
-	const StaticArray<Matrix4> &GetTranforms(const Matrix4 &global) const;
+	inline const StaticArray<Matrix4> &GetTranforms(const Matrix4 &global) const;
 
+	// Does at least one animation exist?
 	inline bool IsAnimated() const;
+
+	// Find node with given name
+	inline const ModelNode *FindNode(const char *name) const;
+
+	// Find node with given name
+	inline const Animation *FindAnimation(const char *name) const;
 };
 
 inline ModelHierarchy::ModelHierarchy(ModelNode * rootNode, int meshesCount, int animationsCount) :
@@ -67,10 +78,22 @@ inline ModelHierarchy::ModelHierarchy(ModelNode * rootNode, int meshesCount, int
 inline ModelHierarchy::~ModelHierarchy()
 {
 	// delete root node
-	// all children nodes will be deleted in ModelNode class
-	delete rootNode;
+	// all child nodes will be deleted in ModelNode class
 
-	// static arrays are deleted automatically 
+	if (rootNode != nullptr)
+	{
+		delete rootNode;
+	}
+
+	for (UINT i = 0; i < animations.GetSize(); i++)
+	{
+		delete animations[i];
+	}	
+	
+	for (UINT i = 0; i < meshes.GetSize(); i++)
+	{
+		delete meshes[i];
+	}
 }
 
 inline const StaticArray<MeshResource*> &ModelHierarchy::GetMeshes() const
@@ -91,6 +114,8 @@ inline bool ModelHierarchy::IsAnimated() const
 inline void ModelHierarchy::GetTranformsFromNode(const ModelNode *node, const Matrix4 &parentGlobal) const
 {
 	// current node's transformation
+	// engine uses tranposed transformation matrices (last row has position)
+	// so to tranform from local to global:
 	Matrix4 current = node->GetTransform() * parentGlobal;
 
 	// get meshes' indices
@@ -119,4 +144,47 @@ inline const StaticArray<Matrix4> &ModelHierarchy::GetTranforms(const Matrix4 &g
 
 	// return classs member
 	return tranforms;
+}
+
+inline const ModelNode *ModelHierarchy::FindNode(const char *name) const
+{
+	return FindNode(name, rootNode);
+}
+
+inline const Animation *ModelHierarchy::FindAnimation(const char *name) const
+{
+	UINT count = animations.GetSize();
+	for (UINT i = 0; i < count; i++)
+	{
+		if (animations[i]->GetName() == name)
+		{
+			return animations[i];
+		}
+	}
+
+	return nullptr;
+}
+
+inline const ModelNode *ModelHierarchy::FindNode(const char *name, const ModelNode *current) const
+{
+	// if it's curren node
+	if (current->GetName() == name)
+	{
+		return current;
+	}
+
+	// for each child
+	const StaticArray<ModelNode*> &children = current->GetChildNodes();
+	UINT count = children.GetSize();
+	for (UINT i = 0; i < count; i++)
+	{
+		// try to find in children
+		if (FindNode(name, children[i]) != nullptr)
+		{
+			// if found
+			return children[i];
+		}
+	}
+
+	return nullptr;
 }
