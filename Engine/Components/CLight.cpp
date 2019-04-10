@@ -3,20 +3,17 @@
 #include <Engine/Entities/Entity.h>
 #include <Engine/Systems/RenderingSystem.h>
 
-#define PROPERTY_KEY_TYPE		"type"
-#define PROPERTY_KEY_COLORR		"colorr"
-#define PROPERTY_KEY_COLORG		"colorg"
-#define PROPERTY_KEY_COLORB		"colorb"
-#define PROPERTY_KEY_BIAS		"bias"
-#define PROPERTY_KEY_STATIC		"static"
-#define PROPERTY_KEY_SHADOWS	"shadows"
-#define PROPERTY_KEY_CONEANGLE	"angle"
-#define PROPERTY_KEY_RANGE		"range"
+#define PROPERTY_KEY_TYPE		"Type"
+#define PROPERTY_KEY_COLOR		"Color"
+#define PROPERTY_KEY_BIAS		"Bias"
+#define PROPERTY_KEY_STATIC		"IsStatic"
+#define PROPERTY_KEY_SHADOWS	"Shadows"
+#define PROPERTY_KEY_CONEANGLE	"Angle"
+#define PROPERTY_KEY_RANGE		"Range"
 
-#define PROPERTY_VAL_TYPEDIR	"dir"
-#define PROPERTY_VAL_TYPEPOINT	"point"
-#define PROPERTY_VAL_TYPESPOT	"spot"
-#define PROPERTY_VAL_TYPEAMBIENT "ambient"
+#define PROPERTY_VAL_TYPEDIR	"Directional"
+#define PROPERTY_VAL_TYPEPOINT	"Point"
+#define PROPERTY_VAL_TYPESPOT	"Spot"
 
 CLASSDEFINITION(IComponent, CLight)
 
@@ -73,7 +70,7 @@ bool CLight::IsStatic() const
 	return isStatic;
 }
 
-const Vector3 &CLight::GetColor() const
+const Color3F &CLight::GetColor() const
 {
 	return color;
 }
@@ -113,7 +110,7 @@ void CLight::SetStatic(bool isStatic)
 	this->isStatic = isStatic;
 }
 
-void CLight::SetColor(const Color &color)
+void CLight::SetColor(const Color3F &color)
 {
 	this->color = color;
 }
@@ -176,26 +173,14 @@ void CLight::SetProperty(const String &key, const String &value)
 		{
 			ltype = LightType::Spot;
 		}
-		else if (value == PROPERTY_VAL_TYPEAMBIENT)
-		{
-			ltype = LightType::Ambient;
-		}
 		else
 		{
 			Logger::Print("Wrong light type");
 		}
 	}
-	else if (key == PROPERTY_KEY_COLORR)
+	else if (key == PROPERTY_KEY_COLOR)
 	{
-		color[0] = value.ToFloat();
-	}
-	else if (key == PROPERTY_KEY_COLORG)
-	{
-		color[1] = value.ToFloat();
-	}
-	else if (key == PROPERTY_KEY_COLORB)
-	{
-		color[2] = value.ToFloat();
+		color = value.ToVector3();
 	}
 	else if (key == PROPERTY_KEY_BIAS)
 	{

@@ -28,6 +28,13 @@ public:
 	// Main phase of collision detection
 	void SolveCollisions();
 
+	// Solve collision for objects in collision info
+	void SolveCollision(const CollisionInfo &info);
+	// Position correction
+	void ApplyPositionCorrection(Rigidbody *rbThis, Rigidbody *rbOther, float invMassThis, float invMassOther, const Vector3 &normal, float penetration);
+	// Calculate friction vector
+	Vector3 CalculateFriction(const Vector3 &relativeVelocity, const Vector3 &normal, float invMass, float impulse, float staticFriction, float dynamicFriction);
+
 	// Get instance of system
 	static PhysicsSystem &Instance();
 

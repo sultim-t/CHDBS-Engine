@@ -11,10 +11,8 @@ private:
 	// Matrix for tranformation from bone's local space to its world space
 	Matrix4			offsetMatrix;
 
-	// How many weights to use
-	int				weightCount;
 	// Array of weights
-	VertexWeight	weights[BONE_MAX_WEIGHTS];
+	StaticArray<VertexWeight>	weights;
 	// Name of this bone
 	String			name;
 
@@ -24,47 +22,68 @@ private:
 	const ModelNode	*modelNode;
 
 public:
-	// Constructor
-	inline Bone(const char *name, const Bone *parent, const ModelNode *modelNode, int weightCount, const Matrix4 &offsetMatrix);
+	// Default constructor
+	inline Bone(const Bone *parent, const ModelNode *modelNode, const Matrix4 &offsetMatrix);
+
+	// Initialize dynamic structures
+	inline void Init(const char *name, UINT weightCount);
 
 	// Set weight, "index" is index of weight
-	inline void					SetWeight(int index, const VertexWeight &weight);
+	inline void					SetWeight(UINT index, const VertexWeight &weight);
 
+	// Get name of this bone
+	inline const String			&GetName() const;
 	// Get weight, "index" is index of weight
-	inline const VertexWeight	&GetWeight(int index) const;
+	inline const VertexWeight	&GetWeight(UINT index) const;
 	// Get bone's offset matrix, which tranforms from bone's local space to its world space
 	inline const Matrix4		&GetOffsetMatrix() const;
 	// How many weights are used
-	inline int					GetWeightCount() const;
+	inline UINT					GetWeightCount() const;
+	inline const ModelNode		&GetModelNode() const;
 
 	// Get matrix with all parents' tranformations
 	inline Matrix4	GetTranformationMatrix() const;
 };
 
-inline Bone::Bone(const char *name, const Bone *parent, const ModelNode *modelNode, int weightCount, const Matrix4 &offsetMatrix)
-	: parent(parent), modelNode(modelNode), weightCount(weightCount), offsetMatrix(offsetMatrix)
+inline Bone::Bone(const Bone *parent, const ModelNode *modelNode, const Matrix4 &offsetMatrix)
 {
-	ASSERT(weightCount >= 0 && weightCount <= BONE_MAX_WEIGHTS);
-	
-	// bone is value type, so it will be allocated through malloc() in data structures
-	this->name.Init(name);
+	this->parent = parent;
+	this->modelNode = modelNode;
+	this->offsetMatrix = offsetMatrix;
 }
 
-inline void Bone::SetWeight(int index, const VertexWeight &weight)
+inline void Bone::Init(const char *name, UINT weightCount)
 {
-	ASSERT(index >= 0 && index < weightCount);
+	// bone is value type, so it will be allocated through malloc() in data structures
+	this->name.Init(name);
+	this->weights.Init(weightCount);
+}
+
+inline void Bone::SetWeight(UINT index, const VertexWeight &weight)
+{
+	ASSERT(index >= 0 && index < weights.GetSize());
 	weights[index] = weight;
 }
 
-inline const VertexWeight & Bone::GetWeight(int index) const
+inline const String &Bone::GetName() const
 {
-	ASSERT(index >= 0 && index < weightCount);
+	return name;
+}
+
+inline const VertexWeight & Bone::GetWeight(UINT index) const
+{
+	ASSERT(index >= 0 && index < weights.GetSize());
 	return weights[index];
 }
 
-inline int Bone::GetWeightCount() const
+inline UINT Bone::GetWeightCount() const
 {
-	return weightCount;
+	return weights.GetSize();
+}
+
+inline const ModelNode & Bone::GetModelNode() const
+{
+	return *modelNode;
 }
 
 inline Matrix4 Bone::GetTranformationMatrix() const

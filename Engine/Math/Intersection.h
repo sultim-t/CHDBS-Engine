@@ -8,7 +8,8 @@ public:
 	// Does sphere intersects with negative halfspace of plane?
 	// Note: consider that negative halfspace is solid
 	static bool SpherePlane(const Sphere &s, const Plane &p);
-	
+	static bool SphereAABB(const Sphere &s, const AABB &aabb);
+
 	
 	static bool AABBSphere(const AABB &aabb, const Sphere &s);
 	static bool AABBSphere(const AABB &aabb, const Sphere &s, Vector3 &point, Vector3 &normal);
@@ -70,6 +71,7 @@ public:
 	// With penetration data
 	static bool SphereSphere(const Sphere &s1, const Sphere &s2, Vector3 &point, Vector3 &normal, float &penetration);
 	static bool SpherePlane(const Sphere &s, const Plane &p, float &penetration);
+	static bool SphereAABB(const Sphere &s, const AABB &aabb, Vector3 &point, Vector3 &normal, float &penetration);
 	static bool AABBSphere(const AABB &aabb, const Sphere &s, Vector3 &point, Vector3 &normal, float &penetration);
 	static bool AABBAABB(const AABB &aabb1, const AABB &aabb2, Vector3 &point, Vector3 &normal, float &penetration);
 	static bool AABBPlane(const AABB &aabb, const Plane &p, float &penetration);

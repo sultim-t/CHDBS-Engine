@@ -168,7 +168,7 @@ int main()
 		RenderingSystem::Instance().Update();
 		
 		const SphereCollider &dbCollider = (const SphereCollider&)(dbEntity->GetComponent<Rigidbody>()->GetCollider());
-		DebugDrawer::Instance().Draw(dbCollider.GetSphere());
+		//DebugDrawer::Instance().Draw(dbCollider.GetSphere());
 
 		s += Time::GetDeltaTime();
 		if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)

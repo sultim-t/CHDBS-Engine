@@ -30,8 +30,13 @@ public:
 	bool NoGravity;
 	
 private:
+	// Update
 	void FixedUpdate();
+	// Solve collisiion for this rigidbody
 	void SolveCollisions(const CollisionInfo &info);
+
+	// Function to identify material combine option
+	PhysicMaterialCombine GetCombineOption(const String &value);
 
 public:
 	~Rigidbody();

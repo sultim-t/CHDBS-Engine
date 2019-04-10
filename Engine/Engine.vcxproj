@@ -213,6 +213,7 @@
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Math\AABB.cpp" />
     <ClCompile Include="Math\BasicMath.cpp" />
+    <ClCompile Include="Rendering\Skeleton.cpp" />
     <ClCompile Include="Rendering\Skybox.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />

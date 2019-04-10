@@ -4,6 +4,7 @@
 #include <Engine/Rendering/Animation.h>
 #include <Engine/Rendering/AnimationNode.h>
 #include <Engine/Rendering/Bone.h>
+#include <Engine/Rendering/OpenGL.h>
 #include <Engine/Systems/RenderingSystem.h>
 #include <Engine/ResourceManager/ResourceManager.h>
 #include <Engine/ResourceManager/MeshResource.h>
@@ -18,6 +19,20 @@ void CSkinnedModel::InitDynamic()
 		// init for rendering
 		InitMesh(modelResource->GetHierarchy().GetMeshes()[i], vaos[i], vbos[i], ibos[i], true, true); // <- only difference
 	}
+}
+
+void CSkinnedModel::GFXUpdate(int meshIndex)
+{
+	// bind current mesh
+	glBindVertexArray(vaos[meshIndex]);
+	// bind mesh's buffer
+	glBindBuffer(GL_ARRAY_BUFFER, vbos[meshIndex]);
+
+	// update data in buffer
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices[meshIndex]->GetSize() * sizeof(Vertex5), vertices[meshIndex]->GetArray());
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 void CSkinnedModel::Init()
@@ -62,7 +77,7 @@ CSkinnedModel::~CSkinnedModel()
 
 void CSkinnedModel::Update()
 {
-	/*const Animation *animation = modelResource->GetHierarchy().GetAnimations()[currentAnimation];
+	const Animation *animation = modelResource->GetHierarchy().GetAnimations()[currentAnimation];
 
 	if (currentTime > animation->GetDuration())
 	{
@@ -74,35 +89,42 @@ void CSkinnedModel::Update()
 	int meshIndex = 0;
 
 	MeshResource *mesh = modelResource->GetHierarchy().GetMeshes()[meshIndex];
-	auto &arr = *vertices[meshIndex];
-	
-	for (UINT v = 0; v < arr.GetSize(); v++)
+	StaticArray<Vertex5> &meshVertices = *vertices[meshIndex];
+
+	// for each vertex
+	for (UINT v = 0; v < meshVertices.GetSize(); v++)
 	{
-		for (UINT i = 0; i < nodes.GetSize(); i++)
-		{
-			auto &bones = mesh->GetBones();
-
-			StaticArray<Matrix4> animTransforms;
-			animTransforms.Init(bones.GetSize());
-
-			for (UINT i = 0; i < bones.GetSize(); i++)
-			{
-				for (UINT j = 0; j < bones[j].GetWeightCount(); j++)
-				{
-					const VertexWeight &w = bones[i].GetWeight(j);
-
-					if (w.VertexID == v)
-					{
-						arr[v].Position = bones[i].GetMatrix() * w.Weight * Vector4();
-					}
-				}
-			}
-
-			//nodes[i]->GetInterpolatedPosition(currentTime, );
-		}
+		meshVertices[v] = mesh->GetVertices()[v];
 	}
 
-	currentTime += Time::GetDeltaTime();*/
+	// for each animation node
+	//for (UINT i = 0; i < nodes.GetSize(); i++)
+	{
+		const StaticArray<Bone*> &bones = mesh->GetBones();
+
+		// for each bone
+		for (UINT i = 0; i < bones.GetSize(); i++)
+		{
+			Matrix4 boneTransform = bones[i]->GetTranformationMatrix();
+
+			for (UINT j = 0; j < bones[i]->GetWeightCount(); j++)
+			{
+				const VertexWeight &w = bones[i]->GetWeight(j);
+
+				// get affected vertex
+				const Vertex5 &vertex = mesh->GetVertices()[w.VertexID];
+
+				Matrix4 boneTransformWeighted = boneTransform * w.Weight;
+				meshVertices[w.VertexID].Position = boneTransformWeighted * vertex.Position;
+			}
+		}
+
+		//nodes[i]->GetInterpolatedPosition(currentTime, );
+	}
+
+	GFXUpdate(meshIndex);
+
+	currentTime += Time::GetDeltaTime();
 }
 
 void CSkinnedModel::SetProperty(const String & key, const String & value)

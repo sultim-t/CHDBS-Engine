@@ -116,80 +116,6 @@ void Rigidbody::FixedUpdate()
 	velocity += acceleration * Time::GetFixedDeltaTime();
 }
 
-void Rigidbody::SolveCollisions(const CollisionInfo &info)
-{
-	ASSERT(this == info.RbThis);
-
-	float penetration = info.Contact.Penetration;
-	Vector3 normal = info.Contact.Normal.GetNormalized();
-	Rigidbody *rbOther = info.RbOther;
-
-	// position correction
-	float slop = 0.01f;
-	float percent = 0.2f;
-
-	// if other is a static collider, then assume that its mass = Inf 
-	float invMassOther = rbOther == nullptr ? 0.0f : rbOther->inversedMass;
-	float invMassThis = this->inversedMass;
-
-
-
-	Vector3 correction = normal * Max(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
-
-	transform->Translate(correction * invMassThis);
-	
-	if (rbOther != nullptr)
-	{
-		rbOther->transform->Translate(correction * (-invMassOther));
-	}
-
-
-
-	Vector3 relativeVelocity = rbOther != nullptr ? this->velocity - rbOther->velocity : this->velocity;
-	float contactVel = Vector3::Dot(relativeVelocity, normal);
-
-	// velocities are separating
-	if (contactVel > 0)
-	{
-		return;
-	}
-
-	// calculate restitution
-	float restitution = info.GetRestitution();
-
-	// calculate impulse scalar
-	float i = -contactVel * (1.0f + restitution);
-	i /= invMassThis + invMassOther;
-
-	Vector3 impulse = normal * i;
-
-
-
-	// inertia tensor
-	float I = 1.0f / 32.0f; // hard coded for sphere
-
-	// friction
-	Vector3 tanDir = relativeVelocity - normal * (Vector3::Dot(relativeVelocity, normal));
-	tanDir.Normalize();
-	Vector3 r = info.Contact.Point - transform->GetPosition();
-	Vector3 frictionImpulse = tanDir * (-info.GetStaticFriction());
-	frictionImpulse /= inversedMass + 1.0f / 32.0f * Vector3::Dot(Vector3::Cross(Vector3::Cross(r, tanDir), r), tanDir);
-
-	impulse += frictionImpulse;
-
-
-
-
-	// if exist other rigidbody
-	if (rbOther != nullptr)
-	{
-		// change its velocity
-		rbOther->velocity -= impulse * invMassOther;
-	}
-
-	this->velocity += impulse * invMassThis;
-}
-
 const ICollider &Rigidbody::GetCollider() const
 {
 	return *collider;
@@ -199,11 +125,24 @@ const ICollider &Rigidbody::GetCollider() const
 #define PROPERTY_KEY_VELOCITY	"Velocity"
 #define PROPERTY_KEY_NOGRAVITY	"NoGravity"
 
+// Colliders
 #define PROPERTY_KEY_COLTYPE	"ColliderType"
 #define PROPERTY_VAL_COL_AABB	"AABB"
 #define PROPERTY_VAL_COL_SPHERE	"Sphere"
 
 #define PROPERTY_KEY_COLOFFSET	"ColliderOffset"
+
+#define PROPERTY_KEY_COLSTATICFRICTION	"StaticFriction"
+#define PROPERTY_KEY_COLDYNAMICFRICTION	"DynamicFriction"
+#define PROPERTY_KEY_COLFRICTCOMBINE	"FrictionCombine"
+
+#define PROPERTY_KEY_COLRESTITUTION		"Restitution"
+#define PROPERTY_KEY_COLRESTITCOMBINE	"RestitutionCombine"
+
+#define PROPERTY_KEY_COLCOMBINEAVERAGE	"CombineAverage"
+#define PROPERTY_KEY_COLCOMBINEMIN		"CombineMinimum"
+#define PROPERTY_KEY_COLCOMBINEMAX		"CombineMaximum"
+#define PROPERTY_KEY_COLCOMBINEMULTIPLY	"CombineMultiply"
 
 // for spheres
 #define PROPERTY_KEY_COLRADIUS	"SphereRadius"
@@ -288,6 +227,31 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 	{
 		NoGravity = true;
 	}
+	else if (key == PROPERTY_KEY_COLSTATICFRICTION)
+	{
+		ASSERT(collider != nullptr);
+		collider->GetPhysicMaterial().SetStaticFriction(value.ToFloat());
+	}
+	else if (key == PROPERTY_KEY_COLDYNAMICFRICTION)
+	{
+		ASSERT(collider != nullptr);
+		collider->GetPhysicMaterial().SetDynamicFriction(value.ToFloat());
+	}
+	else if (key == PROPERTY_KEY_COLFRICTCOMBINE)
+	{
+		ASSERT(collider != nullptr);
+		collider->GetPhysicMaterial().SetFrictionCombine(GetCombineOption(value));
+	}
+	else if (key == PROPERTY_KEY_COLRESTITUTION)
+	{
+		ASSERT(collider != nullptr);
+		collider->GetPhysicMaterial().SetRestitution(value.ToFloat());
+	}
+	else if (key == PROPERTY_KEY_COLRESTITCOMBINE)
+	{
+		ASSERT(collider != nullptr);
+		collider->GetPhysicMaterial().SetRestitutionCombine(GetCombineOption(value));
+	}
 	else
 	{
 		String s = "Wrong Rigidbody property: ";
@@ -295,4 +259,26 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 
 		Logger::Print(s);
 	}
+}
+
+PhysicMaterialCombine Rigidbody::GetCombineOption(const String & value)
+{
+	if (value == PROPERTY_KEY_COLCOMBINEAVERAGE)
+	{
+		return PhysicMaterialCombine::Average;
+	}
+	else if (value == PROPERTY_KEY_COLCOMBINEMIN)
+	{
+		return PhysicMaterialCombine::Minimum;
+	}
+	else if (value == PROPERTY_KEY_COLCOMBINEMAX)
+	{
+		return PhysicMaterialCombine::Maximum;
+	}
+	else if (value == PROPERTY_KEY_COLCOMBINEMULTIPLY)
+	{
+		return PhysicMaterialCombine::Multiply;
+	}
+
+	ASSERT(0);
 }

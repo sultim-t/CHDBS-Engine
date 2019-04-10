@@ -31,6 +31,10 @@ public:
 	// Pop back
 	T Pop();
 
+	// Get row data
+	T *GetArray();
+	// Get row data
+	const T *GetArray() const;
 	// Returns elements count
 	int GetSize() const;
 	// Clear array
@@ -52,12 +56,8 @@ inline void DynamicArray<T>::Expand()
 }
 
 template<class T>
-inline DynamicArray<T>::DynamicArray()
-{
-	allocated = 0;
-	top = 0;
-	buffer = nullptr;
-}
+inline DynamicArray<T>::DynamicArray() : 
+	allocated(0), top(0), buffer(nullptr) { }
 
 template<class T>
 inline DynamicArray<T>::~DynamicArray()
@@ -111,6 +111,18 @@ inline T DynamicArray<T>::Pop()
 	ASSERT(top >= 0);
 
 	return buffer[top--];
+}
+
+template<class T>
+inline T * DynamicArray<T>::GetArray()
+{
+	return buffer;
+}
+
+template<class T>
+inline const T * DynamicArray<T>::GetArray() const
+{
+	return buffer;
 }
 
 template<class T>

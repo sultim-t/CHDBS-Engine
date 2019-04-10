@@ -22,7 +22,7 @@ private:
 	StaticArray<Triangle>	triangles;
 	
 	// Bones for current mesh
-	StaticArray<Bone>		bones;
+	StaticArray<Bone*>		bones;
 	bool	hasBones;
 
 	// Bounding sphere for rendering
@@ -37,10 +37,14 @@ public:
 	inline const StaticArray<Vertex5>	&GetVertices() const;
 	inline const StaticArray<UINT>		&GetIndices() const;
 	inline const StaticArray<Triangle>	&GetTriangles() const;
-	inline const StaticArray<Bone>		&GetBones() const;
+	inline const StaticArray<Bone*>		&GetBones() const;
 
+	// Does this mesh have bones?
 	inline bool HasBones() const;
+	// Find bone by name
+	inline const Bone *GetBone(const char *name) const;
 
+	// Bounding sphere of this mesh
 	inline const Sphere &GetBoundingSphere();
 
 	// Clear all data
@@ -83,7 +87,7 @@ inline const StaticArray<Triangle> &MeshResource::GetTriangles() const
 	return triangles;
 }
 
-inline const StaticArray<Bone> &MeshResource::GetBones() const
+inline const StaticArray<Bone*> &MeshResource::GetBones() const
 {
 	ASSERT(hasBones);
 	return bones;
@@ -92,6 +96,20 @@ inline const StaticArray<Bone> &MeshResource::GetBones() const
 inline bool MeshResource::HasBones() const
 {
 	return hasBones;
+}
+
+inline Bone const *MeshResource::GetBone(const char * name) const
+{
+	UINT count = bones.GetSize();
+	for (UINT i = 0; i < count; i++)
+	{
+		if (bones[i]->GetName() == name)
+		{
+			return bones[i];
+		}
+	}
+
+	return nullptr;
 }
 
 inline const Sphere &MeshResource::GetBoundingSphere()

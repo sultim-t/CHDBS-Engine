@@ -22,7 +22,7 @@ void DebugDrawer::InitBuffers()
 
 	// color
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(DebugDrawVertex), (void*)(sizeof(Vector3)));
+	glVertexAttribPointer(1, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(DebugDrawVertex), (void*)(sizeof(Vector3)));
 
 	// unbind
 	glBindVertexArray(0);
@@ -41,7 +41,7 @@ void DebugDrawer::Init(const char *vertPath, const char *fragPath)
 
 	// init buffer
 	vertices.Init(DEBUG_DRAWER_MAX_VERTS);
-	lines.Init(DEBUG_DRAWER_MAX_LINES);
+	lines.Init(DEBUG_DRAWER_LINES_COUNT);
 }
 
 void DebugDrawer::BindSpaceMatrix(const Matrix4 & space)
@@ -52,7 +52,7 @@ void DebugDrawer::BindSpaceMatrix(const Matrix4 & space)
 void DebugDrawer::DrawQueues()
 {
 	// process lines
-	for (int i = 0; i < lines.GetTop(); i++)
+	for (int i = 0; i < lines.GetSize(); i++)
 	{
 		// extract verteices
 		DebugDrawVertex v0(lines[i].From, lines[i].Color);
@@ -72,9 +72,6 @@ void DebugDrawer::DrawQueues()
 
 void DebugDrawer::DrawAllLines()
 {
-	// get vertices count
-	UINT count = vertices.GetTop();
-
 	glBindVertexArray(linesVAO);
 
 	debugShader.Use();
@@ -82,16 +79,28 @@ void DebugDrawer::DrawAllLines()
 
 	// bind buffer
 	glBindBuffer(GL_ARRAY_BUFFER, linesVBO);
-	// add vertices, which were created from lines' start and end points
-	glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(DebugDrawVertex), vertices.GetArray());
+	
+	// get all vertices count
+	int count = vertices.GetSize();
 
-	// draw call
-	glDrawArrays(GL_LINES, 0, count);
+	// draw by parts of size DEBUG_DRAWER_MAX_VERTS
+	while (count > 0)
+	{
+		int currentCount = count % DEBUG_DRAWER_MAX_VERTS;
+
+		// add vertices, which were created from lines' start and end points
+		glBufferSubData(GL_ARRAY_BUFFER, 0, currentCount * sizeof(DebugDrawVertex), vertices.GetArray());
+
+		// draw call
+		glDrawArrays(GL_LINES, 0, currentCount);
+
+		count -= DEBUG_DRAWER_MAX_VERTS;
+	}
 
 	// unbind
 	debugShader.Stop();
-	glBindVertexArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 void DebugDrawer::Draw(const Sphere & sphere, const Color4 & color)
@@ -118,8 +127,8 @@ void DebugDrawer::Draw(const Sphere & sphere, const Color4 & color)
 		float c = Cos(DEG2RAD(i));
 
 		lastPoint[0] = center[0];
-		lastPoint[2] = center[2] + radius * s;
 		lastPoint[1] = center[1] + radius * c;
+		lastPoint[2] = center[2] + radius * s;
 
 		for (int k = 0, j = step; j <= 360; j += step, k++)
 		{
@@ -167,6 +176,7 @@ void DebugDrawer::Draw(const AABB & aabb, const Color4 & color)
 	}
 
 	// add lines
+	DrawBox(points, color);
 }
 
 void DebugDrawer::Draw(const Frustum & frustum, const Color4 & color)

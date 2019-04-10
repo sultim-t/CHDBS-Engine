@@ -50,7 +50,7 @@ bool SphereCollider::Intersect(const ICollider &col, CollisionInfo &info) const
 	{
 		AABB &other = ((AABBCollider&)col).GetAABB();
 
-		if (!Intersection::AABBSphere(other, GetSphere(), info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+		if (!Intersection::SphereAABB(GetSphere(), other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
 		{
 			return false;
 		}

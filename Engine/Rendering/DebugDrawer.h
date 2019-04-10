@@ -2,13 +2,14 @@
 
 #include <Engine/Math/Matrix.h>
 #include <Engine/DataStructures/StaticStack.h>
+#include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/Rendering/Shader.h>
 
 class DebugDrawer
 {
 private:
 #define DEBUG_DRAWER_MAX_VERTS 4096
-#define DEBUG_DRAWER_MAX_LINES 32768
+#define DEBUG_DRAWER_LINES_COUNT 32768
 
 	struct DebugDrawVertex
 	{
@@ -37,9 +38,9 @@ private:
 	Shader debugShader;
 
 	// All vertices to draw
-	StaticStack<DebugDrawVertex> vertices;
+	DynamicArray<DebugDrawVertex> vertices;
 	// All lines to draw
-	StaticStack<DebugDrawLine> lines;
+	DynamicArray<DebugDrawLine> lines;
 
 	// Current space matrix, to pass to shader
 	Matrix4 space;

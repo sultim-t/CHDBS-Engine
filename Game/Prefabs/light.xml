@@ -3,7 +3,7 @@
   Euler="50 -30 0">
 
   <CLight
-    type="dir"
-    static="1"
-    shadows="1"/>
+    Type="Directional"
+    IsStatic="1"
+    Shadows="1"/>
 </Entity>

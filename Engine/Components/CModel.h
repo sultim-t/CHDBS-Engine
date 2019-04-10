@@ -16,6 +16,8 @@ public:
 
 	// Resource, loaded from file
 	const ModelResource	*modelResource;
+	// Transformation matrix for correction for loaded model
+	Matrix4 correctionMatrix;
 
 	// Arrays for rendering
 	StaticArray<UINT> vaos, vbos, ibos;
@@ -58,10 +60,10 @@ public:
 
 inline const StaticArray<Matrix4> &CModel::GetTranforms() const
 {
-	return modelResource->GetHierarchy().GetTranforms(owner->GetTransform().GetTransformMatrix());
+	return modelResource->GetHierarchy().GetTranforms(correctionMatrix * owner->GetTransform().GetTransformMatrix());
 }
 
 inline const StaticArray<Matrix4>& CModel::GetTranforms(const Matrix4 &global) const
 {
-	return modelResource->GetHierarchy().GetTranforms(owner->GetTransform().GetTransformMatrix() * global);
+	return modelResource->GetHierarchy().GetTranforms(correctionMatrix * owner->GetTransform().GetTransformMatrix() * global);
 }

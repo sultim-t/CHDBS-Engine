@@ -21,6 +21,8 @@ private:
 private:
 	// Init as dynamic (deformable) model
 	void InitDynamic();
+	// Update graphics arrays for certain mesh
+	void GFXUpdate(int meshIndex);
 
 public:
 	~CSkinnedModel();

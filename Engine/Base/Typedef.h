@@ -65,7 +65,11 @@ typedef Vector<float, 3> Euler;
 #define YAW   2		// around y axis
 
 // Float color RGB
-typedef Vector<float, 3> Color;
+typedef Vector<float, 3> Color3F;
+// Ubyte color RGBA
+typedef Vector<float, 4> Color4F;
+// Ubyte color RGB
+typedef Vector<UBYTE, 4> Color3;
 // Ubyte color RGBA
 typedef Vector<UBYTE, 4> Color4;
 

@@ -81,8 +81,6 @@ void RenderingSystem::Update()
 		// get frustum for culling
 		Frustum frustum = cam->GetFrustum();
 
-		DebugDrawer::Instance().Draw(frustum);
-
 		for (int l = 0; l < lights.GetSize(); l++)
 		{
 			CLight *light = lights[l];
@@ -112,12 +110,13 @@ void RenderingSystem::Update()
 					Sphere transformedSphere = modelMeshes[j]->GetBoundingSphere();
 					// and move it according to its global transformation
 					transformedSphere.Move(Transform::DecomposePosition(meshesTranforms[j]));
-
+					
 					if (!Intersection::SphereInsideFrustum(frustum, transformedSphere))
 					{
-						//Logger::Print(model->path);
 						continue;
 					}
+
+					// DebugDrawer::Instance().Draw(transformedSphere);
 
 					StandardMaterial *mat = (StandardMaterial*)materials[j];
 

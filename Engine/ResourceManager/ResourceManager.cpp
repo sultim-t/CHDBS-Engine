@@ -254,7 +254,7 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 {
 	aiMesh *mesh = (aiMesh*)from;
 
-	StaticArray<Bone> &bones = to->bones;
+	StaticArray<Bone*> &bones = to->bones;
 
 	// foreach bone
 	for (UINT i = 0; i < mesh->mNumBones; i++)
@@ -273,7 +273,7 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 		}
 
 		int weightsCountInModel = (int)orig->mNumWeights;
-		int weightsCount = weightsCountInModel > BONE_MAX_WEIGHTS ? BONE_MAX_WEIGHTS : weightsCountInModel;
+		int weightsCount = weightsCountInModel; /*> BONE_MAX_WEIGHTS ? BONE_MAX_WEIGHTS : weightsCountInModel;*/
 
 		// find bone node and parent bone
 		const ModelNode *boneNode = hierarchy->FindNode(boneName);
@@ -286,22 +286,32 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 			const String &parentNodeName = boneNode->parent->GetName();
 
 			// try to find bone with the same name
+			// Note: finding is not in Bone class
+			//       because not all bones are set
 			for (UINT i = 0; i < mesh->mNumBones; i++)
 			{
 				// if names are equal
 				if (parentNodeName == mesh->mBones[i]->mName.C_Str())
 				{
 					// save its address
-					parentBone = &bones[i];
+					// with same index i, becuase bones are copied with the same order
+					parentBone = bones[i];
 					break;
 				}
 			}
 		}
 
 		// create bone
-		bones[i] = Bone(boneName, parentBone, boneNode, weightsCount, m);
+		bones[i] = new Bone(parentBone, boneNode, m);
+		bones[i]->Init(boneName, weightsCount);
 
-		// if weights in model more they will be normalized
+		for (int w = 0; w < weightsCount; w++)
+		{
+			VertexWeight vweight = VertexWeight(orig->mWeights[w].mVertexId, orig->mWeights[w].mWeight);
+			bones[i]->SetWeight((int)w, vweight);
+		}
+
+		/*// if weights in model more they will be normalized
 		float sum = 0.0f;
 
 		// get sum
@@ -315,7 +325,7 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 		{
 			VertexWeight vweight = VertexWeight(orig->mWeights[w].mVertexId, orig->mWeights[w].mWeight / sum);
 			bones[i].SetWeight((int)w, vweight);
-		}
+		}*/
 	}
 }
 

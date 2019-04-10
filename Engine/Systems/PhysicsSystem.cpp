@@ -1,5 +1,6 @@
 #include "PhysicsSystem.h"
 #include <Engine/Math/Intersection.h>
+#include <Engine/Rendering/DebugDrawer.h>
 
 Vector3 PhysicsSystem::Gravity = Vector3(0.0f, -9.8f, 0.0f);
 
@@ -21,6 +22,32 @@ void PhysicsSystem::Update()
 	
 	GetApproximateCollisions();
 	SolveCollisions();
+}
+
+PhysicsSystem &PhysicsSystem::Instance()
+{
+	static PhysicsSystem instance;
+	return instance;
+}
+
+void PhysicsSystem::Register(Rigidbody * rb)
+{
+	rigidbodies.Push(rb);
+}
+
+void PhysicsSystem::Register(ICollider * col)
+{
+	colliders.Push(col);
+}
+
+bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, const float distance, RaycastInfo & info)
+{
+	return false;
+}
+
+bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, RaycastInfo & info)
+{
+	return false;
 }
 
 void PhysicsSystem::GetApproximateCollisions()
@@ -116,7 +143,7 @@ void PhysicsSystem::SolveCollisions()
 		if (current.CollThis->Intersect(*current.CollOther, info))
 		{
 			// solve collision, type is processed there
-			current.RbThis->SolveCollisions(info);
+			SolveCollision(info);
 		}
 	}
 
@@ -124,28 +151,100 @@ void PhysicsSystem::SolveCollisions()
 	collisions.Clear();
 }
 
-PhysicsSystem &PhysicsSystem::Instance()
+void PhysicsSystem::SolveCollision(const CollisionInfo &info)
 {
-	static PhysicsSystem instance;
-	return instance;
+	ASSERT(info.RbThis != nullptr);
+
+	float penetration = info.Contact.Penetration;
+	Vector3 normal = info.Contact.Normal.GetNormalized();
+
+	Rigidbody *rbThis = info.RbThis;
+	Rigidbody *rbOther = info.RbOther;
+
+	// if other is a static collider, then assume that its mass = Inf 
+	float invMassOther = rbOther == nullptr ? 0.0f : rbOther->inversedMass;
+	float invMassThis = rbThis->inversedMass;
+
+	// apply position correction
+	ApplyPositionCorrection(rbThis, rbOther, invMassThis, invMassOther, normal, penetration);
+
+	Vector3 relativeVelocity = rbOther != nullptr ? 
+		rbThis->velocity - rbOther->velocity : 
+		rbThis->velocity;
+
+	float contactVel = Vector3::Dot(relativeVelocity, normal);
+
+	// velocities are separating
+	if (contactVel > 0)
+	{
+		return;
+	}
+
+	// calculate restitution
+	float restitution = info.GetRestitution();
+
+	// calculate impulse scalar
+	float impulse = -contactVel * (1.0f + restitution);
+	impulse /= invMassThis + invMassOther;
+
+	// calculate impulse vector
+	Vector3 impulseVec = normal * impulse;
+
+	// apply friction impulse
+	impulseVec += CalculateFriction(relativeVelocity, normal, invMassThis, impulse, info.GetStaticFriction(), info.GetDynamicFriction());
+
+	// if exist other rigidbody
+	if (rbOther != nullptr)
+	{
+		// change its velocity
+		rbOther->velocity -= impulseVec * invMassOther;
+	}
+
+	rbThis->velocity += impulseVec * invMassThis;
 }
 
-void PhysicsSystem::Register(Rigidbody * rb)
-{
-	rigidbodies.Push(rb);
+void PhysicsSystem::ApplyPositionCorrection(Rigidbody *rbThis, Rigidbody *rbOther, float invMassThis, float invMassOther,const Vector3 &normal, float penetration)
+{	
+	float slop = 0.01f;
+	float percent = 0.2f;
+
+	// position correction
+	Vector3 correction = normal * Max(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
+
+	// change positions
+	rbThis->transform->Translate(correction * invMassThis);
+
+	if (rbOther != nullptr)
+	{
+		rbOther->transform->Translate(correction * (-invMassOther));
+	}
+
 }
 
-void PhysicsSystem::Register(ICollider * col)
-{
-	colliders.Push(col);
-}
+Vector3 PhysicsSystem::CalculateFriction(const Vector3 &relativeVelocity, const Vector3 &normal, float invMass, float impulse, float staticFriction, float dynamicFriction)
+{	
+	// get tangent vector
+	Vector3 tanDir = relativeVelocity - normal * (Vector3::Dot(relativeVelocity, normal));
+	float tanLength = tanDir.Length();
 
-bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, const float distance, RaycastInfo & info)
-{
-	return false;
-}
+	if (tanLength == 0.0f)
+	{
+		return Vector3(0.0f);
+	}
 
-bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, RaycastInfo & info)
-{
-	return false;
+	// normalize
+	tanDir /= tanLength;
+
+	float frictionImpulse = -Vector3::Dot(relativeVelocity, tanDir);
+	frictionImpulse /= invMass;
+
+	// calculate friction impulse vector
+	if (Abs(frictionImpulse) < impulse * staticFriction)
+	{
+		return tanDir * frictionImpulse;
+	}
+	else
+	{
+		return tanDir * (-impulse) * dynamicFriction;
+	}
 }

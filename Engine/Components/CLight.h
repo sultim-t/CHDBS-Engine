@@ -22,7 +22,7 @@ private:
 	// Used for rendering from light's point of view
 	Matrix4 lightSpace;
 	
-	Color color;
+	Color3F color;
 	float bias;
 
 	bool isStatic;
@@ -50,7 +50,7 @@ public:
 	LightType GetLightType() const;
 	// If static light doesn't calculate matrix each frame
 	bool IsStatic() const;
-	const Color &GetColor() const;
+	const Color3F &GetColor() const;
 	// Returns light bias
 	float GetBias() const;
 	// Returns range of light
@@ -64,7 +64,7 @@ public:
 	void SetLightType(LightType type);
 	// If static light doesn't calculate matrix each frame
 	void SetStatic(bool isStatic);
-	void SetColor(const Color &color);
+	void SetColor(const Color3F &color);
 	void SetBias(float bias);
 	// Set range of light (only point and spot)
 	void SetRange(float range);

@@ -6,13 +6,9 @@
 #include <Engine/ResourceManager/ResourceManager.h>
 #include <Engine/ResourceManager/MeshResource.h>
 
-#define PROPERTY_KEY_TYPE			"Path"
-#define PROPERTY_KEY_CASTSHADOWS	"CastShadows"
-#define PROPERTY_KEY_RECEIVESHADOWS	"ReceiveShadows"
-
 CLASSDEFINITION(IComponent, CModel)
 
-CModel::CModel() : IsCastingShadows(true), IsReceivingShadows(true), modelResource(nullptr)
+CModel::CModel() : IsCastingShadows(true), IsReceivingShadows(true), modelResource(nullptr), correctionMatrix(1.0f, true)
 { }
 
 const StaticArray<MeshResource*> &CModel::GetMeshes() const
@@ -51,6 +47,11 @@ void CModel::Init()
 void CModel::Update()
 { }
 
+#define PROPERTY_KEY_TYPE			"Path"
+#define PROPERTY_KEY_CASTSHADOWS	"CastShadows"
+#define PROPERTY_KEY_RECEIVESHADOWS	"ReceiveShadows"
+#define PROPERTY_KEY_CORRECTROT		"RotationCorrection"
+
 void CModel::SetProperty(const String &key, const String &value)
 {
 	if (key == PROPERTY_KEY_TYPE)
@@ -64,6 +65,16 @@ void CModel::SetProperty(const String &key, const String &value)
 	else if (key == PROPERTY_KEY_RECEIVESHADOWS)
 	{
 		IsReceivingShadows = value.ToBool();
+	}
+	else if (key == PROPERTY_KEY_CORRECTROT)
+	{
+		Vector3 axis;
+		float angle;
+
+		Quaternion q = value.ToQuaternion();
+		q.ToAxisAngle(axis, angle);
+
+		correctionMatrix = Transform::RotateMatrix(correctionMatrix, axis, angle);
 	}
 	else
 	{
@@ -83,13 +94,13 @@ void CModel::InitMesh(const MeshResource *resource, UINT &vao, UINT &vbo, UINT &
 
 	UINT size = useTan ? sizeof(Vertex5) : sizeof(Vertex);
 
-	if (dynamic)
+	if (!dynamic)
 	{
 		glBufferData(GL_ARRAY_BUFFER, resource->GetVertices().GetSize() * size, resource->GetVertices().GetArray(), GL_STATIC_DRAW);
 	}
 	else
 	{
-		glBufferData(GL_ARRAY_BUFFER, resource->GetVertices().GetSize() * size, resource->GetVertices().GetArray(), GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, resource->GetVertices().GetSize() * size, resource->GetVertices().GetArray(), GL_STREAM_DRAW);
 	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
@@ -132,6 +143,7 @@ void CModel::InitMesh(const MeshResource *resource, UINT &vao, UINT &vbo, UINT &
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, size, (void*)offsetof(Vertex5, Bitangent));
 	}
 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
 

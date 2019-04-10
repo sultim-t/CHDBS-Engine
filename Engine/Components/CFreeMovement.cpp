@@ -53,7 +53,7 @@ void CFreeMovement::ProcessKeyboard()
 	Vector3 offset = Vector3(0, 0, 0);
 	Vector3 front = t.GetForward();
 	Vector3 right = t.GetRight();
-	Vector3 up = t.GetUp();
+	Vector3 up = Vector3(0, 1, 0);
 
 	float velocity = speed * Time::GetDeltaTime();
 	

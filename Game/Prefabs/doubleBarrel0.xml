@@ -2,14 +2,14 @@
   Name="Double Barrel"
   Position="0 2 1"
   Euler="90 0 0">
-
+  
   <CModel
     Path="Models/DoubleBarrel.obj"
     CastShadows="1"/>
   
   <Rigidbody
     Mass="20"
-    Velocity="0 0 0"
+    Velocity="0 3 0"
     ColliderType="Sphere"
     SphereRadius="2"
     />

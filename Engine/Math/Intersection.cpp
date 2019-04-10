@@ -102,6 +102,12 @@ bool Intersection::SpherePlane(const Sphere & s, const Plane & p)
 	return distToCenter <= s.GetRadius();
 }
 
+bool Intersection::SphereAABB(const Sphere & s, const AABB & aabb)
+{
+	float sqDist = aabb.DistanceSqrTo(s.GetCenter());
+	return sqDist <= s.GetRadius() * s.GetRadius();
+}
+
 bool Intersection::TriangleSphere(const Triangle &t, const Sphere &s, Vector3 &point)
 {
 	// closest point
@@ -777,23 +783,57 @@ bool Intersection::SpherePlane(const Sphere & s, const Plane & p, float & penetr
 	return false;
 }
 
+bool Intersection::SphereAABB(const Sphere & s, const AABB & aabb, Vector3 & point, Vector3 & normal, float & penetration)
+{
+	const Vector3 &center = s.GetCenter();
+	const float radius = s.GetRadius();
+
+	// closest point on aabb to sphere's center
+	Vector3 closestOnBox = aabb.GetClosestPoint(center);
+	
+	// vector : point --> sphere
+	Vector3 delta = center - closestOnBox;
+
+	// distance from closest point on sphere 
+	// to closest point on aabb
+	float d = delta.LengthSqr();
+
+	if (d <= radius * radius)
+	{
+		float deltaLength = Sqrt(d);
+
+		// normalize
+		normal = delta / deltaLength;
+
+		// closest point on sphere to aabb
+		point = center + normal * radius;
+
+		penetration = radius - d;
+		return true;
+	}
+
+	return false;
+}
+
 bool Intersection::AABBSphere(const AABB & aabb, const Sphere & s, Vector3 & point, Vector3 & normal, float & penetration)
 {
+	// нормаль от s к aabb
+
 	const Vector3 &center = s.GetCenter();
 	const float radius = s.GetRadius();
 
 	// closest point on aabb to sphere's center
 	point = aabb.GetClosestPoint(center);
 
-	// distance from closest point on aabb to center
-	Vector3 v = center - point;
+	// distance from center toclosest point on aabb
+	Vector3 v = point - center;
 	float d = v.LengthSqr();
 
 	if (d <= radius * radius)
 	{
 		d = Sqrt(d);
 
-		// normalize
+		// normalize vector
 		normal = v / d;
 		penetration = radius - d;
 		return true;
@@ -811,8 +851,9 @@ bool Intersection::AABBAABB(const AABB & aabb1, const AABB & aabb2, Vector3 & po
 	const Vector3 &minb = aabb2.GetMin();
 	const Vector3 &maxb = aabb2.GetMax();
 
+	bool s = false;
 	Vector3 unit[] = { Vector3(1.0f,0.0f,0.0f),Vector3(0.0f,1.0f,0.0f) ,Vector3(0.0f,0.0f,1.0f) };
-
+	
 	for (int i = 0; i < 3; i++)
 	{
 		float d0 = maxb[i] - mina[i];
@@ -820,12 +861,12 @@ bool Intersection::AABBAABB(const AABB & aabb1, const AABB & aabb2, Vector3 & po
 
 		if (d0 <= 0.0f || d1 <= 0.0f)
 		{
-			return false;
+			continue;
 		}
 
-		float overlap = d0 < d1 ? d0 : -d1;
+		s = true;
 
-		Vector3 sep = unit[i] * overlap;
+		float overlap = d0 < d1 ? d0 : d1;
 
 		if (overlap < penetration)
 		{
@@ -834,7 +875,7 @@ bool Intersection::AABBAABB(const AABB & aabb1, const AABB & aabb2, Vector3 & po
 		}
 	}
 
-	return true;
+	return s;
 }
 
 bool Intersection::AABBPlane(const AABB & aabb, const Plane & p, float & penetration)
@@ -885,20 +926,30 @@ bool Intersection::MeshSphere(const StaticArray<Triangle>& triangles, const Sphe
 bool Intersection::MeshAABB(const StaticArray<Triangle>& triangles, const AABB & aabb, Vector3 & point, Vector3 & normal, float & penetration)
 {
 	UINT size = triangles.GetSize();
+	
+	Vector3 p;
+	float radius = aabb.GetSize().Length() * 0.5f;
+
+	Sphere bounding = Sphere(aabb.GetCenter(), radius);
 
 	for (UINT i = 0; i < size; i++)
 	{
 		const Triangle &t = triangles[i];
 
-		if (TriangleAABB(t, aabb))
+		// check first sphere
+		if (TriangleSphere(t, bounding, p))
 		{
-			normal = t.GetNormal();
-			point = t.GetClosestPoint(aabb.GetCenter());
+			// and then aabb
+			if (TriangleAABB(t, aabb))
+			{
+				normal = t.GetNormal();
+				point = t.GetClosestPoint(aabb.GetCenter());
 
-			Plane p = Plane(normal, point);
-			AABBPlane(aabb, p, penetration);
+				Plane p = Plane(normal, point);
+				AABBPlane(aabb, p, penetration);
 
-			return true;
+				return true;
+			}
 		}
 	}
 
