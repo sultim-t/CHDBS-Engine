@@ -1,36 +1,36 @@
 #pragma once
-
 #include "Bone.h"
 
 class Skeleton
 {
+	friend class ResourceManager;
+
 private:
+	// Referenc to mesh which is affected by this skeleton
+	const MeshResource		&mesh;
+
 	// All bones in this skeleton
 	// Order is not important
 	StaticArray<Bone>		bones;
-	StaticArray<Matrix4>	bonesMatrices;
+
+	// Bone weights for each vertex
+	// Each element stores array of weights for each vertex
+	StaticArray<VertexWeight>		vertexWeights;
+
+	// Temp bone transformations
+	// Is used to calculate animation
+	mutable StaticArray<Matrix4>	bonesMatrices;
+
+private:
+	void UpdateBoneMatrices(const Matrix4 &global) const;
+	Matrix4 GetBoneTranform(const Bone &bone) const;
 
 public:
-	inline Skeleton(int bonesCount);
+	// Allocates memory for bone and vertex arrays
+	Skeleton(const MeshResource &meshToUse, int bonesCount, int verticesCount);
 
-	inline void UpdateBoneMatrices(const Matrix4 &global);
+	// Update vertices according to the bones with global tranformation
+	void UpdateVertices(const Matrix4 &global, StaticArray<Vertex5> &outVerts) const;
+	// Update vertices according to the bones
+	void UpdateVertices(StaticArray<Vertex5> &outVerts) const;
 };
-
-inline Skeleton::Skeleton(int bonesCount)
-{
-	bones.Init(bonesCount);
-	bonesMatrices.Init(bonesCount);
-}
-
-inline void Skeleton::UpdateBoneMatrices(const Matrix4 &global)
-{
-	for (UINT i = 0; i < bones.GetSize(); i++)
-	{
-		Matrix4 m = bones[i].GetOffsetMatrix();
-		m *= bones[i].GetModelNode().GetTransform();
-		m *= bones[i].GetTranformationMatrix();
-		m *= global;
-
-		bonesMatrices[i] = m;
-	}
-}

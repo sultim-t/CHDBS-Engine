@@ -32,8 +32,10 @@ public:
 	inline const String				&GetName() const;
 	inline const ModelNode			&GetParent() const;
 	inline const Matrix4			&GetTransform() const;
+	inline const Matrix4			GetGlobalTransform() const;
 	inline const StaticArray<int>	&GetMeshes() const;
-	inline const StaticArray<ModelNode*> &GetChildNodes() const;
+
+	inline const StaticArray<ModelNode*>	&GetChildNodes() const;
 };
 
 inline ModelNode::ModelNode(const char *name, const ModelNode *parent, const Matrix4 &transformMatrix, int childNodesCount, int meshesCount) :
@@ -67,6 +69,21 @@ inline const ModelNode &ModelNode::GetParent() const
 inline const Matrix4 &ModelNode::GetTransform() const
 {
 	return transformMatrix;
+}
+
+inline const Matrix4 ModelNode::GetGlobalTransform() const
+{
+	Matrix4 result = transformMatrix;
+
+	const ModelNode *current = parent;
+
+	while (current != nullptr)
+	{
+		result *= current->GetTransform();
+		current = current->parent;
+	}
+
+	return result;
 }
 
 inline const StaticArray<int> &ModelNode::GetMeshes() const

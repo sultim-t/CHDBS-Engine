@@ -458,7 +458,7 @@ inline float Quaternion::Dot(const Quaternion &a, const Quaternion &b)
 
 inline void Quaternion::Normalize()
 {
-	Vector4 q = (quat[0], quat[1], quat[2], quat[3]);
+	Vector4 q = Vector4(quat[0], quat[1], quat[2], quat[3]);
 	q.Normalize();
 
 	quat[0] = q[0];

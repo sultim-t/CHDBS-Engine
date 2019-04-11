@@ -75,7 +75,7 @@ void CFreeMovement::ProcessKeyboard()
 	if (Input::IsPressed(Keycode::KeyE))
 		offset += up * velocity;
 
-	owner->GetComponent<Rigidbody>()->GetVelocity() += offset;
+	owner->GetTransform().GetPosition() += offset;
 }
 
 void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)

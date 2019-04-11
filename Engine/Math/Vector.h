@@ -547,7 +547,7 @@ inline Vector<Type, Dim> Vector<Type, Dim>::Reflect(const Vector<Type, Dim>& vec
 template<class Type, int Dim>
 inline Vector<Type, Dim> Vector<Type, Dim>::Lerp(const Vector<Type, Dim>& start, const Vector<Type, Dim>& end, const float t)
 {
-	return start + (end - start) * t;
+	return start * ((Type)1 - t) + end * t;
 }
 
 #pragma region vector3

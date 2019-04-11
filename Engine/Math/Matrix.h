@@ -36,6 +36,7 @@ public:
 	inline Matrix<Type, Dim> operator/(const Type scalar) const;
 	inline Matrix<Type, Dim> &operator/=(const Type scalar);
 
+	inline void Transpose();
 	inline Matrix<Type, Dim> GetTransposed() const;
 
 	inline const Type *ToArray() const;
@@ -150,6 +151,8 @@ inline Matrix<Type, Dim>& Matrix<Type, Dim>::operator+=(const Matrix<Type, Dim>&
 			(*this)(i, j) += matrix2(i, j);
 		}
 	}
+
+	return *this;
 }
 
 template<class Type, int Dim>
@@ -168,6 +171,8 @@ inline Matrix<Type, Dim>& Matrix<Type, Dim>::operator-=(const Matrix<Type, Dim>&
 			(*this)(i, j) -= matrix2(i, j);
 		}
 	}
+	
+	return *this;
 }
 
 template<class Type, int Dim>
@@ -246,6 +251,12 @@ inline Matrix<Type, Dim>& Matrix<Type, Dim>::operator/=(const Type scalar)
 {
 	(*this) *= (1 / scalar);
 	return *this;
+}
+
+template<class Type, int Dim>
+inline void Matrix<Type, Dim>::Transpose()
+{
+	*this = GetTransposed();
 }
 
 template<class Type, int Dim>

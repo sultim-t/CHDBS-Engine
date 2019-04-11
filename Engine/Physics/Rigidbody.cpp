@@ -281,4 +281,5 @@ PhysicMaterialCombine Rigidbody::GetCombineOption(const String & value)
 	}
 
 	ASSERT(0);
+	return PhysicMaterialCombine::Average;
 }

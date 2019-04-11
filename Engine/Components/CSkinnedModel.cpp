@@ -4,6 +4,7 @@
 #include <Engine/Rendering/Animation.h>
 #include <Engine/Rendering/AnimationNode.h>
 #include <Engine/Rendering/Bone.h>
+#include <Engine/Rendering/Skeleton.h>
 #include <Engine/Rendering/OpenGL.h>
 #include <Engine/Systems/RenderingSystem.h>
 #include <Engine/ResourceManager/ResourceManager.h>
@@ -56,10 +57,19 @@ void CSkinnedModel::Init()
 	vertices.Init(meshesCount);
 	for (UINT i = 0; i < meshesCount; i++)
 	{
-		vertices[i] = new StaticArray<Vertex5>();
+		const StaticArray<Vertex5> &sourceVerts = meshes[i]->GetVertices();
+		UINT vertsCount = sourceVerts.GetSize();
 
-		// init for each mesh
-		vertices[i]->Init(meshes[i]->GetVertices().GetSize());
+		// create vertex array for each mesh
+		vertices[i] = new StaticArray<Vertex5>();
+		// init with same size
+		vertices[i]->Init(vertsCount);
+
+		// copy data
+		for (UINT v = 0; v < vertsCount; v++)
+		{
+			vertices[i]->operator[](v) = sourceVerts[v];
+		}
 	}
 
 	// init for rendering
@@ -81,45 +91,28 @@ void CSkinnedModel::Update()
 
 	if (currentTime > animation->GetDuration())
 	{
-		currentTime -= animation->GetDuration();
+		currentTime = Mod(currentTime, animation->GetDuration());
 	}
 
 	const StaticArray<AnimationNode*> &nodes = animation->GetAnimationNodes();
 
 	int meshIndex = 0;
-
 	MeshResource *mesh = modelResource->GetHierarchy().GetMeshes()[meshIndex];
-	StaticArray<Vertex5> &meshVertices = *vertices[meshIndex];
+	const StaticArray<Vertex5> &sourceVerts = mesh->GetVertices();
 
-	// for each vertex
-	for (UINT v = 0; v < meshVertices.GetSize(); v++)
-	{
-		meshVertices[v] = mesh->GetVertices()[v];
-	}
+	StaticArray<Vertex5> &newVerts = *vertices[meshIndex];
 
 	// for each animation node
 	//for (UINT i = 0; i < nodes.GetSize(); i++)
 	{
-		const StaticArray<Bone*> &bones = mesh->GetBones();
+		Vector3 position;
 
-		// for each bone
-		for (UINT i = 0; i < bones.GetSize(); i++)
-		{
-			Matrix4 boneTransform = bones[i]->GetTranformationMatrix();
+		// if (!nodes[0]->GetInterpolatedPosition(currentTime, position))
 
-			for (UINT j = 0; j < bones[i]->GetWeightCount(); j++)
-			{
-				const VertexWeight &w = bones[i]->GetWeight(j);
+		position = Vector3::Lerp(0.0f, Vector3(0, 0, 1), currentTime);
 
-				// get affected vertex
-				const Vertex5 &vertex = mesh->GetVertices()[w.VertexID];
-
-				Matrix4 boneTransformWeighted = boneTransform * w.Weight;
-				meshVertices[w.VertexID].Position = boneTransformWeighted * vertex.Position;
-			}
-		}
-
-		//nodes[i]->GetInterpolatedPosition(currentTime, );
+		const Skeleton &skeleton = mesh->GetSkeleton();
+		skeleton.UpdateVertices(newVerts);
 	}
 
 	GFXUpdate(meshIndex);

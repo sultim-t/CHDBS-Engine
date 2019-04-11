@@ -179,10 +179,12 @@ inline const ModelNode *ModelHierarchy::FindNode(const char *name, const ModelNo
 	for (UINT i = 0; i < count; i++)
 	{
 		// try to find in children
-		if (FindNode(name, children[i]) != nullptr)
+		const ModelNode *found = FindNode(name, children[i]);
+
+		if (found != nullptr)
 		{
 			// if found
-			return children[i];
+			return found;
 		}
 	}
 

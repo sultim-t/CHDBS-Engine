@@ -122,6 +122,7 @@ class CModel;
 	class ModelHierarchy;
 	class Mesh;
 
+	class Skeleton;
 	class Bone;
 	struct VertexWeight;
 

@@ -11,17 +11,5 @@
   <CFreeMovement 
     speed="10" />
 
-  <CSkinnedModel
-    Path="Models/MinigunRigBaked.FBX"
-    RotationCorrection="1 0 0 0"
-    CastShadows="0"/>
-
-  <Rigidbody
-    Mass="20"
-    Velocity="0 0 0"
-    NoGravity="1"
-    ColliderType="Sphere"
-    SphereRadius="2"
-    />
 
 </Entity>

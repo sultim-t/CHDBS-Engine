@@ -10,6 +10,7 @@
 #include <Engine/Rendering/Material.h>
 #include <Engine/Rendering/Vertex.h>
 #include <Engine/Rendering/Bone.h>
+#include <Engine/Rendering/Skeleton.h>
 #include <Engine/Rendering/Animation.h>
 #include <Engine/Rendering/AnimationNode.h>
 #include <Engine/Rendering/AnimationKey.h>
@@ -254,7 +255,9 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 {
 	aiMesh *mesh = (aiMesh*)from;
 
-	StaticArray<Bone*> &bones = to->bones;
+	Skeleton *skeleton = to->skeleton;
+	StaticArray<Bone> &bones = skeleton->bones;
+	StaticArray<VertexWeight> &weights = skeleton->vertexWeights;
 
 	// foreach bone
 	for (UINT i = 0; i < mesh->mNumBones; i++)
@@ -268,16 +271,16 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 		{
 			for (int y = 0; y < 4; y++)
 			{
-				m(x, y) = orig->mOffsetMatrix[x][y];
+				// engine uses transposed transformation matrices
+				m(y, x) = orig->mOffsetMatrix[x][y];
 			}
 		}
 
-		int weightsCountInModel = (int)orig->mNumWeights;
-		int weightsCount = weightsCountInModel; /*> BONE_MAX_WEIGHTS ? BONE_MAX_WEIGHTS : weightsCountInModel;*/
-
 		// find bone node and parent bone
 		const ModelNode *boneNode = hierarchy->FindNode(boneName);
-		const Bone *parentBone = nullptr;
+		
+		// index of 
+		int parentBoneId = -1;
 
 		// if not a root node
 		if (boneNode->parent != nullptr)
@@ -288,44 +291,49 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 			// try to find bone with the same name
 			// Note: finding is not in Bone class
 			//       because not all bones are set
-			for (UINT i = 0; i < mesh->mNumBones; i++)
+			for (UINT j = 0; j < mesh->mNumBones; j++)
 			{
 				// if names are equal
-				if (parentNodeName == mesh->mBones[i]->mName.C_Str())
+				if (parentNodeName == mesh->mBones[j]->mName.C_Str())
 				{
-					// save its address
-					// with same index i, becuase bones are copied with the same order
-					parentBone = bones[i];
+					// save index j
+					parentBoneId = j;
 					break;
 				}
 			}
 		}
 
 		// create bone
-		bones[i] = new Bone(parentBone, boneNode, m);
-		bones[i]->Init(boneName, weightsCount);
+		bones[i] = Bone(i, parentBoneId, boneNode, m);
+	}
 
-		for (int w = 0; w < weightsCount; w++)
+	// all bones are created
+	// now copy their weights
+	for (UINT boneIndex = 0; boneIndex < mesh->mNumBones; boneIndex++)
+	{
+		aiBone *orig = mesh->mBones[boneIndex];
+
+		// assimp stores vertex weight in a bone
+		int weightsCountInBone = (int)orig->mNumWeights;
+
+		// for each assimp weight in this bone
+		for (int w = 0; w < weightsCountInBone; w++)
 		{
-			VertexWeight vweight = VertexWeight(orig->mWeights[w].mVertexId, orig->mWeights[w].mWeight);
-			bones[i]->SetWeight((int)w, vweight);
+			int vertIndex = (int)orig->mWeights[w].mVertexId;
+			float weight = orig->mWeights[w].mWeight;
+
+			// add
+			weights[vertIndex].AddWeight((int)boneIndex, weight);
 		}
+	}
 
-		/*// if weights in model more they will be normalized
-		float sum = 0.0f;
-
-		// get sum
-		for (int w = 0; w < weightsCount; w++)
-		{
-			sum += orig->mWeights[w].mWeight;
-		}
-
-		// set normalized weights
-		for (int w = 0; w < weightsCount; w++)
-		{
-			VertexWeight vweight = VertexWeight(orig->mWeights[w].mVertexId, orig->mWeights[w].mWeight / sum);
-			bones[i].SetWeight((int)w, vweight);
-		}*/
+	// all weights are setted
+	// norrmalize them to make
+	// their weight sum equal to 1.0f
+	UINT weightsCount = skeleton->vertexWeights.GetSize();
+	for (UINT i = 0; i < weightsCount; i++)
+	{
+		weights[i].Normalize();
 	}
 }
 

@@ -117,7 +117,7 @@ int main()
 
 	dbEntity->GetComponent<CModel>()->modelResource->SetMaterials(&mat);
 	terrainEntity->GetComponent<CModel>()->modelResource->SetMaterials(&matTR);
-	cameraEntity->GetComponent<CModel>()->modelResource->SetMaterials(&mat);
+	//cameraEntity->GetComponent<CModel>()->modelResource->SetMaterials(&mat);
 
 	//cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().Translate(Vector3(0, 0, -0.2f));
 	//cameraEntity->GetComponent<CModel>()->meshes[i].GetTransform().SetRotation(Vector3(0, -90, -90));
@@ -167,11 +167,11 @@ int main()
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
 		
-		const SphereCollider &dbCollider = (const SphereCollider&)(dbEntity->GetComponent<Rigidbody>()->GetCollider());
+		//const SphereCollider &dbCollider = (const SphereCollider&)(dbEntity->GetComponent<Rigidbody>()->GetCollider());
 		//DebugDrawer::Instance().Draw(dbCollider.GetSphere());
 
 		s += Time::GetDeltaTime();
-		if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)
+		if (Input::IsPressed(Keycode::KeyF) && s <- 0.5f)
 		{
 			for (int i = 0; i < 7; i++)
 			{

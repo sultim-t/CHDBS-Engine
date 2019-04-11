@@ -100,7 +100,7 @@ void CModel::InitMesh(const MeshResource *resource, UINT &vao, UINT &vbo, UINT &
 	}
 	else
 	{
-		glBufferData(GL_ARRAY_BUFFER, resource->GetVertices().GetSize() * size, resource->GetVertices().GetArray(), GL_STREAM_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, resource->GetVertices().GetSize() * size, nullptr, GL_STREAM_DRAW);
 	}
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
