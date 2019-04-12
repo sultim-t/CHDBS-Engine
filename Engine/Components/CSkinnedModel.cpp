@@ -113,7 +113,7 @@ void CSkinnedModel::Update()
 
 
 	// update matrices for bones
-	skeleton.UpdateBoneMatrices(animation, currentTime);
+	skeleton.UpdateBoneMatrices(animation, animTime);
 
 	// load vertices to this buffer
 	skeleton.UpdateVertices(newVerts);

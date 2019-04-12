@@ -335,6 +335,10 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 	{
 		weights[i].Normalize();
 	}
+
+	// all bones are set
+	// init skeleton
+	skeleton->Init();
 }
 
 void ResourceManager::CopyAnimation(void *f, Animation *to)

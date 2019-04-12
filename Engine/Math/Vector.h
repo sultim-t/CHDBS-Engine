@@ -156,13 +156,23 @@ inline Vector<Type, Dim>::Vector(const Vector<Type, ADim> &vec)
 {
 	int i = 0;
 
-	for (; i < ADim; i++)
+	if (ADim <= Dim)
 	{
-		vector[i] = vec[i];
+		for (; i < ADim; i++)
+		{
+			vector[i] = vec[i];
+		}
+		for (; i < Dim; i++)
+		{
+			vector[i] = (Type)0;
+		}
 	}
-	for (; i < Dim && i < ADim; i++)
+	else
 	{
-		vector[i] = (Type)0;
+		for (; i < Dim; i++)
+		{
+			vector[i] = vec[i];
+		}
 	}
 }
 

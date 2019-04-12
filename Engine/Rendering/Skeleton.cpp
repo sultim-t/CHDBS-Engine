@@ -1,6 +1,7 @@
 #include "Skeleton.h"
 
 #include "Animation.h"
+#include "DebugDrawer.h"
 #include <Engine/ResourceManager/MeshResource.h>
 #include <Engine/Math/Transform.h>
 
@@ -20,34 +21,40 @@ Skeleton::Skeleton(const MeshResource &meshToUse, int bonesCount, int verticesCo
 	{
 		vertexWeights[i] = VertexWeight();
 	}
-
-	// calculate inverse bind transformations
-	for (int i = 0; i < bonesCount; i++)
-	{
-		CalculateInverseBoneTransforms(i);
-	}
 }
 
-void Skeleton::CalculateInverseBoneTransforms(int i)
+void Skeleton::Init()
 {
-	// global bone default pose transformation
-	Matrix4 globalBoneTransform = bones[i].GetOffsetMatrix();
-	
-	int b = bones[i].GetParentBoneID();
+	CalculateInverseBoneTransforms();
+}
 
-	// while parent bone exist
-	while (b > 0)
+void Skeleton::CalculateInverseBoneTransforms()
+{
+	int bonesCount = bones.GetSize();
+
+	for (int i = 0; i < bonesCount; i++)
 	{
-		// get parent bone tranformation
-		const Matrix4 &parentTransform = bones[b].GetOffsetMatrix();
 
-		// convert to parent's space
-		globalBoneTransform *= parentTransform;
+		// global bone default pose transformation
+		Matrix4 globalBoneTransform = bones[i].GetOffsetMatrix();
 
-		// get parent's parent ID
-		b = bones[b].GetParentBoneID();
+		int b = bones[i].GetParentBoneID();
+
+		// while parent bone exist
+		while (b > 0)
+		{
+			// get parent bone tranformation
+			const Matrix4 &parentTransform = bones[b].GetOffsetMatrix();
+
+			// convert to parent's space
+			globalBoneTransform *= parentTransform;
+
+			// get parent's parent ID
+			b = bones[b].GetParentBoneID();
+		}
+
+		inverseBonesMatrices[i] = globalBoneTransform.GetInversed();
 	}
-
 }
 
 void Skeleton::UpdateBoneMatrices() const
@@ -95,10 +102,17 @@ void Skeleton::UpdateBoneMatrices(const Animation *animation, float time) const
 	{
 		// tranform to original pose
 		Matrix4 m = bones[i].GetOffsetMatrix();
+		
+		//Matrix4 m = inverseBonesMatrices[i];
+		
 		// to global node transform
 		m *= GetBoneTranform(bones[i], animation, time);
 
 		bonesMatrices[i] = m.GetTransposed();
+
+		//Vector3 start = Transform::DecomposePosition(m);
+		//Vector3 end = start + m * Vector3(0, 0, 1);
+		//DebugDrawer::Instance().Draw(start, end);
 	}
 }
 
@@ -107,28 +121,34 @@ Matrix4 Skeleton::GetBoneTranform(const Bone &bone, const Animation *animation, 
 	// NOTE: it's very unoptimized way to update transformations
 	// because calculated matrices are not saved
 
+	// get animated local node tranformation
 	Matrix4 result = GetNodeTranform(bone.GetModelNode(), animation, time);
 	int b = bone.GetParentBoneID();
 
 	// while parent bone exist
 	while (b > 0)
 	{
-		// get parent bone tranformation
+		// get parent local bone tranformation
 		const Matrix4 &parentTransform = GetNodeTranform(bones[b].GetModelNode(), animation, time);
 
 		// convert to parent's space
 		result *= parentTransform;
 
+		//Vector3 start = Transform::DecomposePosition(parentTransform);
+		//Vector3 end = Transform::DecomposePosition(result);
+		//DebugDrawer::Instance().Draw(start, end);
+
 		// get parent's parent ID
 		b = bones[b].GetParentBoneID();
 	}
 
+	// ok, transformation matrix in model space
 	return result;
 }
 
 Matrix4 Skeleton::GetNodeTranform(const ModelNode & node, const Animation * animation, float time) const
 {
-	// base tranformation
+	// base local tranformation
 	Matrix4 result = node.GetTransform();
 
 	// try to find animation node with the same name
@@ -201,6 +221,7 @@ void Skeleton::UpdateVertices(StaticArray<Vertex5> &outVerts) const
 		}
 
 		// update position in buffer
+		// boneMatrix is transposed => can multiply vertices
 		outVerts[i].Position = boneMatrix * Vector4(meshVerts[i].Position, 1.0f);
 	}
 }

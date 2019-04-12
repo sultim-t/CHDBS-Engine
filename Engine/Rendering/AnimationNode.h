@@ -77,7 +77,7 @@ inline bool AnimationNode::GetInterpolatedPosition(float t, Vector3 & outPositio
 		const AKeyPosition &prev = positionKeys[i];
 		const AKeyPosition &next = positionKeys[i + 1];
 
-		if (prev.Time >= t && t < next.Time)
+		if (prev.Time <= t && t < next.Time)
 		{
 			outPosition = Vector3::Lerp(prev.Value, next.Value, (t - prev.Time) / (next.Time - prev.Time));
 			return true;
@@ -101,9 +101,9 @@ inline bool AnimationNode::GetInterpolatedRotation(float t, Quaternion & outRota
 		const AKeyRotation &prev = rotationKeys[i];
 		const AKeyRotation &next = rotationKeys[i + 1];
 
-		if (prev.Time >= t && t < next.Time)
+		if (prev.Time <= t && t < next.Time)
 		{
-			outRotation = Quaternion::Lerp(prev.Value, next.Value, (t - prev.Time) / (next.Time - prev.Time));
+			outRotation = Quaternion::Slerp(prev.Value, next.Value, (t - prev.Time) / (next.Time - prev.Time));
 			return true;
 		}
 	}
@@ -125,7 +125,7 @@ inline bool AnimationNode::GetInterpolatedScale(float t, Vector3 & outScale) con
 		const AKeyScale &prev = scaleKeys[i];
 		const AKeyScale &next = scaleKeys[i + 1];
 
-		if (prev.Time >= t && t < next.Time)
+		if (prev.Time <= t && t < next.Time)
 		{
 			outScale = Vector3::Lerp(prev.Value, next.Value, (t - prev.Time) / (next.Time - prev.Time));
 			return true;

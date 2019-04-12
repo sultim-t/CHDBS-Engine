@@ -27,14 +27,17 @@ private:
 private:
 	Matrix4 GetBoneTranform(const Bone &bone) const;
 	Matrix4 GetBoneTranform(const Bone &bone, const Animation *animation, float time) const;
+
+	// Get animated local transformation of this node
 	Matrix4 GetNodeTranform(const ModelNode &node, const Animation *animation, float time) const;
 	
-	// "i" is index in "inverseBonesMatrices"
-	void CalculateInverseBoneTransforms(int i);
+	void CalculateInverseBoneTransforms();
 
 public:
 	// Allocates memory for bone and vertex arrays
 	Skeleton(const MeshResource &meshToUse, int bonesCount, int verticesCount);
+	// Initialize this skeleton, must be called after setting all bones
+	void Init();
 
 	// Update bone transforms, should be called before UpdateVertices
 	void UpdateBoneMatrices() const;

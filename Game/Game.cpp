@@ -158,7 +158,7 @@ int main()
 	{
 		Time::Calculate();
 
-		while (Time::ToFixedUpdate())
+		//while (Time::ToFixedUpdate())
 		{
 			PhysicsSystem::Instance().Update();
 		}

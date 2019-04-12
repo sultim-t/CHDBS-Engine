@@ -562,11 +562,23 @@ inline Quaternion Quaternion::Slerp(const Quaternion &a, const Quaternion &b, co
 
 	float it = 1 - t;
 
-	float theta = ACos(a.quat[1]*b.quat[1] + a.quat[2]*b.quat[2] + a.quat[3]*b.quat[3] + a.quat[0]*b.quat[0]);
-	float s = Sin(theta);
+	float dot = a.quat[1] * b.quat[1] + a.quat[2] * b.quat[2] + a.quat[3] * b.quat[3] + a.quat[0] * b.quat[0];
+	
+	Quaternion nb = b;
+	if (dot < 0.0f)
+	{
+		nb = b * (-1.0f);
+		dot = -dot;
+	}
+	
+	float theta0 = ACos(dot);
+	float theta = theta0 * t;
 
-	float la = Sin(it * theta) / s;
-	float lb = Sin(t * theta) / s;
+	float sinTheta = Sin(theta);
+	float sinTheta0 = Sin(theta0);
+
+	float la = Cos(theta) - dot * sinTheta / sinTheta0;
+	float lb = sinTheta / sinTheta0;
 
 	q.quat[0] = la * a.quat[0] + lb * b.quat[0];
 	q.quat[1] = la * a.quat[1] + lb * b.quat[1];
