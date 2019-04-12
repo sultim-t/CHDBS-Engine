@@ -269,6 +269,17 @@ Matrix4 Transform::RotateMatrix(const Matrix4& mat, const Vector3 &inaxis, const
 	return result;
 }
 
+Matrix4 Transform::RotateMatrix(const Matrix4 & mat, const Quaternion & quat)
+{
+	Vector3 axis;
+	float angle;
+
+	// convert
+	quat.ToAxisAngle(axis, angle);
+
+	return RotateMatrix(mat, axis, angle);
+}
+
 Matrix4 Transform::ScaleMatrix(const Matrix4& mat, const Vector3 &vec)
 {
 	Matrix4 result(mat);

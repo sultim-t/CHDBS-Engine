@@ -282,7 +282,6 @@
     <ClInclude Include="Rendering\Animation.h" />
     <ClInclude Include="Rendering\AnimationKey.h" />
     <ClInclude Include="Rendering\AnimationNode.h" />
-    <ClInclude Include="Rendering\AnimationVertex.h" />
     <ClInclude Include="Rendering\ArrayMesh.h" />
     <ClInclude Include="Rendering\Bone.h" />
     <ClInclude Include="Rendering\Cubemap.h" />

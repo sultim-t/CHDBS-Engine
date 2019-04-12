@@ -50,6 +50,8 @@ void CModel::Update()
 #define PROPERTY_KEY_TYPE			"Path"
 #define PROPERTY_KEY_CASTSHADOWS	"CastShadows"
 #define PROPERTY_KEY_RECEIVESHADOWS	"ReceiveShadows"
+#define PROPERTY_KEY_CORRECTPOS		"PositionCorrection"
+#define PROPERTY_KEY_CORRECTSCALE	"ScaleCorrection"
 #define PROPERTY_KEY_CORRECTROT		"RotationCorrection"
 
 void CModel::SetProperty(const String &key, const String &value)
@@ -75,6 +77,16 @@ void CModel::SetProperty(const String &key, const String &value)
 		q.ToAxisAngle(axis, angle);
 
 		correctionMatrix = Transform::RotateMatrix(correctionMatrix, axis, angle);
+	}
+	else if (key == PROPERTY_KEY_CORRECTSCALE)
+	{
+		Vector3 scale = value.ToVector3();
+		correctionMatrix = Transform::ScaleMatrix(correctionMatrix, scale);
+	}
+	else if (key == PROPERTY_KEY_CORRECTPOS)
+	{
+		Vector3 pos = value.ToVector3();
+		correctionMatrix = Transform::TranslateMatrix(correctionMatrix, pos);
 	}
 	else
 	{

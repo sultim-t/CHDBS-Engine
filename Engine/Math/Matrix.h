@@ -10,16 +10,23 @@ private:
 	Type matrix[Dim][Dim];
 
 public:
+	// Empty contrutor
 	Matrix();
+	// Construct matrix, all elements are set to "x"
 	Matrix(const Type x);
-	Matrix(const Type x, const bool diagonal);
-	Matrix(const int size, const Type *arr);
+	// Construct matrix
+	Matrix(const Type x, bool diagonal);
+	// Construct matrix from raw array
+	Matrix(int size, const Type *arr);
 
+	// Get element in this matrix
 	inline Type &operator()(int row, int column);
-	const Type &operator()(int row, int column) const;
+	// Get element in this matrix
+	inline const Type &operator()(int row, int column) const;
+	// Get copy of vector of this matrix
 	inline Vector<Type, Dim> operator[](int index) const;
 
-	// matrix-matrix opertaions
+	// matrix-matrix operations
 	inline Matrix<Type, Dim> operator+(const Matrix<Type, Dim> &matrix2) const;
 	inline Matrix<Type, Dim> &operator+=(const Matrix<Type, Dim> &matrix2);
 	inline Matrix<Type, Dim> operator-(const Matrix<Type, Dim> &matrix2) const;
@@ -36,11 +43,34 @@ public:
 	inline Matrix<Type, Dim> operator/(const Type scalar) const;
 	inline Matrix<Type, Dim> &operator/=(const Type scalar);
 
+	// Transpose this matrix
 	inline void Transpose();
+	// Get transposed copy of this matrix
 	inline Matrix<Type, Dim> GetTransposed() const;
 
+	// Get determinant of this matrix
+	inline Type GetDeterminant() const;
+	
+	// Inverse this matrix
+	inline void Inverse();
+	// Get inversed copy of this matrix
+	inline Matrix<Type, Dim> GetInversed() const;
+
+	// Cast to array of length Dim*Dim
 	inline const Type *ToArray() const;
+	// Set row in this matrix
 	inline void SetRow(int i, const Vector<Type, Dim> &vec);
+
+private:
+	// Get determinant of this matrix,
+	// but for size n*n
+	inline Type GetDeterminant(int n) const;
+	// Get this matrix without given row and column
+	// Size of input matrix is n*n
+	// Size of output matrix is (n-1)*(n-1)
+	// Result matrix is "out"
+	void GetWithout(Matrix<Type, Dim> &out, int row, int column, int n) const;
+	// Get copy of this matrix without given row and column
 };
 
 template <class Type, int Dim>
@@ -60,7 +90,7 @@ inline Matrix<Type, Dim>::Matrix(const Type x)
 }
 
 template<class Type, int Dim>
-inline Matrix<Type, Dim>::Matrix(const Type x, const bool diagonal)
+inline Matrix<Type, Dim>::Matrix(const Type x, bool diagonal)
 {
 	if (diagonal)
 	{
@@ -85,14 +115,14 @@ inline Matrix<Type, Dim>::Matrix(const Type x, const bool diagonal)
 }
 
 template<class Type, int Dim>
-inline Matrix<Type, Dim>::Matrix(const int size, const Type * arr)
+inline Matrix<Type, Dim>::Matrix(int size, const Type * arr)
 {
 	for (int i = 0; i < Dim; i++)
 	{
 		for (int j = 0; j < Dim; j++)
 		{
 			int index = i*Dim + j;
-			(*this)(i, j) = index < size ? arr[index] : 0;
+			(*this)(i, j) = index < size ? arr[index] : (Type)0;
 		}
 	}
 }
@@ -273,6 +303,160 @@ inline Matrix<Type, Dim> Matrix<Type, Dim>::GetTransposed() const
 	}
 
 	return result;
+}
+
+
+template<class Type, int Dim>
+inline void Matrix<Type, Dim>::GetWithout(Matrix<Type, Dim>& out, int row, int column, int n) const
+{
+	// iterators for result matrix
+	int k = 0, l = 0;
+
+	for (int i = 0; i < n; i++)
+	{
+		// row to delete
+		if (i == row)
+		{
+			// ignore
+			continue;
+		}
+
+		for (int j = 0; j < n; j++)
+		{
+			// column to delete
+			if (j == column)
+			{
+				// ignore
+				continue;
+			}
+
+			// copy
+			out(k, l) = matrix[i][j];
+
+			l++;
+		}
+
+		k++;
+		l = 0;
+	}
+}
+
+template<class Type, int Dim>
+inline Type Matrix<Type, Dim>::GetDeterminant() const
+{
+	return GetDeterminant(Dim);
+}
+
+template<class Type, int Dim>
+inline Type Matrix<Type, Dim>::GetDeterminant(int n) const
+{
+	if (n == 1)
+	{
+		// if matrix 1x1
+		return matrix[0][0];
+	}
+	else if (n == 2)
+	{
+		// if matrix 2x2
+		return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
+	}
+
+	Type det = (Type)0;
+	Type sign = (Type)1;
+
+	// temp matrix Dim*Dim
+	// but used size is (n-1)*(n-1)
+	Matrix<Type, Dim> a;
+
+	// for each element in top row
+	for (int j = 0; j < n; j++)
+	{
+		// get matrix without top row and j column
+		// input size is n*n
+		// output size is (n-1)*(n-1)
+		GetWithout(a, 0, j, n);
+
+		// calculate minor
+		// for matrix a, which size is (n-1)*(n-1)
+		float minor = a.GetDeterminant(n - 1);
+
+		// add to result
+		det += sign * matrix[0][j] * minor;
+
+		sign = -sign;
+	}
+
+	return det;
+}
+
+template<class Type, int Dim>
+inline void Matrix<Type, Dim>::Inverse()
+{
+	*this = GetInversed();
+}
+
+template<class Type, int Dim>
+inline Matrix<Type, Dim> Matrix<Type, Dim>::GetInversed() const
+{
+	Matrix<Type, Dim> inversed;
+
+	// 1 / det
+	Type invDet = (Type)1 / this->GetDeterminant();
+
+	if (Dim == 1)
+	{
+		// if matrix 1x1, then ajugate matrix is { 1 }
+		// so inversed is 1/det
+		inversed(0, 0) = invDet;
+		return inversed;
+	}
+	else if (Dim == 2)
+	{
+		// if matrix 2x2
+		inversed(0, 0) = matrix[1][1];
+		inversed(0, 1) = -matrix[0][1];
+		inversed(1, 0) = -matrix[1][0];
+		inversed(1, 1) = matrix[0][0];
+		
+		// multiply by inversed determinant
+		inversed *= invDet;
+
+		return inversed;
+	}
+
+	// if matrix order > 2
+
+	Type sign = (Type)1;
+
+	// temp matrix Dim*Dim
+	// used size is (Dim-1)*(Dim-1)
+	Matrix<Type, Dim> temp;
+
+	// get adjugate matrix
+	for (int i = 0; i < Dim; i++)
+	{
+		for (int j = 0; j < Dim; j++)
+		{
+			// load to temp
+			// matrix without row "i" and column "j"
+			GetWithout(temp, i, j, Dim);
+
+			// calculate minor
+			// size of temp is (Dim-1)*(Dim-1)
+			float minor = temp.GetDeterminant(Dim - 1);
+
+			// adjugate matrix is transposed
+			inversed(j, i) = sign * minor;
+
+			// inverse sign
+			sign = -sign;
+		}
+	}
+
+	// multiply adjugate by inversed determinant
+	inversed *= invDet;
+
+	return inversed;
 }
 
 template<class Type, int Dim>

@@ -19,10 +19,13 @@ public:
 	inline Animation(const char *name, float duration, float ticksPerSecond, int animNodesCount);
 	inline ~Animation();
 
-	inline const String &GetName() const;
 	inline float GetDuration() const;
 	inline float GetTicksPerSecond() const;
+	inline const String &GetName() const;
 	inline const StaticArray<AnimationNode*> &GetAnimationNodes() const;
+
+	// Find animation node with specified name
+	inline const AnimationNode *FindAnimationNode(const char *name) const;
 };
 
 inline Animation::Animation(const char *name, float duration, float ticksPerSecond, int animNodesCount)
@@ -45,7 +48,7 @@ inline Animation::~Animation()
 	}
 }
 
-inline const String & Animation::GetName() const
+inline const String &Animation::GetName() const
 {
 	return name;
 }
@@ -60,7 +63,20 @@ inline float Animation::GetTicksPerSecond() const
 	return ticksPerSecond;
 }
 
-inline const StaticArray<AnimationNode*>& Animation::GetAnimationNodes() const
+inline const StaticArray<AnimationNode*> &Animation::GetAnimationNodes() const
 {
 	return animationNodes;
+}
+
+inline const AnimationNode *Animation::FindAnimationNode(const char *name) const
+{
+	for (UINT i = 0; i < animationNodes.GetSize(); i++)
+	{
+		if (animationNodes[i]->GetNodeName() == name)
+		{
+			return animationNodes[i];
+		}
+	}
+
+	return nullptr;
 }

@@ -9,24 +9,35 @@ class AnimationNode
 	friend class ResourceManager;
 
 private:
+	// name of affected ModelNode
+	String						nodeName;
+
+	// Keys
 	StaticArray<AKeyPosition>	positionKeys;
 	StaticArray<AKeyRotation>	rotationKeys;
 	StaticArray<AKeyScale>		scaleKeys;
 
 public:
-	inline AnimationNode(int positionKeysCount, int rotationKeysCount, int scaleKeysCount);
+	inline AnimationNode(const char *nodeName, int positionKeysCount, int rotationKeysCount, int scaleKeysCount);
 
 	const StaticArray<AKeyPosition>	&GetPositionKeys() const;
 	const StaticArray<AKeyRotation>	&GetRotationKeys() const;
 	const StaticArray<AKeyScale>	&GetScaleKeys() const;
+
+	// Get name of affected model node
+	const String					&GetNodeName() const;
 
 	bool GetInterpolatedPosition(float t, Vector3 &outPosition) const;
 	bool GetInterpolatedRotation(float t, Quaternion &outRotation) const;
 	bool GetInterpolatedScale(float t, Vector3 &outScale) const;
 };
 
-inline AnimationNode::AnimationNode(int positionKeysCount, int rotationKeysCount, int scaleKeysCount)
+inline AnimationNode::AnimationNode(const char *nodeName, int positionKeysCount, int rotationKeysCount, int scaleKeysCount)
 {
+	// unsafe init
+	this->nodeName.Init(nodeName);
+	
+	// init all arrays
 	positionKeys.Init(positionKeysCount);
 	rotationKeys.Init(rotationKeysCount);
 	scaleKeys	.Init(scaleKeysCount);
@@ -45,6 +56,11 @@ inline const StaticArray<AKeyRotation>& AnimationNode::GetRotationKeys() const
 inline const StaticArray<AKeyScale>& AnimationNode::GetScaleKeys() const
 {
 	return scaleKeys;
+}
+
+inline const String & AnimationNode::GetNodeName() const
+{
+	return nodeName;
 }
 
 inline bool AnimationNode::GetInterpolatedPosition(float t, Vector3 & outPosition) const

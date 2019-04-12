@@ -14,7 +14,6 @@
 #include <Engine/Rendering/Animation.h>
 #include <Engine/Rendering/AnimationNode.h>
 #include <Engine/Rendering/AnimationKey.h>
-#include <Engine/Rendering/AnimationVertex.h>
 
 #include "MeshResource.h"
 
@@ -143,6 +142,7 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 			aiNodeAnim *fromNode = from->mChannels[j];
 
 			animations[i]->animationNodes[j] = new AnimationNode(
+				fromNode->mNodeName.C_Str(),
 				fromNode->mNumPositionKeys, 
 				fromNode->mNumRotationKeys,
 				fromNode->mNumScalingKeys);

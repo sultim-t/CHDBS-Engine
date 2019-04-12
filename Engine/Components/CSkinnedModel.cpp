@@ -89,34 +89,40 @@ void CSkinnedModel::Update()
 {
 	const Animation *animation = modelResource->GetHierarchy().GetAnimations()[currentAnimation];
 
-	if (currentTime > animation->GetDuration())
+	float animLength = animation->GetDuration() / animation->GetTicksPerSecond();
+
+	if (currentTime > animLength)
 	{
-		currentTime = Mod(currentTime, animation->GetDuration());
+		currentTime = Mod(currentTime, animLength);
 	}
 
+	float timeInTicks = currentTime * animation->GetTicksPerSecond();
+	float animTime = Mod(timeInTicks, animation->GetDuration());
+
 	const StaticArray<AnimationNode*> &nodes = animation->GetAnimationNodes();
+
 
 	int meshIndex = 0;
 	MeshResource *mesh = modelResource->GetHierarchy().GetMeshes()[meshIndex];
 	const StaticArray<Vertex5> &sourceVerts = mesh->GetVertices();
 
+
 	StaticArray<Vertex5> &newVerts = *vertices[meshIndex];
 
-	// for each animation node
-	//for (UINT i = 0; i < nodes.GetSize(); i++)
-	{
-		Vector3 position;
+	const Skeleton &skeleton = mesh->GetSkeleton();
 
-		// if (!nodes[0]->GetInterpolatedPosition(currentTime, position))
 
-		position = Vector3::Lerp(0.0f, Vector3(0, 0, 1), currentTime);
+	// update matrices for bones
+	skeleton.UpdateBoneMatrices(animation, currentTime);
 
-		const Skeleton &skeleton = mesh->GetSkeleton();
-		skeleton.UpdateVertices(newVerts);
-	}
+	// load vertices to this buffer
+	skeleton.UpdateVertices(newVerts);
 
+	// load model to gpu
 	GFXUpdate(meshIndex);
 
+
+	// update time for animation
 	currentTime += Time::GetDeltaTime();
 }
 

@@ -23,7 +23,7 @@ public:
 	// Default constructor
 	inline Bone(int boneID, int parentBoneID, const ModelNode *modelNode, const Matrix4 &offsetMatrix);
 
-	// Get bone's offset matrix, which tranforms from bone's local space to its world space
+	// Get bone tranformation in default pose
 	inline const Matrix4		&GetOffsetMatrix() const;
 	inline const ModelNode		&GetModelNode() const;
 
