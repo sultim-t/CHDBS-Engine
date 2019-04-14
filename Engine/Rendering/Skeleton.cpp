@@ -109,10 +109,6 @@ void Skeleton::UpdateBoneMatrices(const Animation *animation, float time) const
 		m *= GetBoneTranform(bones[i], animation, time);
 
 		bonesMatrices[i] = m.GetTransposed();
-
-		//Vector3 start = Transform::DecomposePosition(m);
-		//Vector3 end = start + m * Vector3(0, 0, 1);
-		//DebugDrawer::Instance().Draw(start, end);
 	}
 }
 
@@ -133,10 +129,6 @@ Matrix4 Skeleton::GetBoneTranform(const Bone &bone, const Animation *animation, 
 
 		// convert to parent's space
 		result *= parentTransform;
-
-		//Vector3 start = Transform::DecomposePosition(parentTransform);
-		//Vector3 end = Transform::DecomposePosition(result);
-		//DebugDrawer::Instance().Draw(start, end);
 
 		// get parent's parent ID
 		b = bones[b].GetParentBoneID();
@@ -204,24 +196,25 @@ void Skeleton::UpdateVertices(StaticArray<Vertex5> &outVerts) const
 		// no weights
 		if (weightCount == 0)
 		{
-			// use default position
+			// use default
 			outVerts[i].Position = meshVerts[i].Position;
+			outVerts[i].Normal = meshVerts[i].Normal;
 
 			continue;
 		}
 
-		// init with the first the first bone
+		// init with the first matrix
 		Matrix4 boneMatrix = bonesMatrices[weights[0].BoneIndex] * weights[0].Weight;
 
-		// update position for each bone
+		// update for each weight
 		for (int j = 1; j < weightCount; j++)
 		{
-			// update matrix
 			boneMatrix += bonesMatrices[weights[j].BoneIndex] * weights[j].Weight;
 		}
 
-		// update position in buffer
+		// update position and normal in buffer
 		// boneMatrix is transposed => can multiply vertices
 		outVerts[i].Position = boneMatrix * Vector4(meshVerts[i].Position, 1.0f);
+		outVerts[i].Normal = boneMatrix * Vector4(meshVerts[i].Normal, 0.0f);
 	}
 }
