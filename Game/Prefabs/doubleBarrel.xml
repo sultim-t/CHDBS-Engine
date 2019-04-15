@@ -1,14 +1,14 @@
 <Entity
   Name="Double Barrel"
-  Position="0 2 1"
-  Euler="90 0 0">
+  Position="0 0 3"
+  Euler="0 0 0">
 
   <CSkinnedModel
-  Path="Models/shot.FBX"
-  PositionCorrection="0 -0.1 0.25"
+  Path="Models/1.dae"
+  PositionCorrection="0 -0.1 -0.25"
   ScaleCorrection="1 -1 1"
   RotationCorrection="-0.5 -0.5 0.5 -0.5"
-  CastShadows="0"/>
+  CastShadows="1"/>
   
   <Rigidbody
    Mass="20"

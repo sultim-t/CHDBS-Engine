@@ -73,7 +73,7 @@ inline void StaticArray<T>::Init(UINT amount)
 
 	if (amount != 0)
 	{
-		ptr.reset((T*)SYSALLOCATOR.Allocate(sizeof(T) * amount));
+		ptr.reset((T*)SystemAllocator::Allocate(sizeof(T) * amount));
 	}
 }
 

@@ -61,5 +61,5 @@ inline const TextureColorFormat TextureResource::GetFormat() const
 
 inline void TextureResource::Delete()
 {
-	SYSALLOCATOR.Free(data);
+	SystemAllocator::Free(data);
 }

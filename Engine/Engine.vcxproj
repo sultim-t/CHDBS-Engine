@@ -204,6 +204,7 @@
     <ClCompile Include="Physics\Rigidbody.cpp" />
     <ClCompile Include="Physics\SphereCollider.cpp" />
     <ClCompile Include="Rendering\ArrayMesh.cpp" />
+    <ClCompile Include="Rendering\Bone.cpp" />
     <ClCompile Include="Rendering\Cubemap.cpp" />
     <ClCompile Include="Rendering\DebugDrawer.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />

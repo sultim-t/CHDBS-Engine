@@ -256,7 +256,7 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 	aiMesh *mesh = (aiMesh*)from;
 
 	Skeleton *skeleton = to->skeleton;
-	StaticArray<Bone> &bones = skeleton->bones;
+	StaticArray<Bone*> &bones = skeleton->bones;
 	StaticArray<VertexWeight> &weights = skeleton->vertexWeights;
 
 	// foreach bone
@@ -279,8 +279,16 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 		// find bone node and parent bone
 		const ModelNode *boneNode = hierarchy->FindNode(boneName);
 		
-		// index of 
-		int parentBoneId = -1;
+		// create bone
+		bones[i] = new Bone(skeleton, i, boneNode, m);
+		bones[i]->Init();
+	}
+
+	// all bones are created
+	// set parent and child bones
+	for (UINT i = 0; i < bones.GetSize(); i++)
+	{
+		const ModelNode *boneNode = bones[i]->modelNode;
 
 		// if not a root node
 		if (boneNode->parent != nullptr)
@@ -289,25 +297,25 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 			const String &parentNodeName = boneNode->parent->GetName();
 
 			// try to find bone with the same name
-			// Note: finding is not in Bone class
-			//       because not all bones are set
 			for (UINT j = 0; j < mesh->mNumBones; j++)
 			{
 				// if names are equal
 				if (parentNodeName == mesh->mBones[j]->mName.C_Str())
 				{
-					// save index j
-					parentBoneId = j;
+					// then j is a parent bone's id
+
+					// add to current
+					bones[i]->SetParentBone(j);
+
+					// add current to parent as a child
+					bones[j]->AddChildBone(i);
+
 					break;
 				}
 			}
 		}
-
-		// create bone
-		bones[i] = Bone(i, parentBoneId, boneNode, m);
 	}
 
-	// all bones are created
 	// now copy their weights
 	for (UINT boneIndex = 0; boneIndex < mesh->mNumBones; boneIndex++)
 	{
@@ -328,7 +336,7 @@ void ResourceManager::CopyBones(void * from, ModelHierarchy * hierarchy, MeshRes
 	}
 
 	// all weights are setted
-	// norrmalize them to make
+	// normalize them to make
 	// their weight sum equal to 1.0f
 	UINT weightsCount = skeleton->vertexWeights.GetSize();
 	for (UINT i = 0; i < weightsCount; i++)

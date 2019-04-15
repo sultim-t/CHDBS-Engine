@@ -43,6 +43,15 @@ struct VertexWeight
 
 		if (WeightCount >= BONE_MAX_WEIGHTS)
 		{
+			for (int i = 0; i < BONE_MAX_WEIGHTS; i++)
+			{
+				if (Weights[i].Weight < weight)
+				{
+					Weights[i].BoneIndex = boneIndex;
+					Weights[i].Weight = weight;
+				}
+			}
+
 			return;
 		}
 

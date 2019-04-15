@@ -125,9 +125,9 @@ void CParticleSystem::Init()
 	particleShader.Load(shaderVert, shaderFrag);
 
 	// allocate
-	particles = (Particle*)SYSALLOCATOR.Allocate(sizeof(Particle) * maxParticleCount);
-	positionsAndSizes = (Vector4*)SYSALLOCATOR.Allocate(sizeof(Vector4) * maxParticleCount);
-	colors = (Color4*)SYSALLOCATOR.Allocate(sizeof(Color4) * maxParticleCount);
+	particles = (Particle*)SystemAllocator::Allocate(sizeof(Particle) * maxParticleCount);
+	positionsAndSizes = (Vector4*)SystemAllocator::Allocate(sizeof(Vector4) * maxParticleCount);
+	colors = (Color4*)SystemAllocator::Allocate(sizeof(Color4) * maxParticleCount);
 
 	lastUsedParticle = 0;
 	cam = nullptr;
@@ -162,9 +162,9 @@ void CParticleSystem::Init()
 
 CParticleSystem::~CParticleSystem()
 {
-	SYSALLOCATOR.Free(particles);
-	SYSALLOCATOR.Free(positionsAndSizes);
-	SYSALLOCATOR.Free(colors);
+	SystemAllocator::Free(particles);
+	SystemAllocator::Free(positionsAndSizes);
+	SystemAllocator::Free(colors);
 }
 
 UINT CParticleSystem::FindDeadParticle()

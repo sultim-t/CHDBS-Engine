@@ -3,53 +3,55 @@
 #include "VertexWeight.h"
 #include "ModelNode.h"
 
+#include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/Math/Matrix.h>
 
 class Bone
 {
+	friend class ResourceManager;
+
 private:
+	// Skeleton, to which this bone is attached
+	Skeleton			*skeleton;
+
 	// Bone tranformation in default pose
-	Matrix4			offsetMatrix;
+	Matrix4				localOffsetMatrix;
+	// Inverse global (model) bone transformation in default pose
+	Matrix4				inverseOffsetMatrix;
 
 	// Node to get transformation from
-	const ModelNode	*modelNode;
+	const ModelNode		*modelNode;
 	
 	// Current bone ID, bones are stored in skeleton class
-	int				boneID;
-	// Parent bone ID
-	int				parentBoneID;
+	int					boneID;
+	// Parent bone ID, bones are stored in skeleton class
+	int					parentBoneID;
+	// Child bones IDs, bones are stored in skeleton class
+	DynamicArray<int>	childIDs;
 
 public:
 	// Default constructor
-	inline Bone(int boneID, int parentBoneID, const ModelNode *modelNode, const Matrix4 &offsetMatrix);
+	Bone(Skeleton *skeleton, int boneID, const ModelNode *modelNode, const Matrix4 &localOffsetMatrix);
+	// Allocate dynamic memory for class members
+	void Init();
+
+	// Copy
+	// Note: doesn't copy child ids array
+	void operator=(const Bone &source);
 
 	// Get bone tranformation in default pose
-	inline const Matrix4		&GetOffsetMatrix() const;
-	inline const ModelNode		&GetModelNode() const;
+	const Matrix4		&GetOffsetMatrix() const;
+	// Get inverse global (model) bone transformation in default pose
+	const Matrix4		&GetInverseGlobalOffsetMatrix() const;
+	const ModelNode		&GetModelNode() const;
 
-	inline int GetBoneID() const;
-	inline int GetParentBoneID() const;
+	int GetBoneID() const;
+	int GetParentBoneID() const;
+	const DynamicArray<int> GetChildBonesID() const;
+
+	void SetParentBone(int id);
+	void AddChildBone(int id);
+
+	// Calculate inverse global (model) bone transformation in default pose
+	void CalculateInverseMatrix(const Matrix4 &parentBoneOffset);
 };
-
-inline Bone::Bone(int boneID, int parentBoneID, const ModelNode * modelNode, const Matrix4 & offsetMatrix)
-	: boneID(boneID), parentBoneID(parentBoneID), modelNode(modelNode), offsetMatrix(offsetMatrix) { }
-
-inline const ModelNode &Bone::GetModelNode() const
-{
-	return *modelNode;
-}
-
-inline int Bone::GetBoneID() const
-{
-	return boneID;
-}
-
-inline int Bone::GetParentBoneID() const
-{
-	return parentBoneID;
-}
-
-inline const Matrix4 &Bone::GetOffsetMatrix() const
-{
-	return offsetMatrix;
-}

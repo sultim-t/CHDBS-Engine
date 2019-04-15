@@ -6,12 +6,11 @@
 #include <Engine/Math/Transform.h>
 
 Skeleton::Skeleton(const MeshResource &meshToUse, int bonesCount, int verticesCount)
-	: mesh(meshToUse)
+	: mesh(meshToUse), rootBoneID(-1)
 {
 	// allocate for bones
 	bones.Init(bonesCount);
 	bonesMatrices.Init(bonesCount);
-	inverseBonesMatrices.Init(bonesCount);
 
 	// allocate for vertices
 	vertexWeights.Init(verticesCount);
@@ -23,156 +22,110 @@ Skeleton::Skeleton(const MeshResource &meshToUse, int bonesCount, int verticesCo
 	}
 }
 
-void Skeleton::Init()
+Skeleton::~Skeleton()
 {
-	CalculateInverseBoneTransforms();
+	for (UINT i = 0; i < bones.GetSize(); i++)
+	{
+		delete bones[i];
+	}
 }
 
-void Skeleton::CalculateInverseBoneTransforms()
+void Skeleton::Init()
 {
-	int bonesCount = bones.GetSize();
+	// find root bone
+	FindRootBone();
 
-	for (int i = 0; i < bonesCount; i++)
-	{
-
-		// global bone default pose transformation
-		Matrix4 globalBoneTransform = bones[i].GetOffsetMatrix();
-
-		int b = bones[i].GetParentBoneID();
-
-		// while parent bone exist
-		while (b > 0)
-		{
-			// get parent bone tranformation
-			const Matrix4 &parentTransform = bones[b].GetOffsetMatrix();
-
-			// convert to parent's space
-			globalBoneTransform *= parentTransform;
-
-			// get parent's parent ID
-			b = bones[b].GetParentBoneID();
-		}
-
-		inverseBonesMatrices[i] = globalBoneTransform.GetInversed();
-	}
+	// init once all inverse matrices starting from root bone with identity transformation
+	bones[rootBoneID]->CalculateInverseMatrix(Matrix4(1.0f, true));
 }
 
 void Skeleton::UpdateBoneMatrices() const
 {
-	// for each bone
 	for (UINT i = 0; i < bones.GetSize(); i++)
 	{
-		// tranform to original pose
-		Matrix4 m = bones[i].GetOffsetMatrix();
-		// to global node transform
-		m *= GetBoneTranform(bones[i]);
-
-		bonesMatrices[i] = m.GetTransposed();
-	}
-}
-
-Matrix4 Skeleton::GetBoneTranform(const Bone &bone) const
-{
-	// NOTE: it's very unoptimized way to update transformations
-	// because calculated matrices are not saved
-
-	Matrix4 result = bone.GetModelNode().GetTransform();
-	int b = bone.GetParentBoneID();
-
-	// while parent bone exist
-	while (b > 0)
-	{
-		// get parent bone tranformation
-		const Matrix4 &parentTransform = bones[b].GetModelNode().GetTransform();
-
-		// convert to parent's space
-		result *= parentTransform;
-
-		// get parent's parent ID
-		b = bones[b].GetParentBoneID();
+		bonesMatrices[i] = Matrix4(1.0f, true);
 	}
 
-	return result;
+	// recursive call from root
+	UpdateBoneMatrices(bones[rootBoneID], Matrix4(1.0f, true));
 }
 
 void Skeleton::UpdateBoneMatrices(const Animation *animation, float time) const
-{
-	// for each bone
+{	
 	for (UINT i = 0; i < bones.GetSize(); i++)
 	{
-		// tranform to original pose
-		Matrix4 m = bones[i].GetOffsetMatrix();
-		
-		//Matrix4 m = inverseBonesMatrices[i];
-		
-		// to global node transform
-		m *= GetBoneTranform(bones[i], animation, time);
-
-		bonesMatrices[i] = m.GetTransposed();
-	}
-}
-
-Matrix4 Skeleton::GetBoneTranform(const Bone &bone, const Animation *animation, float time) const
-{	
-	// NOTE: it's very unoptimized way to update transformations
-	// because calculated matrices are not saved
-
-	// get animated local node tranformation
-	Matrix4 result = GetNodeTranform(bone.GetModelNode(), animation, time);
-	int b = bone.GetParentBoneID();
-
-	// while parent bone exist
-	while (b > 0)
-	{
-		// get parent local bone tranformation
-		const Matrix4 &parentTransform = GetNodeTranform(bones[b].GetModelNode(), animation, time);
-
-		// convert to parent's space
-		result *= parentTransform;
-
-		// get parent's parent ID
-		b = bones[b].GetParentBoneID();
+		bonesMatrices[i] = Matrix4(1.0f, true);
 	}
 
-	// ok, transformation matrix in model space
-	return result;
+	// recursive call from root
+	UpdateBoneMatrices(bones[rootBoneID], animation, time, Matrix4(1.0f, true));
 }
 
-Matrix4 Skeleton::GetNodeTranform(const ModelNode & node, const Animation * animation, float time) const
+void Skeleton::UpdateBoneMatrices(const Bone *bone, const Matrix4 & parent) const
 {
-	// base local tranformation
-	Matrix4 result = node.GetTransform();
+	// local node transform
+	Matrix4 currentLocal = bone->GetModelNode().GetTransform();
 
-	// try to find animation node with the same name
-	const AnimationNode *animNode = animation->FindAnimationNode(node.GetName());
+	// node to global (model) space
+	Matrix4 current = currentLocal * parent;
 
-	// if found
-	if (animNode != nullptr)
+	// get array
+	const DynamicArray<int> &childBones = bone->GetChildBonesID();
+	int childCount = childBones.GetSize();
+
+	// for each child bone
+	for (int i = 0; i < childCount; i++)
 	{
-		Vector3 position;
-		Quaternion quat;
-		Vector3 scale;
-
-		// 1) animate position
-		if (animNode->GetInterpolatedPosition(time, position))
-		{
-			result = Transform::TranslateMatrix(result, position);
-		}
-
-		// 2) animate scale
-		/*if (animNode->GetInterpolatedScale(time, scale))
-		{
-			result = Transform::TranslateMatrix(result, scale);
-		}*/
-
-		// 3) animate rotation
-		if (animNode->GetInterpolatedRotation(time, quat))
-		{
-			result = Transform::RotateMatrix(result, quat);
-		}
+		// update recurcsively
+		UpdateBoneMatrices(bones[childBones[i]], current);
 	}
 
-	return result;
+	// apply bone's default pose
+	current = bone->GetInverseGlobalOffsetMatrix() * current;
+
+	// set transposed to use vector multiplication
+	bonesMatrices[bone->GetBoneID()] = current.GetTransposed();
+}
+
+void Skeleton::UpdateBoneMatrices(const Bone *bone, const Animation * animation, float time, const Matrix4 & parent) const
+{
+	// local node transform
+	Matrix4 currentLocal = bone->GetModelNode().GetTransform(*animation, time);
+
+	// node to global (model) space
+	Matrix4 current = currentLocal * parent;
+
+	// get array
+	const DynamicArray<int> &childBones = bone->GetChildBonesID();
+	int childCount = childBones.GetSize();
+
+	// for each child bone
+	for (int i = 0; i < childCount; i++)
+	{
+		// update recurcsively
+		UpdateBoneMatrices(bones[childBones[i]], animation, time, current);
+	}
+
+	// apply bone's default pose
+	current = bone->GetInverseGlobalOffsetMatrix() * current;
+
+	// set transposed to use vector multiplication
+	bonesMatrices[bone->GetBoneID()] = current.GetTransposed();
+}
+
+void Skeleton::FindRootBone()
+{
+	int b = 0;
+
+	// while parent exist
+	do
+	{
+		// update root bone
+		rootBoneID = b;
+
+		// get its parent
+		b = bones[b]->GetParentBoneID();
+	} while (b >= 0);
 }
 
 void Skeleton::UpdateVertices(StaticArray<Vertex5> &outVerts) const
@@ -205,7 +158,7 @@ void Skeleton::UpdateVertices(StaticArray<Vertex5> &outVerts) const
 
 		// init with the first matrix
 		Matrix4 boneMatrix = bonesMatrices[weights[0].BoneIndex] * weights[0].Weight;
-
+		
 		// update for each weight
 		for (int j = 1; j < weightCount; j++)
 		{
@@ -217,4 +170,9 @@ void Skeleton::UpdateVertices(StaticArray<Vertex5> &outVerts) const
 		outVerts[i].Position = boneMatrix * Vector4(meshVerts[i].Position, 1.0f);
 		outVerts[i].Normal = boneMatrix * Vector4(meshVerts[i].Normal, 0.0f);
 	}
+}
+
+StaticArray<Bone*>& Skeleton::GetBones()
+{
+	return bones;
 }
