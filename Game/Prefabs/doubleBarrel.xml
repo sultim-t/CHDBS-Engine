@@ -4,7 +4,7 @@
   Euler="0 0 0">
 
   <CSkinnedModel
-  Path="Models/1.dae"
+  Path="Models/shot.fbx"
   PositionCorrection="0 -0.1 -0.25"
   ScaleCorrection="1 -1 1"
   RotationCorrection="-0.5 -0.5 0.5 -0.5"
@@ -15,7 +15,7 @@
    Velocity="0 0 0"
    ColliderType="Sphere"
    SphereRadius="2"
-   NoGravity="1"
+   NoGravity="0"
     />
   
 </Entity>

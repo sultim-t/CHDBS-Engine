@@ -17,11 +17,7 @@ class CLight : public IComponent
 
 private:
 	LightType ltype;
-	
-	// View * Projection, used for shadow mapping
-	// Used for rendering from light's point of view
-	Matrix4 lightSpace;
-	
+		
 	Color3F color;
 	float bias;
 
@@ -35,17 +31,16 @@ private:
 	float range;
 
 private:
-	// Recalculates light space matrix
-	void Recalculate();
 	Matrix4 GetLightView() const;
 	Matrix4 GetLightView(const Vector3 &pos) const;
-	Matrix4 GetProjection() const;
+	Matrix4 GetProjection(const Frustum &frustum) const;
 
 public:
 	// Returns light space matrix
-	const Matrix4 &GetLightSpace() const;
-	// Calculate light space matrix from specified position
-	Matrix4 GetLightSpace(const Vector3 &pos) const;
+	// View * Projection, used for shadow mapping
+	// Used for rendering from light's point of view
+	// If light is directional, it will fit the frustum
+	const Matrix4 GetLightSpace(const Frustum &frustum) const;
 
 	LightType GetLightType() const;
 	// If static light doesn't calculate matrix each frame

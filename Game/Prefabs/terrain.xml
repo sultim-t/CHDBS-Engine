@@ -1,8 +1,6 @@
 <Entity
-  Name="Terrain"
-  Position="-20 53 20"
-  Scale="50 50 50">
+  Name="Terrain">
 
   <CModel
-    Path="Models/Beach.fbx"/>
+    Path="Models/Egypt.fbx"/>
 </Entity>

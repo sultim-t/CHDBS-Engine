@@ -58,7 +58,9 @@ private:
 	RenderingSystem &operator=(const RenderingSystem&) = delete;
 
 	void DrawMesh(UINT vao, UINT indicesCount);
-	void CreateShadowMap(const Matrix4 &lightSpace, FramebufferTexture &shadowMap);
+
+	// Generate shadowmap to framebuffer, according to camera frustum to fit entire shadowmap
+	void CreateShadowMap(const CLight &light, const Frustum &frustum, FramebufferTexture &shadowMap);
 
 public:
 	// Init structures

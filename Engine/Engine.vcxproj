@@ -192,6 +192,7 @@
     <ClCompile Include="Entities\Entity.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Math\Frustum.cpp" />
+    <ClCompile Include="Math\MTransform.cpp" />
     <ClCompile Include="Math\Projection.cpp" />
     <ClCompile Include="Math\Sphere.cpp" />
     <ClCompile Include="Math\Transform.cpp" />
@@ -207,6 +208,7 @@
     <ClCompile Include="Rendering\Cubemap.cpp" />
     <ClCompile Include="Rendering\DebugDrawer.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
+    <ClCompile Include="Rendering\ITexture.cpp" />
     <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\ContextWindow.cpp" />
     <ClCompile Include="Rendering\Materials\StandardMaterial.cpp" />
@@ -227,6 +229,7 @@
     <ClCompile Include="TEMP\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Math\MTransform.h" />
     <ClInclude Include="Rendering\DebugDrawer.h" />
     <ClInclude Include="Base\Logger.h" />
     <ClInclude Include="Base\Empty.h" />
@@ -286,6 +289,7 @@
     <ClInclude Include="Rendering\Bone.h" />
     <ClInclude Include="Rendering\Cubemap.h" />
     <ClInclude Include="Rendering\FramebufferTexture.h" />
+    <ClInclude Include="Rendering\ITexture.h" />
     <ClInclude Include="Rendering\Material.h" />
     <ClInclude Include="Rendering\ContextWindow.h" />
     <ClInclude Include="Rendering\Materials\StandardMaterial.h" />

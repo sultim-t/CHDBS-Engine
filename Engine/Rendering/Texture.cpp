@@ -2,10 +2,9 @@
 #include "OpenGL.h"
 #include <Engine/ResourceManager/ResourceManager.h>
 
-Texture::Texture()
+Texture::Texture() : textureResource(nullptr)
 {
 	type = TextureType::Diffuse;
-	textureResource = nullptr;
 }
 
 Texture::~Texture()
@@ -55,40 +54,10 @@ void Texture::Init(const char * path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-UINT ITexture::GetID() const
-{
-	return graphicsTextureId;
-}
-
-void ITexture::SetType(TextureType t)
-{
-	type = t;
-}
-
-void ITexture::Activate(int i) const
+void Texture::Activate(int i) const
 {
 	ASSERT(i >= 0 && i < 32);
 
 	glActiveTexture(GL_TEXTURE0 + i);
 	glBindTexture(GL_TEXTURE_2D, graphicsTextureId);
-}
-
-TextureType ITexture::GetType() const
-{
-	return type;
-}
-
-int ITexture::GetWidth() const
-{
-	return width;
-}
-
-int ITexture::GetHeight() const
-{
-	return height;
-}
-
-UINT ITexture::GetFormat() const
-{
-	return format;
 }

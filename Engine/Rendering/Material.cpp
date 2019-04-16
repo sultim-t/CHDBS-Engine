@@ -3,39 +3,33 @@
 #include <Engine/Rendering/OpenGL.h>
 #include <Engine/Rendering/Cubemap.h>
 
-Material::Material(std::vector<ITexture> textures)
-{
-	this->textures = textures;
-}
+Material::Material()
+{ }
 
-bool Material::Init(void * xmlElem)
+void Material::Init()
 {
-	ASSERT(0);
-	return true;
+	// max texture count
+	textures.Init(16);
 }
 
 void Material::Use()
 {
+	// activate shader
 	shader.Use();
 }
 
 void Material::ActivateTextures() const
 {
-	UINT textureCounts[TEXTURE_TYPES_COUNT];
-	for (int i = 0; i < TEXTURE_TYPES_COUNT; i++)
+	// for each texture
+	UINT textureCount = textures.GetTop();
+	for (UINT i = 0; i < textureCount; i++)
 	{
-		textureCounts[i] = 0;
-	}
-
-	for (UINT i = 0; i < textures.size(); i++)
-	{
-		const ITexture &t = textures[i];
+		const ITexture &t = *textures[i];
 
 		// bind to correct texture unit
 		const char *tname = nullptr;
 		TextureType ttype = t.GetType();
 		int type = (int)ttype;
-		int count = textureCounts[type];
 
 		switch (ttype)
 		{
@@ -73,32 +67,23 @@ void Material::ActivateTextures() const
 			name[i] = tname[i];
 		}
 
-		// last char is a texture's index
-		name[TEXTURE_NAME_LENGTH - 1] = '0' + count;
+		// last char is a texture's count number
+		name[TEXTURE_NAME_LENGTH - 1] = '0';
 		// null termianted string
 		name[TEXTURE_NAME_LENGTH] = '\0';
 
 		// set current texture
 		shader.SetInt(name, type);
 
-		switch (ttype)
-		{
-		case TextureType::Cubemap:
-			// cubemaps are activated in special way
-			((Cubemap&)t).ActivateCubemap(type);
-			break;
-		default:
-			t.Activate(type);
-			break;
-		}
-
-		textureCounts[type]++;
+		// activate
+		t.Activate(type);
 	}
 }
 
-void Material::AddTexture(const ITexture &t)
+void Material::AddTexture(const ITexture *t)
 {
-	textures.push_back(t);
+	// add texture
+	textures.Push(t);
 }
 
 void Material::BindShader(const Shader &shader)

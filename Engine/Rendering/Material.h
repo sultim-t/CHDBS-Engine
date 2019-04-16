@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Engine\Rendering\Shader.h>
-#include <Engine\Rendering\Texture.h>
-#include <vector>
+#include <Engine/Rendering/Shader.h>
+#include <Engine/Rendering/Texture.h>
+#include <Engine/DataStructures/StaticStack.h>
 
 class Material
 {
@@ -12,21 +12,24 @@ private:
 	MaterialID materialId;
 
 protected:
+	// current shader to use
 	Shader shader;
+
 	// must be <= 16
-	std::vector<ITexture> textures;
+	StaticStack<const ITexture*> textures;
 
 public:
-	Material(std::vector<ITexture> textures = std::vector<ITexture>());
+	// Empty constructor
+	Material();
 
-	// Init material from XML element
-	bool Init(void* xmlElem);
+	// Init material
+	void Init();
 
 	void Use();
 	// Activate material's textures
 	void ActivateTextures() const;
 	// Add texture to material
-	void AddTexture(const ITexture &t);
+	void AddTexture(const ITexture *t);
 
 	// Bind shader
 	void BindShader(const Shader &shader);

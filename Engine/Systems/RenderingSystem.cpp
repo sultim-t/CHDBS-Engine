@@ -70,89 +70,81 @@ void RenderingSystem::Update()
 
 		// reset aspect
 		cam->SetAspect((float)ContextWindow::Instance().GetWidth(), (float)ContextWindow::Instance().GetHeight());
-		
+
 		// caluclate matrices
 		Matrix4 projM = cam->GetProjectionMatrix();
 		Matrix4 viewM = cam->GetViewMatrix();
 
 		// calculate camera space matrix
 		Matrix4 camSpace = viewM * projM;
-		
+
 		// get frustum for culling
-		Frustum frustum = cam->GetFrustum();
+		const Frustum frustum = cam->GetFrustum();
 
-		for (int l = 0; l < lights.GetSize(); l++)
+
+		if (lights[0]->IsCastingShadows())
 		{
-			CLight *light = lights[l];
+			CreateShadowMap(*lights[0], frustum, shadowMap);
+			shadowMap.Activate((int)TextureType::Shadowmap);
+		}
 
-			if (light->IsCastingShadows())
+		for (int m = 0; m < allModels.GetSize(); m++)
+		{
+			CModel *model = allModels[m];
+
+			// get meshes
+			auto &modelMeshes = model->GetMeshes();
+			auto &materials = model->GetMaterials();
+			auto &vaos = model->GetVAO();
+
+			// recalculate tranforms relative to global space
+			auto &meshesTranforms = model->GetTranforms();
+
+			UINT count = modelMeshes.GetSize();
+			for (UINT j = 0; j < count; j++)
 			{
-				CreateShadowMap(light->GetLightSpace(), shadowMap);
-				shadowMap.Activate((int)TextureType::Shadowmap);
-			}
+				// get bounding sphre
+				Sphere transformedSphere = modelMeshes[j]->GetBoundingSphere();
+				// and move it according to its global transformation
+				transformedSphere.Move(Transform::DecomposePosition(meshesTranforms[j]));
 
-			for (int m = 0; m < allModels.GetSize(); m++)
-			{
-				CModel *model = allModels[m];
-
-				// get meshes
-				auto &modelMeshes = model->GetMeshes();
-				auto &materials = model->GetMaterials();
-				auto &vaos = model->GetVAO();
-
-				// recalculate tranforms relative to global space
-				auto &meshesTranforms = model->GetTranforms();
-
-				UINT count = modelMeshes.GetSize();
-				for (UINT j = 0; j < count; j++)
+				if (!Intersection::SphereInsideFrustum(frustum, transformedSphere))
 				{
-					// get bounding sphre
-					Sphere transformedSphere = modelMeshes[j]->GetBoundingSphere();
-					// and move it according to its global transformation
-					transformedSphere.Move(Transform::DecomposePosition(meshesTranforms[j]));
-					
-					if (!Intersection::SphereInsideFrustum(frustum, transformedSphere))
-					{
-						continue;
-					}
+					continue;
+				}
 
-					// DebugDrawer::Instance().Draw(transformedSphere);
+				// DebugDrawer::Instance().Draw(transformedSphere);
 
-					StandardMaterial *mat = (StandardMaterial*)materials[j];
+				StandardMaterial *mat = (StandardMaterial*)materials[j];
 
-					const Shader &shader = mat->GetShader();
+				const Shader &shader = mat->GetShader();
 
-					mat->Use();
+				mat->Use();
+				for (int l = 0; l < lights.GetSize(); l++)
+				{
+					CLight *light = lights[l];
 
 					if (light->IsCastingShadows())
 					{
 						mat->ActivateShadowMap();
 					}
 
-					mat->SetCameraSpace(camSpace);
-					mat->SetCameraPosition(cam->GetPosition());
-
 					mat->SetLightDirection(-light->GetOwner().GetTransform().GetForward());
-					mat->SetLightSpace(light->GetLightSpace());
-
-					// bind tranform
-					mat->SetModel(meshesTranforms[j]);
-					mat->ActivateTextures();
-
-					// draw
-					DrawMesh(vaos[j], modelMeshes[j]->GetIndices().GetSize());
+					mat->SetLightSpace(light->GetLightSpace(frustum));
 				}
+
+				mat->SetCameraSpace(camSpace);
+				mat->SetCameraPosition(cam->GetPosition());
+
+				// bind tranform
+				mat->SetModel(meshesTranforms[j]);
+				mat->ActivateTextures();
+
+				// draw
+				DrawMesh(vaos[j], modelMeshes[j]->GetIndices().GetSize());
 			}
 		}
-		
-		// Render skybox
-		Matrix4 skyCamSpace = viewM;
-		// reset position
-		// to make skybox feel infinitely far
-		skyCamSpace.SetRow(3, Vector4(0.0f));
-		skyCamSpace *= projM;
-		Skybox::Instance().Draw(skyCamSpace);
-	
+
 		// Render all particle systems
 		for (int p = 0; p < particleSystems.GetSize(); p++)
 		{
@@ -161,6 +153,14 @@ void RenderingSystem::Update()
 			ps->BindCamera(cam);
 			ps->Render();
 		}
+
+		// Render skybox
+		Matrix4 skyCamSpace(viewM);
+		// reset position
+		// to make skybox feel infinitely far
+		skyCamSpace.SetRow(3, Vector4(0.0f));
+		skyCamSpace *= projM;
+		Skybox::Instance().Draw(skyCamSpace);
 
 		// Render debug objects
 		DebugDrawer::Instance().BindSpaceMatrix(camSpace);
@@ -173,18 +173,27 @@ void RenderingSystem::Update()
 
 void RenderingSystem::DrawMesh(UINT vao, UINT indicesCount)
 {
+	// bind current vao
 	glBindVertexArray(vao);
+
+	// draw
 	glDrawElements(GL_TRIANGLES, indicesCount, GL_UNSIGNED_INT, 0);
 
 	glBindVertexArray(0);
 }
 
-void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferTexture &shadowMap)
+void RenderingSystem::CreateShadowMap(const CLight &light, const Frustum &frustum, FramebufferTexture &shadowMap)
 {
+	// bind viewport for shadowmap size
 	glViewport(0, 0, shadowMap.GetWidth(), shadowMap.GetHeight());
+
+	// bind
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.GetFBO());
+
+	// clear depth
 	glClear(GL_DEPTH_BUFFER_BIT);
 
+	// activate depth shader
 	depthShader.Use();
 	
 	// draw each model
@@ -197,12 +206,13 @@ void RenderingSystem::CreateShadowMap(const Matrix4 &lightSpace, FramebufferText
 			continue;
 		}
 
-		// get meshes
-		auto &modelMeshes = model->GetMeshes();
-		auto &vaos = model->GetVAO();
+		// get all meshes
+		const StaticArray<MeshResource*> &modelMeshes = model->GetMeshes();
+		// get their vaos
+		const StaticArray<UINT> &vaos = model->GetVAO();
 		
-		// recalculate tranforms relative to light
-		auto &meshesTranforms = model->GetTranforms(lightSpace);
+		// recalculate tranforms relative to light space
+		auto &meshesTranforms = model->GetTranforms(light.GetLightSpace(frustum));
 
 		UINT count = modelMeshes.GetSize();
 		for (UINT i = 0; i < count; i++)

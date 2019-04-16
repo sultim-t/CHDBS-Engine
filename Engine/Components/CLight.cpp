@@ -17,11 +17,6 @@
 
 CLASSDEFINITION(IComponent, CLight)
 
-void CLight::Recalculate()
-{
-	lightSpace = GetLightView() * GetProjection();
-}
-
 Matrix4 CLight::GetLightView() const
 {
 	return GetLightView(owner->GetTransform().GetPosition());
@@ -33,7 +28,7 @@ Matrix4 CLight::GetLightView(const Vector3 &pos) const
 	return Transform::LookAt(pos, pos + dir, Vector3(0.0f, 1.0f, 0.0f));
 }
 
-Matrix4 CLight::GetProjection() const
+Matrix4 CLight::GetProjection(const Frustum &frustum) const
 {
 	if (ltype == LightType::Directional)
 	{
@@ -55,14 +50,9 @@ LightType CLight::GetLightType() const
 	return ltype;
 }
 
-const Matrix4 &CLight::GetLightSpace() const
+const Matrix4 CLight::GetLightSpace(const Frustum &frustum) const
 {
-	return lightSpace;
-}
-
-Matrix4 CLight::GetLightSpace(const Vector3 &pos) const
-{
-	return GetLightView() * GetProjection();
+	return GetLightView() * GetProjection(frustum);
 }
 
 bool CLight::IsStatic() const
@@ -138,24 +128,10 @@ void CLight::SetCastingShadows(bool cast)
 void CLight::Init()
 {
 	RenderingSystem::Instance().Register(this);
-
-	// if light is static just calculate matrix one time
-	if (isStatic)
-	{
-		Recalculate();
-	}
 }
 
 void CLight::Update()
-{
-	// don't update static lights
-	if (isStatic)
-	{
-		return;
-	}
-
-	Recalculate();
-}
+{ }
 
 void CLight::SetProperty(const String &key, const String &value)
 {

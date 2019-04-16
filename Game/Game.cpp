@@ -103,10 +103,14 @@ int main()
 
 	StandardMaterial mat = StandardMaterial();
 	StandardMaterial matTR = StandardMaterial();
-	mat.AddTexture(textureDB);
-	mat.AddTexture(reflection);
-	matTR.AddTexture(textureTR);
-	matTR.AddTexture(reflection);
+
+	mat.Init();
+	matTR.Init();
+
+	mat.AddTexture(&textureDB);
+	mat.AddTexture(&reflection);
+	matTR.AddTexture(&textureTR);
+	matTR.AddTexture(&reflection);
 
 	mat.BindShader(shader);
 	matTR.BindShader(shader);
@@ -158,7 +162,7 @@ int main()
 	{
 		Time::Calculate();
 
-		//while (Time::ToFixedUpdate())
+		while (Time::ToFixedUpdate())
 		{
 			PhysicsSystem::Instance().Update();
 		}

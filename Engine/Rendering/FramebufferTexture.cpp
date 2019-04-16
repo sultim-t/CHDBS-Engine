@@ -29,3 +29,12 @@ unsigned FramebufferTexture::GetFBO() const
 {
 	return fbo;
 }
+
+void FramebufferTexture::Activate(int i) const
+{
+	ASSERT(i >= 0 && i < 32);
+
+	// activate as texture
+	glActiveTexture(GL_TEXTURE0 + i);
+	glBindTexture(GL_TEXTURE_2D, graphicsTextureId);
+}

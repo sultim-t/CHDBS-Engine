@@ -96,7 +96,7 @@ void Skybox::Draw(const Matrix4 &camSpace) const
 	shader.SetMat4("camSpace", camSpace);
 	
 	// activate cubemap
-	cubemap.ActivateCubemap(0);
+	cubemap.Activate(0);
 
 	// bind
 	glBindVertexArray(vao);

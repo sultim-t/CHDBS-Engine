@@ -12,7 +12,7 @@ public:
 	inline StaticStack();
 
 	// Add element to the top
-	inline void Push(const T &data);\
+	inline void Push(const T &data);
 	// Remove one element from the top
 	inline T Pop();
 
