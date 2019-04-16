@@ -119,13 +119,13 @@ inline void HashTable<K, T>::Init(UINT chainCount, UINT maxChainSize)
 	this->chainCount = chainCount;
 	this->maxChainSize = maxChainSize;
 
-	chainSizes = (UINT*)SYSALLOCATOR.Allocate(sizeof(UINT) * chainCount);
+	chainSizes = (UINT*)SystemAllocator::Allocate(sizeof(UINT) * chainCount);
 
-	chains = (HTElement<K, T>**)SYSALLOCATOR.Allocate(sizeof(HTElement<K, T>*) * chainCount);
+	chains = (HTElement<K, T>**)SystemAllocator::Allocate(sizeof(HTElement<K, T>*) * chainCount);
 	for (UINT i = 0; i < chainCount; i++)
 	{
 		// can't use malloc because there must be uninitialized keys and values 
-		chains[i] = (HTElement<K, T>*)SYSALLOCATOR.CAllocate(maxChainSize, sizeof(HTElement<K, T>));
+		chains[i] = (HTElement<K, T>*)SystemAllocator::CAllocate(maxChainSize, sizeof(HTElement<K, T>));
 		chainSizes[i] = 0;
 	}
 }
@@ -253,13 +253,13 @@ inline void HashTable<K, T>::Resize()
 	chainCount = (UINT)(prevCount * HASH_TABLE_INC_MULT);
 
 	// init for larger table
-	UINT *tempSizes = (UINT*)SYSALLOCATOR.Allocate(sizeof(UINT) * chainCount);
+	UINT *tempSizes = (UINT*)SystemAllocator::Allocate(sizeof(UINT) * chainCount);
 
-	HTElement<K, T> **temp = (HTElement<K, T>**)SYSALLOCATOR.Allocate(sizeof(HTElement<K, T>*) * chainCount);
+	HTElement<K, T> **temp = (HTElement<K, T>**)SystemAllocator::Allocate(sizeof(HTElement<K, T>*) * chainCount);
 	for (UINT i = 0; i < chainCount; i++)
 	{
 		// can't use malloc because there must be uninitialized keys and values 
-		temp[i] = (HTElement<K, T>*)SYSALLOCATOR.CAllocate(maxChainSize, sizeof(HTElement<K, T>));
+		temp[i] = (HTElement<K, T>*)SystemAllocator::CAllocate(maxChainSize, sizeof(HTElement<K, T>));
 		tempSizes[i] = 0;
 	}
 
@@ -287,8 +287,8 @@ inline void HashTable<K, T>::Resize()
 	}
 
 	// delete old pointers
-	SYSALLOCATOR.Free(oldChains);
-	SYSALLOCATOR.Free(oldSizes);
+	SystemAllocator::Free(oldChains);
+	SystemAllocator::Free(oldSizes);
 
 	// reassign
 	chains = temp;
@@ -309,8 +309,8 @@ inline void HashTable<K, T>::Clear()
 template<class K, class T>
 inline void HashTable<K, T>::Delete()
 {
-	SYSALLOCATOR.Free(chains);
-	SYSALLOCATOR.Free(chainSizes);
+	SystemAllocator::Free(chains);
+	SystemAllocator::Free(chainSizes);
 }
 
 //template<class K, class T>

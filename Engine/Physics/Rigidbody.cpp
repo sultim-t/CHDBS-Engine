@@ -225,7 +225,7 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 	}
 	else if (key == PROPERTY_KEY_NOGRAVITY)
 	{
-		NoGravity = true;
+		NoGravity = value.ToBool();
 	}
 	else if (key == PROPERTY_KEY_COLSTATICFRICTION)
 	{

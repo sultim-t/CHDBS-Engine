@@ -3,9 +3,6 @@
 #define ALIGNMENT sizeof(INT)
 #define ALIGN(size) (size) % ALIGNMENT == 0 ? (size) : (size + ALIGNMENT - ((size) % ALIGNMENT))
 
-// Shortcut
-#define SYSALLOCATOR SystemAllocator::Instance()
-
 class SystemAllocator
 {
 private:

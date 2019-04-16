@@ -1,6 +1,6 @@
 <Entity 
   Name="Camera"
-  Position="-10 0 0">
+  Position="0 0 0">
 
   <CCamera
     ZNear="0.1"
@@ -10,10 +10,10 @@
 
   <CFreeMovement 
     speed="10" />
-
   <CModel
   Path="Models/DoubleBarrel.obj"
   CastShadows="1"/>
+
 
 
 </Entity>

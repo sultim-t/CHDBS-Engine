@@ -444,17 +444,17 @@ inline Matrix<Type, Dim> Matrix<Type, Dim>::GetInversed() const
 			// calculate minor
 			// size of temp is (Dim-1)*(Dim-1)
 			float minor = temp.GetDeterminant(Dim - 1);
+			
+			sign = ((i + j) % 2 == 0) ? 1.0f : -1.0f;
 
 			// adjugate matrix is transposed
-			inversed(j, i) = sign * minor;
+			// to inverse, multiply by invDet
+			inversed(j, i) = sign * minor * invDet;
 
 			// inverse sign
 			sign = -sign;
 		}
 	}
-
-	// multiply adjugate by inversed determinant
-	inversed *= invDet;
 
 	return inversed;
 }
