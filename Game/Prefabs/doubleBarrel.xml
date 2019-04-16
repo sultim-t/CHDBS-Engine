@@ -3,7 +3,7 @@
   Position="0 0 3"
   Euler="0 0 0">
 
-  <CSkinnedModel
+  <CModel
   Path="Models/shot.fbx"
   PositionCorrection="0 -0.1 -0.25"
   ScaleCorrection="1 -1 1"

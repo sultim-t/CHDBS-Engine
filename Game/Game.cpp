@@ -93,7 +93,7 @@ int main()
 	Texture textureDB = Texture();
 	textureDB.Init("Textures/WeaponsPalette.png");
 	Texture textureTR = Texture();
-	textureTR.Init("Textures/TerrainPalette.png");
+	textureTR.Init("Textures/Sand0.jpg");
 
 	
 	/*Material mat = Material({ textureDB, reflection });

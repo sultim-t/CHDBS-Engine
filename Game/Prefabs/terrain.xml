@@ -1,5 +1,8 @@
 <Entity
-  Name="Terrain">
+  Name="Terrain"
+  Position="40 -20 60"
+  Euler="-90 0 0"
+  Scale="0.5 0.5 0.5">
 
   <CModel
     Path="Models/Egypt.fbx"/>

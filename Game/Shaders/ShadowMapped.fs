@@ -69,7 +69,7 @@ void main()
 	vec3 reflection = texture(t_cube0, R).rgb * 2;
 
     vec3 lighting = (ambient + (1.0 - shadow) * diffuse) * color;    
-	lighting *= reflection;
+	//lighting *= reflection;
 
     FragColor = vec4(lighting, 1.0);
 }

@@ -41,7 +41,7 @@ void Skeleton::CalculateInverseBoneTransforms()
 		int b = bones[i].GetParentBoneID();
 
 		// while parent bone exist
-		while (b > 0)
+		while (b >= 0)
 		{
 			// get parent bone tranformation
 			const Matrix4 &parentTransform = bones[b].GetOffsetMatrix();
@@ -80,7 +80,7 @@ Matrix4 Skeleton::GetBoneTranform(const Bone &bone) const
 	int b = bone.GetParentBoneID();
 
 	// while parent bone exist
-	while (b > 0)
+	while (b >= 0)
 	{
 		// get parent bone tranformation
 		const Matrix4 &parentTransform = bones[b].GetModelNode().GetTransform();
@@ -122,7 +122,7 @@ Matrix4 Skeleton::GetBoneTranform(const Bone &bone, const Animation *animation, 
 	int b = bone.GetParentBoneID();
 
 	// while parent bone exist
-	while (b > 0)
+	while (b >= 0)
 	{
 		// get parent local bone tranformation
 		const Matrix4 &parentTransform = GetNodeTranform(bones[b].GetModelNode(), animation, time);

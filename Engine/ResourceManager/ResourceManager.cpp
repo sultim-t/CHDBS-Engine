@@ -409,6 +409,12 @@ ModelNode *ResourceManager::ProcessModelNode(void *n, const void *s, ModelNode *
 			transformation(x, y) = source->mTransformation[y][x];
 		}
 	}
+	
+	//// if root node, inverse its transformation
+	//if (parentNode == nullptr)
+	//{
+	//	transformation.Inverse();
+	//}
 
 	// allocate data for model node
 	ModelNode *node = new ModelNode(source->mName.C_Str(), parentNode, transformation, source->mNumChildren, source->mNumMeshes);

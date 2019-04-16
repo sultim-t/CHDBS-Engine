@@ -124,7 +124,7 @@ inline void ModelHierarchy::GetTranformsFromNode(const ModelNode *node, const Ma
 	// bind foreach mesh in current node
 	for (UINT i = 0; i < nodeMeshes.GetSize(); i++)
 	{
-		tranforms[nodeMeshes[i]] = parentGlobal;
+		tranforms[nodeMeshes[i]] = current;
 	}
 
 	// get all child nodes

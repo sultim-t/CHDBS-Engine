@@ -17,7 +17,7 @@ public:
 
 	// Realculates triangles with specified transformation into "outTriangles"
 	// Note: memory must be allocated for "outTriangles"
-	inline void TransformCollider(const Transform &t, StaticArray<Triangle> outTriangles) const;
+	inline void TransformCollider(const Transform &t, StaticArray<Triangle> &outTriangles) const;
 
 	inline const StaticArray<Triangle> &GetTriangles() const;
 
@@ -35,7 +35,7 @@ inline MeshColliderResource::MeshColliderResource(const MeshResource &mesh)
 	this->triangles = mesh.GetTriangles().GetCopy();
 }
 
-inline void MeshColliderResource::TransformCollider(const Transform &t, StaticArray<Triangle> outTriangles) const
+inline void MeshColliderResource::TransformCollider(const Transform &t, StaticArray<Triangle> &outTriangles) const
 {
 	UINT size = triangles.GetSize();
 	for (UINT i = 0; i < size; i++)
