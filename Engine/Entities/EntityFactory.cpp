@@ -38,10 +38,13 @@ EntityID EntityFactory::GetNextEntityID()
 
 EntityFactory::EntityFactory()
 {
-	// init dynamic array
-	entities.Init(128);
+	// init hash table
+	prefabs.Init(64, 16);
+
+	// Note: entities are stored in Scene class
+
 	// register in component system
-	ComponentSystem::Instance().Register(&entities);
+	// ComponentSystem::Instance().Register(&entities);
 	
 	// init hash table
 	compCreators.Init(10, 6);
@@ -59,44 +62,46 @@ EntityFactory::EntityFactory()
 
 EntityFactory::~EntityFactory()
 {
-	for (int i = 0; i < entities.GetSize(); i++)
-	{
-		auto &components = entities[i]->GetAllComponents();
+	// Note : entities destruction is in Scene class,
+	// and components is in Entity class
 
-		// delete each component in entity
-		for (int i = 0; i < components.GetSize(); i++)
-		{
-			delete components[i];
-		}
+	//for (int i = 0; i < entities.GetSize(); i++)
+	//{
+	//	auto &components = entities[i]->GetAllComponents();
 
-		// delete entity itself
-		delete entities[i];
-	}
+	//	// delete each component in entity
+	//	for (int i = 0; i < components.GetSize(); i++)
+	//	{
+	//		delete components[i];
+	//	}
+
+	//	// delete entity itself
+	//	delete entities[i];
+	//}
 }
 
 IComponent *EntityFactory::CreateComponent(void *xmlElemP)
 {
 	using namespace tinyxml2;
 	XMLElement *xmlElem = (XMLElement*)xmlElemP;
-
+	
 	// get component name
 	const char *compName = xmlElem->Value();
 
-	IComponent *comp;
-
 	IComponentCreator foundCreator;
+
+	// try to find component creator
 	if (compCreators.Find(compName, foundCreator))
 	{
-		// IComponentCreator creator = found;
-		comp = foundCreator(xmlElem);
+		// if found, create component
+		// and return it
+		return foundCreator(xmlElem);
 	}
 	else
 	{
 		// if can't find component creator
 		return nullptr;
 	}
-
-	return comp;
 }
 
 void EntityFactory::SetData(Entity *entity, void *xmlElem)
@@ -137,8 +142,10 @@ void EntityFactory::SetData(Entity *entity, void *xmlElem)
 
 void EntityFactory::SetData(Entity *entity, const Entity *source)
 {
-	entity->isActive = source->isActive;
-	entity->transform = source->transform;
+	// set data from source
+	entity->name		= source->name;
+	entity->isActive	= source->isActive;
+	entity->transform	= source->transform;
 }
 
 Entity *EntityFactory::PCreateEntity(const char *resource)
@@ -155,10 +162,12 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 		return nullptr;
 	}
 
+	// allocate
 	Entity *entity = new Entity(GetNextEntityID());
+	// allocate memory for fields
 	entity->Init();
 
-	// load main data
+	// load main data (transformatrions, name etc)
 	SetData(entity, root);
 
 	// foreach component in xml
@@ -186,15 +195,18 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 		comp->Init();
 	}
 	
-	// finally, store entity
-	entities.Push(entity);
+	// Note : entity are not stored here anymore, see Scene class
+	//// finally, store entity
+	//entities.Push(entity);
 
 	return entity;
 }
 
 Entity * EntityFactory::PCreateEntity(const Entity *source)
 {
+	// allocate
 	Entity *entity = new Entity(GetNextEntityID());
+	// allocate memory for fields
 	entity->Init();
 
 	// load main data
@@ -205,11 +217,14 @@ Entity * EntityFactory::PCreateEntity(const Entity *source)
 	// foreach component in source
 	for (int i = 0; i < components.GetSize(); i++)
 	{
+		// TODO: in component: abstract function Copy(IComponent &destination)
+		// which copies data from current component
 		ASSERT(0);
 	}
 
-	// finally, store entity
-	entities.Push(entity);
+	// Note : entity are not stored here anymore, see Scene class
+	//// finally, store entity
+	//entities.Push(entity);
 
 	return entity;
 }

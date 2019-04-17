@@ -14,11 +14,7 @@ private:
 	// Stores pointers to component creators
 	HashTable<String, IComponentCreator> compCreators;
 
-	// TODO : delete, must be in scene
-	// Stores all entities
-	DynamicArray<Entity*> entities;
-
-	// TODO: this hash table stores 
+	// This hash table stores 
 	// "blueprints" for entities, but not the instances
 	HashTable<String, Entity*> prefabs;
 
