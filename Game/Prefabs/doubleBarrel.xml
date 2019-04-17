@@ -1,21 +1,16 @@
 <Entity
   Name="Double Barrel"
-  Position="0 0 3"
-  Euler="0 0 0">
-
+  Position="0 2 1"
+  Euler="90 0 0">
+  
   <CModel
-  Path="Models/shot.fbx"
-  PositionCorrection="0 -0.1 -0.25"
-  ScaleCorrection="1 -1 1"
-  RotationCorrection="-0.5 -0.5 0.5 -0.5"
-  CastShadows="1"/>
+    Path="Models/DoubleBarrel.obj"
+    CastShadows="1"/>
   
   <Rigidbody
-   Mass="20"
-   Velocity="0 0 0"
-   ColliderType="Sphere"
-   SphereRadius="2"
-   NoGravity="0"
+    Mass="20"
+    Velocity="0 3 0"
+    ColliderType="Sphere"
+    SphereRadius="2"
     />
-  
 </Entity>

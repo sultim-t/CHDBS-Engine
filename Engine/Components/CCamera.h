@@ -1,15 +1,9 @@
 #pragma once
 #include "IComponent.h"
-#include <Engine/Entities/Entity.h>
+#include <Engine/Rendering/ICamera.h>
 #include <Engine/Math/Frustum.h>
 
-enum class CameraProjection
-{
-	Perspective,
-	Orthographic
-};
-
-class CCamera : public IComponent
+class CCamera : public IComponent, public ICamera
 {
 	CLASSDECLARATION(CCamera)
 
@@ -36,9 +30,16 @@ private:
 
 public:
 	// Calculates view matrix
-	Matrix4 GetViewMatrix() const;
+	Matrix4 GetViewMatrix() const override;
 	// Calculates projection matrix
-	Matrix4 GetProjectionMatrix() const;
+	Matrix4 GetProjectionMatrix() const override;
+	// Get camera's view frustum in world space
+	Frustum GetFrustum() const override;
+	// Get camera's view frustum in world space
+	// but with changed near and far vertices
+	// "nearMult" is a multiplier in [0,1] : result frustum's near plane distance is OldNear+((OldFar-OldNear)*nearMult)
+	// "farMult" is a multiplier in [0,1] : result frustum's far plane distance is OldNear+((OldFar-OldNear)*farMult)
+	Frustum GetFrustum(float nearMult, float farMult) const override;
 
 	CameraProjection GetProjection() const;
 	float GetFOV() const;
@@ -46,7 +47,6 @@ public:
 	float GetFarClipDist() const;
 	float GetAspect() const;
 	const Vector3 &GetPosition() const;
-	Frustum GetFrustum() const;
 
 	void SetProjection(CameraProjection p);
 	void SetFOV(float fov);

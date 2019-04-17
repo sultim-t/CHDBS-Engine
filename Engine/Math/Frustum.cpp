@@ -61,7 +61,7 @@ void Frustum::Init(float fov, float aspect, float near, float far, const Matrix4
 	this->aspect = aspect;
 	this->near = near;
 	this->far = far;
-	float tanfov = Tan(DEG2RAD(fov));
+	float tanfov = Tan(DEG2RAD(fov) * 0.5f);
 
 	// half widths, heights
 	float nearHWidth = tanfov * near;

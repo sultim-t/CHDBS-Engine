@@ -6,18 +6,23 @@ Vector3 PhysicsSystem::Gravity = Vector3(0.0f, -9.8f, 0.0f);
 
 void PhysicsSystem::Init()
 {
-	rigidbodies.Init(128);
-	colliders.Init(128);
+	//rigidbodies.Init(128);
+	//colliders.Init(128);
 	collisions.Init(128);
 }
 
 void PhysicsSystem::Update()
 {
-	int size = rigidbodies.GetSize();
+	if (rigidbodies == nullptr)
+	{
+		return;
+	}
+
+	int size = rigidbodies->GetSize();
 
 	for (int i = 0; i < size; i++)
 	{
-		rigidbodies[i]->FixedUpdate();
+		rigidbodies->operator[](i)->FixedUpdate();
 	}
 	
 	GetApproximateCollisions();
@@ -30,14 +35,27 @@ PhysicsSystem &PhysicsSystem::Instance()
 	return instance;
 }
 
-void PhysicsSystem::Register(Rigidbody * rb)
+//void PhysicsSystem::Register(Rigidbody * rb)
+//{
+//	rigidbodies.Push(rb);
+//}
+//
+//void PhysicsSystem::Register(ICollider * col)
+//{
+//	colliders.Push(col);
+//}
+
+void PhysicsSystem::Register(DynamicArray<Rigidbody*>* rigidbodies, DynamicArray<ICollider*>* colliders)
 {
-	rigidbodies.Push(rb);
+	this->rigidbodies = rigidbodies;
+	this->colliders = colliders;
 }
 
-void PhysicsSystem::Register(ICollider * col)
+void PhysicsSystem::Reset()
 {
-	colliders.Push(col);
+	// reset pointers to null
+	this->rigidbodies = nullptr;
+	this->colliders = nullptr;
 }
 
 bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, const float distance, RaycastInfo & info)
@@ -57,14 +75,14 @@ void PhysicsSystem::GetApproximateCollisions()
 	// intersect function for approximate shapes
 	bool(*AIntersect)(const AShape&, const AShape&) = Intersection::SphereSphere;
 
-	int dynamicCount = rigidbodies.GetSize();
-	int staticCount = colliders.GetSize();
+	int dynamicCount = rigidbodies->GetSize();
+	int staticCount = colliders->GetSize();
 
 	// for each rigidbody
 	for (int i = 0; i < dynamicCount; i++)
 	{
 		// get data from this rigidbody
-		Rigidbody *rbThis = rigidbodies[i];
+		Rigidbody *rbThis = rigidbodies->operator[](i);
 		const ICollider &colThis = rbThis->GetCollider();
 		AShape &boundingThis = colThis.GetBoundingSphere();
 
@@ -76,7 +94,7 @@ void PhysicsSystem::GetApproximateCollisions()
 		// for each other rigidbody
 		for (int j = dynamicCount - 1; j > i; j--)
 		{
-			Rigidbody *rbOther = rigidbodies[j];
+			Rigidbody *rbOther = rigidbodies->operator[](j);
 			const ICollider &colOther = rbOther->GetCollider();
 		
 			// get approximate shape
@@ -103,7 +121,7 @@ void PhysicsSystem::GetApproximateCollisions()
 		// for each static collider
 		for (int j = 0; j < staticCount; j++)
 		{
-			const ICollider *colOther = colliders[j];
+			const ICollider *colOther = colliders->operator[](j);
 
 			// get approximate shape
 			AShape &boundingOther = colOther->GetBoundingSphere();

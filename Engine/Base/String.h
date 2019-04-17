@@ -63,12 +63,14 @@ public:
 	static float			ToFloat(const char *str);
 	static Vector3			ToVector3(const char *str);
 	static Quaternion		ToQuaternion(const char *str);
+	static Color4			ToColor4(const char *str);
 
 	inline bool				ToBool() const;
 	inline int				ToInt() const;
 	inline float			ToFloat() const;
 	Vector3					ToVector3() const;
 	Quaternion				ToQuaternion() const;
+	Color4					ToColor4() const;
 
 	inline const char		*GetCharPtr() const;
 

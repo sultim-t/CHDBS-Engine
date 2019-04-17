@@ -84,7 +84,7 @@ void RenderingSystem::Update()
 
 		if (lights[0]->IsCastingShadows())
 		{
-			CreateShadowMap(*lights[0], frustum, shadowMap);
+			CreateShadowMap(*lights[0], *cam, shadowMap);
 			shadowMap.Activate((int)TextureType::Shadowmap);
 		}
 
@@ -182,7 +182,7 @@ void RenderingSystem::DrawMesh(UINT vao, UINT indicesCount)
 	glBindVertexArray(0);
 }
 
-void RenderingSystem::CreateShadowMap(const CLight &light, const Frustum &frustum, FramebufferTexture &shadowMap)
+void RenderingSystem::CreateShadowMap(const CLight &light, const ICamera &camera, FramebufferTexture &shadowMap)
 {
 	// bind viewport for shadowmap size
 	glViewport(0, 0, shadowMap.GetWidth(), shadowMap.GetHeight());
@@ -195,6 +195,11 @@ void RenderingSystem::CreateShadowMap(const CLight &light, const Frustum &frustu
 
 	// activate depth shader
 	depthShader.Use();
+
+	// calculate modified camera's view frustum
+	const Frustum &frustumForShadowmap = camera.GetFrustum(0, 1);
+
+	Matrix4 lightSpace = light.GetLightSpace(frustumForShadowmap);
 	
 	// draw each model
 	for (int m = 0; m < allModels.GetSize(); m++)
@@ -212,7 +217,7 @@ void RenderingSystem::CreateShadowMap(const CLight &light, const Frustum &frustu
 		const StaticArray<UINT> &vaos = model->GetVAO();
 		
 		// recalculate tranforms relative to light space
-		auto &meshesTranforms = model->GetTranforms(light.GetLightSpace(frustum));
+		auto &meshesTranforms = model->GetTranforms(lightSpace);
 
 		UINT count = modelMeshes.GetSize();
 		for (UINT i = 0; i < count; i++)
@@ -224,6 +229,8 @@ void RenderingSystem::CreateShadowMap(const CLight &light, const Frustum &frustu
 			DrawMesh(vaos[i], modelMeshes[i]->GetIndices().GetSize());
 		}
 	}
+
+	depthShader.Stop();
 
 	// unbind framebuffer
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);

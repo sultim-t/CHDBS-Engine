@@ -2,6 +2,7 @@
 #include <Engine/Math/Vector.h>
 #include <Engine/Math/Quaternion.h>
 #include <string>
+#include "String.h"
 
 String::String(const char * orig) :
 	string(AllocateString(orig)),
@@ -230,6 +231,59 @@ Quaternion String::ToQuaternion(const char * str)
 	return result;
 }
 
+Color4 String::ToColor4(const char * str)
+{
+	const int Dim = 4;
+
+	Color4 result;
+	UINT index = 0;
+
+	// create copy
+	char *temp = AllocateString(str);
+
+	// pointer to the beginning of float to parse
+	const char *ptr = temp;
+
+	UINT length = strlen(str);
+
+	// <= to check last symbol
+	for (UINT i = 0; i <= length; i++)
+	{
+		if (str[i] == ' ' || str[i] == '\0')
+		{
+			ASSERT(index < Dim);
+
+			temp[i] = '\0';
+
+			// convert to float till '\0'
+			result[index] = (UBYTE)atoi(ptr);
+
+			// update ptr
+			ptr = temp + i + 1;
+			index++;
+		}
+	}
+
+	// delete copy
+	SystemAllocator::Free(temp);
+
+	// convert unparsed to zero
+	for (UINT i = index; i < Dim; i++)
+	{
+		if (i == 3)
+		{
+			// if alpha
+			result[i] = 255;
+		}
+		else
+		{
+			result[i] = 0;
+		}
+	}
+
+	return result;
+}
+
 bool String::operator==(const char * b) const
 {
 	return strcmp(string, b) == 0;
@@ -258,4 +312,9 @@ Vector3 String::ToVector3() const
 Quaternion String::ToQuaternion() const
 {
 	return ToQuaternion(string);
+}
+
+Color4 String::ToColor4() const
+{
+	return ToColor4(string);
 }

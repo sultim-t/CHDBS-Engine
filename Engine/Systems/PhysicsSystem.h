@@ -6,10 +6,11 @@
 class PhysicsSystem : public ISystem
 {
 private:
-	// Stores all rigidbodies with colliders
-	DynamicArray<Rigidbody*>	rigidbodies;
-	// Stores all colliders without rigidbodies
-	DynamicArray<ICollider*>	colliders;
+	// Reference to rigidbodies (with colliders) array
+	DynamicArray<Rigidbody*>	*rigidbodies;
+
+	// Reference to colliders (without rigidbodies) array
+	DynamicArray<ICollider*>	*colliders;
 
 	// Stores all collisions, from broad phase
 	// They will be potentially resolved in main phase
@@ -39,10 +40,15 @@ public:
 	static PhysicsSystem &Instance();
 
 public:
-	// Register dynamic physics object
-	void Register(Rigidbody *rb);
-	// Register static physics object
-	void Register(ICollider *col);
+	//// Register dynamic physics object
+	//void Register(Rigidbody *rb);
+	//// Register static physics object
+	//void Register(ICollider *col);
+	
+	// Register rigidbodies and colliders to simulate physics
+	void Register(DynamicArray<Rigidbody*> *rigidbodies, DynamicArray<ICollider*> *colliders);
+	// Unregister rigidbodies and colliders
+	void Reset();
 
 	// Check segment from pos to pos+dir*distance
 	// If returns true, result of cast will be in info

@@ -117,6 +117,7 @@ typedef IComponent *(*IComponentCreator)(void* xmlElem);
 
 // Components
 class CCamera;
+	class ICamera;
 class CFreeMovement;
 class CModel;
 	class ModelHierarchy;

@@ -12,6 +12,11 @@ void ComponentSystem::Init()
 
 void ComponentSystem::Update()
 {
+	if (entities == nullptr)
+	{
+		return;
+	}
+
 	for (int i = 0; i < entities->GetSize(); i++)
 	{
 		Entity *entity = entities->operator[](i);
@@ -38,6 +43,11 @@ void ComponentSystem::Update()
 void ComponentSystem::Register(const DynamicArray<Entity*> *entities)
 {
 	this->entities = entities;
+}
+
+void ComponentSystem::Reset()
+{
+	entities = nullptr;
 }
 
 ComponentSystem &ComponentSystem::Instance()

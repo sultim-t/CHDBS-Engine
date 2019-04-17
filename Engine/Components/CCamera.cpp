@@ -4,6 +4,7 @@
 #include <Engine/Math/Projection.h>
 #include <Engine/Entities/Entity.h>
 #include <Engine/Systems/RenderingSystem.h>
+#include <Engine/Rendering/DebugDrawer.h>
 
 #define PROPERTY_KEY_PROJ	"Projection"
 #define PROPERTY_KEY_ZNEAR	"ZNear"
@@ -160,19 +161,43 @@ const Vector3 &CCamera::GetPosition() const
 
 Frustum CCamera::GetFrustum() const
 {
+	Frustum frustum;
+
 	if (projection == CameraProjection::Perspective)
 	{
-		Frustum frustum;
 		frustum.Init(fov, aspect, zNear, zFar, GetOwner().GetTransform().GetTransformMatrix());
-
-		return frustum;
 	}
 	else
 	{
 		// todo
 		Logger::Print("Ortho camera frustum not implemented");
-		return Frustum();
 	}
+
+	return frustum;
+}
+
+Frustum CCamera::GetFrustum(float nearMult, float farMult) const
+{
+	Frustum frustum;
+
+	// recalculate new vertices
+	float newNear = zNear + nearMult * (zFar - zNear);
+	float newFar = zNear + farMult * (zFar - zNear);
+
+	if (projection == CameraProjection::Perspective)
+	{
+		// init frustum's vertices
+		frustum.Init(fov, aspect, newNear, newFar, GetOwner().GetTransform().GetTransformMatrix());
+		
+		DebugDrawer::Instance().Draw(frustum, Color4(0, 0, 255, 255));
+	}
+	else
+	{
+		// todo
+		Logger::Print("Ortho camera frustum not implemented");
+	}
+
+	return frustum;
 }
 
 void CCamera::SetProjection(CameraProjection p)

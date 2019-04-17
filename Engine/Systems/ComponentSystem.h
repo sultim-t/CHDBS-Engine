@@ -10,7 +10,6 @@ class ComponentSystem : public ISystem
 {
 private:
 	// Pointer to entities storage
-	// Located in entity factory
 	const DynamicArray<Entity*> *entities;
 
 private:
@@ -24,11 +23,16 @@ private:
 public:
 	// Init structures
 	void Init() override;
-	// Update each active component
+
+	// Update IUpdatable objects' active components 
 	void Update() override;
+	// Update IFixedUpdatable objects' active components 
+	void FixedUpdate();
 
 	// Set pointer to entities array to update them
 	void Register(const DynamicArray<Entity*> *entities);
+	// Set pointer to entities to null
+	void Reset();
 
 	// Get instance of system
 	static ComponentSystem &Instance();

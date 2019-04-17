@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Engine/Memory/Memory.h>
-#include <memory> // for shared ptr
 
 #define DYNARRAY_INCMULT 2
 
@@ -9,7 +8,7 @@ template <class T>
 class DynamicArray
 {
 private:
-	std::shared_ptr<T> ptr;
+	T *buffer;
 	int allocated;
 	int top;
 
@@ -24,7 +23,6 @@ public:
 	// Allocate memory
 	void Init(int initSize);
 
-	void operator=(const DynamicArray<T> &source);
 	const T &operator[](int index) const;
 	T &operator[](int index);
 
@@ -54,7 +52,7 @@ inline void DynamicArray<T>::Expand()
 	allocated *= DYNARRAY_INCMULT;
 	int newSize = sizeof(T) * allocated;
 
-	ptr.reset((T*)SystemAllocator::Reallocate(ptr.get(), oldSize, newSize));
+	buffer = (T*)SystemAllocator::Reallocate(buffer, oldSize, newSize);
 }
 
 template<class T>
@@ -71,51 +69,40 @@ template<class T>
 inline void DynamicArray<T>::Init(int initSize)
 {
 	// must be empty
-	ASSERT(!ptr);
+	ASSERT(buffer == nullptr);
 	ASSERT(initSize > 0);
 
 	top = 0;
 	allocated = initSize;
-	ptr.reset((T*)SystemAllocator::Allocate(sizeof(T) * initSize));
-}
-
-template<class T>
-inline void DynamicArray<T>::operator=(const DynamicArray<T>& source)
-{
-	// source array must be not empty
-	ASSERT(source.GetSize() != 0 && source.ptr);
-
-	this->ptr = source.ptr;
-	this->allocated = source.allocated;
-	this->top = source.top;
+	buffer = (T*)SystemAllocator::Allocate(sizeof(T) * initSize);
 }
 
 template<class T>
 inline const T &DynamicArray<T>::operator[](int index) const
 {
 	ASSERT(index < top);
-	return ptr.get()[index];
+	return buffer[index];
 }
 
 template<class T>
 inline T &DynamicArray<T>::operator[](int index)
 {
 	ASSERT(index < top);
-	return ptr.get()[index];
+	return buffer[index];
 }
 
 template<class T>
 inline void DynamicArray<T>::Push(const T &elem)
 {
 	// must exist
-	ASSERT(ptr);
+	ASSERT(buffer != nullptr);
 
 	if (top >= allocated)
 	{
 		Expand();
 	}
 
-	ptr.get()[top] = elem;
+	buffer[top] = elem;
 	top++;
 }
 
@@ -123,21 +110,21 @@ template<class T>
 inline T DynamicArray<T>::Pop()
 {
 	ASSERT(top > 0);
-	ASSERT(ptr);
+	ASSERT(buffer != nullptr);
 
-	return ptr.get()[top--];
+	return buffer[top--];
 }
 
 template<class T>
 inline T * DynamicArray<T>::GetArray()
 {
-	return ptr.get();
+	return buffer;
 }
 
 template<class T>
 inline const T * DynamicArray<T>::GetArray() const
 {
-	return ptr.get();
+	return buffer;
 }
 
 template<class T>
@@ -155,15 +142,13 @@ inline void DynamicArray<T>::Clear()
 template<class T>
 inline void DynamicArray<T>::Delete()
 {
-	// if not initialized
-	if (!ptr)
+	// delete
+	if (buffer != nullptr)
 	{
-		return;
+		SystemAllocator::Free(buffer);
 	}
 
-	// delete
-	ptr.reset();
-
+	buffer = nullptr;
 	top = 0;
 	allocated = 0;
 }

@@ -1,19 +1,28 @@
 <Entity 
   Name="Camera"
-  Position="0 0 0">
+  Position="0 0 0"
+  >
 
   <CCamera
     ZNear="0.1"
-    ZFar="1500"
+    ZFar="1000"
     Projection="Perspective"
-    FOV="100" />
+    FOV="100" 
+    />
 
   <CFreeMovement 
-    speed="10" />
+    Speed="10"
+    />
   <CModel
-  Path="Models/DoubleBarrel.obj"
-  CastShadows="1"/>
+    Path="Models/DoubleBarrel.obj"
+    CastShadows="1"
+    />
 
-
+  <Rigidbody
+    Mass="20"
+    Velocity="0 0 0"
+    ColliderType="Sphere"
+    SphereRadius="2"
+    />
 
 </Entity>

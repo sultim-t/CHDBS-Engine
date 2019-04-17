@@ -229,6 +229,8 @@
     <ClCompile Include="TEMP\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Components\IFixedUpdatable.h" />
+    <ClInclude Include="Components\IUpdatable.h" />
     <ClInclude Include="Math\MTransform.h" />
     <ClInclude Include="Rendering\DebugDrawer.h" />
     <ClInclude Include="Base\Logger.h" />
@@ -289,6 +291,7 @@
     <ClInclude Include="Rendering\Bone.h" />
     <ClInclude Include="Rendering\Cubemap.h" />
     <ClInclude Include="Rendering\FramebufferTexture.h" />
+    <ClInclude Include="Rendering\ICamera.h" />
     <ClInclude Include="Rendering\ITexture.h" />
     <ClInclude Include="Rendering\Material.h" />
     <ClInclude Include="Rendering\ContextWindow.h" />
@@ -313,6 +316,7 @@
     <ClInclude Include="ResourceManager\MeshResource.h" />
     <ClInclude Include="ResourceManager\ModelResource.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
+    <ClInclude Include="ResourceManager\SceneResource.h" />
     <ClInclude Include="ResourceManager\TextureResource.h" />
     <ClInclude Include="SceneManager\Scene.h" />
     <ClInclude Include="SceneManager\SceneInfo.h" />

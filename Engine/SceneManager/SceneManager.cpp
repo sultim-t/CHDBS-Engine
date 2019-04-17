@@ -26,16 +26,47 @@ Scene &SceneManager::CreateScene(const String &name)
 	return *scene;
 }
 
-void SceneManager::LoadScene(const Scene &scene)
-{
-	// todo
-	ASSERT(0);
-}
-
 void SceneManager::LoadScene(int index)
 {
 	ASSERT(index >= 0 && index < scenes.GetSize());
-	LoadScene(*scenes[index]);
+
+	// unload current
+	scenes[currentSceneIndex]->Unload();
+
+	// load new
+	scenes[index]->Load();
+	currentSceneIndex = index;
+}
+
+void SceneManager::LoadScene(const Scene &scene)
+{
+	LoadScene(scene.GetID());
+}
+
+void SceneManager::LoadScene(const char * name)
+{
+	for (int i = 0; i < scenes.GetSize(); i++)
+	{
+		// if names are equal
+		if (scenes[i]->GetName() == name)
+		{
+			LoadScene(scenes[i]->GetID());
+		}
+	}
+
+	Logger::Print("No scene found");
+}
+
+Scene &SceneManager::GetCurrentScene() const
+{
+	return GetScene(currentSceneIndex);
+}
+
+Scene &SceneManager::GetScene(int id) const
+{
+	ASSERT(id >= 0 && id < scenes.GetSize());
+
+	return *scenes[id];
 }
 
 SceneManager &SceneManager::Instance()

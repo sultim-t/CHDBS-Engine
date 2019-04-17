@@ -105,23 +105,31 @@ void EntityFactory::SetData(Entity *entity, void *xmlElem)
 	XMLElement *elem = (XMLElement*)xmlElem;
 
 	entity->isActive = elem->BoolAttribute("Active", true);
+	
+	const char *val;
 
-	if (const char *val = elem->Attribute("Position"))
+	if (val = elem->Attribute("Name"))
+	{
+		// set name
+		entity->name = val;
+	}
+
+	if (val = elem->Attribute("Position"))
 	{
 		entity->transform.SetPosition(String::ToVector3(val));
 	}
 
-	if (const char *val = elem->Attribute("Euler"))
+	if (val = elem->Attribute("Euler"))
 	{
 		entity->transform.SetRotation(String::ToVector3(val));
 	}
 
-	if (const char *val = elem->Attribute("Quaternion"))
+	if (val = elem->Attribute("Quaternion"))
 	{
 		entity->transform.SetRotation(String::ToQuaternion(val));
 	}
 
-	if (const char *val = elem->Attribute("Scale"))
+	if (val = elem->Attribute("Scale"))
 	{
 		entity->transform.SetScale(String::ToVector3(val));
 	}

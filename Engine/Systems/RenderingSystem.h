@@ -60,7 +60,7 @@ private:
 	void DrawMesh(UINT vao, UINT indicesCount);
 
 	// Generate shadowmap to framebuffer, according to camera frustum to fit entire shadowmap
-	void CreateShadowMap(const CLight &light, const Frustum &frustum, FramebufferTexture &shadowMap);
+	void CreateShadowMap(const CLight &light, const ICamera &camera, FramebufferTexture &shadowMap);
 
 public:
 	// Init structures

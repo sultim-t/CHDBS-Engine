@@ -67,6 +67,8 @@ public:
 	void Draw(const Sphere &sphere, const Color4 &color = Color4(0, 255, 0, 255));
 	// Add AABB to render queue
 	void Draw(const AABB &aabb, const Color4 &color = Color4(0, 255, 0, 255));
+	// Add AABB with tranformation to render queue
+	void Draw(const AABB &aabb, const Matrix4 &transform, const Color4 &color = Color4(0, 255, 0, 255));
 	// Add frustum to render queue
 	void Draw(const Frustum &frustum, const Color4 &color = Color4(0, 255, 0, 255));
 	// Add line to render queue

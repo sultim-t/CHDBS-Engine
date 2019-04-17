@@ -6,8 +6,11 @@
 class SceneManager
 {
 private:
+	// All loaded scenes
+	// Their indices in array are their IDs
 	DynamicArray<Scene*> scenes;
-	int currentSceneId;
+	// Current scene's index in array
+	int currentSceneIndex;
 
 public:
 	~SceneManager();
@@ -21,23 +24,13 @@ public:
 	void LoadScene(const Scene &scene);
 	// Load scene by index
 	void LoadScene(int index);
+	// Load scene by name
+	void LoadScene(const char *name);
 
 	// Get current active scene
-	inline Scene &GetCurrentScene() const;
+	Scene &GetCurrentScene() const;
 	// Get scene by index
-	inline Scene &GetScene(int id) const;
+	Scene &GetScene(int id) const;
 
 	static SceneManager &Instance();
 };
-
-inline Scene &SceneManager::GetCurrentScene() const
-{
-	return GetScene(currentSceneId);
-}
-
-inline Scene &SceneManager::GetScene(int id) const
-{
-	ASSERT(id >= 0 && id < scenes.GetSize());
-	
-	return *scenes[id];
-}

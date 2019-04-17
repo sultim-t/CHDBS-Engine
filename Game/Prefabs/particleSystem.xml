@@ -4,24 +4,21 @@
   Euler="-90 0 0">
 
   <CParticleSystem
-    maxCount="500" 
-    lifetime="2"
-    lifetimeRand="0.3"
+    MaxCount="500" 
+    Lifetime="2"
+    LifetimeRandom="0.3"
     
-    size="0.14"
-    sizeRand="0.04"
+    Size="0.1"
+    SizeRandom="0.05"
     
-    colr="235"
-    colg="235"
-    colb="235"
-    cola="220"
+    Color="235 235 235"
     
-    vel="0 0 7"
-    velRand="1.5 1.5 2"
+    Velocity="0 0 3"
+    VelocityRandom="0.6 0.6 0.9"
     
-    gravMult="1"
-    gravMultRand="0.2"
+    GravityMultiplier="1"
+    GravityMultRandom="0.2"
 
-    vertPath="Shaders/Particle.vs"
-    fragPath="Shaders/Particle.fs"/>
+    VertShaderPath="Shaders/Particle.vs"
+    FragShaderPath="Shaders/Particle.fs"/>
 </Entity>

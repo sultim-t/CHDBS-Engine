@@ -33,7 +33,10 @@ private:
 private:
 	Matrix4 GetLightView() const;
 	Matrix4 GetLightView(const Vector3 &pos) const;
-	Matrix4 GetProjection(const Frustum &frustum) const;
+	Matrix4 GetProjection(const AABB &bounding) const;
+
+	// Get bounding box of frustum in light space
+	AABB GetFrustumBounding(const Frustum &frustum) const;
 
 public:
 	// Returns light space matrix

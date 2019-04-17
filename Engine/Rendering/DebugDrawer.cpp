@@ -179,6 +179,44 @@ void DebugDrawer::Draw(const AABB & aabb, const Color4 & color)
 	DrawBox(points, color);
 }
 
+void DebugDrawer::Draw(const AABB & aabb, const Matrix4 & transform, const Color4 & color)
+{
+	Vector3 min = aabb.GetMin();
+	Vector3 max = aabb.GetMax();
+
+	Vector3 points[8];
+
+	// create 4 bottom points
+	points[0] = min;
+
+	points[1] = min;
+	points[1][0] = max[0];
+
+	points[2] = min;
+	points[2][0] = max[0];
+	points[2][2] = max[2];
+
+	points[3] = min;
+	points[3][2] = max[2];
+
+	// create 4 up points
+	// offsetted along vertical axis
+	for (int i = 4; i < 8; i++)
+	{
+		points[i] = points[i - 4];
+		points[i][1] = max[1];
+	}
+
+	Matrix4 transformation = transform.GetTransposed();
+	for (int i = 0; i < 8; i++)
+	{
+		points[i] = transformation * points[i];
+	}
+
+	// add lines
+	DrawBox(points, color);
+}
+
 void DebugDrawer::Draw(const Frustum & frustum, const Color4 & color)
 {
 	const Vector3 *near = frustum.GetNearVerts();

@@ -10,8 +10,11 @@ private:
 public:
 	// Empty construcor
 	AABB();
+	// Create bounding box Min=-vec, Max=vec
 	AABB(const Vector3 &vec);
+	// Create bounding box of sphere
 	AABB(const Vector3 &center, const float radius);
+	// Create bounding box of two arbitary vectors
 	AABB(const Vector3 &vec1, const Vector3 &vec2);
 
 	bool IsEmpty() const;
@@ -23,6 +26,7 @@ public:
 	// Is this AABB contained in other one?
 	bool IsContained(const AABB &aabb) const;
 
+	// Get bounding box of these AABBs
 	static AABB GetUnion(const AABB &aabb1, const AABB &aabb2);
 	static AABB GetIntersection(const AABB &aabb1, const AABB &aabb2);
 

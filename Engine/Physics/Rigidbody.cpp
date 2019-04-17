@@ -26,7 +26,7 @@ void Rigidbody::Init()
 		((AABBCollider*)collider)->SetTransform(transform);
 	}
 
-	PhysicsSystem::Instance().Register(this);
+	// PhysicsSystem::Instance().Register(this);
 }
 
 Rigidbody::~Rigidbody()

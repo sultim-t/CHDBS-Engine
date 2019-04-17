@@ -10,35 +10,32 @@
 #include <Engine/Rendering/OpenGL.h>
 
 
-#define PROPERTY_KEY_VERTPATH	"vertPath"
-#define PROPERTY_KEY_FRAGPATH	"fragPath"
+#define PROPERTY_KEY_VERTPATH	"VertShaderPath"
+#define PROPERTY_KEY_FRAGPATH	"FragShaderPath"
 
-#define PROPERTY_KEY_MAXCOUNT	"maxCount"
+#define PROPERTY_KEY_MAXCOUNT	"MaxCount"
 
-#define PROPERTY_KEY_VEL		"vel"
-#define PROPERTY_KEY_VELRAND	"velRand"
-#define PROPERTY_KEY_VELWORLD	"isWorldVelocity"
+#define PROPERTY_KEY_VEL		"Velocity"
+#define PROPERTY_KEY_VELRAND	"VelocityRandom"
+#define PROPERTY_KEY_VELWORLD	"IsWorldVelocity"
 
-#define PROPERTY_KEY_COLR		"colr"
-#define PROPERTY_KEY_COLG		"colg"
-#define PROPERTY_KEY_COLB		"colb"
-#define PROPERTY_KEY_COLA		"cola"
-#define PROPERTY_KEY_COLRAND	"colRand"
+#define PROPERTY_KEY_COL		"Color"
+#define PROPERTY_KEY_COLRAND	"ColorRandom"
 
-#define PROPERTY_KEY_SIZE		"size"
-#define PROPERTY_KEY_SIZERAND	"sizeRand"
+#define PROPERTY_KEY_SIZE		"Size"
+#define PROPERTY_KEY_SIZERAND	"SizeRandom"
 
-#define PROPERTY_KEY_ROT		"rotation"
-#define PROPERTY_KEY_ROTRAND	"rotationRand"
+#define PROPERTY_KEY_ROT		"Rotation"
+#define PROPERTY_KEY_ROTRAND	"RotationRandom"
 
-#define PROPERTY_KEY_LIFE		"lifetime"
-#define PROPERTY_KEY_LIFERAND	"lifetimeRand"
+#define PROPERTY_KEY_LIFE		"Lifetime"
+#define PROPERTY_KEY_LIFERAND	"LifetimeRandom"
 
-#define PROPERTY_KEY_GRAVMULT	"gravMult"
-#define PROPERTY_KEY_GRAVRAND	"gravMultRand"
+#define PROPERTY_KEY_GRAVMULT	"GravityMultiplier"
+#define PROPERTY_KEY_GRAVRAND	"GravityMultRandom"
 
-#define PROPERTY_KEY_EMITRATE	"emitRate"
-#define PROPERTY_KEY_LOOPING	"isLooping"
+#define PROPERTY_KEY_EMITRATE	"EmitRate"
+#define PROPERTY_KEY_LOOPING	"IsLooping"
 
 
 float CParticleSystem::quadVertices[] = 
@@ -346,21 +343,9 @@ void CParticleSystem::SetProperty(const String &key, const String &value)
 	{
 		isWorldVelocity = value.ToBool();
 	}
-	else if (key == PROPERTY_KEY_COLR)
+	else if (key == PROPERTY_KEY_COL)
 	{
-		startColor[0] = (UBYTE)value.ToInt();
-	}
-	else if (key == PROPERTY_KEY_COLG)
-	{
-		startColor[1] = (UBYTE)value.ToInt();
-	}
-	else if (key == PROPERTY_KEY_COLB)
-	{
-		startColor[2] = (UBYTE)value.ToInt();
-	}
-	else if (key == PROPERTY_KEY_COLA)
-	{
-		startColor[3] = (UBYTE)value.ToInt();
+		startColor = value.ToColor4();
 	}
 	else if (key == PROPERTY_KEY_COLRAND)
 	{

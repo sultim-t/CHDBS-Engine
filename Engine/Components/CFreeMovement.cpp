@@ -11,7 +11,7 @@
 
 #define SCROLL_SPEED	20
 
-#define PROPERTY_KEY_SPEED	"speed"
+#define PROPERTY_KEY_SPEED	"Speed"
 
 
 CLASSDEFINITION(IComponent, CFreeMovement)
@@ -51,7 +51,11 @@ void CFreeMovement::ProcessKeyboard()
 	Transform &t = owner->GetTransform();
 
 	Vector3 offset = Vector3(0, 0, 0);
+
 	Vector3 front = t.GetForward();
+	front[1] = 0;
+	front.Normalize();
+
 	Vector3 right = t.GetRight();
 	Vector3 up = Vector3(0, 1, 0);
 

@@ -8,10 +8,13 @@ void Entity::AddComponent(IComponent *c)
 	components.Push(c);
 }
 
-Entity::Entity(EntityID id)
+Entity::Entity(EntityID id) :
+	entityId(id), isActive(true) // by default entities are active
+{ }
+
+Entity::~Entity()
 {
-	entityId = id;
-	isActive = true; // by default entities are active
+	Destroy();
 }
 
 void Entity::Init()
@@ -26,14 +29,22 @@ const DynamicArray<IComponent*> &Entity::GetAllComponents() const
 }
 
 void Entity::Destroy()
-{ }
+{
+	// its components were allocated in EntityFactory,
+	// their destruction is here
+	
+	for (int i = 0; i < components.GetSize(); i++)
+	{
+		delete components[i];
+	}
+}
 
 void Entity::SetActive(bool active)
 {
 	isActive = true;
 }
 
-bool Entity::IsActive()
+bool Entity::IsActive() const
 {
 	return isActive;
 }
@@ -41,6 +52,11 @@ bool Entity::IsActive()
 EntityID Entity::GetID() const
 {
 	return entityId;
+}
+
+const String &Entity::GetName() const
+{
+	return name;
 }
 
 Transform &Entity::GetTransform()
