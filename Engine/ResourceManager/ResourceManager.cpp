@@ -1,7 +1,7 @@
 #include "ResourceManager.h"
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <ImageLoading\stb_image.h>
+#include <ImageLoading/stb_image.h>
 
 #include <Engine/DataStructures/StaticArray.h>
 #include <Engine/Math/Vector.h>
@@ -21,6 +21,16 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include <fstream>
+#include <sstream>
+#include <iostream>
+
+ResourceManager &ResourceManager::Instance()
+{
+	static ResourceManager instance;
+	return instance;
+}
+
 void ResourceManager::Init()
 {
 	modelResources.Init(32, 8);
@@ -28,6 +38,14 @@ void ResourceManager::Init()
 
 	textureResources.Init(64, 8);
 	textureResources.DeclareHashFunction(String::StringHash);
+
+	sceneResources.Init(32, 8);
+	sceneResources.DeclareHashFunction(String::StringHash);
+}
+
+ResourceManager::~ResourceManager()
+{
+	Unload();
 }
 
 void ResourceManager::Unload()
@@ -41,11 +59,21 @@ void ResourceManager::Unload()
 	{
 		delete modelResources[i];
 	}
-}
 
-ResourceManager::~ResourceManager()
-{ 
-	Unload();
+	for (UINT i = 0; i < textureResources.GetSize(); i++)
+	{
+		delete textureResources[i];
+	}
+
+	for (UINT i = 0; i < sceneResources.GetSize(); i++)
+	{
+		delete sceneResources[i];
+	}
+
+	for (UINT i = 0; i < shaderResources.GetSize(); i++)
+	{
+		delete shaderResources[i];
+	}
 }
 
 const TextureResource *ResourceManager::LoadTexture(char const *path)
@@ -71,6 +99,127 @@ const TextureResource *ResourceManager::LoadTexture(char const *path)
 	return outTexture;
 }
 
+const SceneResource *ResourceManager::LoadScene(const char * path)
+{
+	SceneResource *scene;
+
+	if (sceneResources.Find(path, scene))
+	{
+		return scene;
+	}
+
+	// allocate
+	scene = new SceneResource(path);
+
+	std::ifstream file;
+	std::string line;
+
+	// exceptions
+	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+	try
+	{
+		// open
+		file.open(path);
+
+		// count lines
+		int lineCount = 0, i = 0;
+		while (std::getline(file, line))
+		{
+			lineCount++;
+		}
+
+		// reset to beginning
+		file.clear();
+		file.seekg(0);
+
+		// first line must be a name
+		if (std::getline(file, line))
+		{
+			scene->sceneName = line.c_str();
+		}
+		else
+		{
+			throw std::exception("Is not scene file");
+		}
+
+		// init array (one for name)
+		scene->entityPaths.Init(lineCount - 1);
+
+		// for each line
+		while (std::getline(file, line))
+		{
+			scene->entityPaths[i++] = line.c_str();
+		}
+
+		// close
+		file.close();
+	}
+	catch (const std::exception&)
+	{
+		Logger::Print("Scene::Can't read scene file");
+	}
+
+	// register
+	sceneResources.Add(path, scene);
+
+	return scene;
+}
+
+const ShaderResource *ResourceManager::LoadShader(const char *vertexPath, const char *fragmentPath)
+{
+	ShaderResource *shader;
+
+	// TODO: vertpath and fragpath tuple indexing
+	if (shaderResources.Find(vertexPath, shader))
+	{
+		return shader;
+	}
+
+	// allocate
+	shader = new ShaderResource();
+
+	// stream
+	std::ifstream vertFile, fragFile;
+	
+	// exceptions
+	vertFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	fragFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+	try
+	{
+		std::string vertCode, fragCode;
+		std::stringstream vertStream, fragStream;
+
+		// open files
+		vertFile.open(vertexPath);
+		fragFile.open(fragmentPath);
+		
+		// read file's buffer contents into streams
+		vertStream << vertFile.rdbuf();
+		fragStream << fragFile.rdbuf();
+		
+		// close file handlers
+		vertFile.close();
+		fragFile.close();
+
+		// convert stream into string
+		// and assign to shader
+		shader->vertexCode = vertStream.str().c_str();
+		shader->fragmentCode = fragStream.str().c_str();
+	}
+	catch (const std::exception&)
+	{
+		Logger::Print("Shaders::Can't read shader code");
+	}
+
+	// register
+	shaderResources.Add(vertexPath, shader);
+
+	return shader;
+}
+
+#pragma region ModelLoading
 const ModelResource *ResourceManager::LoadModel(const char * path)
 {
 	ModelResource *resultModel;
@@ -438,9 +587,4 @@ ModelNode *ResourceManager::ProcessModelNode(void *n, const void *s, ModelNode *
 
 	return node;
 }
-
-ResourceManager &ResourceManager::Instance()
-{
-	static ResourceManager instance;
-	return instance;
-}
+#pragma endregion

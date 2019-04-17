@@ -148,7 +148,7 @@ int main()
 		meshtr[j] = tr;
 
 		MeshCollider *col = new MeshCollider(meshtr[j]);
-		PhysicsSystem::Instance().Register(col);
+		//PhysicsSystem::Instance().Register(col);
 	}
 
 	AABBCollider c = AABBCollider(AABB(Vector3(-100,-10,-100), Vector3(100,0,100)));

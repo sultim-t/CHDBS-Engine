@@ -38,6 +38,8 @@ private:
 
 	// Parses XML file and creates entity
 	Entity *PCreateEntity(const char *resource);
+	
+	// TODO: creating copy of entity
 	// Creates copy of the entity
 	Entity *PCreateEntity(const Entity *entity);
 

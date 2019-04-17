@@ -33,7 +33,7 @@ void String::Init(const char *str)
 	length = strlen(string);
 }
 
-inline void String::Delete()
+void String::Delete()
 {
 	SystemAllocator::Free(string);
 }

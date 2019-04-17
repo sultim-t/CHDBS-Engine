@@ -40,6 +40,7 @@ EntityFactory::EntityFactory()
 {
 	// init hash table
 	prefabs.Init(64, 16);
+	prefabs.DeclareHashFunction(String::StringHash);
 
 	// Note: entities are stored in Scene class
 
@@ -150,6 +151,15 @@ void EntityFactory::SetData(Entity *entity, const Entity *source)
 
 Entity *EntityFactory::PCreateEntity(const char *resource)
 {
+	Entity *entity;
+
+	//// try to find already loaded "blueprint"
+	//if (prefabs.Find(resource, entity))
+	//{
+	//	// if exist
+	//	return CopyEntity(entity);
+	//}
+
 	using namespace tinyxml2;
 
 	XMLDocument doc;
@@ -163,7 +173,7 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 	}
 
 	// allocate
-	Entity *entity = new Entity(GetNextEntityID());
+	entity = new Entity(GetNextEntityID());
 	// allocate memory for fields
 	entity->Init();
 
@@ -198,6 +208,9 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 	// Note : entity are not stored here anymore, see Scene class
 	//// finally, store entity
 	//entities.Push(entity);
+
+	// register "blueprint"
+	prefabs.Add(resource, entity);
 
 	return entity;
 }

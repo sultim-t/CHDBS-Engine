@@ -4,6 +4,8 @@
 #include "TextureResource.h"
 #include "ModelResource.h"
 #include "MeshColliderResource.h"
+#include "SceneResource.h"
+#include "ShaderResource.h"
 
 #include <Engine/DataStructures/HashTable.h>
 #include <Engine/DataStructures/DynamicArray.h>
@@ -13,13 +15,22 @@ class ResourceManager
 {
 private:	
 	// Stores all loaded meshes
-	//DynamicArray<MeshResource*>			meshResources;
+	// DynamicArray<MeshResource*>			meshResources;
+
+	// Stores all loaded mesh colliders
 	DynamicArray<MeshColliderResource*> meshColliderResources;
 
 	// Stores all loaded textures
 	HashTable<String, TextureResource*> textureResources;
+
 	// Stores all loaded models
 	HashTable<String, ModelResource*>	modelResources;
+
+	// Stores all loaded scenes
+	HashTable<String, SceneResource*>	sceneResources;
+
+	// Stores all loaded shaders
+	HashTable<String, ShaderResource*>	shaderResources;
 
 private:	
 	// Allocates mesh resource and copies data
@@ -42,6 +53,8 @@ public:
 
 	const TextureResource	*LoadTexture(char const *path);
 	const ModelResource		*LoadModel(const char *path);
+	const SceneResource		*LoadScene(const char *path);
+	const ShaderResource	*LoadShader(const char *vertexPath, const char *fragmentPath);
 
 	static ResourceManager &Instance();
 };

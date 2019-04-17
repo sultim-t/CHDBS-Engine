@@ -317,6 +317,7 @@
     <ClInclude Include="ResourceManager\ModelResource.h" />
     <ClInclude Include="ResourceManager\ResourceManager.h" />
     <ClInclude Include="ResourceManager\SceneResource.h" />
+    <ClInclude Include="ResourceManager\ShaderResource.h" />
     <ClInclude Include="ResourceManager\TextureResource.h" />
     <ClInclude Include="SceneManager\Scene.h" />
     <ClInclude Include="SceneManager\SceneInfo.h" />

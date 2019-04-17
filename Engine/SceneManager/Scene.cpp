@@ -154,3 +154,8 @@ const String &Scene::GetName() const
 {
 	return name;
 }
+
+const Skybox &Scene::GetSkybox() const
+{
+	return Skybox::Instance();
+}

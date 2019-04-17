@@ -1,8 +1,10 @@
 #pragma once
 #include <Engine/DataStructures/DynamicArray.h>
+#include <Engine/Rendering/Skybox.h>
 
 class Scene
 {
+	friend class ResourceManager;
 	friend class SceneManager;
 
 private:
@@ -68,4 +70,6 @@ public:
 	int GetID() const;
 	// Get scene's name
 	const String &GetName() const;
+	// Get scene's skybox
+	const Skybox &GetSkybox() const;
 };
