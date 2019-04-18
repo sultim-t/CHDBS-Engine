@@ -117,51 +117,41 @@ const SceneResource *ResourceManager::LoadScene(const char * path)
 	std::ifstream file;
 	std::string line;
 
-	// exceptions
-	file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+	// open
+	file.open(path);
 
-	try
+	// count lines
+	int lineCount = 0, i = 0;
+	while (std::getline(file, line))
 	{
-		// open
-		file.open(path);
-
-		// count lines
-		int lineCount = 0, i = 0;
-		while (std::getline(file, line))
-		{
-			lineCount++;
-		}
-
-		// reset to beginning
-		file.clear();
-		file.seekg(0);
-
-		// first line must be a name
-		if (std::getline(file, line))
-		{
-			scene->sceneName = line.c_str();
-		}
-		else
-		{
-			throw std::exception("Is not scene file");
-		}
-
-		// init array (one for name)
-		scene->entityPaths.Init(lineCount - 1);
-
-		// for each line
-		while (std::getline(file, line))
-		{
-			scene->entityPaths[i++] = line.c_str();
-		}
-
-		// close
-		file.close();
+		lineCount++;
 	}
-	catch (const std::exception&)
+
+	// reset to beginning
+	file.clear();
+	file.seekg(0);
+
+	// first line must be a name
+	if (std::getline(file, line))
 	{
-		Logger::Print("Scene::Can't read scene file");
+		scene->sceneName = line.c_str();
 	}
+	else
+	{
+		throw std::exception("Is not scene file");
+	}
+
+	// init array (one for name)
+	scene->entityPaths.Init(lineCount - 1);
+
+	// for each line
+	while (std::getline(file, line))
+	{
+		scene->entityPaths[i++].Init(line.c_str());
+	}
+
+	// close
+	file.close();
 
 	// register
 	sceneResources.Add(path, scene);

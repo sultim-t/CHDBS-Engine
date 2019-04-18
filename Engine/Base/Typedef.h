@@ -110,6 +110,10 @@ class ComponentSystem;
 class Entity;
 class Brush;
 
+// Scene management
+class SceneManager;
+class Scene;
+
 // Component interface
 class IComponent;
 // Component creator

@@ -21,10 +21,15 @@ public:
 	void Init();
 
 	// Create empty scene
-	Scene &CreateScene(const String &name);
+	// Returns its ID
+	int CreateEmptyScene(const char *path);
 
-	// Load scene by index
-	void LoadScene(int index);
+	// Create scene from file
+	// Returns its ID
+	int CreateScene(const char *path);
+
+	// Load scene by ID
+	void LoadScene(int id);
 	// Load scene
 	void LoadScene(const Scene &scene);
 	// Load scene by name

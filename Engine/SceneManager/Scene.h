@@ -59,12 +59,12 @@ public:
 	const DynamicArray<ICollider*> &GetAllColliders() const;
 
 	// Create entity from file in this scene
-	void CreateEntity(const String &name);
+	void CreateEntity(const char *name);
 	// Create copy of entity in this scene
 	void CreateEntity(const Entity *source);
 
 	// Find entity in this scene by its name
-	Entity *FindEntity(const String &name);
+	Entity *FindEntity(const char *name);
 
 	// Get scene's ID
 	int GetID() const;

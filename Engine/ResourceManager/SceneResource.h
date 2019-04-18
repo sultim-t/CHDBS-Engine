@@ -22,6 +22,10 @@ public:
 
 	// Get all paths to entity files in this scene
 	const StaticArray<String> &GetEntityPaths() const;
+	// Get scene's name
+	const String &GetName() const;
+	// Get path to this scene resource
+	const String &GetPath() const;
 };
 
 inline SceneResource::SceneResource(const char * path) 
@@ -41,4 +45,14 @@ inline SceneResource::~SceneResource()
 inline const StaticArray<String>& SceneResource::GetEntityPaths() const
 {
 	return entityPaths;
+}
+
+inline const String & SceneResource::GetName() const
+{
+	return sceneName;
+}
+
+inline const String & SceneResource::GetPath() const
+{
+	return path;
 }

@@ -38,6 +38,7 @@
 #include <Engine/Systems/PhysicsSystem.h>
 #include <Engine/Systems/InputSystem.h>
 #include <Engine/ResourceManager/ResourceManager.h>
+#include <Engine/SceneManager/SceneManager.h>
 
 void Game::Start()
 {
@@ -60,6 +61,7 @@ int main()
 	ContextWindow::Instance().Init("Engine", 1280, 720);
 
 	ResourceManager::Instance().Init();
+	SceneManager::Instance().Init();
 	RenderingSystem::Instance().Init();
 	ComponentSystem::Instance().Init();
 	PhysicsSystem::Instance().Init();
@@ -69,13 +71,20 @@ int main()
 
 
 	// From XML
-	Entity *cameraEntity = EntityFactory::CreateEntity("Prefabs/camera.xml");
-	Entity *lightEntity = EntityFactory::CreateEntity("Prefabs/light.xml");
-	Entity *terrainEntity = EntityFactory::CreateEntity("Prefabs/terrain.xml");
-	Entity *dbEntity = EntityFactory::CreateEntity("Prefabs/doubleBarrel.xml");
-	Entity *particles = EntityFactory::CreateEntity("Prefabs/particleSystem.xml");
+	//Entity *cameraEntity = EntityFactory::CreateEntity("Prefabs/camera.xml");
+	//Entity *lightEntity = EntityFactory::CreateEntity("Prefabs/light.xml");
+	//Entity *terrainEntity = EntityFactory::CreateEntity("Prefabs/terrain.xml");
+	//Entity *dbEntity = EntityFactory::CreateEntity("Prefabs/doubleBarrel.xml");
+	//Entity *particles = EntityFactory::CreateEntity("Prefabs/particleSystem.xml");
 
+	int sceneId = SceneManager::Instance().CreateScene("Scenes/MainScene.scene");
+	Scene &currentScene = SceneManager::Instance().GetScene(sceneId);
 
+	Entity *cameraEntity = currentScene.FindEntity("Camera");
+	Entity *lightEntity = currentScene.FindEntity("Sun");
+	Entity *terrainEntity = currentScene.FindEntity("Terrain");
+	Entity *dbEntity = currentScene.FindEntity("Double Barrel");
+	Entity *particles = currentScene.FindEntity("Particles");
 
 
 

@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include <Engine/ResourceManager/ResourceManager.h>
 
 SceneManager::~SceneManager()
 {
@@ -14,16 +15,40 @@ void SceneManager::Init()
 	scenes.Init(32);
 }
 
-Scene &SceneManager::CreateScene(const String &name)
+int SceneManager::CreateEmptyScene(const char *name)
 {
 	// allocate
-	Scene *scene = new Scene(name, scenes.GetSize());
+	int newId = scenes.GetSize();
+	Scene *scene = new Scene(name, newId);
 	scene->Init();
 	
 	// add to list
 	scenes.Push(scene);
 
-	return *scene;
+	return scene->GetID();
+}
+
+int SceneManager::CreateScene(const char *path)
+{
+	// load scene resource
+	const SceneResource *sceneResource = ResourceManager::Instance().LoadScene(path);
+	
+	// allcate scene
+	int sceneId = CreateEmptyScene(sceneResource->GetName());
+	Scene *currentScene = scenes[sceneId];
+
+	const StaticArray<String> &entitiesPaths = sceneResource->GetEntityPaths();
+	UINT count = entitiesPaths.GetSize();
+
+	// for each entity
+	for (UINT i = 0; i < count; i++)
+	{
+		// load it to scene,
+		// there will be created an entity from this path
+		currentScene->CreateEntity(entitiesPaths[i]);
+	}
+
+	return sceneId;
 }
 
 void SceneManager::LoadScene(int index)
@@ -43,7 +68,7 @@ void SceneManager::LoadScene(const Scene &scene)
 	LoadScene(scene.GetID());
 }
 
-void SceneManager::LoadScene(const char * name)
+void SceneManager::LoadScene(const char *name)
 {
 	for (int i = 0; i < scenes.GetSize(); i++)
 	{

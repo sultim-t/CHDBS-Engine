@@ -53,6 +53,7 @@ String &String::operator=(const char * b)
 
 	// and reassign
 	string = copy;
+	length = strlen(string);
 
 	return *this;
 }

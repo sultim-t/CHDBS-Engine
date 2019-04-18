@@ -83,7 +83,7 @@ void Scene::AddEntity(Entity * entity)
 	{
 		IComponent *component = all[i];
 
-		if (component->Type == Rigidbody::Type)
+		if (component->IsClassType(Rigidbody::Type))
 		{
 			rigidbodies.Push((Rigidbody*)component);
 
@@ -114,7 +114,7 @@ const DynamicArray<ICollider*> &Scene::GetAllColliders() const
 	return colliders;
 }
 
-void Scene::CreateEntity(const String &name)
+void Scene::CreateEntity(const char *name)
 {
 	// create entity in factory
 	Entity *created = EntityFactory::CreateEntity(name);
@@ -130,7 +130,7 @@ void Scene::CreateEntity(const Entity *source)
 	AddEntity(created);
 }
 
-Entity *Scene::FindEntity(const String &name)
+Entity *Scene::FindEntity(const char *name)
 {
 	int count = entities.GetSize();
 	for (int i = 0; i < count; i++)
