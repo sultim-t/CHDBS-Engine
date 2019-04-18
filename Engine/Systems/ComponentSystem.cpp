@@ -40,6 +40,10 @@ void ComponentSystem::Update()
 	}
 }
 
+void ComponentSystem::FixedUpdate()
+{
+}
+
 void ComponentSystem::Register(const DynamicArray<Entity*> *entities)
 {
 	this->entities = entities;

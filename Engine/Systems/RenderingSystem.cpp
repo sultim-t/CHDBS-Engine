@@ -44,7 +44,6 @@ void RenderingSystem::Init()
 
 	cameras.Init(8);
 	lights.Init(8);
-	allShaders.Init(16);
 	allModels.Init(64);
 	particleSystems.Init(64);
 
@@ -256,15 +255,6 @@ void RenderingSystem::Register(ITexture *texture)
 	texture->textureId = lastTextureId;
 	textures.Add(lastTextureId, texture);
 	lastTextureId++;
-}
-
-void RenderingSystem::Register(Shader *shader)
-{
-	shader->shaderId = lastShaderId;
-	shaders.Add(lastShaderId, shader);
-	lastShaderId++;
-
-	allShaders.Push(shader);
 }
 
 void RenderingSystem::Register(CModel * model)

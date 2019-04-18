@@ -91,6 +91,7 @@ public:
 	static Vector3 DecomposeScale(const Matrix4 &m);
 
 	// Decompose tranform from matrix
+	// Engine is using transposed matrix, so "m" is too
 	void FromMatrix(const Matrix4 &m);
 
 	// Transform direction from local space to world

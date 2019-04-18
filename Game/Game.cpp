@@ -33,12 +33,24 @@
 #include <Engine/Rendering/DebugDrawer.h>
 #include <Engine/Physics/Rigidbody.h>
 
-#include <Engine/Engine.h>
 #include <Engine/Systems/RenderingSystem.h>
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/Systems/PhysicsSystem.h>
 #include <Engine/Systems/InputSystem.h>
 #include <Engine/ResourceManager/ResourceManager.h>
+
+void Game::Start()
+{
+	// init engine
+	engine.Init();
+
+	// init debug drawer
+	DebugDrawer::Instance().Init("Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
+}
+
+void Game::LoadScenes()
+{
+}
 
 int main()
 {
@@ -54,6 +66,18 @@ int main()
 	InputSystem::Instance().Init();
 
 	DebugDrawer::Instance().Init("Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
+
+
+	// From XML
+	Entity *cameraEntity = EntityFactory::CreateEntity("Prefabs/camera.xml");
+	Entity *lightEntity = EntityFactory::CreateEntity("Prefabs/light.xml");
+	Entity *terrainEntity = EntityFactory::CreateEntity("Prefabs/terrain.xml");
+	Entity *dbEntity = EntityFactory::CreateEntity("Prefabs/doubleBarrel.xml");
+	Entity *particles = EntityFactory::CreateEntity("Prefabs/particleSystem.xml");
+
+
+
+
 
 	Array<const char*, 6> skyNames;
 	skyNames[4] = "Textures/Skybox/desertsky_rt.tga";
@@ -79,15 +103,7 @@ int main()
 	Cubemap reflection = Cubemap();
 	reflection.LoadCubemap(reflName);
 
-	// From XML
-	Entity *cameraEntity = EntityFactory::CreateEntity("Prefabs/camera.xml");
-	Entity *lightEntity = EntityFactory::CreateEntity("Prefabs/light.xml");
-	Entity *terrainEntity = EntityFactory::CreateEntity("Prefabs/terrain.xml");
-	Entity *dbEntity = EntityFactory::CreateEntity("Prefabs/doubleBarrel.xml");
-	Entity *particles = EntityFactory::CreateEntity("Prefabs/particleSystem.xml");
-
 	Shader shader = Shader();
-	shader.Init();
 	shader.Load("Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
 
 	Texture textureDB = Texture();
@@ -130,33 +146,33 @@ int main()
 	// Recalculate time, there shouldn't be counted initialization time
 	Time::Init();
 
-	auto &meshes = terrainEntity->GetComponent<CModel>()->GetMeshes();
+	//auto &meshes = terrainEntity->GetComponent<CModel>()->GetMeshes();
 
-	StaticArray<StaticArray<Triangle>*> meshtr;
-	meshtr.Init(meshes.GetSize());
-	auto &transformsArr = terrainEntity->GetComponent<CModel>()->GetTranforms();
+	//StaticArray<StaticArray<Triangle>*> meshtr;
+	//meshtr.Init(meshes.GetSize());
+	//auto &transformsArr = terrainEntity->GetComponent<CModel>()->GetTranforms();
 
-	for (UINT j = 0; j < meshes.GetSize(); j++)
-	{
-		MeshColliderResource res = MeshColliderResource(meshes[j]->GetTriangles());
+	//for (UINT j = 0; j < meshes.GetSize(); j++)
+	//{
+	//	MeshColliderResource res = MeshColliderResource(meshes[j]->GetTriangles());
 
-		StaticArray<Triangle> *tr = new StaticArray<Triangle>();
-		tr->Init(meshes[j]->GetTriangles().GetSize());
+	//	StaticArray<Triangle> *tr = new StaticArray<Triangle>();
+	//	tr->Init(meshes[j]->GetTriangles().GetSize());
 
-		res.TransformCollider(transformsArr[j], *tr);
+	//	res.TransformCollider(transformsArr[j], *tr);
 
-		meshtr[j] = tr;
+	//	meshtr[j] = tr;
 
-		MeshCollider *col = new MeshCollider(meshtr[j]);
-		//PhysicsSystem::Instance().Register(col);
-	}
+	//	MeshCollider *col = new MeshCollider(meshtr[j]);
+	//	//PhysicsSystem::Instance().Register(col);
+	//}
 
-	AABBCollider c = AABBCollider(AABB(Vector3(-100,-10,-100), Vector3(100,0,100)));
-	Transform setd = Transform();
-	c.SetTransform(&setd);
+	//AABBCollider c = AABBCollider(AABB(Vector3(-100,-10,-100), Vector3(100,0,100)));
+	//Transform setd = Transform();
+	//c.SetTransform(&setd);
 	//PhysicsSystem::Instance().Register(&c);
 
-	float s = 0;
+	//float s = 0;
 
 	while (!ContextWindow::Instance().ShouldClose())
 	{
@@ -171,54 +187,46 @@ int main()
 		ComponentSystem::Instance().Update();
 		RenderingSystem::Instance().Update();
 		
-		const SphereCollider &dbCollider = (const SphereCollider&)(dbEntity->GetComponent<Rigidbody>()->GetCollider());
-		//DebugDrawer::Instance().Draw(dbCollider.GetSphere());
+		//const SphereCollider &dbCollider = (const SphereCollider&)(dbEntity->GetComponent<Rigidbody>()->GetCollider());
+		////DebugDrawer::Instance().Draw(dbCollider.GetSphere());
 
-		s += Time::GetDeltaTime();
-		if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)
-		{
-			for (int i = 0; i < 7; i++)
-			{
-				Vector3 point, normal;
+		//s += Time::GetDeltaTime();
+		//if (Input::IsPressed(Keycode::KeyF) && s > 0.5f)
+		//{
+		//	for (int i = 0; i < 7; i++)
+		//	{
+		//		Vector3 point, normal;
 
-				Vector3 localDir = Vector3((i - 3) / 3.0f * 0.2f, (i % 2 - 0.5f) * 0.1f, 1);
-				Vector3 dir = cameraEntity->GetTransform().DirectionFromLocal(localDir);
-				Ray ray = Ray(cameraEntity->GetTransform().GetPosition(), dir);
+		//		Vector3 localDir = Vector3((i - 3) / 3.0f * 0.2f, (i % 2 - 0.5f) * 0.1f, 1);
+		//		Vector3 dir = cameraEntity->GetTransform().DirectionFromLocal(localDir);
+		//		Ray ray = Ray(cameraEntity->GetTransform().GetPosition(), dir);
 
-				if (Intersection::RaySphere(ray, dbEntity->GetComponent<Rigidbody>()->GetCollider().GetBoundingSphere(), point, normal))
-				{
-					particles->GetTransform().SetPosition(point);
-					particles->GetComponent<CParticleSystem>()->Emit(15, normal);
+		//		if (Intersection::RaySphere(ray, dbEntity->GetComponent<Rigidbody>()->GetCollider().GetBoundingSphere(), point, normal))
+		//		{
+		//			particles->GetTransform().SetPosition(point);
+		//			particles->GetComponent<CParticleSystem>()->Emit(15, normal);
 
-					dbEntity->GetComponent<Rigidbody>()->AddImpulse(dir.GetNormalized() * 2000.0f);
+		//			dbEntity->GetComponent<Rigidbody>()->AddImpulse(dir.GetNormalized() * 2000.0f);
 
-					continue;
-				}
+		//			continue;
+		//		}
 
-				for (UINT j = 0; j < meshes.GetSize(); j++)
-				{
-					if (Intersection::MeshRay(*meshtr[j], ray, point, normal))
-					{
-						particles->GetTransform().SetPosition(point);
-						particles->GetComponent<CParticleSystem>()->Emit(15, normal);
+		//		for (UINT j = 0; j < meshes.GetSize(); j++)
+		//		{
+		//			if (Intersection::MeshRay(*meshtr[j], ray, point, normal))
+		//			{
+		//				particles->GetTransform().SetPosition(point);
+		//				particles->GetComponent<CParticleSystem>()->Emit(15, normal);
 
-						break;
-					}
-				}
-			}
+		//				break;
+		//			}
+		//		}
+		//	}
 
-			s = 0;
-		}
+		//	s = 0;
+		//}
 	}
 
 	ContextWindow::Instance().Terminate();
 	return 0;
-}
-
-void Game::Start()
-{
-}
-
-void Game::LoadScenes()
-{
 }

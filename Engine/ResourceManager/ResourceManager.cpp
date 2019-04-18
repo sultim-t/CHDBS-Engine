@@ -41,6 +41,9 @@ void ResourceManager::Init()
 
 	sceneResources.Init(32, 8);
 	sceneResources.DeclareHashFunction(String::StringHash);
+
+	shaderResources.Init(32, 8);
+	shaderResources.DeclareHashFunction(String::StringHash);
 }
 
 ResourceManager::~ResourceManager()

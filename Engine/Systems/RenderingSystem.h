@@ -35,7 +35,6 @@ private:
 	// First element is first to render
 	DynamicArray<CCamera*>			cameras;
 	DynamicArray<CLight*>			lights;
-	DynamicArray<Shader*>			allShaders;
 	DynamicArray<CModel*>			allModels;
 	DynamicArray<CParticleSystem*>	particleSystems;
 
@@ -77,9 +76,6 @@ public:
 	// Register texture by calculating its ID
 	// and saving the pointer
 	void Register(ITexture *texture);
-	// Register shader by calculating its ID
-	// and saving the pointer
-	void Register(Shader *shader);
 	// Attach mesh to material
 	void Register(Mesh *mesh, const Material &material);
 	// Register model by saving its pointer

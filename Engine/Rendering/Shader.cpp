@@ -4,10 +4,7 @@
 #include <Engine/Math/Vector.h>
 #include <Engine/Math/Matrix.h>
 #include <Engine/Systems/RenderingSystem.h>
-
-#include <fstream>
-#include <sstream>
-#include <iostream>
+#include <Engine/ResourceManager/ResourceManager.h>
 
 Shader::Shader()
 { }
@@ -25,66 +22,16 @@ Shader::~Shader()
 	glDeleteProgram(graphicsProgramId);
 }
 
-void Shader::Init()
+void Shader::Load(const char *vertexPath, const char *fragmentPath)
 {
-	RenderingSystem::Instance().Register(this);
+	// load shader
+	resource = ResourceManager::Instance().LoadShader(vertexPath, fragmentPath);
+
+	// load
+	LoadFromStrings(resource->GetVertexCode(), resource->GetFragmentCode());
 }
 
-void Shader::Load(const char * vertexPath, const char * fragmentPath, const char * geometryPath)
-{
-	std::string vertexCode;
-	std::string fragmentCode;
-	std::string geometryCode;
-	std::ifstream vShaderFile;
-	std::ifstream fShaderFile;
-	std::ifstream gShaderFile;
-	// ensure ifstream objects can throw exceptions:
-	vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-	
-	try
-	{
-		// open files
-		vShaderFile.open(vertexPath);
-		fShaderFile.open(fragmentPath);
-		std::stringstream vShaderStream, fShaderStream;
-		// read file’s buffer contents into streams
-		vShaderStream << vShaderFile.rdbuf();
-		fShaderStream << fShaderFile.rdbuf();
-		// close file handlers
-		vShaderFile.close();
-		fShaderFile.close();
-		// convert stream into string
-		vertexCode = vShaderStream.str();
-		fragmentCode = fShaderStream.str();
-	
-		// if geometry shader path is present, also load a geometry shader
-		if (geometryPath != nullptr)
-		{
-			gShaderFile.open(geometryPath);
-			std::stringstream gShaderStream;
-			gShaderStream << gShaderFile.rdbuf();
-			gShaderFile.close();
-			geometryCode = gShaderStream.str();
-		}
-	}
-	catch (std::ifstream::failure e)
-	{
-		Logger::Print("Shaders::Can't read shader code");
-	}
-	
-	if (geometryPath == nullptr)
-	{
-		LoadFromStrings(vertexCode.c_str(), fragmentCode.c_str(), nullptr);
-	}
-	else
-	{
-		LoadFromStrings(vertexCode.c_str(), fragmentCode.c_str(), geometryCode.c_str());
-	}
-}
-
-void Shader::LoadFromStrings(const char * vertex, const char * fragment, const char * geometry)
+void Shader::LoadFromStrings(const char *vertex, const char *fragment)
 {
 	char log[256];
 	int success;
@@ -120,30 +67,15 @@ void Shader::LoadFromStrings(const char * vertex, const char * fragment, const c
 		Logger::Print(log);
 	}
 
-	if (geometry != nullptr)
-	{
-		geomId = glCreateShader(GL_GEOMETRY_SHADER);
-		glShaderSource(geomId, 1, &geometry, NULL);
-		glCompileShader(geomId);
-	}
-
 	// shader Program
 	graphicsProgramId = glCreateProgram();
 	glAttachShader(graphicsProgramId, vertId);
 	glAttachShader(graphicsProgramId, fragId);
-	if (geometry != nullptr)
-	{
-		glAttachShader(graphicsProgramId, geomId);
-	}
 
 	glLinkProgram(graphicsProgramId);
 
 	glDeleteShader(vertId);
 	glDeleteShader(fragId);
-	if (geometry != nullptr)
-	{
-		glDeleteShader(geomId);
-	}
 }
 
 void Shader::BindAttribute(int attribute, const char * name) const

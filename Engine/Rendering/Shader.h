@@ -1,4 +1,5 @@
 #pragma once
+#include <Engine/ResourceManager/ShaderResource.h>
 
 class Shader
 {
@@ -12,13 +13,16 @@ private:
 	UINT graphicsProgramId;
 	UINT vertId;
 	UINT fragId;
-	UINT geomId;
+	//UINT geomId;
+
+	// Reference to shader resource
+	const ShaderResource *resource;
 
 public:
 	// Reads and builds the shader
-	void Load(const char *vertexPath, const char *fragmentPath, const char *geometryPath = nullptr);
+	void Load(const char *vertexPath, const char *fragmentPath);
 	// Load shader from strings
-	void LoadFromStrings(const char *vertex, const char *fragment, const char *geometry = nullptr);
+	void LoadFromStrings(const char *vertexCode, const char *fragmentCode);
 
 	// Bind attribute
 	void BindAttribute(int attribute, const char *name) const;
@@ -55,7 +59,7 @@ public:
 	~Shader();
 
 	// Register shader in rendering system
-	virtual void Init();
+	//virtual void Init();
 
 	// Use/activate the shader
 	void Use() const;
