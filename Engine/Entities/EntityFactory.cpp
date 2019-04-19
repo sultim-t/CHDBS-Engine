@@ -1,5 +1,5 @@
 #include "EntityFactory.h"
-#include <Engine/TEMP/tinyxml2/tinyxml2.h>
+#include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/Components/CCamera.h>
 #include <Engine/Components/CFreeMovement.h>
 #include <Engine/Components/CModel.h>
@@ -8,24 +8,28 @@
 #include <Engine/Components/CParticleSystem.h>
 #include <Engine/Physics/Rigidbody.h>
 #include <Engine/Systems/ComponentSystem.h>
+#include <Engine/ResourceManager/ResourceManager.h>
 
 template <class T>
-IComponent *CompCreator(void *elemPointer);
+IComponent *CompCreator(const ComponentResource &componentResource);
 
 template<class T>
-IComponent *CompCreator(void *elemPointer)
+IComponent *CompCreator(const ComponentResource &componentResource)
 {
-	using namespace tinyxml2;
-	XMLElement *elem = (XMLElement*)elemPointer;
-
 	IComponent *c = new T();
 
-	const XMLAttribute *attr = elem->FirstAttribute();
-	while (attr != nullptr)
+	// get all tuples
+	const DynamicArray<StringTuple> &tuples = componentResource.GetKeysValues();
+
+	// for each key-value
+	for (int i = 0; i < tuples.GetSize(); i++)
 	{
-		c->SetProperty(String(attr->Name()), String(attr->Value()));
-		attr = attr->Next();
+		// set property to component
+		c->SetProperty(tuples[i].Left(), tuples[i].Right());
 	}
+
+	// set active
+	c->isActive = componentResource->IsActive();
 
 	return c;
 }
@@ -62,41 +66,18 @@ EntityFactory::EntityFactory()
 }
 
 EntityFactory::~EntityFactory()
+{ }
+
+IComponent *EntityFactory::CreateComponent(const ComponentResource &resource)
 {
-	// Note : entities destruction is in Scene class,
-	// and components is in Entity class
-
-	//for (int i = 0; i < entities.GetSize(); i++)
-	//{
-	//	auto &components = entities[i]->GetAllComponents();
-
-	//	// delete each component in entity
-	//	for (int i = 0; i < components.GetSize(); i++)
-	//	{
-	//		delete components[i];
-	//	}
-
-	//	// delete entity itself
-	//	delete entities[i];
-	//}
-}
-
-IComponent *EntityFactory::CreateComponent(void *xmlElemP)
-{
-	using namespace tinyxml2;
-	XMLElement *xmlElem = (XMLElement*)xmlElemP;
-	
-	// get component name
-	const char *compName = xmlElem->Value();
-
 	IComponentCreator foundCreator;
 
 	// try to find component creator
-	if (compCreators.Find(compName, foundCreator))
+	if (compCreators.Find(resource.GetName(), foundCreator))
 	{
 		// if found, create component
 		// and return it
-		return foundCreator(xmlElem);
+		return foundCreator(resource);
 	}
 	else
 	{
@@ -105,72 +86,20 @@ IComponent *EntityFactory::CreateComponent(void *xmlElemP)
 	}
 }
 
-void EntityFactory::SetData(Entity *entity, void *xmlElem)
-{
-	using namespace tinyxml2;
-	XMLElement *elem = (XMLElement*)xmlElem;
-
-	entity->isActive = elem->BoolAttribute("Active", true);
-	
-	const char *val;
-
-	if (val = elem->Attribute("Name"))
-	{
-		// set name
-		entity->name = val;
-	}
-
-	if (val = elem->Attribute("Position"))
-	{
-		entity->transform.SetPosition(String::ToVector3(val));
-	}
-
-	if (val = elem->Attribute("Euler"))
-	{
-		entity->transform.SetRotation(String::ToVector3(val));
-	}
-
-	if (val = elem->Attribute("Quaternion"))
-	{
-		entity->transform.SetRotation(String::ToQuaternion(val));
-	}
-
-	if (val = elem->Attribute("Scale"))
-	{
-		entity->transform.SetScale(String::ToVector3(val));
-	}
-}
-
-void EntityFactory::SetData(Entity *entity, const Entity *source)
-{
-	// set data from source
-	entity->name		= source->name;
-	entity->isActive	= source->isActive;
-	entity->transform	= source->transform;
-}
-
-Entity *EntityFactory::PCreateEntity(const char *resource)
+Entity *EntityFactory::PCreateEntity(const char *resourcePath)
 {
 	Entity *entity;
 
-	//// try to find already loaded "blueprint"
-	//if (prefabs.Find(resource, entity))
-	//{
-	//	// if exist
-	//	return CopyEntity(entity);
-	//}
-
-	using namespace tinyxml2;
-
-	XMLDocument doc;
-	doc.LoadFile(resource);
-
-	XMLElement *root = doc.RootElement();
-	if (!root)
+	// try to find already loaded "blueprint"
+	if (prefabs.Find(resourcePath, entity))
 	{
-		// if can't parse root
-		return nullptr;
+		// TODO: entity copying
+
+		// if exist
+		// return CopyEntity(entity);
 	}
+
+	const EntityResource *entityResource = ResourceManager::Instance().LoadEnitity(resourcePath);
 
 	// allocate
 	entity = new Entity(GetNextEntityID());
@@ -178,24 +107,18 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 	entity->Init();
 
 	// load main data (transformatrions, name etc)
-	SetData(entity, root);
+	entity->name = entityResource->GetName();
+	entity->isActive = entityResource->IsActive();
+	entity->transform = entityResource->GetTransform();
 
-	// foreach component in xml
-	for (XMLElement *node = root->FirstChildElement();
-		node;
-		node = node->NextSiblingElement())
+	// init components
+	const StaticArray<ComponentResource*> &componentResources = entityResource->GetComponents();
+	for (UINT i = 0; i < componentResources.GetSize(); i++)
 	{
-		IComponent *comp = CreateComponent(node);
+		ComponentResource *componentResource = componentResources[i];
 
-		// if component created
-		ASSERT(comp != nullptr);
-
-		if (node->BoolAttribute("Active", true))
-		{
-			// must be activated through the field
-			// else will be activated as a component
-			comp->isActive = true;
-		}
+		// allocate, set all data from resource
+		IComponent *comp = CreateComponent(*componentResource);
 
 		// link
 		entity->AddComponent(comp);
@@ -204,13 +127,9 @@ Entity *EntityFactory::PCreateEntity(const char *resource)
 		// everything is set up
 		comp->Init();
 	}
-	
-	// Note : entity are not stored here anymore, see Scene class
-	//// finally, store entity
-	//entities.Push(entity);
 
 	// register "blueprint"
-	prefabs.Add(resource, entity);
+	prefabs.Add(resourcePath, entity);
 
 	return entity;
 }
@@ -223,7 +142,9 @@ Entity * EntityFactory::PCreateEntity(const Entity *source)
 	entity->Init();
 
 	// load main data
-	SetData(entity, source);
+	entity->name = source->name;
+	entity->isActive = source->isActive;
+	entity->transform = source->transform;
 
 	auto &components = source->GetAllComponents();
 

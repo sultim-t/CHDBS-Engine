@@ -28,15 +28,10 @@ private:
 	EntityFactory(EntityFactory&&) = delete;
 	EntityFactory &operator=(const EntityFactory&) = delete;
 
-	// Creates component from xml node
-	IComponent *CreateComponent(void *xmlElem);
+	// Creates component from resource
+	IComponent *CreateComponent(const ComponentResource &resource);
 
-	// Sets data to entity from xml node
-	void SetData(Entity *entity, void *xmlElem);
-	// Sets data to entity from xml node
-	void SetData(Entity *entity, const Entity *source);
-
-	// Parses XML file and creates entity
+	// Loades entity resource and creates entity
 	Entity *PCreateEntity(const char *resource);
 	
 	// TODO: creating copy of entity
@@ -50,7 +45,7 @@ private:
 	static EntityFactory &Instance();
 
 public:
-	// Parses XML file and creates entity
+	// Loades entity resource and creates entity
 	static Entity *CreateEntity(const char *resource);
 
 	// Creates copy of the entity

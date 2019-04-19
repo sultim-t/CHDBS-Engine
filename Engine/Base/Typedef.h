@@ -92,11 +92,14 @@ class Logger;
 class String;
 typedef char* CString;
 class DebugDrawer;
+class StringTuple;
 
 // Resources
 class ResourceManager;
 class MeshResource;
 class TextureResource;
+class ComponentResource;
+class EntityResource;
 
 // Systems
 class ISystem;
@@ -117,7 +120,7 @@ class Scene;
 // Component interface
 class IComponent;
 // Component creator
-typedef IComponent *(*IComponentCreator)(void* xmlElem);
+typedef IComponent *(*IComponentCreator)(const ComponentResource &componentResource);
 
 // Components
 class CCamera;

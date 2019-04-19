@@ -25,6 +25,8 @@
 #include <sstream>
 #include <iostream>
 
+#include <Engine/TEMP/tinyxml2/tinyxml2.h>
+
 ResourceManager &ResourceManager::Instance()
 {
 	static ResourceManager instance;
@@ -44,6 +46,9 @@ void ResourceManager::Init()
 
 	shaderResources.Init(32, 8);
 	shaderResources.DeclareHashFunction(String::StringHash);
+
+	entityResources.Init(64, 8);
+	entityResources.DeclareHashFunction(String::StringHash);
 }
 
 ResourceManager::~ResourceManager()
@@ -77,6 +82,109 @@ void ResourceManager::Unload()
 	{
 		delete shaderResources[i];
 	}
+
+	for (UINT i = 0; i < entityResources.GetSize(); i++)
+	{
+		delete entityResources[i];
+	}
+}
+
+const EntityResource *ResourceManager::LoadEnitity(const char * path)
+{
+	EntityResource *entity;
+
+	if (entityResources.Find(path, entity))
+	{
+		// if already loaded
+		return entity;
+	}
+
+	// allocate
+	entity = new EntityResource();
+
+	using namespace tinyxml2;
+
+	XMLDocument doc;
+	doc.LoadFile(path);
+
+	XMLElement *root = doc.RootElement();
+	if (!root)
+	{
+		// if can't parse root
+		return nullptr;
+	}
+
+	// count components
+	int componentsCount = 0;
+	for (XMLElement *node = root->FirstChildElement();
+		node;
+		node = node->NextSiblingElement())
+	{
+		componentsCount++;
+	}
+
+	entity->Init(componentsCount);
+	entity->isActive = root->BoolAttribute("Active", true);
+	entity->path = path;
+
+	const char *val;
+
+	if (val = root->Attribute("Name"))
+	{
+		// set name
+		entity->name = val;
+	}
+
+	if (val = root->Attribute("Position"))
+	{
+		entity->transform.SetPosition(String::ToVector3(val));
+	}
+
+	if (val = root->Attribute("Euler"))
+	{
+		entity->transform.SetRotation(String::ToVector3(val));
+	}
+
+	if (val = root->Attribute("Quaternion"))
+	{
+		entity->transform.SetRotation(String::ToQuaternion(val));
+	}
+
+	if (val = root->Attribute("Scale"))
+	{
+		entity->transform.SetScale(String::ToVector3(val));
+	}
+
+	int index = 0;
+
+	// foreach component in xml
+	for (XMLElement *element = root->FirstChildElement();
+		element;
+		element = element->NextSiblingElement())
+	{
+		ComponentResource *component = new ComponentResource();
+		component->Init();
+
+		component->isActive = element->BoolAttribute("Active", true);
+		component->name = element->Value();
+		
+		int attrIndex = 0;
+
+		const XMLAttribute *attr = element->FirstAttribute();
+		while (attr != nullptr)
+		{
+			component->tuples[attrIndex].Init(attr->Name(), attr->Value());
+
+			// get next
+			attr = attr->Next();
+			attrIndex++;
+		}
+
+		entity->components[index] = component;
+	}
+
+	entityResources.Add(path, entity);
+	return entity;
 }
 
 const TextureResource *ResourceManager::LoadTexture(char const *path)

@@ -10,7 +10,7 @@ String::String(const char * orig) :
 
 String::~String()
 {
-	SystemAllocator::Free(string);
+	Delete();
 }
 
 char * String::AllocateString(const char * orig)
@@ -35,7 +35,11 @@ void String::Init(const char *str)
 
 void String::Delete()
 {
-	SystemAllocator::Free(string);
+	if (string != nullptr)
+	{
+		SystemAllocator::Free(string);
+		string = nullptr;
+	}
 }
 
 String &String::operator=(const char * b)

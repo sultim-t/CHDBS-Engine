@@ -218,6 +218,8 @@
     <ClCompile Include="Rendering\Skeleton.cpp" />
     <ClCompile Include="Rendering\Skybox.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
+    <ClCompile Include="ResourceManager\ComponentResource.cpp" />
+    <ClCompile Include="ResourceManager\EntityResource.cpp" />
     <ClCompile Include="ResourceManager\MeshResource.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="SceneManager\Scene.cpp" />
@@ -229,6 +231,7 @@
     <ClCompile Include="TEMP\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Base\StringTuple.h" />
     <ClInclude Include="Components\IFixedUpdatable.h" />
     <ClInclude Include="Components\IUpdatable.h" />
     <ClInclude Include="Math\MTransform.h" />
@@ -312,6 +315,8 @@
     <ClInclude Include="Rendering\TextureColorFormat.h" />
     <ClInclude Include="Rendering\Vertex.h" />
     <ClInclude Include="Rendering\VertexWeight.h" />
+    <ClInclude Include="ResourceManager\ComponentResource.h" />
+    <ClInclude Include="ResourceManager\EntityResource.h" />
     <ClInclude Include="ResourceManager\MeshColliderResource.h" />
     <ClInclude Include="ResourceManager\MeshResource.h" />
     <ClInclude Include="ResourceManager\ModelResource.h" />
