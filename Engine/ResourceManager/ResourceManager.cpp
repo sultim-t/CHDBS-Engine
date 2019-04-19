@@ -162,15 +162,25 @@ const EntityResource *ResourceManager::LoadEnitity(const char * path)
 		element;
 		element = element->NextSiblingElement())
 	{
+		// count attributes in this component
+		int attributeCount = 0;
+		const XMLAttribute *attr = element->FirstAttribute();
+		while (attr != nullptr)
+		{
+			attr = attr->Next();
+			attributeCount++;
+		}
+
+		// allocate
 		ComponentResource *component = new ComponentResource();
-		component->Init();
+		component->Init(attributeCount);
 
 		component->isActive = element->BoolAttribute("Active", true);
 		component->name = element->Value();
 		
 		int attrIndex = 0;
 
-		const XMLAttribute *attr = element->FirstAttribute();
+		attr = element->FirstAttribute();
 		while (attr != nullptr)
 		{
 			component->tuples[attrIndex].Init(attr->Name(), attr->Value());
@@ -181,6 +191,7 @@ const EntityResource *ResourceManager::LoadEnitity(const char * path)
 		}
 
 		entity->components[index] = component;
+		index++;
 	}
 
 	entityResources.Add(path, entity);

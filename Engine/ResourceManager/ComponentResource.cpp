@@ -12,12 +12,12 @@ ComponentResource::~ComponentResource()
 	}
 }
 
-void ComponentResource::Init()
+void ComponentResource::Init(int tupleCount)
 {
-	tuples.Init(8);
+	tuples.Init(tupleCount);
 }
 
-const DynamicArray<StringTuple> &ComponentResource::GetKeysValues() const
+const StaticArray<StringTuple> &ComponentResource::GetKeysValues() const
 {
 	return tuples;
 }

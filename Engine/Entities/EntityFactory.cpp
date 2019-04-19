@@ -19,17 +19,14 @@ IComponent *CompCreator(const ComponentResource &componentResource)
 	IComponent *c = new T();
 
 	// get all tuples
-	const DynamicArray<StringTuple> &tuples = componentResource.GetKeysValues();
+	const StaticArray<StringTuple> &tuples = componentResource.GetKeysValues();
 
 	// for each key-value
-	for (int i = 0; i < tuples.GetSize(); i++)
+	for (UINT i = 0; i < tuples.GetSize(); i++)
 	{
 		// set property to component
 		c->SetProperty(tuples[i].Left(), tuples[i].Right());
 	}
-
-	// set active
-	c->isActive = componentResource->IsActive();
 
 	return c;
 }
@@ -119,6 +116,9 @@ Entity *EntityFactory::PCreateEntity(const char *resourcePath)
 
 		// allocate, set all data from resource
 		IComponent *comp = CreateComponent(*componentResource);
+		
+		// set active
+		comp->isActive = componentResource->IsActive();
 
 		// link
 		entity->AddComponent(comp);

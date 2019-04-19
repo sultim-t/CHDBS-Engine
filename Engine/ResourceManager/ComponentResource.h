@@ -1,5 +1,5 @@
 #pragma once
-#include <Engine/DataStructures/DynamicArray.h>
+#include <Engine/DataStructures/StaticArray.h>
 #include <Engine/Base/StringTuple.h>
 
 class ComponentResource
@@ -7,7 +7,7 @@ class ComponentResource
 	friend class ResourceManager;
 
 private:
-	DynamicArray<StringTuple> tuples;
+	StaticArray<StringTuple> tuples;
 
 	String	name;
 	bool	isActive;
@@ -18,10 +18,10 @@ public:
 	// Destroys tuples
 	~ComponentResource();
 
-	void Init();
+	void Init(int tupleCount);
 
 	// Get keys and values in this component
-	const DynamicArray<StringTuple> &GetKeysValues() const;
+	const StaticArray<StringTuple> &GetKeysValues() const;
 
 	// Get name of this entity
 	const String	&GetName() const;
