@@ -1,6 +1,9 @@
 #include "SceneManager.h"
 #include <Engine/ResourceManager/ResourceManager.h>
 
+SceneManager::SceneManager() : currentSceneIndex(-1)
+{ }
+
 SceneManager::~SceneManager()
 {
 	// delete each allocated scene
@@ -55,8 +58,11 @@ void SceneManager::LoadScene(int index)
 {
 	ASSERT(index >= 0 && index < scenes.GetSize());
 
-	// unload current
-	scenes[currentSceneIndex]->Unload();
+	// unload current if exist
+	if (currentSceneIndex > 0)
+	{
+		scenes[currentSceneIndex]->Unload();
+	}
 
 	// load new
 	scenes[index]->Load();

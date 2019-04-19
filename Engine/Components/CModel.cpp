@@ -29,7 +29,7 @@ const StaticArray<UINT>& CModel::GetVAO() const
 void CModel::Init()
 {
 	// register to render
-	RenderingSystem::Instance().Register(this);
+	//RenderingSystem::Instance().Register(this);
 
 	// load model
 	modelResource = ResourceManager::Instance().LoadModel(path);

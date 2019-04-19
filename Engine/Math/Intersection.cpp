@@ -757,6 +757,8 @@ bool Intersection::SphereSphere(const Sphere & s1, const Sphere & s2, Vector3 & 
 	{
 		d = Sqrt(d);
 
+		ASSERT(d != 0.0f);
+
 		// normalize
 		normal = delta / d;
 		point = s1.GetCenter() - normal * s1.GetRadius();

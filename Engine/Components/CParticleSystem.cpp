@@ -153,8 +153,8 @@ void CParticleSystem::Init()
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, maxParticleCount * sizeof(Color4), NULL, GL_STREAM_DRAW);
 
-	// register particle system to render
-	RenderingSystem::Instance().Register(this);
+	//// register particle system to render
+	//RenderingSystem::Instance().Register(this);
 }
 
 CParticleSystem::~CParticleSystem()

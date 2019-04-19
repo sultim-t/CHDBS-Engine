@@ -45,7 +45,7 @@ PhysicsSystem &PhysicsSystem::Instance()
 //	colliders.Push(col);
 //}
 
-void PhysicsSystem::Register(DynamicArray<Rigidbody*>* rigidbodies, DynamicArray<ICollider*>* colliders)
+void PhysicsSystem::Register(const DynamicArray<Rigidbody*>* rigidbodies, const DynamicArray<ICollider*>* colliders)
 {
 	this->rigidbodies = rigidbodies;
 	this->colliders = colliders;

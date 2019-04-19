@@ -5,85 +5,37 @@ Frustum::Frustum()
 
 void Frustum::Init(float fov, float aspect, float near, float far)
 {
-#if _DEBUG
-	if (fov <= 0.0f || aspect <= 0.0f || near <= 0.0f || far <= 0.0f)
-	{
-		Logger::Print("Frustum::Init:: arguments are < 0");
-	}
-#endif
-
-	this->fov = fov;
-	this->aspect = aspect;
-	this->near = near;
-	this->far = far;
-
-	float tanfov = Tan(DEG2RAD(fov) * 0.5f);
-
-	// half widths, heights
-	float nearHWidth = tanfov * near;
-	float nearHHeight = nearHWidth / aspect;
-	float farHWidth = tanfov * far;
-	float farHHeight = farHWidth / aspect;
-
-	// from upper right, counter clockwise
-	nearVerts[0] = Vector3(nearHWidth, nearHHeight, near);
-	nearVerts[1] = Vector3(-nearHWidth, nearHHeight, near);
-	nearVerts[2] = Vector3(-nearHWidth, -nearHHeight, near);
-	nearVerts[3] = Vector3(nearHWidth, -nearHHeight, near);
-
-	// from upper right, counter clockwise
-	farVerts[0] = Vector3(farHWidth, farHHeight, far);
-	farVerts[1] = Vector3(-farHWidth, farHHeight, far);
-	farVerts[2] = Vector3(-farHWidth, -farHHeight, far);
-	farVerts[3] = Vector3(farHWidth, -farHHeight, far);
-
-	// clockwise, to make planes' normals point to the outside
-	planes[(int)FrustumPlane::Near].FromPoints(nearVerts[0], nearVerts[1], nearVerts[2]);
-	planes[(int)FrustumPlane::Far].FromPoints(farVerts[2], farVerts[1], farVerts[0]);
-
-	planes[(int)FrustumPlane::Top].FromPoints(nearVerts[1], nearVerts[0], farVerts[0]);
-	planes[(int)FrustumPlane::Bottom].FromPoints(nearVerts[3], nearVerts[2], farVerts[2]);
-
-	planes[(int)FrustumPlane::Left].FromPoints(nearVerts[2], nearVerts[1], farVerts[1]);
-	planes[(int)FrustumPlane::Right].FromPoints(farVerts[3], farVerts[0], nearVerts[0]);
+	// init from default tranformation
+	Init(fov, aspect, near, far, Transform());
 }
 
-void Frustum::Init(float fov, float aspect, float near, float far, const Matrix4 &transformMatrix)
+void Frustum::Init(float fovy, float aspect, float near, float far, const Transform &t)
 {
-#if _DEBUG
-	if (fov <= 0.0f || aspect <= 0.0f || near <= 0.0f || far <= 0.0f)
-	{
-		Logger::Print("Frustum::Init:: arguments are < 0");
-	}
-#endif
+	ASSERT(fovy > 0.0f && aspect > 0.0f && near > 0.0f && far > 0.0f);
 
-	this->fov = fov;
+	this->fov = fovy;
 	this->aspect = aspect;
 	this->near = near;
 	this->far = far;
-	float tanfov = Tan(DEG2RAD(fov) * 0.5f);
+	float tanfov = Tan(DEG2RAD(fovy) * 0.5f);
 
 	// half widths, heights
-	float nearHWidth = tanfov * near;
-	float nearHHeight = nearHWidth / aspect;
-	float farHWidth = tanfov * far;
-	float farHHeight = farHWidth / aspect;
-
-	// tranform vertices from local to gloval space
-	// transpose matrix to calculate final vert position as Matrix*Vector
-	Matrix4 transform = transformMatrix.GetTransposed();
+	float nearHHeight = tanfov * near;
+	float nearHWidth = nearHHeight * aspect;
+	float farHHeight = tanfov * far;
+	float farHWidth = farHHeight * aspect;
 
 	// from upper right, counter clockwise
-	nearVerts[0] = transform * Vector4(nearHWidth, nearHHeight, near, 1.0f);
-	nearVerts[1] = transform * Vector4(-nearHWidth, nearHHeight, near, 1.0f);
-	nearVerts[2] = transform * Vector4(-nearHWidth, -nearHHeight, near, 1.0f);
-	nearVerts[3] = transform * Vector4(nearHWidth, -nearHHeight, near, 1.0f);
+	nearVerts[0] = t.PointFromLocal(Vector3(nearHWidth, nearHHeight, near));
+	nearVerts[1] = t.PointFromLocal(Vector3(-nearHWidth, nearHHeight, near));
+	nearVerts[2] = t.PointFromLocal(Vector3(-nearHWidth, -nearHHeight, near));
+	nearVerts[3] = t.PointFromLocal(Vector3(nearHWidth, -nearHHeight, near));
 
 	// from upper right, counter clockwise
-	farVerts[0] = transform * Vector4(farHWidth, farHHeight, far, 1.0f);
-	farVerts[1] = transform * Vector4(-farHWidth, farHHeight, far, 1.0f);
-	farVerts[2] = transform * Vector4(-farHWidth, -farHHeight, far, 1.0f);
-	farVerts[3] = transform * Vector4(farHWidth, -farHHeight, far, 1.0f);
+	farVerts[0] = t.PointFromLocal(Vector3(farHWidth, farHHeight, far));
+	farVerts[1] = t.PointFromLocal(Vector3(-farHWidth, farHHeight, far));
+	farVerts[2] = t.PointFromLocal(Vector3(-farHWidth, -farHHeight, far));
+	farVerts[3] = t.PointFromLocal(Vector3(farHWidth, -farHHeight, far));
 
 	// clockwise, to make planes' normals point to the outside
 	planes[(int)FrustumPlane::Near].FromPoints(nearVerts[0], nearVerts[1], nearVerts[2]);
@@ -95,7 +47,6 @@ void Frustum::Init(float fov, float aspect, float near, float far, const Matrix4
 	planes[(int)FrustumPlane::Left].FromPoints(nearVerts[2], nearVerts[1], farVerts[1]);
 	planes[(int)FrustumPlane::Right].FromPoints(farVerts[3], farVerts[0], nearVerts[0]);
 }
-
 
 float Frustum::GetFOV() const
 {
@@ -135,6 +86,23 @@ const Vector3 * Frustum::GetNearVerts() const
 const Vector3 * Frustum::GetFarVerts() const
 {
 	return farVerts;
+}
+
+Vector3 Frustum::GetCenter() const
+{
+	Vector3 result = 0;
+
+	for (int i = 0; i < 4; i++)
+	{
+		result += nearVerts[i];
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		result += farVerts[i];
+	}
+
+	return result / 8.0f;
 }
 
 void Frustum::SetFOV(float fov)

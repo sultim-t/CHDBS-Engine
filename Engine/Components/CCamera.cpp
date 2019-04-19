@@ -30,7 +30,7 @@ CLASSDEFINITION(IComponent, CCamera)
 
 void CCamera::Init()
 { 
-	RenderingSystem::Instance().Register(this);
+	//RenderingSystem::Instance().Register(this);
 
 	if (zNear <= 0.0f)
 	{
@@ -103,8 +103,8 @@ void CCamera::SetProperty(const String &key, const String &value)
 
 Matrix4 CCamera::GetViewMatrix() const
 {
-	Transform t = owner->GetTransform();
-	Vector3 position = t.GetPosition();
+	const Transform &t = owner->GetTransform();
+	const Vector3 &position = t.GetPosition();
 
 	// opengl uses inverse z axis
 	Vector3 f = -t.GetForward();
@@ -161,35 +161,17 @@ const Vector3 &CCamera::GetPosition() const
 
 Frustum CCamera::GetFrustum() const
 {
-	Frustum frustum;
-
-	if (projection == CameraProjection::Perspective)
-	{
-		frustum.Init(fov, aspect, zNear, zFar, GetOwner().GetTransform().GetTransformMatrix());
-	}
-	else
-	{
-		// todo
-		Logger::Print("Ortho camera frustum not implemented");
-	}
-
-	return frustum;
+	return GetFrustum(zNear, zFar);
 }
 
-Frustum CCamera::GetFrustum(float nearMult, float farMult) const
+Frustum CCamera::GetFrustum(float newNear, float newFar) const
 {
 	Frustum frustum;
-
-	// recalculate new vertices
-	float newNear = zNear + nearMult * (zFar - zNear);
-	float newFar = zNear + farMult * (zFar - zNear);
 
 	if (projection == CameraProjection::Perspective)
 	{
 		// init frustum's vertices
 		frustum.Init(fov, aspect, newNear, newFar, GetOwner().GetTransform().GetTransformMatrix());
-		
-		DebugDrawer::Instance().Draw(frustum, Color4(0, 0, 255, 255));
 	}
 	else
 	{

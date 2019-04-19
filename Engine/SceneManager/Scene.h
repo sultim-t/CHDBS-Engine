@@ -13,14 +13,18 @@ private:
 	String	name;
 
 	// Stores all entities in this scene
-	DynamicArray<Entity*>		entities;
+	DynamicArray<Entity*>			entities;
 
-	// References to all rigidbodies with colliders
-	// Rigidbodies themselves are stored in entities
-	DynamicArray<Rigidbody*>	rigidbodies;
-	// References to all colliders without rigidbodies
-	// Colliders themselves are stored in entities
-	DynamicArray<ICollider*>	colliders;
+	// References to all rigidbodies with colliders and colliders without rigidbodies
+	// Rigidbodies and colliders themselves are stored in entities
+	DynamicArray<Rigidbody*>		rigidbodies;
+	DynamicArray<ICollider*>		colliders;
+
+	// References to all objects related to rendering
+	DynamicArray<CModel*>			models;
+	DynamicArray<CCamera*>			cameras;
+	DynamicArray<CParticleSystem*>	particleSystems;
+	DynamicArray<CLight*>			lights;
 
 public:
 	bool IsLoaded;

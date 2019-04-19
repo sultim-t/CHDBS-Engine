@@ -11,7 +11,7 @@
     />
 
   <CFreeMovement 
-    Speed="10"
+    Speed="80"
     />
   <CModel
     Path="Models/DoubleBarrel.obj"
@@ -23,6 +23,7 @@
     Velocity="0 0 0"
     ColliderType="Sphere"
     SphereRadius="2"
+    NoGravity="1"
     />
 
 </Entity>

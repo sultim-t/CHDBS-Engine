@@ -36,7 +36,10 @@ inline SceneResource::~SceneResource()
 	// delete strings manually 
 	// (because they wil not be destroyed during array destruction)
 
-	for (UINT i = 0; i < entityPaths.GetSize(); i++)
+	// do not delete path with index 0
+	// as it will be deleted in shared_ptr in StaticArray
+	// just a dirty crutch
+	for (UINT i = 1; i < entityPaths.GetSize(); i++)
 	{
 		entityPaths[i].Delete();
 	}

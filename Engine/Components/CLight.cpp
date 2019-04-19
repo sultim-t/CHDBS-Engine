@@ -25,10 +25,10 @@ Matrix4 CLight::GetLightView() const
 	return GetLightView(owner->GetTransform().GetPosition());
 }
 
-Matrix4 CLight::GetLightView(const Vector3 &pos) const
+Matrix4 CLight::GetLightView(const Vector3 &position) const
 {
-	Vector3 dir = owner->GetTransform().GetForward();
-	return Transform::LookAt(pos, pos + dir, Vector3(0.0f, 1.0f, 0.0f));
+	const Transform &t = owner->GetTransform();
+	return Transform::LookAt(position, position + t.GetForward(), t.GetUp());
 }
 
 Matrix4 CLight::GetProjection(const AABB &bounding) const
@@ -105,16 +105,22 @@ const Matrix4 CLight::GetLightSpace(const Frustum &frustum) const
 		// bounding box for frustum in light space
 		AABB frustumBounding = GetFrustumBounding(frustum);
 
-		// get center of box in global space
-		Vector3 pos = owner->GetTransform().PointFromLocal(frustumBounding.GetCenter());
+		// correct z min
+		Vector3 min = frustumBounding.GetMin();
+		min[2] -= 10.0f;
+
+		// set new min
+		frustumBounding.SetMin(min);
+
+		// get center of box
+		Vector3 pos = frustumBounding.GetCenter();
+		// offset to min z
+		pos[2] = min[2];
+		// to global space
+		pos = owner->GetTransform().PointFromLocal(pos);
 
 		DebugDrawer::Instance().Draw(frustumBounding, owner->GetTransform().GetTransformMatrix(), Color4(255,0,0));
-
-		AABB a;
-		a.SetMin(frustumBounding.GetMin() * 0.3f);
-		a.SetMax(frustumBounding.GetMax() * 0.3f);
-
-		DebugDrawer::Instance().Draw(a, owner->GetTransform().GetTransformMatrix(), Color4(0, 0, 255));
+		DebugDrawer::Instance().Draw(Sphere(pos, 10), Color4(255, 0, 255));
 
 		return GetLightView(pos) * GetProjection(frustumBounding);
 	}
@@ -199,7 +205,7 @@ void CLight::SetCastingShadows(bool cast)
 
 void CLight::Init()
 {
-	RenderingSystem::Instance().Register(this);
+	//RenderingSystem::Instance().Register(this);
 }
 
 void CLight::Update()

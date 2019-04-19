@@ -78,13 +78,15 @@ int main()
 	//Entity *particles = EntityFactory::CreateEntity("Prefabs/particleSystem.xml");
 
 	int sceneId = SceneManager::Instance().CreateScene("Scenes/MainScene.scene");
-	Scene &currentScene = SceneManager::Instance().GetScene(sceneId);
+	//Scene &currentScene = SceneManager::Instance().GetScene(sceneId);
 
-	Entity *cameraEntity = currentScene.FindEntity("Camera");
-	Entity *lightEntity = currentScene.FindEntity("Sun");
-	Entity *terrainEntity = currentScene.FindEntity("Terrain");
-	Entity *dbEntity = currentScene.FindEntity("Double Barrel");
-	Entity *particles = currentScene.FindEntity("Particles");
+	SceneManager::Instance().LoadScene(sceneId);
+
+	Entity *cameraEntity = SceneManager::Instance().GetCurrentScene().FindEntity("Camera");
+	Entity *lightEntity = SceneManager::Instance().GetCurrentScene().FindEntity("Sun");
+	Entity *terrainEntity = SceneManager::Instance().GetCurrentScene().FindEntity("Terrain");
+	Entity *dbEntity = SceneManager::Instance().GetCurrentScene().FindEntity("Double Barrel");
+	Entity *particles = SceneManager::Instance().GetCurrentScene().FindEntity("Particles");
 
 
 

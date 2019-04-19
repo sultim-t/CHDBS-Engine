@@ -18,36 +18,14 @@ UINT HashUnsigned(UINT i)
 	return i;
 }
 
-RenderingSystem::RenderingSystem()
-{
-	lastMeshId = lastMaterialId	= lastShaderId = lastTextureId = 0;
-}
+RenderingSystem::RenderingSystem() : models(nullptr), lights(nullptr), cameras(nullptr), particleSystems(nullptr)
+{ }
 
 RenderingSystem::~RenderingSystem()
 { }
 
 void RenderingSystem::Init()
 {
-	// init data structures
-	meshes.Init(32, 16);
-	materials.Init(32, 8);
-	textures.Init(64, 8);
-	shaders.Init(32, 8);
-
-	meshes.DeclareHashFunction(HashUnsigned);
-	materials.DeclareHashFunction(HashUnsigned);
-	textures.DeclareHashFunction(HashUnsigned);
-	shaders.DeclareHashFunction(HashUnsigned);
-
-	matTextures.Init(32, 8);
-	matShaders.Init(32, 8);
-
-	cameras.Init(8);
-	lights.Init(8);
-	allModels.Init(64);
-	particleSystems.Init(64);
-
-	shadowMap = FramebufferTexture();
 	shadowMap.Create(1024, 1024);
 	shadowMap.SetType(TextureType::Shadowmap);
 
@@ -58,14 +36,20 @@ void RenderingSystem::Init()
 
 void RenderingSystem::Update()
 {
+	// if not registered
+	if (cameras == nullptr || lights == nullptr || models == nullptr || particleSystems == nullptr)
+	{
+		return;
+	}
+
 	glClearColor(0.5f, 0.85f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (int i = 0; i < cameras.GetSize(); i++)
+	for (int i = 0; i < cameras->GetSize(); i++)
 	{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		CCamera *cam = cameras[i];
+		CCamera *cam = cameras->operator[](i);
 
 		// reset aspect
 		cam->SetAspect((float)ContextWindow::Instance().GetWidth(), (float)ContextWindow::Instance().GetHeight());
@@ -80,16 +64,18 @@ void RenderingSystem::Update()
 		// get frustum for culling
 		const Frustum frustum = cam->GetFrustum();
 
+		// get frustum for for shadowmapping
+		const Frustum &frustumForShadowmap = cam->GetFrustum(0.1f, 100.0f);
 
-		if (lights[0]->IsCastingShadows())
+		if (lights->operator[](0)->IsCastingShadows())
 		{
-			CreateShadowMap(*lights[0], *cam, shadowMap);
+			CreateShadowMap(*lights->operator[](0), frustumForShadowmap, shadowMap);
 			shadowMap.Activate((int)TextureType::Shadowmap);
 		}
 
-		for (int m = 0; m < allModels.GetSize(); m++)
+		for (int m = 0; m < models->GetSize(); m++)
 		{
-			CModel *model = allModels[m];
+			CModel *model = models->operator[](m);
 
 			// get meshes
 			auto &modelMeshes = model->GetMeshes();
@@ -119,9 +105,9 @@ void RenderingSystem::Update()
 				const Shader &shader = mat->GetShader();
 
 				mat->Use();
-				for (int l = 0; l < lights.GetSize(); l++)
+				// for (int l = 0; l < lights->GetSize(); l++)
 				{
-					CLight *light = lights[l];
+					CLight *light = lights->operator[](0);
 
 					if (light->IsCastingShadows())
 					{
@@ -129,7 +115,7 @@ void RenderingSystem::Update()
 					}
 
 					mat->SetLightDirection(-light->GetOwner().GetTransform().GetForward());
-					mat->SetLightSpace(light->GetLightSpace(frustum));
+					mat->SetLightSpace(light->GetLightSpace(frustumForShadowmap));
 				}
 
 				mat->SetCameraSpace(camSpace);
@@ -145,21 +131,16 @@ void RenderingSystem::Update()
 		}
 
 		// Render all particle systems
-		for (int p = 0; p < particleSystems.GetSize(); p++)
+		for (int p = 0; p < particleSystems->GetSize(); p++)
 		{
-			CParticleSystem *ps = particleSystems[p];
+			CParticleSystem *ps = particleSystems->operator[](p);
 
 			ps->BindCamera(cam);
 			ps->Render();
 		}
 
 		// Render skybox
-		Matrix4 skyCamSpace(viewM);
-		// reset position
-		// to make skybox feel infinitely far
-		skyCamSpace.SetRow(3, Vector4(0.0f));
-		skyCamSpace *= projM;
-		Skybox::Instance().Draw(skyCamSpace);
+		DrawSkybox(viewM, projM);
 
 		// Render debug objects
 		DebugDrawer::Instance().BindSpaceMatrix(camSpace);
@@ -181,8 +162,28 @@ void RenderingSystem::DrawMesh(UINT vao, UINT indicesCount)
 	glBindVertexArray(0);
 }
 
-void RenderingSystem::CreateShadowMap(const CLight &light, const ICamera &camera, FramebufferTexture &shadowMap)
+void RenderingSystem::DrawSkybox(const Matrix4 &viewMatrix, const Matrix4 &projMatrix)
 {
+	Matrix4 skyCamSpace(viewMatrix);
+
+	// reset position
+	// to make skybox feel infinitely far
+	skyCamSpace.SetRow(3, Vector4(0.0f));
+
+	skyCamSpace *= projMatrix;
+
+	// draw
+	Skybox::Instance().Draw(skyCamSpace);
+}
+
+void RenderingSystem::CreateShadowMap(const CLight &light, const Frustum &frustumForShadowmap, FramebufferTexture &shadowMap)
+{
+	// if not registered
+	if (cameras == nullptr || lights == nullptr || models == nullptr || particleSystems == nullptr)
+	{
+		return;
+	}
+
 	// bind viewport for shadowmap size
 	glViewport(0, 0, shadowMap.GetWidth(), shadowMap.GetHeight());
 
@@ -195,15 +196,12 @@ void RenderingSystem::CreateShadowMap(const CLight &light, const ICamera &camera
 	// activate depth shader
 	depthShader.Use();
 
-	// calculate modified camera's view frustum
-	const Frustum &frustumForShadowmap = camera.GetFrustum(0, 1);
-
 	Matrix4 lightSpace = light.GetLightSpace(frustumForShadowmap);
 	
 	// draw each model
-	for (int m = 0; m < allModels.GetSize(); m++)
+	for (int m = 0; m < models->GetSize(); m++)
 	{
-		CModel *model = allModels[m];
+		CModel *model = models->operator[](m);
 
 		if (!model->IsCastingShadows)
 		{
@@ -243,68 +241,30 @@ RenderingSystem &RenderingSystem::Instance()
 	return instance;
 }
 
-void RenderingSystem::Register(Material *material)
+void RenderingSystem::Register(const DynamicArray<CCamera*> *cameras)
 {
-	material->materialId = lastMaterialId;
-	materials.Add(lastMaterialId, material);
-	lastMaterialId++;
+	this->cameras = cameras;
 }
 
-void RenderingSystem::Register(ITexture *texture)
+void RenderingSystem::Register(const DynamicArray<CLight*> *lights)
 {
-	texture->textureId = lastTextureId;
-	textures.Add(lastTextureId, texture);
-	lastTextureId++;
+	this->lights = lights;
 }
 
-void RenderingSystem::Register(CModel * model)
+void RenderingSystem::Register(const DynamicArray<CModel*> *models)
 {
-	allModels.Push(model);
+	this->models = models;
 }
 
-void RenderingSystem::Register(CLight * light)
+void RenderingSystem::Register(const DynamicArray<CParticleSystem*> *particleSystems)
 {
-	lights.Push(light);
+	this->particleSystems = particleSystems;
 }
 
-void RenderingSystem::Register(CCamera * camera)
+void RenderingSystem::Reset()
 {
-	cameras.Push(camera);
-}
-
-void RenderingSystem::Register(CParticleSystem * ps)
-{
-	particleSystems.Push(ps);
-}
-
-Mesh *RenderingSystem::GetMesh(MeshID id) const
-{
-	Mesh *result;
-	meshes.Find(id, result);
-
-	return result;
-}
-
-Material *RenderingSystem::GetMaterial(MaterialID id) const
-{
-	Material *result;
-	materials.Find(id, result);
-
-	return result;
-}
-
-ITexture *RenderingSystem::GetTexture(TextureID id) const
-{
-	ITexture *result;
-	textures.Find(id, result);
-
-	return result;
-}
-
-Shader *RenderingSystem::GetShader(ShaderID id) const
-{
-	Shader *result;
-	shaders.Find(id, result);
-
-	return result;
+	this->cameras			= nullptr;
+	this->lights			= nullptr;
+	this->models			= nullptr;
+	this->particleSystems	= nullptr;
 }

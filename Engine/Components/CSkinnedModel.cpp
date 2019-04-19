@@ -39,7 +39,7 @@ void CSkinnedModel::GFXUpdate(int meshIndex)
 void CSkinnedModel::Init()
 {
 	// register to render
-	RenderingSystem::Instance().Register(this);
+	//RenderingSystem::Instance().Register(this);
 
 	// load model
 	modelResource = ResourceManager::Instance().LoadModel(path);

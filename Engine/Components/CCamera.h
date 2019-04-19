@@ -36,10 +36,8 @@ public:
 	// Get camera's view frustum in world space
 	Frustum GetFrustum() const override;
 	// Get camera's view frustum in world space
-	// but with changed near and far vertices
-	// "nearMult" is a multiplier in [0,1] : result frustum's near plane distance is OldNear+((OldFar-OldNear)*nearMult)
-	// "farMult" is a multiplier in [0,1] : result frustum's far plane distance is OldNear+((OldFar-OldNear)*farMult)
-	Frustum GetFrustum(float nearMult, float farMult) const override;
+	// but with changed near and far planes
+	Frustum GetFrustum(float newNear, float newFar) const override;
 
 	CameraProjection GetProjection() const;
 	float GetFOV() const;

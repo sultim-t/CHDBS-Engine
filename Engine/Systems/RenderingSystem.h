@@ -15,33 +15,12 @@
 
 class RenderingSystem : public ISystem
 {
-private:
-	HashTable<MeshID	, Mesh*		>	meshes;
-	HashTable<MaterialID, Material*	>	materials;
-	HashTable<TextureID	, ITexture*	>	textures;
-	HashTable<ShaderID	, Shader*	>	shaders;
-
-	// Stores array of arrays with same models (Only static),
-	// therefore same meshes, same material
-	DynamicArray<DynamicArray<CModel*>>	batchedModels;
-	
-	// Stores all textures used in this material
-	HashTable<MaterialID, LinkedList<ITexture*>*>	matTextures;
-	
-	// Shader used in material
-	HashTable<MaterialID, ShaderID			>		matShaders;
-
-	// Sorted camera list
-	// First element is first to render
-	DynamicArray<CCamera*>			cameras;
-	DynamicArray<CLight*>			lights;
-	DynamicArray<CModel*>			allModels;
-	DynamicArray<CParticleSystem*>	particleSystems;
-
-	UINT lastMeshId;
-	UINT lastMaterialId;
-	UINT lastTextureId;
-	UINT lastShaderId;
+public:
+	// References to arrays with data in scene
+	const DynamicArray<CCamera*>			*cameras;
+	const DynamicArray<CLight*>				*lights;
+	const DynamicArray<CModel*>				*models;
+	const DynamicArray<CParticleSystem*>	*particleSystems;
 
 	// main shadowmap
 	FramebufferTexture shadowMap;
@@ -56,10 +35,13 @@ private:
 	RenderingSystem(RenderingSystem&&) = delete;
 	RenderingSystem &operator=(const RenderingSystem&) = delete;
 
+	// Draw mesh with given vao
 	void DrawMesh(UINT vao, UINT indicesCount);
 
+	void DrawSkybox(const Matrix4 &viewMatrix, const Matrix4 &projMatrix);
+
 	// Generate shadowmap to framebuffer, according to camera frustum to fit entire shadowmap
-	void CreateShadowMap(const CLight &light, const ICamera &camera, FramebufferTexture &shadowMap);
+	void CreateShadowMap(const CLight &light, const Frustum &frustumForShadowmap, FramebufferTexture &shadowMap);
 
 public:
 	// Init structures
@@ -70,34 +52,11 @@ public:
 	// Get instance of system
 	static RenderingSystem &Instance();
 
-	// Register material by calculating its ID
-	// and saving the pointer
-	void Register(Material *material);
-	// Register texture by calculating its ID
-	// and saving the pointer
-	void Register(ITexture *texture);
-	// Attach mesh to material
-	void Register(Mesh *mesh, const Material &material);
-	// Register model by saving its pointer
-	void Register(CModel *model);
-	// Register light by saving its pointer
-	void Register(CLight *light);
-	// Register camera by saving its pointer
-	void Register(CCamera *camera);
-	// Register particle system by saving its pointer
-	void Register(CParticleSystem *ps);
+	void Register(const DynamicArray<CCamera*>			*cameras);
+	void Register(const DynamicArray<CLight*>			*lights);
+	void Register(const DynamicArray<CModel*>			*models);
+	void Register(const DynamicArray<CParticleSystem*>	*particleSystems);
 
-
-	// Get mesh by its ID
-	Mesh *GetMesh(MeshID id) const;
-	// Get material by its ID
-	Material *GetMaterial(MaterialID id) const;
-	// Get texture by its ID
-	ITexture *GetTexture(TextureID id) const;
-	// Get mesh by its ID
-	Shader *GetShader(ShaderID id) const;
-	// Get list of IDs of meshes with same material
-	// const LinkedList<Mesh*> *GetMatMesh(MaterialID id) const;
-	// Get list of IDs of meshes with same material
-	// inline LinkedList<Mesh*> *GetMatMesh(MaterialID id);
+	// Unregister rigidbodies and colliders
+	void Reset();
 };

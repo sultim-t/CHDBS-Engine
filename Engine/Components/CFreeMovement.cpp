@@ -53,7 +53,6 @@ void CFreeMovement::ProcessKeyboard()
 	Vector3 offset = Vector3(0, 0, 0);
 
 	Vector3 front = t.GetForward();
-	front[1] = 0;
 	front.Normalize();
 
 	Vector3 right = t.GetRight();

@@ -7,10 +7,10 @@ class PhysicsSystem : public ISystem
 {
 private:
 	// Reference to rigidbodies (with colliders) array
-	DynamicArray<Rigidbody*>	*rigidbodies;
+	const DynamicArray<Rigidbody*>	*rigidbodies;
 
 	// Reference to colliders (without rigidbodies) array
-	DynamicArray<ICollider*>	*colliders;
+	const DynamicArray<ICollider*>	*colliders;
 
 	// Stores all collisions, from broad phase
 	// They will be potentially resolved in main phase
@@ -46,7 +46,7 @@ public:
 	//void Register(ICollider *col);
 	
 	// Register rigidbodies and colliders to simulate physics
-	void Register(DynamicArray<Rigidbody*> *rigidbodies, DynamicArray<ICollider*> *colliders);
+	void Register(const DynamicArray<Rigidbody*> *rigidbodies, const DynamicArray<ICollider*> *colliders);
 	// Unregister rigidbodies and colliders
 	void Reset();
 

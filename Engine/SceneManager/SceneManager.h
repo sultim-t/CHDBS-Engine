@@ -14,6 +14,8 @@ private:
 	int currentSceneIndex;
 
 public:
+	// Default constructor
+	SceneManager();
 	// Destroys all scenes
 	~SceneManager();
 
