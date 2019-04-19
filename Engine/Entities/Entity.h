@@ -79,7 +79,20 @@ public:
 template<class T>
 const T *Entity::GetComponent() const
 {
-	return GetComponent();
+	for (int i = 0; i < components.GetSize(); i++)
+	{
+		IComponent *c = components[i];
+
+		// check its type
+		if (c->IsClassType(T::Type))
+		{
+			// return
+			return (T*)c;
+		}
+	}
+
+	// component is not found
+	return nullptr;
 }
 
 template<class T>

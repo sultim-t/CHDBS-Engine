@@ -13,8 +13,6 @@ class Rigidbody : public IComponent
 	CLASSDECLARATION(Rigidbody)
 
 private:
-	// pointer to current transform
-	Transform	*transform;
 	Vector3		velocity;
 	Vector3		acceleration;
 	float		inversedMass;
@@ -24,7 +22,7 @@ private:
 
 	// current rigidbody collider
 	// which is attached to current entity
-	ICollider *collider;
+	// ICollider *collider;
 
 public:
 	bool NoGravity;
@@ -32,15 +30,8 @@ public:
 private:
 	// Update
 	void FixedUpdate();
-	// Solve collisiion for this rigidbody
-	void SolveCollisions(const CollisionInfo &info);
-
-	// Function to identify material combine option
-	PhysicMaterialCombine GetCombineOption(const String &value);
 
 public:
-	~Rigidbody();
-
 	// Add a continuous force to this rigidbody, using its mass
 	void AddForce(const Vector3 &force);
 	// Add an instant impulse to this rigidbody, using its mass
@@ -57,8 +48,11 @@ public:
 	const Vector3 &GetVelocity() const;
 	// Get current acceleration
 	const Vector3 &GetAcceleration() const;
+
 	// Get collider attached to current entity
-	const ICollider &GetCollider() const;
+	// Note: shortcut for 
+	const ICollider *GetCollider() const;
+
 	// Get mass of rigidbody
 	float GetMass();
 	// Get inversed mass of rigidbody

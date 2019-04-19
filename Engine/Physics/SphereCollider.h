@@ -22,9 +22,7 @@ public:
 	void SetTransform(const Transform *t);
 
 	// Get sphere with current transformations
-	Sphere GetSphere();
-	// Get sphere with current transformations
-	const Sphere GetSphere() const;
+	Sphere GetSphere() const;
 	// Get current sphere
 	Sphere &GetSphereRef();
 

@@ -151,16 +151,20 @@ class CParticleSystem;
 
 class Rigidbody;
 class ICollider;
-	class AABBCollider;
-	class SphereCollider;
-	// class CapsuleCollider;
-	class MeshCollider;
 	struct RaycastInfo;
 	enum class CollisionType;
 	struct CollisionInfo;
 	struct BroadCollisionInfo;
 
+	class AABBCollider;
+	class SphereCollider;
+	class MeshCollider;
+	// class CapsuleCollider;
 
+	// Components
+	class CBoxCollider;
+	class CSphereCollider;
+	class CMeshCollider;
 
 
 

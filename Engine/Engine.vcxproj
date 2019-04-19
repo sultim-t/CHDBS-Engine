@@ -178,8 +178,12 @@
     <ClCompile Include="Base\Logger.cpp" />
     <ClCompile Include="Base\Random.cpp" />
     <ClCompile Include="Base\String.cpp" />
+    <ClCompile Include="Components\CBoxCollider.cpp" />
     <ClCompile Include="Components\CCamera.cpp" />
+    <ClCompile Include="Components\CCollider.cpp" />
     <ClCompile Include="Components\CFreeMovement.cpp" />
+    <ClCompile Include="Components\CMeshCollider.cpp" />
+    <ClCompile Include="Components\CSphereCollider.cpp" />
     <ClCompile Include="Components\Mesh.cpp" />
     <ClCompile Include="Components\CParticleSystem.cpp" />
     <ClCompile Include="Components\CSkinnedModel.cpp" />
@@ -232,6 +236,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Base\StringTuple.h" />
+    <ClInclude Include="Components\CBoxCollider.h" />
+    <ClInclude Include="Components\CCollider.h" />
+    <ClInclude Include="Components\CMeshCollider.h" />
+    <ClInclude Include="Components\CSphereCollider.h" />
     <ClInclude Include="Components\IFixedUpdatable.h" />
     <ClInclude Include="Components\IUpdatable.h" />
     <ClInclude Include="Math\MTransform.h" />

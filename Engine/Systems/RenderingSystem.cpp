@@ -26,7 +26,7 @@ RenderingSystem::~RenderingSystem()
 
 void RenderingSystem::Init()
 {
-	shadowMap.Create(1024, 1024);
+	shadowMap.Create(8192, 8192);
 	shadowMap.SetType(TextureType::Shadowmap);
 
 	depthShader.Load("Shaders/ShadowMapping.vs", "Shaders/ShadowMapping.fs");
@@ -65,7 +65,7 @@ void RenderingSystem::Update()
 		const Frustum frustum = cam->GetFrustum();
 
 		// get frustum for for shadowmapping
-		const Frustum &frustumForShadowmap = cam->GetFrustum(0.1f, 100.0f);
+		const Frustum &frustumForShadowmap = cam->GetFrustum(0.1f, 40.0f);
 
 		if (lights->operator[](0)->IsCastingShadows())
 		{

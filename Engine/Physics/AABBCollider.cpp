@@ -15,15 +15,7 @@ void AABBCollider::SetTransform(const Transform *t)
 	this->t = t;
 }
 
-AABB AABBCollider::GetAABB()
-{
-	AABB result = AABB(aabb);
-	result.Move(t->GetPosition());
-
-	return result;
-}
-
-const AABB AABBCollider::GetAABB() const
+AABB AABBCollider::GetAABB() const
 {
 	AABB result = AABB(aabb);
 	result.Move(t->GetPosition());

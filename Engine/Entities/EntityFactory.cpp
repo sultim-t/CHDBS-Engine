@@ -6,6 +6,9 @@
 #include <Engine/Components/CSkinnedModel.h>
 #include <Engine/Components/CLight.h>
 #include <Engine/Components/CParticleSystem.h>
+#include <Engine/Components/CBoxCollider.h>
+#include <Engine/Components/CSphereCollider.h>
+#include <Engine/Components/CMeshCollider.h>
 #include <Engine/Physics/Rigidbody.h>
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/ResourceManager/ResourceManager.h>
@@ -59,7 +62,11 @@ EntityFactory::EntityFactory()
 	PRegisterComponentType<CModel>("CModel");
 	PRegisterComponentType<CSkinnedModel>("CSkinnedModel");
 	PRegisterComponentType<CParticleSystem>("CParticleSystem");
+
 	PRegisterComponentType<Rigidbody>("Rigidbody");
+	PRegisterComponentType<CMeshCollider>("CMeshCollider");
+	PRegisterComponentType<CBoxCollider>("CBoxCollider");
+	PRegisterComponentType<CSphereCollider>("CSphereCollider");
 }
 
 EntityFactory::~EntityFactory()

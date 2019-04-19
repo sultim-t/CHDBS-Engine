@@ -12,12 +12,7 @@ void SphereCollider::SetTransform(const Transform * t)
 	this->t = t;
 }
 
-Sphere SphereCollider::GetSphere()
-{
-	return Sphere(sphere.GetCenter() + t->GetPosition(), sphere.GetRadius());
-}
-
-const Sphere SphereCollider::GetSphere() const
+Sphere SphereCollider::GetSphere() const
 {
 	return Sphere(sphere.GetCenter() + t->GetPosition(), sphere.GetRadius());
 }

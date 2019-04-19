@@ -83,22 +83,22 @@ void PhysicsSystem::GetApproximateCollisions()
 	{
 		// get data from this rigidbody
 		Rigidbody *rbThis = rigidbodies->operator[](i);
-		const ICollider &colThis = rbThis->GetCollider();
-		AShape &boundingThis = colThis.GetBoundingSphere();
+		const ICollider *colThis = rbThis->GetCollider();
+		AShape &boundingThis = colThis->GetBoundingSphere();
 
 		// create collision between rigidbodies
 		BroadCollisionInfo info = BroadCollisionInfo(CollisionType::Rigidbodies);
-		info.CollThis = &colThis;
+		info.CollThis = colThis;
 		info.RbThis = rbThis;
 
 		// for each other rigidbody
 		for (int j = dynamicCount - 1; j > i; j--)
 		{
 			Rigidbody *rbOther = rigidbodies->operator[](j);
-			const ICollider &colOther = rbOther->GetCollider();
+			const ICollider *colOther = rbOther->GetCollider();
 		
 			// get approximate shape
-			AShape &boundingOther = colOther.GetBoundingSphere();
+			AShape &boundingOther = colOther->GetBoundingSphere();
 
 			if (!AIntersect(boundingThis, boundingOther))
 			{
@@ -107,7 +107,7 @@ void PhysicsSystem::GetApproximateCollisions()
 			}
 
 			info.RbOther = rbOther;
-			info.CollOther = &colOther;
+			info.CollOther = colOther;
 
 			// add info to process
 			collisions.Push(info);
@@ -115,7 +115,7 @@ void PhysicsSystem::GetApproximateCollisions()
 		
 		// create collision between dynamic and static
 		BroadCollisionInfo infoStatic = BroadCollisionInfo(CollisionType::RigidbodyStatic);
-		infoStatic.CollThis = &colThis;
+		infoStatic.CollThis = colThis;
 		infoStatic.RbThis = rbThis;
 
 		// for each static collider
@@ -230,13 +230,12 @@ void PhysicsSystem::ApplyPositionCorrection(Rigidbody *rbThis, Rigidbody *rbOthe
 	Vector3 correction = normal * Max(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
 
 	// change positions
-	rbThis->transform->Translate(correction * invMassThis);
+	rbThis->GetOwner().GetTransform().Translate(correction * invMassThis);
 
 	if (rbOther != nullptr)
 	{
-		rbOther->transform->Translate(correction * (-invMassOther));
+		rbOther->GetOwner().GetTransform().Translate(correction * (-invMassOther));
 	}
-
 }
 
 Vector3 PhysicsSystem::CalculateFriction(const Vector3 &relativeVelocity, const Vector3 &normal, float invMass, float impulse, float staticFriction, float dynamicFriction)

@@ -20,9 +20,7 @@ public:
 	void SetTransform(const Transform *t);
 
 	// Get AABB with current transformations
-	AABB GetAABB();
-	// Get AABB with current transformations
-	const AABB GetAABB() const;
+	AABB GetAABB() const;
 	// Get current AABB
 	AABB &GetAABBRef();
 
