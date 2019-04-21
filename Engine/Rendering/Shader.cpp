@@ -46,7 +46,8 @@ void Shader::LoadFromStrings(const char *vertex, const char *fragment)
 	glGetShaderiv(vertId, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		Logger::Print("Shaders::Vertex shader compilation error");
+		Logger::Print("Shaders::Vertex shader compilation error in:");
+		Logger::Print(resource->GetVertexPath());
 
 		glGetShaderInfoLog(vertId, 256, NULL, log);
 		Logger::Print(log);
@@ -61,7 +62,8 @@ void Shader::LoadFromStrings(const char *vertex, const char *fragment)
 	glGetShaderiv(fragId, GL_COMPILE_STATUS, &success);
 	if (!success)
 	{
-		Logger::Print("Shaders::Fragment shader compilation error");
+		Logger::Print("Shaders::Fragment shader compilation error in:");
+		Logger::Print(resource->GetFragmentPath());
 
 		glGetShaderInfoLog(fragId, 256, NULL, log);
 		Logger::Print(log);
@@ -171,6 +173,11 @@ void Shader::SetFloat(int location, float value) const
 void Shader::SetVec3(int location, const Vector3 & vec) const
 {
 	glUniform3fv(location, 1, vec.ToArray());
+}
+
+void Shader::SetVec4(int location, const Vector4 & vec) const
+{
+	glUniform4fv(location, 1, vec.ToArray());
 }
 
 void Shader::SetMat4(int location, const Matrix4 & mat) const

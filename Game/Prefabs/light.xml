@@ -4,6 +4,6 @@
 
   <CLight
     Type="Directional"
-    IsStatic="1"
+    Color="1 1 1"
     Shadows="1"/>
 </Entity>

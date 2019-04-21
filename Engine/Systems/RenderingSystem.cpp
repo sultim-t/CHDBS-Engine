@@ -26,7 +26,7 @@ RenderingSystem::~RenderingSystem()
 
 void RenderingSystem::Init()
 {
-	shadowMap.Create(8192, 8192);
+	shadowMap.Create(1024, 1024);
 	shadowMap.SetType(TextureType::Shadowmap);
 
 	depthShader.Load("Shaders/ShadowMapping.vs", "Shaders/ShadowMapping.fs");
@@ -92,6 +92,7 @@ void RenderingSystem::Update()
 				Sphere transformedSphere = modelMeshes[j]->GetBoundingSphere();
 				// and move it according to its global transformation
 				transformedSphere.Move(Transform::DecomposePosition(meshesTranforms[j]));
+				transformedSphere.SetRadius(transformedSphere.GetRadius() * 1.3f);
 
 				if (!Intersection::SphereInsideFrustum(frustum, transformedSphere))
 				{
@@ -105,16 +106,18 @@ void RenderingSystem::Update()
 				const Shader &shader = mat->GetShader();
 
 				mat->Use();
-				// for (int l = 0; l < lights->GetSize(); l++)
+				if (lights->operator[](0)->IsCastingShadows())
 				{
-					CLight *light = lights->operator[](0);
+					mat->ActivateShadowMap();
+				}
 
-					if (light->IsCastingShadows())
-					{
-						mat->ActivateShadowMap();
-					}
+				mat->SetLightCount(lights->GetSize());
 
-					mat->SetLightDirection(-light->GetOwner().GetTransform().GetForward());
+				for (int l = 0; l < lights->GetSize(); l++)
+				{
+					CLight *light = lights->operator[](l);
+
+					mat->SetLight(*light, l);
 					mat->SetLightSpace(light->GetLightSpace(frustumForShadowmap));
 				}
 

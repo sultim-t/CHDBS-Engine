@@ -319,6 +319,9 @@ const ShaderResource *ResourceManager::LoadShader(const char *vertexPath, const 
 		// and assign to shader
 		shader->vertexCode = vertStream.str().c_str();
 		shader->fragmentCode = fragStream.str().c_str();
+
+		shader->vertexPath = vertexPath;
+		shader->fragmentPath = fragmentPath;
 	}
 	catch (const std::exception&)
 	{

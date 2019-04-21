@@ -303,6 +303,7 @@
     <ClInclude Include="Rendering\Cubemap.h" />
     <ClInclude Include="Rendering\FramebufferTexture.h" />
     <ClInclude Include="Rendering\ICamera.h" />
+    <ClInclude Include="Rendering\ILight.h" />
     <ClInclude Include="Rendering\ITexture.h" />
     <ClInclude Include="Rendering\Material.h" />
     <ClInclude Include="Rendering\ContextWindow.h" />

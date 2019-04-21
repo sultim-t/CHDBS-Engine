@@ -51,6 +51,7 @@ public:
 	void SetInt(int location, int value) const;
 	void SetFloat(int location, float value) const;
 	void SetVec3(int location, const Vector3 &vec) const;
+	void SetVec4(int location, const Vector4 &vec) const;
 	void SetMat4(int location, const Matrix4 &mat) const;
 
 public:

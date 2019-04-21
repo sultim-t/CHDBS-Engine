@@ -2,16 +2,16 @@
 #include <Engine/Components/IComponent.h>
 #include <Engine/Math/Quaternion.h>
 #include <Engine/Math/Matrix.h>
+#include <Engine/Rendering/ILight.h>
 
 enum class LightType
 {
 	Directional,
 	Point,
-	Spot,
-	Ambient
+	Spot
 };
 
-class CLight : public IComponent
+class CLight : public IComponent, public ILight
 {
 	CLASSDECLARATION(CLight)
 
@@ -21,14 +21,13 @@ private:
 	Color3F color;
 	float bias;
 
-	bool isStatic;
 	bool castShadows;
 
 	// for spotlights
 	float coneAngle;
 
 	// for spotlights and point lights
-	float range;
+	float attenuation;
 
 private:
 	Matrix4 GetLightView() const;
@@ -46,29 +45,24 @@ public:
 	const Matrix4 GetLightSpace(const Frustum &frustum) const;
 
 	LightType GetLightType() const;
-	// If static light doesn't calculate matrix each frame
-	bool IsStatic() const;
-	const Color3F &GetColor() const;
+	void SetLightType(LightType type);
+		
 	// Returns light bias
 	float GetBias() const;
-	// Returns range of light
-	float GetRange() const;
-	// Returns cone angle of spotlight in degrees
-	float GetConeAngle() const;
-	bool IsCastingShadows() const;
-	// Returns postion
-	Vector3 GetPosition() const;
-
-	void SetLightType(LightType type);
-	// If static light doesn't calculate matrix each frame
-	void SetStatic(bool isStatic);
-	void SetColor(const Color3F &color);
 	void SetBias(float bias);
-	// Set range of light (only point and spot)
-	void SetRange(float range);
-	// Set cone angle of light (only spot)
-	void SetConeAngle(float coneAngle);
+
 	void SetCastingShadows(bool cast);
+	void SetColor(const Color3F &color);
+	void SetAttenuation(float a);
+	void SetConeAngle(float a);
+
+public:
+	Vector4 GetPosition() const override;
+	Color3F GetColor() const override;
+	float GetAttenuation() const override;
+	float GetConeAngle() const override;
+	Vector3 GetConeDirection() const override;
+	bool IsCastingShadows() const override;
 
 public:
 	void Init() override;
@@ -76,3 +70,18 @@ public:
 
 	void SetProperty(const String &key, const String &value) override;
 };
+
+
+//Color3F GetColor() const;
+//// Returns range of light
+//float GetRange() const;
+//// Returns cone angle of spotlight in degrees
+//float GetConeAngle() const;
+//// Returns postion
+//Vector3 GetPosition() const;
+//
+//void SetColor(const Color3F &color);
+//// Set range of light (only point and spot)
+//void SetRange(float range);
+//// Set cone angle of light (only spot)
+//void SetConeAngle(float coneAngle);

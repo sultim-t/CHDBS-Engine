@@ -2,6 +2,9 @@
 
 #include <Engine/Math/Matrix.h>
 #include <Engine/Rendering/Material.h>
+#include <Engine/Rendering/ILight.h>
+
+#define MAX_LIGHT_COUNT 4
 
 // Represents material which is affected by light in 3D space
 class StandardMaterial : public Material
@@ -25,10 +28,22 @@ private:
 	// Smoothness (float) shader location
 	int smoothnessLoc;
 
-
-	// must be light class
-	int lightDirLoc;
+	// int lightDirLoc;
 	int lightSpaceLoc;
+	int lightCountLoc;
+
+	struct LightUniforms
+	{
+		int positionLoc;
+		int colorLoc;
+		int attenLoc;
+		int coneAngleLoc;
+		int coneDirLoc;
+
+	} lightUniforms[MAX_LIGHT_COUNT];
+
+private:
+	void InitLightUniforms();
 
 public:
 	void InitUniformLocations();
@@ -37,6 +52,9 @@ public:
 
 	void SetCameraPosition(const Vector3 &pos);
 	void SetCameraSpace(const Matrix4 &vp);
+
+	void SetLightCount(int count);
+	void SetLight(const ILight &light, int index);
 
 	void SetLightDirection(const Vector3 &pos);
 	void SetLightSpace(const Matrix4 & vp);

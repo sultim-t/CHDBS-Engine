@@ -6,5 +6,7 @@
   <CModel
     Path="Models/Egypt.fbx"/>
 
+  <MeshCollider
+    />
 
 </Entity>

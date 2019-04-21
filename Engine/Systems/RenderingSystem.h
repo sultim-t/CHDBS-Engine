@@ -6,7 +6,7 @@
 #include <Engine/DataStructures/LinkedList.h>
 #include <Engine/DataStructures/HashTable.h>
 
-#include <Engine/Components/Mesh.h>
+#include <Engine/Rendering/ILight.h>
 #include <Engine/Components/CLight.h>
 #include <Engine/Components/CParticleSystem.h>
 #include <Engine/Rendering/Material.h>

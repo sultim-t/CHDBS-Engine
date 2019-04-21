@@ -22,8 +22,8 @@ public:
 	// Destructor
 	~String();
 
-	inline char				&operator[](UINT i);
-	inline char				operator[](UINT i) const;
+	inline char				&operator[](int i);
+	inline char				operator[](int i) const;
 
 	inline bool				operator==(const String &b) const;
 	bool					operator==(const char *b) const;
@@ -50,13 +50,6 @@ public:
 
 	// Makes string empty
 	inline void				Clear();
-	// Splits this string by pos
-	// Char with index "pos" will be in "b"
-	inline void				Split(UINT pos, String &a, String &b) const;
-	// Removes chars from right
-	inline void				Remove(UINT fromRight);
-	// Removes chars
-	void					Remove(UINT fromLeft, UINT fromRight);
 
 	static bool				ToBool(const char *str);
 	static int				ToInt(const char *str);
@@ -90,15 +83,15 @@ inline String::String() : String("")
 inline String::String(const String &orig) : String(orig.string)
 { }
 
-inline char &String::operator[](UINT i)
+inline char &String::operator[](int i)
 {
-	ASSERT(i <= length); // == to allow to read '\0'
+	ASSERT(i >= 0 && i <= (int)length); // == to allow to read '\0'
 	return string[i];
 }
 
-inline char String::operator[](UINT i) const
+inline char String::operator[](int i) const
 {
-	ASSERT(i <= length); // == to allow to read '\0'
+	ASSERT(i >=0 && i <= (int)length); // == to allow to read '\0'
 	return string[i];
 }
 
@@ -147,23 +140,6 @@ inline UINT String::Length() const
 inline void String::Clear()
 {
 	*this = "";
-}
-
-inline void String::Split(UINT pos, String &a, String &b) const
-{
-	ASSERT(pos < length);
-
-	// create copies
-	a = string;
-	b = string;
-
-	a.Remove(0, length - pos);
-	b.Remove(pos, 0);
-}
-
-inline void String::Remove(UINT fromRight)
-{
-	Remove(0, fromRight);
 }
 
 inline bool String::ToBool() const

@@ -9,10 +9,9 @@
 #define PROPERTY_KEY_TYPE		"Type"
 #define PROPERTY_KEY_COLOR		"Color"
 #define PROPERTY_KEY_BIAS		"Bias"
-#define PROPERTY_KEY_STATIC		"IsStatic"
 #define PROPERTY_KEY_SHADOWS	"Shadows"
 #define PROPERTY_KEY_CONEANGLE	"Angle"
-#define PROPERTY_KEY_RANGE		"Range"
+#define PROPERTY_KEY_ATTEN		"Attenuation"
 
 #define PROPERTY_VAL_TYPEDIR	"Directional"
 #define PROPERTY_VAL_TYPEPOINT	"Point"
@@ -45,7 +44,7 @@ Matrix4 CLight::GetProjection(const AABB &bounding) const
 	else if (ltype == LightType::Spot)
 	{
 		// return projection matrix
-		return Projection::Perspective(coneAngle, 1, 0.1f, range);
+		return Projection::Perspective(coneAngle, 1, 0.1f, 20);
 	}
 	else
 	{
@@ -133,24 +132,9 @@ const Matrix4 CLight::GetLightSpace(const Frustum &frustum) const
 	}
 }
 
-bool CLight::IsStatic() const
-{
-	return isStatic;
-}
-
-const Color3F &CLight::GetColor() const
-{
-	return color;
-}
-
 float CLight::GetBias() const
 {
 	return bias;
-}
-
-float CLight::GetRange() const
-{
-	return range;
 }
 
 float CLight::GetConeAngle() const
@@ -158,14 +142,14 @@ float CLight::GetConeAngle() const
 	return coneAngle;
 }
 
+Vector3 CLight::GetConeDirection() const
+{
+	return GetOwner().GetTransform().GetForward();
+}
+
 bool CLight::IsCastingShadows() const
 {
 	return castShadows;
-}
-
-Vector3 CLight::GetPosition() const
-{
-	return owner->GetTransform().GetPosition();
 }
 
 void CLight::SetLightType(LightType type)
@@ -173,29 +157,24 @@ void CLight::SetLightType(LightType type)
 	this->ltype = type;
 }
 
-void CLight::SetStatic(bool isStatic)
-{
-	this->isStatic = isStatic;
-}
-
 void CLight::SetColor(const Color3F &color)
 {
 	this->color = color;
 }
 
+void CLight::SetAttenuation(float a)
+{
+	this->attenuation = a;
+}
+
+void CLight::SetConeAngle(float a)
+{
+	this->coneAngle = a;
+}
+
 void CLight::SetBias(float bias)
 {
 	this->bias = bias;
-}
-
-void CLight::SetRange(float range)
-{
-	this->range = range;
-}
-
-void CLight::SetConeAngle(float coneAngle)
-{
-	this->coneAngle = coneAngle > 0 ? coneAngle : 0;
 }
 
 void CLight::SetCastingShadows(bool cast)
@@ -240,10 +219,6 @@ void CLight::SetProperty(const String &key, const String &value)
 	{
 		bias = value.ToFloat();
 	}
-	else if (key == PROPERTY_KEY_STATIC)
-	{
-		isStatic = value.ToBool();
-	}
 	else if (key == PROPERTY_KEY_SHADOWS)
 	{
 		castShadows = value.ToBool();
@@ -252,12 +227,37 @@ void CLight::SetProperty(const String &key, const String &value)
 	{
 		coneAngle = value.ToFloat();
 	}
-	else if (key == PROPERTY_KEY_RANGE)
+	else if (key == PROPERTY_KEY_ATTEN)
 	{
-		range = value.ToFloat();
+		attenuation = value.ToFloat();
 	}
 	else
 	{
-		Logger::Print("Wrong camera property");
+		String err = "Wrong light property: ";
+		err += key + " -- " + value;
+		Logger::Print(err);
 	}
+}
+
+Vector4 CLight::GetPosition() const
+{
+	if (ltype == LightType::Directional)
+	{
+		// need to negate to convert to position
+		return Vector4(-GetOwner().GetTransform().GetForward(), 0.0f);
+	}
+	else
+	{
+		return Vector4(GetOwner().GetTransform().GetPosition(), 1.0f);
+	}
+}
+
+Color3F CLight::GetColor() const
+{
+	return color;
+}
+
+float CLight::GetAttenuation() const
+{
+	return attenuation;
 }

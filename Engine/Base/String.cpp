@@ -96,54 +96,26 @@ String &String::operator+=(const char * b)
 
 	UINT size = curSize + bSize;
 
+	// allocate for result
 	// +1 for '\0'
-	string = (char*)SystemAllocator::Reallocate((void*)string, curSize + 1, size + 1);
+	char *result = (char*)SystemAllocator::Allocate(size + 1);
 
-	// copy from b to string
-	// strcat(string, b);
-	strncat_s(string, size, b, bSize);
+	// copy from this
+	memcpy_s(result, curSize, string, curSize);
+	// copy from b from the end of this
+	memcpy_s(result + curSize, bSize, b, bSize);
 
-	length = size;
+	// null terminated
+	result[size] = '\0';
+
+	// delete this
+	SystemAllocator::Free(string);
+
+	// reassign
+	this->string = result;
+	this->length = size;
 
 	return *this;
-}
-
-void String::Remove(UINT fromLeft, UINT fromRight)
-{
-	if (length <= fromRight || length <= fromLeft)
-	{
-		return;
-	}
-
-	if (fromRight > 0)
-	{
-		UINT newLength = length - fromRight;
-
-		// set new end
-		string[newLength] = '\0';
-
-		// +1 for '\0'
-		string = (char*)SystemAllocator::Reallocate(string, length + 1, newLength + 1);
-
-		// reassign length
-		length = newLength;
-	}
-	
-	if (fromLeft > 0)
-	{
-		UINT newLength = length - fromLeft;
-
-		// set new start
-		// memmove supports overlapping
-		// +1 for copying '\0'
-		memmove(string, &string[newLength], newLength + 1);
-
-		// +1 for '\0'
-		string = (char*)SystemAllocator::Reallocate(string, length + 1, newLength + 1);
-
-		// reassign length
-		length = newLength;
-	}
 }
 
 Vector3 String::ToVector3(const char *str)
