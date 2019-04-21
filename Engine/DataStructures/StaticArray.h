@@ -54,12 +54,6 @@ inline StaticArray<T>::StaticArray() : amount(0)
 template<class T>
 inline StaticArray<T>::~StaticArray()
 {
-	// if not initialized
-	if (!ptr)
-	{
-		return;
-	}
-
 	Delete();
 }
 
@@ -127,7 +121,11 @@ inline bool StaticArray<T>::IsEmpty() const
 template<class T>
 inline void StaticArray<T>::Delete()
 {
-	ASSERT(this->ptr);
+	// if not initialized
+	if (!ptr && amount == 0)
+	{
+		return;
+	}
 
 	amount = 0;
 	// release shared ptr
@@ -143,6 +141,11 @@ inline void StaticArray<T>::CopyFrom(const StaticArray<T>& source)
 template<class T>
 inline void StaticArray<T>::CopyFrom(const StaticArray<T>& source, UINT n)
 {
+	if (n == 0 || source.GetSize() == 0)
+	{
+		return;
+	}
+
 	// self copying
 	ASSERT(source.ptr != this->ptr);
 	

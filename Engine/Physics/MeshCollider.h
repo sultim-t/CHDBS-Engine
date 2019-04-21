@@ -7,8 +7,8 @@
 class MeshCollider : public ICollider
 {
 private:
-	// Triangles doesn't change
-	const StaticArray<Triangle> *triangles;
+	// Triangles calculated only once
+	StaticArray<Triangle> triangles;
 	// Calculated bounding sphere
 	// Note: generated only once
 	Sphere boundingSphere;
@@ -18,12 +18,8 @@ private:
 	void CalculateBoundingSphere();
 
 public:
-	// Empty constructor
-	MeshCollider();
-	// Save pointer to mesh collider's triangles
-	MeshCollider(const MeshColliderResource *mesh);
-	// Savee pointer to array of triangles
-	MeshCollider(const StaticArray<Triangle> *triangles);
+	void AddTriangles(const StaticArray<Triangle> &mesh);
+	void AddTriangles(const StaticArray<Triangle> &mesh, const Transform &tranformation);
 
 	// Get triangles
 	const StaticArray<Triangle> &GetTriangles() const;

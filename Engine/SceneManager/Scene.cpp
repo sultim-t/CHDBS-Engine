@@ -9,6 +9,9 @@
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/Systems/PhysicsSystem.h>
 #include <Engine/Systems/RenderingSystem.h>
+#include <Engine/Components/CBoxCollider.h>
+#include <Engine/Components/CSphereCollider.h>
+#include <Engine/Components/CMeshCollider.h>
 
 Scene::Scene(const String &name, int id) 
 	: name(name), sceneId(id) { }
@@ -104,6 +107,7 @@ void Scene::AddEntity(Entity * entity)
 	// get all components in this entity
 	const DynamicArray<IComponent*> &all = entity->GetAllComponents();
 
+
 	// check for all needed components for physics and rendering
 	for (int i = 0; i < all.GetSize(); i++)
 	{
@@ -111,14 +115,87 @@ void Scene::AddEntity(Entity * entity)
 
 		if (component->IsClassType(Rigidbody::Type))
 		{
-			rigidbodies.Push((Rigidbody*)component);
+			bool toAdd = true;
+
+			// check that only one rigidbody in the entity
+			for (int j = 0; j < all.GetSize(); j++)
+			{
+				if (all[j]->IsClassType(Rigidbody::Type) && i != j)
+				{
+					String err = "Scene::More than one rigidbody : ";
+					err += entity->GetName();
+					Logger::Print(err);
+
+					// ignore other rigidbodies
+					toAdd = false;
+				}
+			}
+
+			if (toAdd)
+			{
+				rigidbodies.Push((Rigidbody*)component);
+			}
 		}
-		// now all colliders are stored in rigidbodies
-		// TODO: there MUST be collider as component to allow using of static colliders
-		//else if (component->Type == Coll::Type)
-		//{
-		//	colliders.Push((ICollider*)component);
-		//}
+		else if (component->IsClassType(CMeshCollider::Type))
+		{
+			bool toAdd = true;
+
+			for (int j = 0; j < all.GetSize(); j++)
+			{
+				if (all[j]->IsClassType(Rigidbody::Type))
+				{
+					String err = "Scene::Mesh collider can't be with rigidbody : ";
+					err += entity->GetName();
+					Logger::Print(err);
+
+					toAdd = false;
+				}
+			}
+
+			// if there is no rigidbodies, add to colliders list
+			if (toAdd)
+			{
+				colliders.Push((CMeshCollider*)component);
+			}
+		}
+		else if (component->IsClassType(CBoxCollider::Type))
+		{
+			bool toAdd = true;
+
+			for (int j = 0; j < all.GetSize(); j++)
+			{
+				if (all[j]->IsClassType(Rigidbody::Type))
+				{
+					// will be added to rigidbodies list
+					toAdd = false;
+				}
+			}
+
+			// if there is no rigidbodies, add to colliders list
+			if (toAdd)
+			{
+				colliders.Push((CBoxCollider*)component);
+			}
+		}
+		else if (component->IsClassType(CSphereCollider::Type))
+		{
+			bool toAdd = true;
+
+			for (int j = 0; j < all.GetSize(); j++)
+			{
+				if (all[j]->IsClassType(Rigidbody::Type))
+				{
+					// will be added to rigidbodies list
+					toAdd = false;
+				}
+			}
+
+			// if there is no rigidbodies, add to colliders list
+			if (toAdd)
+			{
+				colliders.Push((CSphereCollider*)component);
+			}
+		}
 		else if (component->IsClassType(CModel::Type))
 		{
 			models.Push((CModel*)component);

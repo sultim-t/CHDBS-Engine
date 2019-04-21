@@ -2,7 +2,7 @@
 #include <Engine/Components/IComponent.h>
 #include <Engine/Physics/SphereCollider.h>
 
-class CSphereCollider : SphereCollider, public IComponent
+class CSphereCollider : public SphereCollider, public IComponent
 {
 	CLASSDECLARATION(CSphereCollider)
 

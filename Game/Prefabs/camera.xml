@@ -11,7 +11,7 @@
     />
 
   <CFreeMovement 
-    Speed="80"
+    Speed="10"
     />
   
   <CModel
@@ -24,7 +24,7 @@
   <Rigidbody
     Mass="20"
     Velocity="0 0 0"
-    NoGravity="1"
+    NoGravity="0"
     />
   
   <CSphereCollider

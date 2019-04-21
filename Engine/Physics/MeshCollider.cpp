@@ -2,23 +2,9 @@
 #include "AABBCollider.h"
 #include "SphereCollider.h"
 
-MeshCollider::MeshCollider() : triangles(nullptr) { }
-
-MeshCollider::MeshCollider(const MeshColliderResource *mesh)
-{
-	this->triangles = &mesh->GetTriangles();
-	CalculateBoundingSphere();
-}
-
-MeshCollider::MeshCollider(const StaticArray<Triangle> *triangles)
-{
-	this->triangles = triangles;
-	CalculateBoundingSphere();
-}
-
 const StaticArray<Triangle> &MeshCollider::GetTriangles() const
 {
-	return *triangles;
+	return triangles;
 }
 
 ColliderType MeshCollider::GetColliderType() const
@@ -44,7 +30,7 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 	{
 		AABB &other = ((AABBCollider&)col).GetAABB();
 
-		if (!Intersection::MeshAABB(*triangles, other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+		if (!Intersection::MeshAABB(triangles, other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
 		{
 			return false;
 		}
@@ -58,7 +44,7 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 	{
 		Sphere &other = ((SphereCollider&)col).GetSphere();
 
-		if (!Intersection::MeshSphere(*triangles, other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+		if (!Intersection::MeshSphere(triangles, other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
 		{
 			return false;
 		}
@@ -79,7 +65,7 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 
 void MeshCollider::CalculateBoundingSphere()
 {
-	UINT size = triangles->GetSize();
+	UINT size = triangles.GetSize();
 
 	Vector3 min = Vector3(0.0f);
 	Vector3 max = Vector3(0.0f);
@@ -87,7 +73,7 @@ void MeshCollider::CalculateBoundingSphere()
 	// for each triangle
 	for (UINT t = 0; t < size; t++)
 	{
-		const Triangle &triangle = triangles->operator[](t);
+		const Triangle &triangle = triangles[t];
 
 		// for each vertex in triangle
 		for (int i = 0; i < 3; i++)
@@ -116,4 +102,46 @@ void MeshCollider::CalculateBoundingSphere()
 	float radius = (max - min).Length() * 0.5f;
 
 	boundingSphere = Sphere(center, radius);
+}
+
+void MeshCollider::AddTriangles(const StaticArray<Triangle> &mesh)
+{
+	AddTriangles(mesh, Transform());
+}
+
+void MeshCollider::AddTriangles(const StaticArray<Triangle> &mesh, const Transform &t)
+{
+	UINT curSize = triangles.GetSize();
+	UINT addingSize = mesh.GetSize();
+	UINT newSize = curSize + addingSize;
+
+	// save old data
+	StaticArray<Triangle> &oldData = triangles.GetCopy();
+
+	// delete old array
+	triangles.Delete();
+	// reinit with new size
+	triangles.Init(newSize);
+
+	// copy old data to new array
+	for (UINT i = 0; i < curSize; i++)
+	{
+		triangles[i].A = oldData[i].A;
+		triangles[i].B = oldData[i].B;
+		triangles[i].C = oldData[i].C;
+	}
+
+	// for each new triangle: add it transformed
+	for (UINT i = curSize; i < newSize; i++)
+	{
+		const Triangle &cur = mesh[i - curSize];
+
+		// transform
+		triangles[i].A = t.PointFromLocal(cur.A);
+		triangles[i].B = t.PointFromLocal(cur.B);
+		triangles[i].C = t.PointFromLocal(cur.C);
+	}
+
+	// recalculate
+	CalculateBoundingSphere();
 }
