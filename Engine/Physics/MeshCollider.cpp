@@ -1,6 +1,7 @@
 #include "MeshCollider.h"
 #include "AABBCollider.h"
 #include "SphereCollider.h"
+#include <Engine/Rendering/DebugDrawer.h>
 
 const StaticArray<Triangle> &MeshCollider::GetTriangles() const
 {
@@ -24,36 +25,66 @@ PhysicMaterial MeshCollider::GetPhysicMaterial() const
 
 bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 {
+	// main algorythm:
+	// first, test with bounding spheres/boxes of parts
+	// then if there is an intersection, try to test triangles of current part
+
 	switch (col.GetColliderType())
 	{
 	case ColliderType::AABB:
 	{
-		AABB &other = ((AABBCollider&)col).GetAABB();
+		const AABB &other = ((AABBCollider&)col).GetAABB();
 
-		if (!Intersection::MeshAABB(triangles, other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+		for (UINT i = 0; i < partsCount; i++)
 		{
-			return false;
+			// if there is no intersection with part, move to next
+			if (!Intersection::AABBAABB(parts[i].GetBoundingBox(), other))
+			{
+				continue;
+			}
+
+			// if intersected with part's bounding,
+			// test triangles using part's indices
+			if (Intersection::MeshAABB(triangles, parts[i].GetTrianglesIndices(), other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+			{
+				// inversed, as mesh collider always static
+				info.CollThis = &col;
+				info.CollOther = this;
+
+				return true;
+			}
 		}
 
-		info.CollThis = this;
-		info.CollOther = &col;
-
-		return true;
+		return false;
 	}
 	case ColliderType::Sphere:
 	{
-		Sphere &other = ((SphereCollider&)col).GetSphere();
+		const Sphere &other = ((SphereCollider&)col).GetSphere();
 
-		if (!Intersection::MeshSphere(triangles, other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+		for (UINT i = 0; i < partsCount; i++)
 		{
-			return false;
+			// if there is no intersection with part, move to next
+			if (!Intersection::SphereSphere(parts[i].GetBoundingSphere(), other))
+			{
+				continue;
+			}
+		
+			DebugDrawer::Instance().Draw(parts[i].GetBoundingBox());
+
+
+			// if intersected with part's bounding,
+			// test triangles using part's indices
+			if (Intersection::MeshSphere(triangles, parts[i].GetTrianglesIndices(), other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+			{
+				// inversed, as mesh collider always static
+				info.CollThis = &col;
+				info.CollOther = this;
+
+				return true;
+			}
 		}
 
-		info.CollThis = this;
-		info.CollOther = &col;
-
-		return true;
-
+		return false;
 	}
 	default:
 		// other intersections are not implemeted
@@ -63,7 +94,7 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 	return false;
 }
 
-void MeshCollider::CalculateBoundingSphere()
+void MeshCollider::RecalculateBoundingBox()
 {
 	UINT size = triangles.GetSize();
 
@@ -98,11 +129,17 @@ void MeshCollider::CalculateBoundingSphere()
 		}
 	}
 
-	Vector3 center = (max + min) * 0.5f;
-	float radius = (max - min).Length() * 0.5f;
-
-	boundingSphere = Sphere(center, radius);
+	// set
+	boundingBox.SetMax(max);
+	boundingBox.SetMin(min);
 }
+
+void MeshCollider::RecalculateBoundingSphere()
+{
+	float radius = boundingBox.GetExtent().Length();
+	boundingSphere = Sphere(boundingBox.GetCenter(), radius);
+}
+
 
 void MeshCollider::AddTriangles(const StaticArray<Triangle> &mesh)
 {
@@ -141,7 +178,91 @@ void MeshCollider::AddTriangles(const StaticArray<Triangle> &mesh, const Transfo
 		triangles[i].B = t.PointFromLocal(cur.B);
 		triangles[i].C = t.PointFromLocal(cur.C);
 	}
+}
 
-	// recalculate
-	CalculateBoundingSphere();
+void MeshCollider::RecalculateBoundingParts()
+{
+	// all triangles are set and have new indices, so delete old data
+	// (if just allocated then nothing will be changed)
+	DeleteParts();
+
+	const Vector3 &min = boundingBox.GetMin();
+	const Vector3 &max = boundingBox.GetMax();
+
+	// step
+	float delta = MESH_COLLIDER_PART_SIZE;
+
+	// get discrete min and max
+	float minX = (float)((int)(min[0] / delta) - 1);
+	float minY = (float)((int)(min[1] / delta) - 1);
+	float minZ = (float)((int)(min[2] / delta) - 1);
+
+	float maxX = (float)((int)(max[0] / delta) + 1);
+	float maxY = (float)((int)(max[1] / delta) + 1);
+	float maxZ = (float)((int)(max[2] / delta) + 1);
+
+	int partsXCount = (int)Abs(maxX - minX);
+	int partsYCount = (int)Abs(maxY - minY);
+	int partsZCount = (int)Abs(maxZ - minZ);
+
+	// reinit array
+	parts.Init(partsXCount * partsYCount * partsZCount);
+
+	Vector3 pmin, pmax;
+	UINT partIndex = 0;
+
+	// for each dimension create bounding box with 
+	for (int i = 0; i < partsXCount; i++)
+	{
+		for (int j = 0; j < partsYCount; j++)
+		{
+			for (int k = 0; k < partsZCount; k++)
+			{
+				pmin[0] = (minX + i) * delta;
+				pmin[1] = (minY + j) * delta;
+				pmin[2] = (minZ + k) * delta;
+
+				pmax[0] = (minX + i + 1) * delta;
+				pmax[1] = (minY + j + 1) * delta;
+				pmax[2] = (minZ + k + 1) * delta;
+
+				// allocate memory and calculate bounding shapes
+				parts[partIndex].Init(pmin, pmax);
+				partIndex++;
+			}
+		}
+	}
+
+	partsCount = partIndex;
+
+	// all parts are created
+	for (UINT i = 0; i < partsCount; i++)
+	{
+		MeshBoundingPart &part = parts[i];
+
+		// for each triangle
+		UINT triangleCount = triangles.GetSize();
+		for (UINT i = 0; i < triangleCount; i++)
+		{
+			// try to add
+			part.TryToAdd(triangles[i], i);
+		}
+	}
+}
+
+void MeshCollider::DeleteParts()
+{
+	// delete all parts
+	for (UINT i = 0; i < partsCount; i++)
+	{
+		parts[i].Delete();
+	}
+
+	// delete array itself
+	parts.Delete();
+}
+
+MeshCollider::~MeshCollider()
+{
+	DeleteParts();
 }

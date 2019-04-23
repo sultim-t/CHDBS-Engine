@@ -26,6 +26,13 @@ void CMeshCollider::Init()
 			// add triangles to this mesh collider all trangles with transformation
 			AddTriangles(meshes[i]->GetTriangles(), transforms[i]);
 		}
+
+		// first, recalculate bounding box
+		RecalculateBoundingBox();
+		// then sphere
+		RecalculateBoundingSphere();
+		// then create bounding parts
+		RecalculateBoundingParts();
 	}
 }
 

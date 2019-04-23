@@ -65,12 +65,7 @@ bool SphereCollider::Intersect(const ICollider &col, CollisionInfo &info) const
 	}
 	case ColliderType::Mesh:
 	{
-		if (!Intersection::MeshSphere(((MeshCollider&)col).GetTriangles(), GetSphere(), info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
-		{
-			return false;
-		}
-
-		return true;
+		return ((MeshCollider&)col).Intersect(*this, info);
 	}
 	default:
 		ASSERT(0);

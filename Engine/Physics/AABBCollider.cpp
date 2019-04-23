@@ -1,6 +1,7 @@
 #include "AABBCollider.h"
 #include "MeshCollider.h"
 #include "SphereCollider.h"
+#include "MeshCollider.h"
 
 AABBCollider::AABBCollider()
 { }
@@ -83,15 +84,7 @@ bool AABBCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 	}
 	case ColliderType::Mesh:
 	{
-		if (!Intersection::MeshAABB(((MeshCollider&)col).GetTriangles(), GetAABB(), info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
-		{
-			return false;
-		}
-
-		info.CollThis = this;
-		info.CollOther = &col;
-
-		return true;
+		return ((MeshCollider&)col).Intersect(*this, info);
 	}
 	default:
 		ASSERT(0);

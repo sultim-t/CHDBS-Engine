@@ -17,9 +17,9 @@ uniform int u_LightCount;
 uniform struct Light {
    vec4 Position;
    vec3 Color;
+   vec3 ConeDirection;
    float Attenuation;
    float ConeAngle;
-   vec3 ConeDirection;
 } u_Lights[MAX_LIGHTS];
 
 uniform vec3 u_CameraPosition;

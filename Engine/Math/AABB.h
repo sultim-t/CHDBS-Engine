@@ -23,6 +23,8 @@ public:
 
 	// Is this AABB contains other one?
 	bool Contains(const AABB &aabb) const;
+	// Is this AABB contains a point?
+	bool Contains(const Vector3 &point) const;
 	// Is this AABB contained in other one?
 	bool IsContained(const AABB &aabb) const;
 
@@ -42,8 +44,12 @@ public:
 
 	inline Vector3 GetCenter() const;
 	inline Vector3 GetSize() const;
+
 	inline const Vector3 &GetMin() const;
 	inline const Vector3 &GetMax() const;
+	inline Vector3 &GetMin();
+	inline Vector3 &GetMax();
+
 	inline Vector3 GetExtent() const;
 
 	inline void SetMin(const Vector3 &min);
@@ -66,6 +72,16 @@ inline const Vector3 &AABB::GetMin() const
 }
 
 inline const Vector3 &AABB::GetMax() const
+{
+	return maxBounds;
+}
+
+inline Vector3 & AABB::GetMin()
+{
+	return minBounds;
+}
+
+inline Vector3 & AABB::GetMax()
 {
 	return maxBounds;
 }

@@ -70,6 +70,19 @@ bool AABB::Contains(const AABB &aabb) const
 	return true;
 }
 
+bool AABB::Contains(const Vector3 &point) const
+{
+	for (int i = 0; i < 3; i++)
+	{
+		if (point[i] < minBounds[i] || point[i] > maxBounds[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
 bool AABB::IsContained(const AABB &aabb) const
 {
 	for (int i = 0; i < 3; i++)

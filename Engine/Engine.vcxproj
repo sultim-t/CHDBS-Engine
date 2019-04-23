@@ -243,6 +243,7 @@
     <ClInclude Include="Components\IFixedUpdatable.h" />
     <ClInclude Include="Components\IUpdatable.h" />
     <ClInclude Include="Math\MTransform.h" />
+    <ClInclude Include="Physics\MeshBoundingPart.h" />
     <ClInclude Include="Rendering\DebugDrawer.h" />
     <ClInclude Include="Base\Logger.h" />
     <ClInclude Include="Base\Empty.h" />

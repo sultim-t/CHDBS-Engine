@@ -7,6 +7,7 @@
 #include "Triangle.h"
 
 #include <Engine/DataStructures/StaticArray.h>
+#include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/ResourceManager/MeshResource.h>
 
 #include <limits>
@@ -925,18 +926,83 @@ bool Intersection::MeshSphere(const StaticArray<Triangle>& triangles, const Sphe
 	return false;
 }
 
+bool Intersection::MeshSphere(const StaticArray<Triangle>& triangles, const DynamicArray<int>& indices, const Sphere & s, Vector3 & point, Vector3 & normal, float & penetration)
+{
+	int size = indices.GetSize();
+
+	const Vector3 &center = s.GetCenter();
+	const float radius = s.GetRadius();
+	const float radiusSqr = radius * radius;
+
+	// for each index
+	for (int i = 0; i < size; i++)
+	{
+		int index = indices[i];
+		const Triangle &t = triangles[index];
+
+		// closest point
+		point = t.GetClosestPoint(center);
+
+		// from closest point on triangle to center
+		Vector3 v = point - center;
+		float lengthSqr = v.LengthSqr();
+
+		if (lengthSqr <= radiusSqr)
+		{
+			normal = t.GetNormal();
+			penetration = radius - v.Length();
+			return true;
+		}
+	}
+
+	return false;
+}
+
 bool Intersection::MeshAABB(const StaticArray<Triangle>& triangles, const AABB & aabb, Vector3 & point, Vector3 & normal, float & penetration)
 {
 	UINT size = triangles.GetSize();
-	
-	Vector3 p;
-	float radius = aabb.GetSize().Length() * 0.5f;
+	const float radius = aabb.GetSize().Length() * 0.5f;
+	const Sphere &bounding = Sphere(aabb.GetCenter(), radius);
 
-	Sphere bounding = Sphere(aabb.GetCenter(), radius);
+	Vector3 p;
 
 	for (UINT i = 0; i < size; i++)
 	{
 		const Triangle &t = triangles[i];
+
+		// check first sphere
+		if (TriangleSphere(t, bounding, p))
+		{
+			// and then aabb
+			if (TriangleAABB(t, aabb))
+			{
+				normal = t.GetNormal();
+				point = t.GetClosestPoint(aabb.GetCenter());
+
+				Plane p = Plane(normal, point);
+				AABBPlane(aabb, p, penetration);
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+bool Intersection::MeshAABB(const StaticArray<Triangle>& triangles, const DynamicArray<int>& indices, const AABB & aabb, Vector3 & point, Vector3 & normal, float & penetration)
+{
+	int size = indices.GetSize();
+	const float radius = aabb.GetSize().Length() * 0.5f;
+	const Sphere &bounding = Sphere(aabb.GetCenter(), radius);
+
+	Vector3 p;
+
+	// for each index
+	for (int i = 0; i < size; i++)
+	{
+		int index = indices[i];
+		const Triangle &t = triangles[index];
 
 		// check first sphere
 		if (TriangleSphere(t, bounding, p))

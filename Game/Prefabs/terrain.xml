@@ -8,6 +8,8 @@
 
   <CMeshCollider
     GenerateFromModel="1"
+    Restitution="0"
+    RestitutionCombine="CombineMinimum"
     />
 
 </Entity>

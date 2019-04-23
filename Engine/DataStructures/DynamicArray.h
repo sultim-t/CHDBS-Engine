@@ -37,11 +37,18 @@ public:
 	const T *GetArray() const;
 	// Returns elements count
 	int GetSize() const;
+	// Is memory allocated for this array?
+	bool IsAllocated() const;
+
 	// Clear array
 	// Note: doesn't free memory, doesn't destroy elements
 	void Clear();
 	// Frees allocated memory
 	void Delete();
+
+	// Allocate memory in not initialized memory
+	// Note: use it ONLY when using malloc() or similar
+	void RawInit(int initSize);
 };
 
 template<class T>
@@ -72,6 +79,14 @@ inline void DynamicArray<T>::Init(int initSize)
 	ASSERT(buffer == nullptr);
 	ASSERT(initSize > 0);
 
+	// init
+	RawInit(initSize);
+}
+
+template<class T>
+inline void DynamicArray<T>::RawInit(int initSize)
+{
+	// init without checking buffer and size
 	top = 0;
 	allocated = initSize;
 	buffer = (T*)SystemAllocator::Allocate(sizeof(T) * initSize);
@@ -131,6 +146,12 @@ template<class T>
 inline int DynamicArray<T>::GetSize() const
 {
 	return top;
+}
+
+template<class T>
+inline bool DynamicArray<T>::IsAllocated() const
+{
+	return allocated > 0;
 }
 
 template<class T>

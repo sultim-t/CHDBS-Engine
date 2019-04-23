@@ -10,7 +10,7 @@
   <Rigidbody
     Mass="20"
     Velocity="0 0 0"
-    NoGravity="0"
+    NoGravity="1"
   />
 
   <CSphereCollider

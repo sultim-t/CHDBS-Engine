@@ -43,7 +43,6 @@ template <class T> class DynamicArray;
 template <class T> class LinkedList;
 template <class K, class T> class HashTable;
 template <class T> class StackManual;
-template <class T> class LinkedListManual;
 
 // Math
 template <class Type, int Dim> struct Matrix;
@@ -58,6 +57,10 @@ typedef Matrix<double, 3> Matrix3Double;
 typedef Vector<float, 2> Vector2;
 typedef Vector<float, 3> Vector3;
 typedef Vector<float, 4> Vector4;
+
+typedef Vector<int, 2> VectorI2;
+typedef Vector<int, 3> VectorI3;
+typedef Vector<int, 4> VectorI4;
 
 typedef Vector<float, 3> Euler;
 #define ROLL  0		// around z axis
