@@ -24,15 +24,20 @@ public:
 
 	// Init material
 	void Init();
-
-	void Use();
-	// Activate material's textures
-	void ActivateTextures() const;
+	// Bind shader
+	void BindShader(const Shader &shader);
 	// Add texture to material
 	void AddTexture(const ITexture *t);
 
-	// Bind shader
-	void BindShader(const Shader &shader);
+	// Activate shader
+	void Use();
+	// Deactivate shader
+	void Stop();
+
+	// Activate material's textures
+	void ActivateTextures() const;
+	// Deactivate material's textures
+	void DeactivateTextures() const;
 
 	// Getters
 	Shader &GetShader();

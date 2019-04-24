@@ -1,5 +1,4 @@
 #include "Material.h"
-#include <Engine/TEMP/tinyxml2/tinyxml2.h>
 #include <Engine/Rendering/OpenGL.h>
 #include <Engine/Rendering/Cubemap.h>
 
@@ -16,6 +15,11 @@ void Material::Use()
 {
 	// activate shader
 	shader.Use();
+}
+
+void Material::Stop()
+{	
+	shader.Stop();
 }
 
 void Material::ActivateTextures() const
@@ -77,6 +81,16 @@ void Material::ActivateTextures() const
 
 		// activate
 		t.Activate(type);
+	}
+}
+
+void Material::DeactivateTextures() const
+{
+	// deactivate each texture
+	UINT textureCount = textures.GetTop();
+	for (UINT i = 0; i < textureCount; i++)
+	{
+		textures[i]->Deactivate();
 	}
 }
 

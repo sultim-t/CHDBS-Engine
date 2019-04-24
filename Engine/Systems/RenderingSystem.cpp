@@ -101,35 +101,46 @@ void RenderingSystem::Update()
 
 				// DebugDrawer::Instance().Draw(transformedSphere);
 
+				// get mesh's material
 				StandardMaterial *mat = (StandardMaterial*)materials[j];
 
-				const Shader &shader = mat->GetShader();
-
+				// activate material
 				mat->Use();
+
+				// activate shadowmap (only one directional for now)
 				if (lights->operator[](0)->IsCastingShadows())
 				{
 					mat->ActivateShadowMap();
 				}
 
+				// set light count to shader
 				mat->SetLightCount(lights->GetSize());
 
+				// for each light
 				for (int l = 0; l < lights->GetSize(); l++)
 				{
+					// set light's properties
 					CLight *light = lights->operator[](l);
 
 					mat->SetLight(*light, l);
 					mat->SetLightSpace(light->GetLightSpace(frustumForShadowmap));
 				}
 
+				// set camera options
 				mat->SetCameraSpace(camSpace);
 				mat->SetCameraPosition(cam->GetPosition());
 
 				// bind tranform
 				mat->SetModel(meshesTranforms[j]);
+
+				// activate all textures
 				mat->ActivateTextures();
 
 				// draw
 				DrawMesh(vaos[j], modelMeshes[j]->GetIndices().GetSize());
+
+				// deactivate all textures
+				mat->DeactivateTextures();
 			}
 		}
 

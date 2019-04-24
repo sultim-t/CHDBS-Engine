@@ -17,6 +17,9 @@ public:
 
 	// Get current texture resource
 	const TextureResource &GetTextureResource() const;
+
 	// Activate this texture
 	void Activate(int i) const override;
+	// Deactivate this texture
+	void Deactivate() const override;
 };

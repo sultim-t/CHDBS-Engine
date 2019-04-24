@@ -43,7 +43,10 @@ protected:
 	TextureType type;
 
 public:
+	// Activate this texture
 	virtual void Activate(int i) const = 0;
+	// Deactivate this texture
+	virtual void Deactivate() const = 0;
 
 	TextureType GetType() const;
 	UINT GetID() const;

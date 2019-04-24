@@ -14,5 +14,7 @@ public:
 	UINT GetFBO() const;
 
 	// Activate this framebffer texture
-	virtual void Activate(int i) const override;
+	void Activate(int i) const override;	
+	// Deactivate this texture
+	void Deactivate() const override;
 };

@@ -44,3 +44,8 @@ void Cubemap::Activate(int i) const
 	glActiveTexture(GL_TEXTURE0 + i);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, graphicsTextureId);
 }
+
+void Cubemap::Deactivate() const
+{
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}

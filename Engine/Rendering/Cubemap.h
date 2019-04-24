@@ -11,6 +11,8 @@ public:
 	// Order: right, left, top, bottom, front, back
 	void LoadCubemap(const Array<const char*, 6> &paths);
 
-	// Activate this texture
+	// Activate this cubemap
 	void Activate(int i) const override;
+	// Deactivate this cubemap
+	void Deactivate() const override;
 };

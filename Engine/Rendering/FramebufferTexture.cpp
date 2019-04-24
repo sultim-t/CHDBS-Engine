@@ -38,3 +38,8 @@ void FramebufferTexture::Activate(int i) const
 	glActiveTexture(GL_TEXTURE0 + i);
 	glBindTexture(GL_TEXTURE_2D, graphicsTextureId);
 }
+
+void FramebufferTexture::Deactivate() const
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}

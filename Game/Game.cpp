@@ -137,7 +137,7 @@ int main()
 	mat.AddTexture(&textureDB);
 	mat.AddTexture(&reflection);
 	matTR.AddTexture(&textureTR);
-	matTR.AddTexture(&reflection);
+	//matTR.AddTexture(&reflection);
 
 	mat.BindShader(shader);
 	matTR.BindShader(shader);
