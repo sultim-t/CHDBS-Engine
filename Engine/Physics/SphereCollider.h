@@ -1,6 +1,5 @@
 #pragma once
 #include "ICollider.h"
-#include <Engine/Math/Transform.h>
 #include <Engine/Math/Sphere.h>
 
 class SphereCollider : public ICollider
@@ -10,7 +9,7 @@ private:
 	Sphere sphere;
 
 	// Every dynamic collider must have tranformation
-	const Transform *t;
+	// const Transform *t;
 
 	PhysicMaterial physicMaterial;
 
@@ -19,15 +18,16 @@ public:
 	SphereCollider();
 	SphereCollider(const Sphere &sphere);
 
-	void SetTransform(const Transform *t);
+	//void SetTransform(const Transform *t);
 
 	// Get sphere with current transformations
 	Sphere GetSphere() const;
 	// Get current sphere
 	Sphere &GetSphereRef();
 
-	ColliderType GetColliderType() const override;
-	bool Intersect(const ICollider &col, CollisionInfo &info) const override;
-	Sphere GetBoundingSphere() const override;
-	PhysicMaterial GetPhysicMaterial() const override;
+public:
+	ColliderType	GetColliderType() const override;
+	bool			Intersect(const ICollider &col, CollisionInfo &info) const override;
+	Sphere			GetBoundingSphere() const override;
+	PhysicMaterial	GetPhysicMaterial() const override;
 };

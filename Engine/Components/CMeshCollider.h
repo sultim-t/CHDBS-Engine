@@ -16,4 +16,7 @@ public:
 	void Update() override;
 
 	void SetProperty(const String &key, const String &value) override;
+
+public:
+	virtual const Transform &GetTransform() const override;
 };

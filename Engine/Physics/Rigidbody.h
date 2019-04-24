@@ -26,6 +26,7 @@ private:
 
 public:
 	bool NoGravity;
+	bool IsKinematic;
 	
 private:
 	// Update

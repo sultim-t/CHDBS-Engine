@@ -53,3 +53,8 @@ void CMeshCollider::SetProperty(const String & key, const String & value)
 		return;
 	}
 }
+
+const Transform &CMeshCollider::GetTransform() const
+{
+	return GetOwner().GetTransform();
+}

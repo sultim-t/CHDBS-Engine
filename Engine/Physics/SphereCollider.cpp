@@ -1,20 +1,21 @@
 #include "SphereCollider.h"
 #include "MeshCollider.h"
 #include "AABBCollider.h"
+#include <Engine/Math/Intersection.h>
 
 SphereCollider::SphereCollider()
 { }
 
 SphereCollider::SphereCollider(const Sphere &source) : sphere(source) { }
 
-void SphereCollider::SetTransform(const Transform * t)
-{
-	this->t = t;
-}
+//void SphereCollider::SetTransform(const Transform * t)
+//{
+//	this->t = t;
+//}
 
 Sphere SphereCollider::GetSphere() const
 {
-	return Sphere(sphere.GetCenter() + t->GetPosition(), sphere.GetRadius());
+	return Sphere(sphere.GetCenter() + GetTransform().GetPosition(), sphere.GetRadius());
 }
 
 Sphere & SphereCollider::GetSphereRef()
@@ -29,7 +30,7 @@ ColliderType SphereCollider::GetColliderType() const
 
 Sphere SphereCollider::GetBoundingSphere() const
 {
-	return Sphere(sphere.GetCenter() + t->GetPosition(), sphere.GetRadius());
+	return GetSphere();
 }
 
 PhysicMaterial SphereCollider::GetPhysicMaterial() const

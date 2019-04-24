@@ -70,6 +70,12 @@ void Rigidbody::SetMass(float mass)
 
 void Rigidbody::FixedUpdate()
 {
+	// no physics simulation for kinematic objects
+	if (IsKinematic)
+	{
+		return;
+	}
+
 	// update position
 	GetOwner().GetTransform().GetPosition() += velocity * Time::GetFixedDeltaTime();
 
@@ -120,6 +126,7 @@ const ICollider *Rigidbody::GetCollider() const
 #define PROPERTY_KEY_MASS		"Mass"
 #define PROPERTY_KEY_VELOCITY	"Velocity"
 #define PROPERTY_KEY_NOGRAVITY	"NoGravity"
+#define PROPERTY_KEY_KINEMATIC	"IsKinematic"
 
 void Rigidbody::SetProperty(const String &key, const String &value)
 {
@@ -134,6 +141,10 @@ void Rigidbody::SetProperty(const String &key, const String &value)
 	else if (key == PROPERTY_KEY_NOGRAVITY)
 	{
 		NoGravity = value.ToBool();
+	}
+	else if (key == PROPERTY_KEY_KINEMATIC)
+	{
+		IsKinematic = value.ToBool();
 	}
 	else
 	{

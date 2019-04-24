@@ -1,7 +1,7 @@
 #include "AABBCollider.h"
 #include "MeshCollider.h"
 #include "SphereCollider.h"
-#include "MeshCollider.h"
+#include <Engine/Math/Intersection.h>
 
 AABBCollider::AABBCollider()
 { }
@@ -11,15 +11,15 @@ AABBCollider::AABBCollider(const AABB &aabb)
 	this->aabb = aabb;
 }
 
-void AABBCollider::SetTransform(const Transform *t)
-{
-	this->t = t;
-}
+//void AABBCollider::SetTransform(const Transform *t)
+//{
+//	this->t = t;
+//}
 
 AABB AABBCollider::GetAABB() const
 {
 	AABB result = AABB(aabb);
-	result.Move(t->GetPosition());
+	result.Move(GetTransform().GetPosition());
 
 	return result;
 }
@@ -36,11 +36,11 @@ ColliderType AABBCollider::GetColliderType() const
 
 Sphere AABBCollider::GetBoundingSphere() const
 {
-	Vector3 center;
-	float radius;
+	// box with tranformation
+	const AABB &box = GetAABB();
 
-	center = aabb.GetCenter() + t->GetPosition();
-	radius = aabb.GetSize().Length() * 0.5f;
+	Vector3 center = box.GetCenter();
+	float radius = box.GetSize().Length() * 0.5f;
 
 	return Sphere(center, radius);
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <Engine/Physics/ICollider.h>
 
+// Static class for binding common properties of colliders
 class CCollider
 {
 private:

@@ -2,6 +2,7 @@
 #include "AABBCollider.h"
 #include "SphereCollider.h"
 #include <Engine/Rendering/DebugDrawer.h>
+#include <Engine/Math/Intersection.h>
 
 const StaticArray<Triangle> &MeshCollider::GetTriangles() const
 {

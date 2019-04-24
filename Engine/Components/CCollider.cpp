@@ -1,5 +1,7 @@
 #include "CCollider.h"
 
+#define PROPERTY_KEY_COLTRIGGER			"IsTrigger"
+
 #define PROPERTY_KEY_COLSTATICFRICTION	"StaticFriction"
 #define PROPERTY_KEY_COLDYNAMICFRICTION	"DynamicFriction"
 #define PROPERTY_KEY_COLFRICTCOMBINE	"FrictionCombine"
@@ -14,11 +16,11 @@
 
 bool CCollider::SetProperty(ICollider *collider, const String &key, const String &value)
 {
+	ASSERT(collider != nullptr);
+
 	if (key == PROPERTY_KEY_COLSTATICFRICTION)
 	{
-		ASSERT(collider != nullptr);
 		collider->GetPhysicMaterial().SetStaticFriction(value.ToFloat());
-
 		return true;
 	}
 	else if (key == PROPERTY_KEY_COLDYNAMICFRICTION)
@@ -30,24 +32,22 @@ bool CCollider::SetProperty(ICollider *collider, const String &key, const String
 	}
 	else if (key == PROPERTY_KEY_COLFRICTCOMBINE)
 	{
-		ASSERT(collider != nullptr);
 		collider->GetPhysicMaterial().SetFrictionCombine(GetCombineOption(value));
-
 		return true;
 	}
 	else if (key == PROPERTY_KEY_COLRESTITUTION)
 	{
-		ASSERT(collider != nullptr);
 		collider->GetPhysicMaterial().SetRestitution(value.ToFloat());
-
 		return true;
 	}
 	else if (key == PROPERTY_KEY_COLRESTITCOMBINE)
 	{
-		ASSERT(collider != nullptr);
 		collider->GetPhysicMaterial().SetRestitutionCombine(GetCombineOption(value));
-
 		return true;
+	}
+	else if (key == PROPERTY_KEY_COLTRIGGER)
+	{
+		collider->IsTrigger = value.ToBool();
 	}
 
 	return false;

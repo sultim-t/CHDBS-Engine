@@ -6,7 +6,7 @@ CLASSDEFINITION(IComponent, CSphereCollider)
 void CSphereCollider::Init()
 { 
 	// set current transform in collider
-	this->SetTransform(&GetOwner().GetTransform());
+	// this->SetTransform(&GetOwner().GetTransform());
 }
 
 void CSphereCollider::Update()
@@ -34,4 +34,9 @@ void CSphereCollider::SetProperty(const String & key, const String & value)
 		// change sphere's center
 		this->GetSphereRef().SetRadius(value.ToFloat());
 	}
+}
+
+const Transform &CSphereCollider::GetTransform() const
+{
+	return GetOwner().GetTransform();
 }

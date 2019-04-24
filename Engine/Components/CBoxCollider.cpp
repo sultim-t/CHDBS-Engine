@@ -6,7 +6,7 @@ CLASSDEFINITION(IComponent, CBoxCollider)
 void CBoxCollider::Init()
 { 
 	// set current transform in collider
-	this->SetTransform(&GetOwner().GetTransform());
+	// this->SetTransform(&GetOwner().GetTransform());
 }
 
 void CBoxCollider::Update()
@@ -38,4 +38,9 @@ void CBoxCollider::SetProperty(const String & key, const String & value)
 	{
 		this->GetAABBRef().SetMin(value.ToVector3());
 	}
+}
+
+const Transform &CBoxCollider::GetTransform() const
+{
+	return GetOwner().GetTransform();
 }

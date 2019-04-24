@@ -2,6 +2,7 @@
 #include "CollisionInfo.h"
 #include "PhysicMaterial.h"
 #include <Engine/Math/Sphere.h>
+#include <Engine/Math/Transform.h>
 
 enum class ColliderType
 {
@@ -10,10 +11,20 @@ enum class ColliderType
 	Mesh
 };
 
+enum class PhysicsMessage
+{
+	CollisionEnter,
+	CollisionExit,
+	TriggerEnter,
+	TriggerExit
+};
+
 // Represents collider
 class ICollider
 {
 public:
+	bool IsTrigger;
+
 	// Get current collider type
 	virtual ColliderType GetColliderType() const = 0;
 
@@ -25,4 +36,10 @@ public:
 
 	// Get physic material of this collider
 	virtual PhysicMaterial GetPhysicMaterial() const = 0;
+
+	// Get current tranformation of collider
+	virtual const Transform &GetTransform() const = 0;
+
+	// Send physics message to all other components
+	//virtual void SendPhysicsMessage() = 0;
 };
