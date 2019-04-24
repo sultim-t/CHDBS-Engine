@@ -193,17 +193,21 @@ void MeshCollider::RecalculateBoundingParts()
 	float delta = MESH_COLLIDER_PART_SIZE;
 
 	// get discrete min and max
-	float minX = (float)((int)(min[0] / delta) - 1);
-	float minY = (float)((int)(min[1] / delta) - 1);
-	float minZ = (float)((int)(min[2] / delta) - 1);
+	int minX = (int)(min[0] / delta) - 1;
+	int minY = (int)(min[1] / delta) - 1;
+	int minZ = (int)(min[2] / delta) - 1;
 
-	float maxX = (float)((int)(max[0] / delta) + 1);
-	float maxY = (float)((int)(max[1] / delta) + 1);
-	float maxZ = (float)((int)(max[2] / delta) + 1);
+	int maxX = (int)(max[0] / delta) + 1;
+	int maxY = (int)(max[1] / delta) + 1;
+	int maxZ = (int)(max[2] / delta) + 1;
 
-	int partsXCount = (int)Abs(maxX - minX);
-	int partsYCount = (int)Abs(maxY - minY);
-	int partsZCount = (int)Abs(maxZ - minZ);
+	int partsXCount = maxX - minX;
+	int partsYCount = maxY - minY;
+	int partsZCount = maxZ - minZ;
+
+	partsXCount = partsXCount >= 0 ? partsXCount : -partsXCount;
+	partsYCount = partsYCount >= 0 ? partsYCount : -partsYCount;
+	partsZCount = partsZCount >= 0 ? partsZCount : -partsZCount;
 
 	// reinit array
 	parts.Init(partsXCount * partsYCount * partsZCount);
@@ -235,17 +239,29 @@ void MeshCollider::RecalculateBoundingParts()
 
 	partsCount = partIndex;
 
-	// all parts are created
-	for (UINT i = 0; i < partsCount; i++)
+	// for each triangle
+	UINT triangleCount = triangles.GetSize();
+	for (UINT t = 0; t < triangleCount; t++)
 	{
-		MeshBoundingPart &part = parts[i];
-
-		// for each triangle
-		UINT triangleCount = triangles.GetSize();
-		for (UINT i = 0; i < triangleCount; i++)
+		for (int p = 0; p < 3; p++)
 		{
+			const Vector3 &point = triangles[t].ABC[p];
+
+			float fi = point[0] / delta;
+			float fj = point[1] / delta;
+			float fk = point[2] / delta;
+
+			int i = fi >= 0.0f ? (int)(fi) : (int)(fi) - 1;
+			int j = fj >= 0.0f ? (int)(fj) : (int)(fj) - 1;
+			int k = fk >= 0.0f ? (int)(fk) : (int)(fk) - 1;
+
+			i -= minX;
+			j -= minY;
+			k -= minZ;
+
+			MeshBoundingPart &part = parts[i * partsYCount * partsZCount + j * partsZCount + k];
 			// try to add
-			part.TryToAdd(triangles[i], i);
+			part.TryToAdd(triangles[t], t);
 		}
 	}
 }
