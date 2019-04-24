@@ -21,24 +21,24 @@ public:
 
 	// Test ray and sphere intersection
 	//   "point" is a intersection point on sphere
-	static bool RaySphere(const Ray &ray, const Sphere &s, Vector3 &point);
+	static bool RaySphere(const Ray &ray, const Sphere &s, Vector3 &point, float &t);
 	// Test ray and sphere intersection
 	//   "point" is a intersection point on sphere
 	//   "normal" is a normal on sphere in intersection point
-	static bool RaySphere(const Ray &ray, const Sphere &s, Vector3 &point, Vector3 &normal);
+	static bool RaySphere(const Ray &ray, const Sphere &s, Vector3 &point, Vector3 &normal, float &t);
 	// Test ray and AABB intersection
 	//   "point" is a intersection point on AABB
 	//   "t" is a t of ray
 	static bool RayAABB(const Ray &ray, const AABB &aabb, Vector3 &point, float &t);
 	static bool RayPlane(const Ray &ray, const Plane &p, Vector3 &point);
-	static bool RayTriangle(const Ray &ray, const Triangle &t, Vector3 &barycentric);
+	static bool RayTriangle(const Ray &ray, const Triangle &tr, Vector3 &barycentric, float &t);
 
 
 	static bool SegmentAABB(const Vector3 &p0, const Vector3 &p1, const AABB &aabb, Vector3 &point, float &t);
 	static bool SegmentPlane(const Vector3 &p0, const Vector3 &p1, const Plane &p, Vector3 &point);
 	// Test segment and AABB intersection
 	//   "barycentric" is a barycentric coords on triangle of intersection
-	static bool SegmentTriangle(const Vector3 &p0, const Vector3 &p1, const Triangle &t, Vector3 &barycentric);
+	static bool SegmentTriangle(const Vector3 &p0, const Vector3 &p1, const Triangle &tr, Vector3 &barycentric, float &t);
 
 
 	static bool SphereInsideFrustum(const Frustum &f, const Sphere &s);
@@ -62,10 +62,10 @@ public:
 	// Test mesh and ray.
 	//   "worldPoint" is a intersection point in world space
 	//   "normal" is an intersection normal
-	static bool MeshRay(const StaticArray<Triangle> &triangles, const Ray &ray, Vector3 &worldPoint, Vector3 & normal);
+	static bool MeshRay(const StaticArray<Triangle> &triangles, const Ray &ray, Vector3 &worldPoint, Vector3 & normal, float &t);
 	// Test mesh and segment.
 	//   "worldPoint" is a intersection point in world space
-	static bool MeshSegment(const StaticArray<Triangle> &triangles, const Vector3 &start, const Vector3 &end, Vector3 &worldPoint);
+	static bool MeshSegment(const StaticArray<Triangle> &triangles, const Vector3 &start, const Vector3 &end, Vector3 &worldPoint, float &t);
 
 
 	// With penetration data
@@ -82,6 +82,6 @@ public:
 	static bool MeshAABB(const StaticArray<Triangle>& triangles, const DynamicArray<int>& indices, const AABB & aabb, Vector3 & point, Vector3 & normal, float & penetration);
 
 private:
-	static bool SegRayTriangle(const Vector3 &p, const Vector3 &q, const Triangle &tr, Vector3 &barycentric, bool isSegment);
+	static bool SegRayTriangle(const Vector3 &p, const Vector3 &q, const Triangle &tr, Vector3 &barycentric, bool isSegment, float &t);
 	static bool PlaneBoxOverlap(const Vector3 &normal, const Vector3 &vert, const Vector3 &maxbox);
 };

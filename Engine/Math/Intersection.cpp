@@ -299,14 +299,14 @@ bool Intersection::MeshPlane(const StaticArray<Triangle> &triangles, const Plane
 	return false;
 }
 
-bool Intersection::MeshRay(const StaticArray<Triangle> &triangles, const Ray & ray, Vector3 & worldPoint, Vector3 & normal)
+bool Intersection::MeshRay(const StaticArray<Triangle> &triangles, const Ray & ray, Vector3 & worldPoint, Vector3 & normal, float &t)
 {
 	UINT size = triangles.GetSize();
 	Vector3 barycentric;
 
 	for (UINT i = 0; i < size; i++)
 	{
-		if (RayTriangle(ray, triangles[i], barycentric))
+		if (RayTriangle(ray, triangles[i], barycentric, t))
 		{
 			worldPoint = triangles[i].GetCartesian(barycentric);
 			normal = triangles[i].GetNormal().GetNormalized();
@@ -317,14 +317,14 @@ bool Intersection::MeshRay(const StaticArray<Triangle> &triangles, const Ray & r
 	return false;
 }
 
-bool Intersection::MeshSegment(const StaticArray<Triangle> &triangles, const Vector3 & start, const Vector3 & end, Vector3 & worldPoint)
+bool Intersection::MeshSegment(const StaticArray<Triangle> &triangles, const Vector3 & start, const Vector3 & end, Vector3 & worldPoint, float &t)
 {
 	UINT size = triangles.GetSize();
 	Vector3 barycentric;
 
 	for (UINT i = 0; i < size; i++)
 	{
-		if (SegmentTriangle(start, end, triangles[i], barycentric))
+		if (SegmentTriangle(start, end, triangles[i], barycentric, t))
 		{
 			worldPoint = triangles[i].GetCartesian(barycentric);
 			return true;
@@ -456,7 +456,7 @@ bool Intersection::AABBPlane(const AABB & aabb, const Plane & p)
 	return s <= r;
 }
 
-bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point)
+bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point, float &t)
 {
 	Vector3 m = ray.GetStart() - s.GetCenter();
 	float b = Vector3::Dot(m, ray.GetDirection());
@@ -477,7 +477,7 @@ bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point)
 	}
 	
 	// Ray now found to intersect sphere, compute smallest t value of intersection
-	float t = -b - Sqrt(discr);
+	t = -b - Sqrt(discr);
 	
 	// If t is negative, ray started inside sphere so clamp t to zero
 	if (t < 0.0f)
@@ -490,9 +490,9 @@ bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point)
 	return true;
 }
 
-bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point, Vector3 & normal)
+bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point, Vector3 & normal, float &t)
 {
-	if (!RaySphere(ray, s, point))
+	if (!RaySphere(ray, s, point, t))
 	{
 		return false;
 	}
@@ -586,9 +586,9 @@ bool Intersection::RayPlane(const Ray & ray, const Plane & p, Vector3 & point)
 	return false;
 }
 
-bool Intersection::RayTriangle(const Ray & ray, const Triangle & t, Vector3 & barycentric)
+bool Intersection::RayTriangle(const Ray & ray, const Triangle & tr, Vector3 & barycentric, float &t)
 {
-	return SegRayTriangle(ray.GetStart(), ray.GetStart() + ray.GetDirection(), t, barycentric, false);
+	return SegRayTriangle(ray.GetStart(), ray.GetStart() + ray.GetDirection(), tr, barycentric, false, t);
 }
 
 bool Intersection::SegmentAABB(const Vector3 & p0, const Vector3 & p1, const AABB & aabb, Vector3 & point, float & t)
@@ -656,9 +656,9 @@ bool Intersection::SegmentPlane(const Vector3 & p0, const Vector3 & p1, const Pl
 	return false;
 }
 
-bool Intersection::SegmentTriangle(const Vector3 & p, const Vector3 & q, const Triangle & tr, Vector3 & barycentric)
+bool Intersection::SegmentTriangle(const Vector3 & p, const Vector3 & q, const Triangle & tr, Vector3 & barycentric, float &t)
 {
-	return SegRayTriangle(p, q, tr, barycentric, true);
+	return SegRayTriangle(p, q, tr, barycentric, true, t);
 }
 
 bool Intersection::SphereInsideFrustum(const Frustum & f, const Sphere & s)
@@ -691,10 +691,9 @@ bool Intersection::AABBInsideFrustum(const Frustum & f, const AABB & aabb)
 	return true;
 }
 
-bool Intersection::SegRayTriangle(const Vector3 & p, const Vector3 & q, const Triangle & tr, Vector3 & barycentric, bool isSegment)
+bool Intersection::SegRayTriangle(const Vector3 & p, const Vector3 & q, const Triangle & tr, Vector3 & barycentric, bool isSegment, float &t)
 {
 	float u, v, w; // Barycentric coords of intersection
-	float t;
 
 	Vector3 ab = tr.B - tr.A;
 	Vector3 ac = tr.C - tr.A;

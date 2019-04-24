@@ -1,5 +1,12 @@
 #include "PhysicsSystem.h"
+
 #include <Engine/Math/Intersection.h>
+#include <Engine/Math/Ray.h>
+#include <Engine/Physics/AABBCollider.h>
+#include <Engine/Physics/SphereCollider.h>
+#include <Engine/Physics/MeshCollider.h>
+#include <Engine/Physics/RaycastInfo.h>
+
 #include <Engine/Rendering/DebugDrawer.h>
 
 Vector3 PhysicsSystem::Gravity = Vector3(0.0f, -9.8f, 0.0f);
@@ -60,12 +67,126 @@ void PhysicsSystem::Reset()
 
 bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, const float distance, RaycastInfo & info)
 {
+	ASSERT(0);
 	return false;
 }
 
 bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, RaycastInfo & info)
 {
-	return false;
+	int dynamicCount = rigidbodies->GetSize();
+	int staticCount = colliders->GetSize();
+
+	Vector3 point, normal;
+	float distance;
+	bool hitted = false;
+
+	// for each rigidbody
+	for (int i = 0; i < dynamicCount; i++)
+	{
+		const Rigidbody *rb = rigidbodies->operator[](i);
+		const ICollider *col = rb->GetCollider();
+		ColliderType coltype = col->GetColliderType();
+
+		if (coltype == ColliderType::AABB)
+		{
+			if (Intersection::RayAABB(Ray(pos, dir), ((AABBCollider*)col)->GetAABB(), point, distance))
+			{
+				if (info.Distance > distance)
+				{
+					info.Point = point;
+					info.Hitted = col;
+					info.HittedRigidbody = rb;
+					info.Distance = distance;
+					info.Normal = Vector3(0, 1, 0); // temp;
+
+					hitted = true;
+				}
+			}
+		}
+		else if (coltype == ColliderType::Sphere)
+		{
+			if (Intersection::RaySphere(Ray(pos, dir), ((SphereCollider*)col)->GetSphere(), point, normal, distance))
+			{
+				if (info.Distance > distance)
+				{
+					info.Point = point;
+					info.Hitted = col;
+					info.HittedRigidbody = rb;
+					info.Distance = distance;
+					info.Normal = normal;
+
+					hitted = true;
+				}
+			}
+		}
+		else
+		{
+			// no other intersections are not available
+			ASSERT(0);
+		}
+	}
+
+	// for each static collider
+	for (int i = 0; i < staticCount; i++)
+	{
+		const ICollider *col = colliders->operator[](i);
+		ColliderType coltype = col->GetColliderType();
+
+		if (coltype == ColliderType::AABB)
+		{
+			if (Intersection::RayAABB(Ray(pos, dir), ((AABBCollider*)col)->GetAABB(), point, distance))
+			{
+				if (info.Distance > distance)
+				{
+					info.Point = point;
+					info.Hitted = col;
+					info.HittedRigidbody = nullptr;
+					info.Distance = distance;
+					info.Normal = Vector3(0, 1, 0); // temp;
+
+					hitted = true;
+				}
+			}
+		}
+		else if (coltype == ColliderType::Sphere)
+		{
+			if (Intersection::RaySphere(Ray(pos, dir), ((SphereCollider*)col)->GetSphere(), point, normal, distance))
+			{
+				if (info.Distance > distance)
+				{
+					info.Point = point;
+					info.Hitted = col;
+					info.HittedRigidbody = nullptr;
+					info.Distance = distance;
+					info.Normal = normal;
+
+					hitted = true;
+				}
+			}
+		}
+		else if (coltype == ColliderType::Mesh)
+		{
+			if (Intersection::MeshRay(((MeshCollider*)col)->GetTriangles(), Ray(pos, dir), point, normal, distance))
+			{
+				if (info.Distance > distance)
+				{
+					info.Point = point;
+					info.Hitted = col;
+					info.HittedRigidbody = nullptr;
+					info.Distance = distance;
+					info.Normal = normal;
+
+					hitted = true;
+				}
+			}
+		}
+		else
+		{
+			ASSERT(0);
+		}
+	}
+
+	return hitted;
 }
 
 void PhysicsSystem::GetApproximateCollisions()

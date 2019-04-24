@@ -13,6 +13,8 @@
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/ResourceManager/ResourceManager.h>
 
+#include <Game/Scripts/Weapon.h>
+
 template <class T>
 IComponent *CompCreator(const ComponentResource &componentResource);
 
@@ -67,6 +69,8 @@ EntityFactory::EntityFactory()
 	PRegisterComponentType<CMeshCollider>("CMeshCollider");
 	PRegisterComponentType<CBoxCollider>("CBoxCollider");
 	PRegisterComponentType<CSphereCollider>("CSphereCollider");
+	
+	PRegisterComponentType<CWeapon>("CWeapon");
 }
 
 EntityFactory::~EntityFactory()

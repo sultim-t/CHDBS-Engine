@@ -29,6 +29,12 @@
   
   <CSphereCollider
     SphereRadius="2"
+    Offset="0 -0.5 0"
   />
+  
+  <CWeapon
+    ReloadingTime="0.5"
+    WeaponType="Shotgun"
+    />
   
 </Entity>
