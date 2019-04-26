@@ -263,9 +263,9 @@ Entity *Scene::FindEntity(const char *name)
 	return nullptr;
 }
 
-void Scene::SubscribeFixedUpdate(const FixedUpdateFunction & func)
+void Scene::SubscribeFixedUpdate(IEventHandler *handler)
 {
-	fixedUpdates += func;
+	fixedUpdates += handler;
 }
 
 int Scene::GetID() const

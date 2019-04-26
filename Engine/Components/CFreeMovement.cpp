@@ -19,7 +19,7 @@ CLASSDEFINITION(IComponent, CFreeMovement)
 
 void CFreeMovement::Init()
 {
-	SceneManager::Instance().GetCurrentScene().SubscribeFixedUpdate((FixedUpdateFunction)FixedUpdate);
+	SceneManager::Instance().GetCurrentScene().SubscribeFixedUpdate(this);
 }
 
 void CFreeMovement::Update()
@@ -35,6 +35,11 @@ void CFreeMovement::SetProperty(const String &key, const String &value)
 	{
 		Logger::Print("Wrong CFreeMovement property");
 	}
+}
+
+void CFreeMovement::Function(int a)
+{
+	FixedUpdate();
 }
 
 void CFreeMovement::ProcessKeyboard()
@@ -131,7 +136,7 @@ void CFreeMovement::ProcessMouseScroll(float yoffset)
 	cam->SetFOV(fov);
 }
 
-void CFreeMovement::FixedUpdate(int a)
+void CFreeMovement::FixedUpdate()
 {
 	if (Input::IsPressed(Keycode::KeyESCAPE))
 	{

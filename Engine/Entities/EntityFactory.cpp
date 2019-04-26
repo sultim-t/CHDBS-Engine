@@ -10,31 +10,7 @@
 #include <Engine/Components/CSphereCollider.h>
 #include <Engine/Components/CMeshCollider.h>
 #include <Engine/Physics/Rigidbody.h>
-#include <Engine/Systems/ComponentSystem.h>
 #include <Engine/ResourceManager/ResourceManager.h>
-
-//#include <Game/Scripts/Weapon.h>
-
-template <class T>
-IComponent *CompCreator(const ComponentResource &componentResource);
-
-template<class T>
-IComponent *CompCreator(const ComponentResource &componentResource)
-{
-	IComponent *c = new T();
-
-	// get all tuples
-	const StaticArray<StringTuple> &tuples = componentResource.GetKeysValues();
-
-	// for each key-value
-	for (UINT i = 0; i < tuples.GetSize(); i++)
-	{
-		// set property to component
-		c->SetProperty(tuples[i].Left(), tuples[i].Right());
-	}
-
-	return c;
-}
 
 EntityID EntityFactory::GetNextEntityID()
 {
@@ -69,8 +45,6 @@ EntityFactory::EntityFactory()
 	PRegisterComponentType<CMeshCollider>("CMeshCollider");
 	PRegisterComponentType<CBoxCollider>("CBoxCollider");
 	PRegisterComponentType<CSphereCollider>("CSphereCollider");
-	
-	//PRegisterComponentType<CWeapon>("CWeapon");
 }
 
 EntityFactory::~EntityFactory()

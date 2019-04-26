@@ -43,7 +43,7 @@
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/Entities/EntityFactory.h>
 
-//#include "Scripts/Weapon.h"
+#include "Scripts/Weapon.h"
 
 void Game::Start()
 {
@@ -74,7 +74,7 @@ int main()
 
 	DebugDrawer::Instance().Init("Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
 
-	//EntityFactory::RegisterComponentType<CWeapon>("CWeapon");
+	EntityFactory::RegisterComponentType<CWeapon>("CWeapon");
 
 
 
