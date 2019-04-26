@@ -24,17 +24,12 @@
   <Rigidbody
     Mass="20"
     Velocity="0 0 0"
-    NoGravity="1"
+    NoGravity="0"
     />
   
   <CSphereCollider
     SphereRadius="2"
     Offset="0 -0.5 0"
   />
-  
-  <CWeapon
-    ReloadingTime="0.5"
-    WeaponType="Shotgun"
-    />
-  
+
 </Entity>

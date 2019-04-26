@@ -76,7 +76,4 @@ void Engine::FixedUpdate()
 	// update all physics objects
 	// check their collisions, solve them
 	PhysicsSystem::Instance().Update();
-
-	// update all components with fixed update
-	ComponentSystem::Instance().FixedUpdate();
 }

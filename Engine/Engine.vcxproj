@@ -234,6 +234,7 @@
     <ClCompile Include="TEMP\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Base\Event.h" />
     <ClInclude Include="Base\StringTuple.h" />
     <ClInclude Include="Components\CBoxCollider.h" />
     <ClInclude Include="Components\CCollider.h" />

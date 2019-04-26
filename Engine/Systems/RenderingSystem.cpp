@@ -123,7 +123,11 @@ void RenderingSystem::Update()
 					CLight *light = lights->operator[](l);
 
 					mat->SetLight(*light, l);
-					mat->SetLightSpace(light->GetLightSpace(frustumForShadowmap));
+
+					if (light->GetLightType() != LightType::Point)
+					{
+						mat->SetLightSpace(light->GetLightSpace(frustumForShadowmap));
+					}
 				}
 
 				// set camera options

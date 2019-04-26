@@ -32,6 +32,7 @@
 #include <Engine/Rendering/Materials/StandardMaterial.h>
 #include <Engine/Rendering/DebugDrawer.h>
 #include <Engine/Physics/Rigidbody.h>
+#include <Engine/Base/Event.h>
 
 
 #include <Engine/Systems/RenderingSystem.h>
@@ -42,7 +43,7 @@
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/Entities/EntityFactory.h>
 
-#include "Scripts/Weapon.h"
+//#include "Scripts/Weapon.h"
 
 void Game::Start()
 {

@@ -26,8 +26,6 @@ public:
 
 	// Update IUpdatable objects' active components 
 	void Update() override;
-	// Update IFixedUpdatable objects' active components 
-	void FixedUpdate();
 
 	// Set pointer to entities array to update them
 	void Register(const DynamicArray<Entity*> *entities);

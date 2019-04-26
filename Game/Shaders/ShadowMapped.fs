@@ -97,12 +97,16 @@ void main()
 			// cone
 
 			float coneAngle = u_Lights[i].ConeAngle;
-			vec3 coneDir = u_Lights[i].ConeDirection;
 
-			float lightToSurfAngle = degrees(acos(dot(-surfToLight, normalize(coneDir))));
-			if (lightToSurfAngle > coneAngle)
+			if (coneAngle <= 90.0)
 			{
-				atten = 0.0;
+				vec3 coneDir = u_Lights[i].ConeDirection;
+
+				float lightToSurfAngle = degrees(acos(dot(-surfToLight, normalize(coneDir))));
+				if (lightToSurfAngle > coneAngle)
+				{
+					atten = 0.0;
+				}
 			}
 		}
 

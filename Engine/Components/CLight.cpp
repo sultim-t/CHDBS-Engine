@@ -99,8 +99,6 @@ LightType CLight::GetLightType() const
 
 const Matrix4 CLight::GetLightSpace(const Frustum &frustum) const
 {
-	if (ltype == LightType::Directional)
-	{
 		// bounding box for frustum in light space
 		AABB frustumBounding = GetFrustumBounding(frustum);
 
@@ -122,14 +120,6 @@ const Matrix4 CLight::GetLightSpace(const Frustum &frustum) const
 		DebugDrawer::Instance().Draw(Sphere(pos, 10), Color4(255, 0, 255));
 
 		return GetLightView(pos) * GetProjection(frustumBounding);
-	}
-	else
-	{
-		Vector3 pos = owner->GetTransform().GetPosition();
-
-		ASSERT(0);
-		return 0;
-	}
 }
 
 float CLight::GetBias() const
@@ -139,7 +129,15 @@ float CLight::GetBias() const
 
 float CLight::GetConeAngle() const
 {
-	return coneAngle;
+	// if a spot light
+	if (ltype == LightType::Spot)
+	{
+		return coneAngle;
+
+	}
+
+	// return some value > 90
+	return 180.0f;
 }
 
 Vector3 CLight::GetConeDirection() const

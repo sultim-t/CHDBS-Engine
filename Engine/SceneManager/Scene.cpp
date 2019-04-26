@@ -26,7 +26,8 @@ void Scene::Init()
 {
 	// allocate memory
 	entities.Init(128);
-	
+	fixedUpdates.Init();
+
 	rigidbodies.Init(128);
 	colliders.Init(128);
 
@@ -67,7 +68,8 @@ void Scene::Update()
 
 void Scene::FixedUpdate()
 {
-	// todo
+	// call all subscribers to fixed update event
+	fixedUpdates(0);
 }
 
 void Scene::Load()
@@ -259,6 +261,11 @@ Entity *Scene::FindEntity(const char *name)
 	}
 
 	return nullptr;
+}
+
+void Scene::SubscribeFixedUpdate(const FixedUpdateFunction & func)
+{
+	fixedUpdates += func;
 }
 
 int Scene::GetID() const

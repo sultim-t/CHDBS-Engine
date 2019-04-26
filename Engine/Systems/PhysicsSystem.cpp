@@ -335,20 +335,25 @@ void PhysicsSystem::SolveCollision(const CollisionInfo &info)
 	// if exist other rigidbody
 	if (rbOther != nullptr)
 	{
-		// change its velocity
-		rbOther->velocity -= impulseVec * invMassOther;
+		if (!rbOther->IsKinematic)
+		{	
+			// change its velocity
+			rbOther->velocity -= impulseVec * invMassOther;
+		}
 	}
 
-	rbThis->velocity += impulseVec * invMassThis;
+	if (!rbThis->IsKinematic)
+	{
+		rbThis->velocity += impulseVec * invMassThis;
+	}
 }
 
 void PhysicsSystem::ApplyPositionCorrection(Rigidbody *rbThis, Rigidbody *rbOther, float invMassThis, float invMassOther,const Vector3 &normal, float penetration)
 {	
 	float slop = 0.01f;
-	float percent = 0.2f;
 
 	// position correction
-	Vector3 correction = normal * Max(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
+	Vector3 correction = normal * Max(penetration - slop, 0.0f) / (invMassThis + invMassOther);
 
 	// change positions
 	rbThis->GetOwner().GetTransform().Translate(correction * invMassThis);

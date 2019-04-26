@@ -1,6 +1,10 @@
 #pragma once
 #include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/Rendering/Skybox.h>
+#include <Engine/Base/Event.h>
+
+// Delegate for fixed update call
+typedef void(*FixedUpdateFunction)(int);
 
 class Scene
 {
@@ -11,6 +15,9 @@ private:
 	// Unique index of scene
 	int		sceneId;
 	String	name;
+
+	// Event to subscribe, will be called on fixed update
+	Event	fixedUpdates;
 
 	// Stores all entities in this scene
 	DynamicArray<Entity*>			entities;
@@ -42,7 +49,7 @@ private:
 
 	// Update all components per frame
 	void Update();
-	// Update all physics
+	// Update all components which are using fixed step
 	void FixedUpdate();
 
 	// Load all resources needed for entities in this scene
@@ -69,6 +76,9 @@ public:
 
 	// Find entity in this scene by its name
 	Entity *FindEntity(const char *name);
+
+	// Subscribe component for fixed update
+	void SubscribeFixedUpdate(const FixedUpdateFunction &func);
 
 	// Get scene's ID
 	int GetID() const;

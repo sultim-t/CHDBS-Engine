@@ -13,7 +13,7 @@
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/ResourceManager/ResourceManager.h>
 
-#include <Game/Scripts/Weapon.h>
+//#include <Game/Scripts/Weapon.h>
 
 template <class T>
 IComponent *CompCreator(const ComponentResource &componentResource);
@@ -70,7 +70,7 @@ EntityFactory::EntityFactory()
 	PRegisterComponentType<CBoxCollider>("CBoxCollider");
 	PRegisterComponentType<CSphereCollider>("CSphereCollider");
 	
-	PRegisterComponentType<CWeapon>("CWeapon");
+	//PRegisterComponentType<CWeapon>("CWeapon");
 }
 
 EntityFactory::~EntityFactory()

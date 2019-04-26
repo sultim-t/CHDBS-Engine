@@ -13,6 +13,8 @@ private:
 	void ProcessMouseMovement(float xoffset, float yoffset);
 	void ProcessKeyboard();
 	void ProcessMouseScroll(float yoffset);
+	
+	void FixedUpdate(int a);
 
 public:
 	void Init() override;

@@ -3,6 +3,7 @@
 #include <Engine/Entities/Entity.h>
 #include <Engine/Components/CCamera.h>
 #include <Engine/Physics/Rigidbody.h>
+#include <Engine/SceneManager/SceneManager.h>
 
 #define MOVE_FORWARD	0
 #define MOVE_BACK		1
@@ -17,22 +18,12 @@
 CLASSDEFINITION(IComponent, CFreeMovement)
 
 void CFreeMovement::Init()
-{ }
+{
+	SceneManager::Instance().GetCurrentScene().SubscribeFixedUpdate((FixedUpdateFunction)FixedUpdate);
+}
 
 void CFreeMovement::Update()
-{
-	if (Input::IsPressed(Keycode::KeyESCAPE))
-	{
-		ContextWindow::Instance().RequestClose();
-	}
-
-	float scroll = Input::IsPressed(Keycode::KeyKPSUBTRACT)? -1.0f : 0.0f;
-	scroll += Input::IsPressed(Keycode::KeyKPADD)? 1.0f : 0.0f;
-
-	ProcessMouseMovement(Input::MouseXOffset, Input::MouseYOffset);
-	ProcessMouseScroll(scroll);
-	ProcessKeyboard();
-}
+{ }
 
 void CFreeMovement::SetProperty(const String &key, const String &value)
 {
@@ -138,4 +129,19 @@ void CFreeMovement::ProcessMouseScroll(float yoffset)
 		fov = 120.0f;
 
 	cam->SetFOV(fov);
+}
+
+void CFreeMovement::FixedUpdate(int a)
+{
+	if (Input::IsPressed(Keycode::KeyESCAPE))
+	{
+		ContextWindow::Instance().RequestClose();
+	}
+
+	float scroll = Input::IsPressed(Keycode::KeyKPSUBTRACT) ? -1.0f : 0.0f;
+	scroll += Input::IsPressed(Keycode::KeyKPADD) ? 1.0f : 0.0f;
+
+	ProcessMouseMovement(Input::MouseXOffset, Input::MouseYOffset);
+	ProcessMouseScroll(scroll);
+	ProcessKeyboard();
 }
