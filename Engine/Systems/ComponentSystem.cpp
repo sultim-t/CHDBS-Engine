@@ -40,14 +40,28 @@ void ComponentSystem::Update()
 	}
 }
 
+void ComponentSystem::FixedUpdate()
+{
+	if (fixedUpdates != nullptr)
+	{
+		fixedUpdates->operator()(0);
+	}
+}
+
 void ComponentSystem::Register(const DynamicArray<Entity*> *entities)
 {
 	this->entities = entities;
 }
 
+void ComponentSystem::RegisterFixed(const Event * fixedUpdateEvents)
+{
+	this->fixedUpdates = fixedUpdateEvents;
+}
+
 void ComponentSystem::Reset()
 {
-	entities = nullptr;
+	this->entities = nullptr;
+	this->fixedUpdates = nullptr;
 }
 
 ComponentSystem &ComponentSystem::Instance()

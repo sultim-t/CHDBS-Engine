@@ -155,6 +155,7 @@ int main()
 		while (Time::ToFixedUpdate())
 		{
 			PhysicsSystem::Instance().Update();
+			ComponentSystem::Instance().FixedUpdate();
 		}
 
 		InputSystem::Instance().Update();

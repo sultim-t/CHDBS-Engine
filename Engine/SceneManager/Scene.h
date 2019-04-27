@@ -16,8 +16,9 @@ private:
 	int		sceneId;
 	String	name;
 
+
 	// Event to subscribe, will be called on fixed update
-	Event	fixedUpdates;
+	Event							fixedUpdates;
 
 	// Stores all entities in this scene
 	DynamicArray<Entity*>			entities;
@@ -48,9 +49,9 @@ private:
 	void Destroy();
 
 	// Update all components per frame
-	void Update();
+	// void Update();
 	// Update all components which are using fixed step
-	void FixedUpdate();
+	//void FixedUpdate();
 
 	// Load all resources needed for entities in this scene
 	void Load();

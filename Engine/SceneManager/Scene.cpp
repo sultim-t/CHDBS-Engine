@@ -46,6 +46,8 @@ void Scene::Destroy()
 		delete entities[i];
 	}
 
+	fixedUpdates.Delete();
+
 	// delete array
 	entities.Delete();
 
@@ -60,17 +62,17 @@ void Scene::Destroy()
 	particleSystems.Delete();
 }
 
-void Scene::Update()
-{
-	// update each component
-	ComponentSystem::Instance().Update();
-}
-
-void Scene::FixedUpdate()
-{
-	// call all subscribers to fixed update event
-	fixedUpdates(0);
-}
+//void Scene::Update()
+//{
+//	// update each component
+//	ComponentSystem::Instance().Update();
+//}
+//
+//void Scene::FixedUpdate()
+//{
+//	// call all subscribers to fixed update event
+//	fixedUpdates(0);
+//}
 
 void Scene::Load()
 {
@@ -86,6 +88,22 @@ void Scene::Load()
 	RenderingSystem::Instance().Register(&lights);
 	RenderingSystem::Instance().Register(&models);
 	RenderingSystem::Instance().Register(&particleSystems);
+
+	// also, call OnSceneLoading() on each component on each entity
+	int entityCount = entities.GetSize();
+	for (int i = 0; i < entityCount; i++)
+	{
+		const DynamicArray<IComponent*> &components = entities[i]->GetAllComponents();
+		int componentCount = components.GetSize();
+
+		for (int j = 0; j < componentCount; j++)
+		{
+			components[j]->OnSceneLoading(this->sceneId);
+		}
+	}
+
+	// register components for fixed update
+	ComponentSystem::Instance().RegisterFixed(&fixedUpdates);
 }
 
 void Scene::Unload()

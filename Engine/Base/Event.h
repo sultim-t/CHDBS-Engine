@@ -10,7 +10,19 @@ public:
 	virtual void Function(int a) = 0;
 };
 
-// TODO: template
+
+template <class T>
+class Delegate
+{
+public:
+	T Function;
+};
+
+typedef void(*FunctionVoid)();
+typedef Delegate<FunctionVoid> DelegateVoid;
+
+
+// TODO: template, delegates
 class Event
 {
 private:
@@ -31,7 +43,7 @@ public:
 	void operator+=(IEventHandler *function);
 
 	// Calls all subscribers
-	void operator()(int data);
+	void operator()(int data) const;
 
 	// Clear subscribers
 	void Clear();
@@ -56,7 +68,7 @@ inline void Event::operator+=(IEventHandler *function)
 	subscribers.Push(function);
 }
 
-inline void Event::operator()(int data)
+inline void Event::operator()(int data) const
 {
 	int count = subscribers.GetSize();
 	for (int i = 0; i < count; i++)

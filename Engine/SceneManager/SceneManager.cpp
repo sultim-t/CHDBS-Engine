@@ -82,6 +82,7 @@ void SceneManager::LoadScene(const char *name)
 		if (scenes[i]->GetName() == name)
 		{
 			LoadScene(scenes[i]->GetID());
+			return;
 		}
 	}
 

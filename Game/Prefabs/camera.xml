@@ -33,8 +33,8 @@
   />
 
   <CWeapon
-    ReloadingTime="0.5"
-    WeaponType="Shotgun"
+    ReloadingTime="0.08"
+    WeaponType="Gun"
     />
 
 </Entity>

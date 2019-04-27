@@ -18,12 +18,26 @@
 CLASSDEFINITION(IComponent, CFreeMovement)
 
 void CFreeMovement::Init()
-{
-	SceneManager::Instance().GetCurrentScene().SubscribeFixedUpdate(this);
-}
+{ }
 
 void CFreeMovement::Update()
-{ }
+{
+	if (Input::IsPressed(Keycode::KeyESCAPE))
+	{
+		ContextWindow::Instance().RequestClose();
+	}
+
+	float scroll = Input::IsPressed(Keycode::KeyKPSUBTRACT) ? -1.0f : 0.0f;
+	scroll += Input::IsPressed(Keycode::KeyKPADD) ? 1.0f : 0.0f;
+
+	ProcessMouseMovement(Input::MouseXOffset, Input::MouseYOffset);
+	ProcessMouseScroll(scroll);
+}
+
+void CFreeMovement::OnSceneLoading(int sceneId)
+{
+	SceneManager::Instance().GetScene(sceneId).SubscribeFixedUpdate(this);
+}
 
 void CFreeMovement::SetProperty(const String &key, const String &value)
 {
@@ -79,14 +93,11 @@ void CFreeMovement::ProcessKeyboard()
 
 void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)
 {
-	xoffset *= Input::MouseSensitivity * 50;
-	yoffset *= Input::MouseSensitivity * 50;
+	float ax = xoffset * Input::MouseSensitivity;
+	float ay = yoffset * Input::MouseSensitivity;
 
-	float ax = xoffset * Time::GetDeltaTime();
-	float ay = yoffset * Time::GetDeltaTime();
-
-	x += ax;
-	y += ay;
+	x = Lerp(x, x + ax, Time::GetDeltaTime() * 5);
+	y = Lerp(y, y + ay, Time::GetDeltaTime() * 5);
 
 	if (x > 180.0f)
 	{
@@ -138,15 +149,5 @@ void CFreeMovement::ProcessMouseScroll(float yoffset)
 
 void CFreeMovement::FixedUpdate()
 {
-	if (Input::IsPressed(Keycode::KeyESCAPE))
-	{
-		ContextWindow::Instance().RequestClose();
-	}
-
-	float scroll = Input::IsPressed(Keycode::KeyKPSUBTRACT) ? -1.0f : 0.0f;
-	scroll += Input::IsPressed(Keycode::KeyKPADD) ? 1.0f : 0.0f;
-
-	ProcessMouseMovement(Input::MouseXOffset, Input::MouseYOffset);
-	ProcessMouseScroll(scroll);
 	ProcessKeyboard();
 }

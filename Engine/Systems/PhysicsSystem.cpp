@@ -73,6 +73,9 @@ bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, const floa
 
 bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, RaycastInfo & info)
 {
+	// reset info
+	info.Distance = FLT_MAX;
+
 	int dynamicCount = rigidbodies->GetSize();
 	int staticCount = colliders->GetSize();
 
@@ -81,50 +84,50 @@ bool PhysicsSystem::Raycast(const Vector3 & pos, const Vector3 & dir, RaycastInf
 	bool hitted = false;
 
 	// for each rigidbody
-	for (int i = 0; i < dynamicCount; i++)
-	{
-		const Rigidbody *rb = rigidbodies->operator[](i);
-		const ICollider *col = rb->GetCollider();
-		ColliderType coltype = col->GetColliderType();
+	//for (int i = 0; i < dynamicCount; i++)
+	//{
+	//	const Rigidbody *rb = rigidbodies->operator[](i);
+	//	const ICollider *col = rb->GetCollider();
+	//	ColliderType coltype = col->GetColliderType();
 
-		if (coltype == ColliderType::AABB)
-		{
-			if (Intersection::RayAABB(Ray(pos, dir), ((AABBCollider*)col)->GetAABB(), point, distance))
-			{
-				if (info.Distance > distance)
-				{
-					info.Point = point;
-					info.Hitted = col;
-					info.HittedRigidbody = rb;
-					info.Distance = distance;
-					info.Normal = Vector3(0, 1, 0); // temp;
+	//	if (coltype == ColliderType::AABB)
+	//	{
+	//		if (Intersection::RayAABB(Ray(pos, dir), ((AABBCollider*)col)->GetAABB(), point, distance))
+	//		{
+	//			if (info.Distance > distance)
+	//			{
+	//				info.Point = point;
+	//				info.Hitted = col;
+	//				info.HittedRigidbody = rb;
+	//				info.Distance = distance;
+	//				info.Normal = Vector3(0, 1, 0); // temp;
 
-					hitted = true;
-				}
-			}
-		}
-		else if (coltype == ColliderType::Sphere)
-		{
-			if (Intersection::RaySphere(Ray(pos, dir), ((SphereCollider*)col)->GetSphere(), point, normal, distance))
-			{
-				if (info.Distance > distance)
-				{
-					info.Point = point;
-					info.Hitted = col;
-					info.HittedRigidbody = rb;
-					info.Distance = distance;
-					info.Normal = normal;
+	//				hitted = true;
+	//			}
+	//		}
+	//	}
+	//	else if (coltype == ColliderType::Sphere)
+	//	{
+	//		if (Intersection::RaySphere(Ray(pos, dir), ((SphereCollider*)col)->GetSphere(), point, normal, distance))
+	//		{
+	//			if (info.Distance > distance)
+	//			{
+	//				info.Point = point;
+	//				info.Hitted = col;
+	//				info.HittedRigidbody = rb;
+	//				info.Distance = distance;
+	//				info.Normal = normal;
 
-					hitted = true;
-				}
-			}
-		}
-		else
-		{
-			// no other intersections are not available
-			ASSERT(0);
-		}
-	}
+	//				hitted = true;
+	//			}
+	//		}
+	//	}
+	//	else
+	//	{
+	//		// no other intersections are not available
+	//		ASSERT(0);
+	//	}
+	//}
 
 	// for each static collider
 	for (int i = 0; i < staticCount; i++)

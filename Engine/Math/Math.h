@@ -27,3 +27,4 @@ extern "C" float Exp(float x);
 extern "C" float Log(float x);
 extern "C" float Log10(float x);
 extern "C" float Pow(float base, float exp);
+extern "C" float Lerp(float a, float b, float t);

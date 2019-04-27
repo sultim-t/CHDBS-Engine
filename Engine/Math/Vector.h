@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasicMath.h"
+#include "Math.h"
 
 template <class Type, int Dim>
 struct Vector

@@ -60,7 +60,21 @@ void CWeapon::Update()
 void CWeapon::Shoot()
 {
 	const Transform &transform = GetOwner().GetTransform();
-	ASSERT(0);
+
+	Vector3 localDir = Vector3(0, 0, 1);
+	Vector3 dir = transform.DirectionFromLocal(localDir);
+	RaycastInfo info;
+
+	if (PhysicsSystem::Instance().Raycast(transform.GetPosition(), dir, info))
+	{
+		particles->GetOwner().GetTransform().SetPosition(info.Point);
+		particles->Emit(15, info.Normal);
+
+		if (info.HittedRigidbody != nullptr)
+		{
+			// info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 1000.0f);
+		}
+	}
 }
 
 void CWeapon::ShootShotgun()

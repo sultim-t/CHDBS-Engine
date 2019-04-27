@@ -1,6 +1,5 @@
 #pragma once
 
-#include "BasicMath.h"
 #include "Vector.h"
 #include "Matrix.h"
 #include "Quaternion.h"

@@ -1,6 +1,6 @@
 <Entity
   Name="Sun"
-  Euler="50 -30 0">
+  Euler="50 -120 0">
 
   <CLight
     Type="Directional"

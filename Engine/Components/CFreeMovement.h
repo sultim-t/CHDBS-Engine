@@ -10,7 +10,7 @@ private:
 	float x, y;
 	float speed;
 
-private:
+public:
 	void ProcessMouseMovement(float xoffset, float yoffset);
 	void ProcessKeyboard();
 	void ProcessMouseScroll(float yoffset);
@@ -20,6 +20,7 @@ private:
 public:
 	void Init() override;
 	void Update() override;
+	void OnSceneLoading(int sceneId) override;
 
 	void SetProperty(const String &key, const String &value) override;
 

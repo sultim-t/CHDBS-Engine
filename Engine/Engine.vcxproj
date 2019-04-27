@@ -217,7 +217,7 @@
     <ClCompile Include="Rendering\Materials\StandardMaterial.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Math\AABB.cpp" />
-    <ClCompile Include="Math\BasicMath.cpp" />
+    <ClCompile Include="Math\Math.cpp" />
     <ClCompile Include="Rendering\Skeleton.cpp" />
     <ClCompile Include="Rendering\Skybox.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
@@ -278,7 +278,7 @@
     <ClInclude Include="Entities\Entity.h" />
     <ClInclude Include="Entities\EntityFactory.h" />
     <ClInclude Include="Input\Input.h" />
-    <ClInclude Include="Math\BasicMath.h" />
+    <ClInclude Include="Math\Math.h" />
     <ClInclude Include="Math\Frustum.h" />
     <ClInclude Include="Math\Plane.h" />
     <ClInclude Include="Math\Projection.h" />

@@ -58,6 +58,10 @@ public:
 	// Is called by component system each frame
 	virtual void Update() = 0;
 
+	// This function will be called when scene is loading
+	// By default, it's empty
+	virtual void OnSceneLoading(int sceneId) {};
+
 	// Set properties 
 	virtual void SetProperty(const String &key, const String &value) { }
 

@@ -1,4 +1,4 @@
-#include "BasicMath.h"
+#include "Math.h"
 #include <cmath>
 
 float Sqrt(float x)
@@ -125,4 +125,9 @@ float Log10(float x)
 float Pow(float base, float exp)
 {
 	return powf(base, exp);
+}
+
+float Lerp(float a, float b, float t)
+{
+	return a * (1.0f - t) + b * t;
 }
