@@ -33,7 +33,7 @@
   />
 
   <CWeapon
-    ReloadingTime="0.08"
+    ReloadingTime="0.05"
     WeaponType="Gun"
     />
 

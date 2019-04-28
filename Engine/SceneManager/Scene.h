@@ -17,6 +17,8 @@ private:
 	String	name;
 
 
+	// Event to subscribe, will be called on frame change
+	//Event							updates;
 	// Event to subscribe, will be called on fixed update
 	Event							fixedUpdates;
 
@@ -48,11 +50,6 @@ private:
 	// Destroy entities in this scene
 	void Destroy();
 
-	// Update all components per frame
-	// void Update();
-	// Update all components which are using fixed step
-	//void FixedUpdate();
-
 	// Load all resources needed for entities in this scene
 	void Load();
 	// Unloads scene, but does't destroy it
@@ -78,6 +75,8 @@ public:
 	// Find entity in this scene by its name
 	Entity *FindEntity(const char *name);
 
+	// Subscribe component for fixed update
+	//Event &GetUpdateEvent();
 	// Subscribe component for fixed update
 	Event &GetFixedUpdateEvent();
 

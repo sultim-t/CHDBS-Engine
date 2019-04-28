@@ -3,15 +3,11 @@
 #include "AABBCollider.h"
 #include <Engine/Math/Intersection.h>
 
-SphereCollider::SphereCollider()
-{ }
+SphereCollider::SphereCollider() { }
 
-SphereCollider::SphereCollider(const Sphere &source) : sphere(source) { }
+SphereCollider::SphereCollider(const Sphere &source) 
+	: sphere(source) { }
 
-//void SphereCollider::SetTransform(const Transform * t)
-//{
-//	this->t = t;
-//}
 
 Sphere SphereCollider::GetSphere() const
 {

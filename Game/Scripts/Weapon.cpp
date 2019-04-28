@@ -5,6 +5,8 @@
 #include <Engine/Systems/PhysicsSystem.h>
 #include <Engine/Physics/RaycastInfo.h>
 #include <Engine/Math/Ray.h>
+#include <Engine/Physics/CollisionInfo.h>
+#include <Engine/Components/CSphereCollider.h>
 
 CLASSDEFINITION(IComponent, CWeapon)
 
@@ -16,6 +18,13 @@ void CWeapon::Init()
 	}
 
 	particles = nullptr;
+
+	thisCollider = owner->GetComponent<CSphereCollider>();
+
+	if (thisCollider != nullptr)
+	{
+		thisCollider->OnCollisionEnter().Subscribe<CWeapon>(this, &CWeapon::OnCollision);
+	}
 }
 
 void CWeapon::Update()
@@ -42,7 +51,7 @@ void CWeapon::Update()
 	}
 
 	// if key is pressed
-	if (Input::IsPressed(Keycode::KeyF))
+	if (Input::IsPressedMouse(Keycode::MouseBUTTON1))
 	{
 		if (weaponType == WeaponType::Shotgun)
 		{
@@ -98,6 +107,17 @@ void CWeapon::ShootShotgun()
 			}
 		}
 	}
+}
+
+void CWeapon::OnCollision(const CollisionInfo * info)
+{
+	if (particles == nullptr)
+	{
+		return;
+	}
+
+	particles->GetOwner().GetTransform().SetPosition(info->Contact.Point);
+	particles->Emit(15, info->Contact.Normal);
 }
 
 #define PROPERTY_KEY_RELOADTIME			"ReloadingTime"	

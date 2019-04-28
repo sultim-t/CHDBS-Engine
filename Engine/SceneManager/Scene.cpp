@@ -26,6 +26,7 @@ void Scene::Init()
 {
 	// allocate memory
 	entities.Init(128);
+	//updates.Init();
 	fixedUpdates.Init();
 
 	rigidbodies.Init(128);
@@ -46,6 +47,7 @@ void Scene::Destroy()
 		delete entities[i];
 	}
 
+	//updates.Delete();
 	fixedUpdates.Delete();
 
 	// delete array
@@ -61,18 +63,6 @@ void Scene::Destroy()
 	models.Delete();
 	particleSystems.Delete();
 }
-
-//void Scene::Update()
-//{
-//	// update each component
-//	ComponentSystem::Instance().Update();
-//}
-//
-//void Scene::FixedUpdate()
-//{
-//	// call all subscribers to fixed update event
-//	fixedUpdates(0);
-//}
 
 void Scene::Load()
 {
@@ -102,8 +92,10 @@ void Scene::Load()
 		}
 	}
 
+	// register components for update
+	//ComponentSystem::Instance().RegisterUpdates(&updates);
 	// register components for fixed update
-	ComponentSystem::Instance().RegisterFixed(&fixedUpdates);
+	ComponentSystem::Instance().RegisterFixedUpdates(&fixedUpdates);
 }
 
 void Scene::Unload()
@@ -281,15 +273,15 @@ Entity *Scene::FindEntity(const char *name)
 	return nullptr;
 }
 
+//Event &Scene::GetUpdateEvent()
+//{
+//	return updates;
+//}
+
 Event &Scene::GetFixedUpdateEvent()
 {
 	return fixedUpdates;
 }
-
-//void Scene::SubscribeFixedUpdate(IEventHandler *handler)
-//{
-//	fixedUpdates += handler;
-//}
 
 int Scene::GetID() const
 {

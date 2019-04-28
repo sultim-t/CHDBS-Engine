@@ -125,10 +125,15 @@ int ContextWindow::GetHeight()
 
 bool ContextWindow::IsReleased(int keyCode)
 {
-	return (glfwGetKey(window, keyCode) == GLFW_RELEASE);
+	return glfwGetKey(window, keyCode) == GLFW_RELEASE;
 }
 
 bool ContextWindow::IsPressed(int keyCode)
 {
-	return (glfwGetKey(window, keyCode) == GLFW_PRESS);
+	return glfwGetKey(window, keyCode) == GLFW_PRESS;
+}
+
+bool ContextWindow::IsPressedMouse(int keyCode)
+{
+	return glfwGetMouseButton(window, keyCode) == GLFW_PRESS;
 }

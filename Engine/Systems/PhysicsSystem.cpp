@@ -286,6 +286,22 @@ void PhysicsSystem::SolveCollisions()
 		{
 			// solve collision, type is processed there
 			SolveCollision(info);
+
+			// call on collision enter event on this
+			info.CollThis->OnCollisionEnter()(&info);
+			// and on the other
+			info.CollOther->OnCollisionEnter()(&info);
+
+			// call on trigger enter event on triggers
+			if (info.CollThis->IsTrigger)
+			{
+				info.CollThis->OnTriggerEnter()(&info);
+			}
+			
+			if (info.CollOther->IsTrigger)
+			{
+				info.CollOther->OnTriggerEnter()(&info);
+			}
 		}
 	}
 
@@ -302,6 +318,14 @@ void PhysicsSystem::SolveCollision(const CollisionInfo &info)
 
 	Rigidbody *rbThis = info.RbThis;
 	Rigidbody *rbOther = info.RbOther;
+
+
+	// if both are kinematic, then ignore
+	if (rbThis->IsKinematic && rbOther->IsKinematic)
+	{
+		return;
+	}
+
 
 	// if other is a static collider, then assume that its mass = Inf 
 	float invMassOther = rbOther == nullptr ? 0.0f : rbOther->inversedMass;

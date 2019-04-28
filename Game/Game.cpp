@@ -98,22 +98,21 @@ int main()
 	skyNames[3] = "Textures/Skybox/desertsky_dn.tga";
 	skyNames[0] = "Textures/Skybox/desertsky_ft.tga";
 	skyNames[1] = "Textures/Skybox/desertsky_bk.tga";
-
-
-	Array<const char*, 6> reflName;
-	reflName[0] = "Textures/chrome.jpg";
-	reflName[1] = "Textures/chrome.jpg";
-	reflName[2] = "Textures/chrome.jpg";
-	reflName[3] = "Textures/chrome.jpg";
-	reflName[4] = "Textures/chrome.jpg";
-	reflName[5] = "Textures/chrome.jpg";
+	
+	Array<const char*, 6> skyReflNames;
+	skyReflNames[4] = "Textures/SkyboxRefl/desertsky_rt.tga";
+	skyReflNames[5] = "Textures/SkyboxRefl/desertsky_lf.tga";
+	skyReflNames[2] = "Textures/SkyboxRefl/desertsky_up.tga";
+	skyReflNames[3] = "Textures/SkyboxRefl/desertsky_dn.tga";
+	skyReflNames[0] = "Textures/SkyboxRefl/desertsky_ft.tga";
+	skyReflNames[1] = "Textures/SkyboxRefl/desertsky_bk.tga";
 
 	Cubemap sky = Cubemap();
 	sky.LoadCubemap(skyNames);
 	Skybox::Instance().BindCubemap(sky);
 
 	Cubemap reflection = Cubemap();
-	reflection.LoadCubemap(reflName);
+	reflection.LoadCubemap(skyReflNames);
 
 	Shader shader = Shader();
 	shader.Load("Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");

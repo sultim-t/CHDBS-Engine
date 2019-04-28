@@ -31,5 +31,6 @@ public:
 	int GetHeight();
 
 	bool IsPressed(int keyCode);
+	bool IsPressedMouse(int keyCode);
 	bool IsReleased(int keyCode);
 };

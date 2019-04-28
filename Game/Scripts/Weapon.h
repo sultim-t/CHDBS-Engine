@@ -24,9 +24,13 @@ private:
 	// Particles to use
 	CParticleSystem *particles;
 
+	CSphereCollider *thisCollider;
+
 private:
 	void Shoot();
 	void ShootShotgun();
+
+	void OnCollision(const CollisionInfo *info);
 
 public:
 	void Init() override;

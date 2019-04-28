@@ -236,6 +236,7 @@
   <ItemGroup>
     <ClInclude Include="Base\Delegate.h" />
     <ClInclude Include="Base\Event.h" />
+    <ClInclude Include="Base\EventParam.h" />
     <ClInclude Include="Base\StringTuple.h" />
     <ClInclude Include="Components\CBoxCollider.h" />
     <ClInclude Include="Components\CCollider.h" />

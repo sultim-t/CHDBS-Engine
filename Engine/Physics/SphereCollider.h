@@ -5,20 +5,13 @@
 class SphereCollider : public ICollider
 {
 private:
-	// Main shape
 	Sphere sphere;
-
-	// Every dynamic collider must have tranformation
-	// const Transform *t;
-
 	PhysicMaterial physicMaterial;
 
 public:
 	// Empty constructor
 	SphereCollider();
 	SphereCollider(const Sphere &sphere);
-
-	//void SetTransform(const Transform *t);
 
 	// Get sphere with current transformations
 	Sphere GetSphere() const;

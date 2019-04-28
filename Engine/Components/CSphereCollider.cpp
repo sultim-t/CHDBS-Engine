@@ -4,10 +4,7 @@
 CLASSDEFINITION(IComponent, CSphereCollider)
 
 void CSphereCollider::Init()
-{ 
-	// set current transform in collider
-	// this->SetTransform(&GetOwner().GetTransform());
-}
+{ }
 
 void CSphereCollider::Update()
 { }

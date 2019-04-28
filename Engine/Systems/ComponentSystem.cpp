@@ -12,6 +12,20 @@ void ComponentSystem::Init()
 
 void ComponentSystem::Update()
 {
+	//if (updates == nullptr)
+	//{
+	//	return;
+	//}
+
+	//const DynamicArray<IDelegate*> &subscribers = updates->GetSubscribers();
+	//int count = subscribers.GetSize();
+
+	//for (int i = 0; i < count; i++)
+	//{
+	//	subscribers[i]->Invoke();
+	//}
+
+
 	if (entities == nullptr)
 	{
 		return;
@@ -53,9 +67,14 @@ void ComponentSystem::Register(const DynamicArray<Entity*> *entities)
 	this->entities = entities;
 }
 
-void ComponentSystem::RegisterFixed(const Event * fixedUpdateEvents)
+//void ComponentSystem::RegisterUpdates(const Event * updateEvent)
+//{
+//	this->updates = updateEvent;
+//}
+
+void ComponentSystem::RegisterFixedUpdates(const Event * fixedUpdateEvent)
 {
-	this->fixedUpdates = fixedUpdateEvents;
+	this->fixedUpdates = fixedUpdateEvent;
 }
 
 void ComponentSystem::Reset()

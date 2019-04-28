@@ -19,20 +19,22 @@ public:
 	// Allocate memory for arrays
 	void Init();
 
-	// Subscribe to this event.
-	// When event is called then this function will be called too
-	// Delegate must be allocated before adding
-	// void operator+=(IDelegate *function);
+	// Create delegate for static function and subscribe it to this event
+	void operator+=(void(*staticFunction)());
 
-	// Create delegate for static function and subscribe it
+	// Create delegate for static function and subscribe it to this event
 	void Subscribe(void(*staticFunction)());
 
-	// Create delegate for function in object and subscribe it
+	// Create delegate for function in object and subscribe it to this event
 	template <class T>
 	void Subscribe(T *object, void (T::*objectFunction)());
 
 	// Calls all subscribers
 	void operator()() const;
+
+	// Get all subscribers in this event
+	const DynamicArray<IDelegate*> &GetSubscribers() const;
+
 
 	// Clear subscribers
 	void Clear();
@@ -52,11 +54,6 @@ inline void Event::Init()
 	subscribers.Init(8);
 }
 
-//inline void Event::operator+=(IDelegate *function)
-//{
-//	subscribers.Push(function);
-//}
-
 inline void Event::operator()() const
 {
 	int count = subscribers.GetSize();
@@ -64,6 +61,11 @@ inline void Event::operator()() const
 	{
 		subscribers[i]->Invoke();
 	}
+}
+
+inline const DynamicArray<IDelegate*>& Event::GetSubscribers() const
+{
+	return subscribers;
 }
 
 inline void Event::Clear()
@@ -82,6 +84,11 @@ inline void Event::Delete()
 	Clear();
 	// delete array
 	subscribers.Delete();
+}
+
+inline void Event::operator+=(void(*staticFunction)())
+{
+	Subscribe(staticFunction);
 }
 
 inline void Event::Subscribe(void(*staticFunction)())

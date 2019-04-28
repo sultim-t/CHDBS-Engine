@@ -1,7 +1,5 @@
 #pragma once
 
-#include <Engine\Rendering\ContextWindow.h>
-
 enum class Keycode
 {
 	KeySPACE = 32,
@@ -183,6 +181,8 @@ public:
 	static float MouseYOffset;
 
 public:
-	static bool IsPressed(const Keycode keycode);
-	static bool IsReleased(const Keycode keycode);
+	static bool IsPressed(Keycode keycode);
+	static bool IsReleased(Keycode keycode);
+
+	static bool IsPressedMouse(Keycode keycode);
 };

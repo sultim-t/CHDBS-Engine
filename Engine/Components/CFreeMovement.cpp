@@ -1,8 +1,8 @@
 #include "CFreeMovement.h"
 #include <Engine/Input/Input.h>
+#include <Engine/Rendering/ContextWindow.h>
 #include <Engine/Entities/Entity.h>
 #include <Engine/Components/CCamera.h>
-#include <Engine/Physics/Rigidbody.h>
 #include <Engine/SceneManager/SceneManager.h>
 
 #define MOVE_FORWARD	0
@@ -51,11 +51,6 @@ void CFreeMovement::SetProperty(const String &key, const String &value)
 		Logger::Print("Wrong CFreeMovement property");
 	}
 }
-//
-//void CFreeMovement::Function(int a)
-//{
-//	FixedUpdate();
-//}
 
 void CFreeMovement::ProcessKeyboard()
 {
@@ -64,19 +59,17 @@ void CFreeMovement::ProcessKeyboard()
 	Vector3 offset = Vector3(0, 0, 0);
 
 	Vector3 front = t.GetForward();
-	front.Normalize();
-
 	Vector3 right = t.GetRight();
 	Vector3 up = Vector3(0, 1, 0);
 
-	float velocity = speed * Time::GetDeltaTime();
-	
+	float velocity = speed * Time::GetFixedDeltaTime();
+
 	if (Input::IsPressed(Keycode::KeyW))
 		offset += front * velocity;
-	
+
 	if (Input::IsPressed(Keycode::KeyS))
 		offset -= front * velocity;
-	
+
 	if (Input::IsPressed(Keycode::KeyA))
 		offset -= right * velocity;
 
@@ -89,7 +82,7 @@ void CFreeMovement::ProcessKeyboard()
 	if (Input::IsPressed(Keycode::KeyE))
 		offset += up * velocity;
 
-	owner->GetTransform().GetPosition() += offset;
+	t.GetPosition() += offset;
 }
 
 void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)
