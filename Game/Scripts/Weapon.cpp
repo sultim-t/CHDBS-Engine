@@ -117,7 +117,7 @@ void CWeapon::OnCollision(const CollisionInfo * info)
 	}
 
 	particles->GetOwner().GetTransform().SetPosition(info->Contact.Point);
-	particles->Emit(15, info->Contact.Normal);
+	particles->Emit(1, info->Contact.Normal);
 }
 
 #define PROPERTY_KEY_RELOADTIME			"ReloadingTime"	

@@ -186,6 +186,7 @@
     <ClCompile Include="Components\CSphereCollider.cpp" />
     <ClCompile Include="Components\CParticleSystem.cpp" />
     <ClCompile Include="Components\CSkinnedModel.cpp" />
+    <ClCompile Include="Components\CVertexAnimated.cpp" />
     <ClCompile Include="Components\IComponent.cpp" />
     <ClCompile Include="Components\CModel.cpp" />
     <ClCompile Include="Entities\EntityFactory.cpp" />
@@ -242,6 +243,7 @@
     <ClInclude Include="Components\CCollider.h" />
     <ClInclude Include="Components\CMeshCollider.h" />
     <ClInclude Include="Components\CSphereCollider.h" />
+    <ClInclude Include="Components\CVertexAnimated.h" />
     <ClInclude Include="Components\IFixedUpdatable.h" />
     <ClInclude Include="Components\IUpdatable.h" />
     <ClInclude Include="Math\Octree.h" />
@@ -336,6 +338,7 @@
     <ClInclude Include="ResourceManager\SceneResource.h" />
     <ClInclude Include="ResourceManager\ShaderResource.h" />
     <ClInclude Include="ResourceManager\TextureResource.h" />
+    <ClInclude Include="ResourceManager\VertexAnimatedResource.h" />
     <ClInclude Include="SceneManager\Scene.h" />
     <ClInclude Include="SceneManager\SceneInfo.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />

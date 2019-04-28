@@ -110,8 +110,15 @@ void CParticleSystem::Render()
 
 	glBindVertexArray(vao);
 	StoreData();
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 	ActivateShader();
 	LoadAndDraw();
+
+	particleShader.Stop();
+	glDisable(GL_BLEND);
 }
 
 void CParticleSystem::Init()
@@ -260,20 +267,17 @@ void CParticleSystem::SortParticles()
 
 void CParticleSystem::StoreData()
 {
+	ASSERT(particleCount <= maxParticleCount);
+
 	glBindBuffer(GL_ARRAY_BUFFER, positionBuffer);
-	glBufferData(GL_ARRAY_BUFFER, maxParticleCount * sizeof(Vector4), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, particleCount * sizeof(Vector4), positionsAndSizes);
 
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
-	glBufferData(GL_ARRAY_BUFFER, maxParticleCount * sizeof(Color4), NULL, GL_STREAM_DRAW);
 	glBufferSubData(GL_ARRAY_BUFFER, 0, particleCount * sizeof(Color4), colors);
 }
 
 void CParticleSystem::ActivateShader()
 {
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
 	particleShader.Use();
 
 	const Transform &t = cam->GetOwner().GetTransform();
@@ -312,9 +316,6 @@ void CParticleSystem::LoadAndDraw()
 	glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
-
-	particleShader.Stop();
-	glDisable(GL_BLEND);
 }
 
 void CParticleSystem::SetProperty(const String &key, const String &value)

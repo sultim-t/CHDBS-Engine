@@ -198,6 +198,67 @@ const EntityResource *ResourceManager::LoadEnitity(const char * path)
 	return entity;
 }
 
+const VertexAnimatedResource * ResourceManager::LoadVertexAnimated(const char * path)
+{
+	VertexAnimatedResource *vertAnim;
+
+	if (vertexAnimatedResources.Find(path, vertAnim))
+	{
+		// if already loaded
+		return vertAnim;
+	}
+
+	// allocate
+	vertAnim = new VertexAnimatedResource();
+	
+	std::ifstream file;
+	std::string line;
+
+	// open
+	file.open(path);
+
+	// count lines
+	int lineCount = 0, i = 0;
+	while (std::getline(file, line))
+	{
+		lineCount++;
+	}
+
+	// reset to beginning
+	file.clear();
+	file.seekg(0);
+
+	// first line must be a name
+	if (std::getline(file, line))
+	{
+		vertAnim->name = line.c_str();
+	}
+	else
+	{
+		throw std::exception("Is not a vertex animation file");
+	}
+
+	// init array (one is for name)
+	vertAnim->animationNodes.Init(lineCount - 1);
+
+	// for each line
+	while (std::getline(file, line))
+	{
+		// first is time
+		vertAnim->animationNodes[i++].Time = (float)atof(line.c_str());
+		// second is a path to model
+		vertAnim->animationNodes[i++].ModelPath = line.c_str();
+	}
+
+	// close
+	file.close();
+
+	// register
+	vertexAnimatedResources.Add(path, vertAnim);
+
+	return vertAnim;
+}
+
 const TextureResource *ResourceManager::LoadTexture(char const *path)
 {
 	TextureResource *outTexture;
