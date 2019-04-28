@@ -281,10 +281,15 @@ Entity *Scene::FindEntity(const char *name)
 	return nullptr;
 }
 
-void Scene::SubscribeFixedUpdate(IEventHandler *handler)
+Event &Scene::GetFixedUpdateEvent()
 {
-	fixedUpdates += handler;
+	return fixedUpdates;
 }
+
+//void Scene::SubscribeFixedUpdate(IEventHandler *handler)
+//{
+//	fixedUpdates += handler;
+//}
 
 int Scene::GetID() const
 {

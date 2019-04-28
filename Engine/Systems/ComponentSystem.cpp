@@ -44,7 +44,7 @@ void ComponentSystem::FixedUpdate()
 {
 	if (fixedUpdates != nullptr)
 	{
-		fixedUpdates->operator()(0);
+		fixedUpdates->operator()();
 	}
 }
 

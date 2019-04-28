@@ -2,7 +2,7 @@
 #include <Engine/Components/IComponent.h>
 #include <Engine/Base/Event.h>
 
-class CFreeMovement : public IComponent, public IEventHandler
+class CFreeMovement : public IComponent
 {
 	CLASSDECLARATION(CFreeMovement)
 	
@@ -23,7 +23,4 @@ public:
 	void OnSceneLoading(int sceneId) override;
 
 	void SetProperty(const String &key, const String &value) override;
-
-public:
-	void Function(int a) override;
 };

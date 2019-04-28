@@ -36,7 +36,8 @@ void CFreeMovement::Update()
 
 void CFreeMovement::OnSceneLoading(int sceneId)
 {
-	SceneManager::Instance().GetScene(sceneId).SubscribeFixedUpdate(this);
+	// subscribe fixed update function on this object
+	SceneManager::Instance().GetScene(sceneId).GetFixedUpdateEvent().Subscribe(this, &CFreeMovement::FixedUpdate);
 }
 
 void CFreeMovement::SetProperty(const String &key, const String &value)
@@ -50,11 +51,11 @@ void CFreeMovement::SetProperty(const String &key, const String &value)
 		Logger::Print("Wrong CFreeMovement property");
 	}
 }
-
-void CFreeMovement::Function(int a)
-{
-	FixedUpdate();
-}
+//
+//void CFreeMovement::Function(int a)
+//{
+//	FixedUpdate();
+//}
 
 void CFreeMovement::ProcessKeyboard()
 {

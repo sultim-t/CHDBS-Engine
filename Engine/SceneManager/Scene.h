@@ -79,7 +79,7 @@ public:
 	Entity *FindEntity(const char *name);
 
 	// Subscribe component for fixed update
-	void SubscribeFixedUpdate(IEventHandler *handler);
+	Event &GetFixedUpdateEvent();
 
 	// Get scene's ID
 	int GetID() const;
