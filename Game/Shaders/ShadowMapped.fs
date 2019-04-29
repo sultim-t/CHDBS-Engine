@@ -64,7 +64,7 @@ void main()
 {           
     vec3 color = texture(t_diff0, fs_in.TexCoords).rgb;
     vec3 normal = normalize(fs_in.Normal);
-    vec3 ambient = vec3(0.4);
+    vec3 ambient = vec3(0.5);
 
    
     // calculate shadow

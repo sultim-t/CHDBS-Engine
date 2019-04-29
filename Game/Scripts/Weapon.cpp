@@ -1,12 +1,13 @@
 #include "Weapon.h"
 #include <Engine/Input/Input.h>
-#include <Engine/Components/CParticleSystem.h>
 #include <Engine/SceneManager/SceneManager.h>
 #include <Engine/Systems/PhysicsSystem.h>
 #include <Engine/Physics/RaycastInfo.h>
-#include <Engine/Math/Ray.h>
 #include <Engine/Physics/CollisionInfo.h>
+#include <Engine/Math/Ray.h>
+#include <Engine/Components/CParticleSystem.h>
 #include <Engine/Components/CSphereCollider.h>
+#include <Engine/Components/CVertexAnimated.h>
 
 CLASSDEFINITION(IComponent, CWeapon)
 
@@ -20,11 +21,12 @@ void CWeapon::Init()
 	particles = nullptr;
 
 	thisCollider = owner->GetComponent<CSphereCollider>();
-
 	if (thisCollider != nullptr)
 	{
 		thisCollider->OnCollisionEnter().Subscribe<CWeapon>(this, &CWeapon::OnCollision);
 	}
+
+	animatedModel = owner->GetComponent<CVertexAnimated>();
 }
 
 void CWeapon::Update()
@@ -53,6 +55,11 @@ void CWeapon::Update()
 	// if key is pressed
 	if (Input::IsPressedMouse(Keycode::MouseBUTTON1))
 	{
+		if (animatedModel != nullptr)
+		{
+			animatedModel->PlayAnimation(0, 0.0f);
+		}
+
 		if (weaponType == WeaponType::Shotgun)
 		{
 			ShootShotgun();

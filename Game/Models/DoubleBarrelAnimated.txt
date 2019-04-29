@@ -1,7 +1,7 @@
 DoubleBarrelVertexAnimated
 0
 Models/DoubleBarrelVertexAnimated/DoubleBarrel0.obj
-0.666
+0.066
 Models/DoubleBarrelVertexAnimated/DoubleBarrel2.obj
 0.133
 Models/DoubleBarrelVertexAnimated/DoubleBarrel4.obj

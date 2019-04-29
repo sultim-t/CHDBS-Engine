@@ -10,6 +10,7 @@ class CModel : public IComponent
 {
 	CLASSDECLARATION(CModel)
 
+// TODO: loading materials, and only then can be set as protected
 //protected:
 public:
 	UINT modelId;

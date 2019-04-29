@@ -23,7 +23,7 @@ private:
 
 	// Particles to use
 	CParticleSystem *particles;
-
+	CVertexAnimated *animatedModel;
 	CSphereCollider *thisCollider;
 
 private:

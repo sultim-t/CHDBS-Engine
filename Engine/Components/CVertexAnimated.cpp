@@ -57,6 +57,9 @@ void CVertexAnimated::Init()
 
 	// init for rendering
 	InitDynamic();
+
+	// update once to buffer data
+	GFXUpdate();
 }
 
 CVertexAnimated::~CVertexAnimated()
@@ -66,6 +69,14 @@ CVertexAnimated::~CVertexAnimated()
 	{
 		delete tempVerts[i];
 	}
+}
+
+void CVertexAnimated::PlayAnimation(int animationIndex, float startTime)
+{
+	// enable animation
+	isPlaying = true;
+	// reset time
+	currentTime = startTime;
 }
 
 void CVertexAnimated::InitDynamic()
@@ -82,9 +93,20 @@ void CVertexAnimated::InitDynamic()
 
 void CVertexAnimated::Update()
 {
+	// if no animation is set, then ignore
+	if (!isPlaying)
+	{
+		return;
+	}
+
 	if (currentTime >= vertAnim->GetDuration())
 	{
-		currentTime = Mod(currentTime, vertAnim->GetDuration());
+		// animation ended
+		isPlaying = false;
+		return;
+
+		// TODO: several types of animations: clamped, infinite, mirror etc
+		// currentTime = Mod(currentTime, vertAnim->GetDuration());
 	}
 
 	// get model index in array
@@ -126,7 +148,7 @@ void CVertexAnimated::Update()
 	GFXUpdate();
 
 	// update time for animation
-	currentTime += Time::GetDeltaTime() * 2;
+	currentTime += Time::GetDeltaTime();
 }
 
 void CVertexAnimated::GFXUpdate()
