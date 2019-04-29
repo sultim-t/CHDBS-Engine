@@ -4,6 +4,7 @@
 #include <Engine/Components/CFreeMovement.h>
 #include <Engine/Components/CModel.h>
 #include <Engine/Components/CSkinnedModel.h>
+#include <Engine/Components/CVertexAnimated.h>
 #include <Engine/Components/CLight.h>
 #include <Engine/Components/CParticleSystem.h>
 #include <Engine/Components/CBoxCollider.h>
@@ -38,7 +39,8 @@ EntityFactory::EntityFactory()
 	PRegisterComponentType<CFreeMovement>("CFreeMovement");
 	PRegisterComponentType<CLight>("CLight");
 	PRegisterComponentType<CModel>("CModel");
-	PRegisterComponentType<CSkinnedModel>("CSkinnedModel");
+	// PRegisterComponentType<CSkinnedModel>("CSkinnedModel");
+	PRegisterComponentType<CVertexAnimated>("CVertexAnimated");
 	PRegisterComponentType<CParticleSystem>("CParticleSystem");
 
 	PRegisterComponentType<Rigidbody>("Rigidbody");

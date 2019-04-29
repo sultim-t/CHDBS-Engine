@@ -49,6 +49,9 @@ void ResourceManager::Init()
 
 	entityResources.Init(64, 8);
 	entityResources.DeclareHashFunction(String::StringHash);
+
+	vertexAnimatedResources.Init(32, 8);
+	vertexAnimatedResources.DeclareHashFunction(String::StringHash);
 }
 
 ResourceManager::~ResourceManager()
@@ -239,19 +242,27 @@ const VertexAnimatedResource * ResourceManager::LoadVertexAnimated(const char * 
 	}
 
 	// init array (one is for name)
-	vertAnim->animationNodes.Init(lineCount - 1);
+	// for each anim node there 2 lines
+	int animNodeCount = (lineCount - 1) / 2;
+	vertAnim->animationNodes.Init(animNodeCount);
 
 	// for each line
-	while (std::getline(file, line))
+	for (int animNodeIndex = 0; animNodeIndex < animNodeCount; animNodeIndex++)
 	{
 		// first is time
-		vertAnim->animationNodes[i++].Time = (float)atof(line.c_str());
+		std::getline(file, line);
+		vertAnim->animationNodes[animNodeIndex].Time = (float)atof(line.c_str());
+		
 		// second is a path to model
-		vertAnim->animationNodes[i++].ModelPath = line.c_str();
+		std::getline(file, line);
+		vertAnim->animationNodes[animNodeIndex].ModelPath.Init(line.c_str());
 	}
 
 	// close
 	file.close();
+
+	// get duration as last frame's time
+	vertAnim->duration = vertAnim->animationNodes[animNodeCount - 1].Time;
 
 	// register
 	vertexAnimatedResources.Add(path, vertAnim);

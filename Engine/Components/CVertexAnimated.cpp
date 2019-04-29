@@ -27,9 +27,16 @@ void CVertexAnimated::Init()
 	// set first as main model
 	modelResource = models[0];
 
+	const StaticArray<Vertex5> &baseVerts = modelResource->GetHierarchy().GetMeshes()[0]->GetVertices();
+
 	// init temp verts
-	// only for first mesh (for now)
-	tempVerts.Init(modelResource->GetHierarchy().GetMeshes()[0]->GetVertices().GetSize());
+	// only for first mesh in models (for now)
+	tempVerts.Init(baseVerts.GetSize());
+
+	for (UINT i = 0; i < tempVerts.GetSize(); i++)
+	{
+		tempVerts[i] = baseVerts[i];
+	}
 
 	// init 
 	UINT meshesCount = modelResource->GetMeshesCount();
@@ -58,21 +65,27 @@ void CVertexAnimated::InitDynamic()
 
 void CVertexAnimated::Update()
 {
-	if (currentTime > vertAnim->GetDuration())
+	if (currentTime >= vertAnim->GetDuration())
 	{
 		currentTime = Mod(currentTime, vertAnim->GetDuration());
 	}
 
 	// get model index in array
 	int modelId = GetModelID(currentTime);
+	int nextModelId = modelId + 1;
+
+	if ((UINT)nextModelId >= models.GetSize())
+	{
+		nextModelId = 0;
+	}
 
 	MeshResource *prevMesh = models[modelId]->GetHierarchy().GetMeshes()[0];
 	const StaticArray<Vertex5> &prevVerts = prevMesh->GetVertices();
 	
-	MeshResource *nextMesh = models[modelId + 1]->GetHierarchy().GetMeshes()[0];
+	MeshResource *nextMesh = models[nextModelId]->GetHierarchy().GetMeshes()[0];
 	const StaticArray<Vertex5> &nextVerts = nextMesh->GetVertices();
 
-	float t = (currentTime - modelsTime[modelId]) / (modelsTime[modelId + 1] - modelsTime[modelId]);
+	float t = (currentTime - modelsTime[modelId]) / (modelsTime[nextModelId] - modelsTime[modelId]);
 
 	for (UINT i = 0; i < prevVerts.GetSize(); i++)
 	{
@@ -84,7 +97,7 @@ void CVertexAnimated::Update()
 	GFXUpdate();
 
 	// update time for animation
-	currentTime += Time::GetDeltaTime();
+	currentTime += Time::GetDeltaTime() * 2;
 }
 
 void CVertexAnimated::GFXUpdate()
@@ -105,11 +118,13 @@ int CVertexAnimated::GetModelID(float time)
 {
 	for (UINT i = 0; i < modelsTime.GetSize() - 1; i++)
 	{
-		if (modelsTime[i] <= time && time < modelsTime[i])
+		if (modelsTime[i] <= time && time < modelsTime[i + 1])
 		{
-			return i;
+			return (int)i;
 		}
 	}
+
+	return 0;
 }
 
 #define PROPERTY_KEY_VERTANIMPATH	"VertexAnimatedPath"
