@@ -27,19 +27,30 @@ void CVertexAnimated::Init()
 	// set first as main model
 	modelResource = models[0];
 
-	const StaticArray<Vertex5> &baseVerts = modelResource->GetHierarchy().GetMeshes()[0]->GetVertices();
+	// get meshes from main model to copy data
+	const StaticArray<MeshResource*> &baseMeshes = modelResource->GetHierarchy().GetMeshes();
+	UINT meshesCount = baseMeshes.GetSize();
 
-	// init temp verts
-	// only for first mesh in models (for now)
-	tempVerts.Init(baseVerts.GetSize());
+	// init array for each mesh
+	tempVerts.Init(meshesCount);
 
-	for (UINT i = 0; i < tempVerts.GetSize(); i++)
+	for (UINT meshIndex = 0; meshIndex < meshesCount; meshIndex++)
 	{
-		tempVerts[i] = baseVerts[i];
+		const StaticArray<Vertex5> &baseVerts = baseMeshes[meshIndex]->GetVertices();
+		tempVerts[meshIndex] = new StaticArray<Vertex5>();
+
+		StaticArray<Vertex5> &targetVerts = *tempVerts[meshIndex];
+
+		// init temp verts
+		targetVerts.Init(baseVerts.GetSize());
+
+		for (UINT i = 0; i < baseVerts.GetSize(); i++)
+		{
+			targetVerts[i] = baseVerts[i];
+		}
 	}
 
 	// init 
-	UINT meshesCount = modelResource->GetMeshesCount();
 	vaos.Init(meshesCount);
 	vbos.Init(meshesCount);
 	ibos.Init(meshesCount);
@@ -49,7 +60,13 @@ void CVertexAnimated::Init()
 }
 
 CVertexAnimated::~CVertexAnimated()
-{ }
+{ 
+	// delete all arrays
+	for (UINT i = 0; i < tempVerts.GetSize(); i++)
+	{
+		delete tempVerts[i];
+	}
+}
 
 void CVertexAnimated::InitDynamic()
 {
@@ -79,18 +96,30 @@ void CVertexAnimated::Update()
 		nextModelId = 0;
 	}
 
-	MeshResource *prevMesh = models[modelId]->GetHierarchy().GetMeshes()[0];
-	const StaticArray<Vertex5> &prevVerts = prevMesh->GetVertices();
-	
-	MeshResource *nextMesh = models[nextModelId]->GetHierarchy().GetMeshes()[0];
-	const StaticArray<Vertex5> &nextVerts = nextMesh->GetVertices();
+	UINT meshesCount = tempVerts.GetSize();
+	const StaticArray<MeshResource*> &prevMeshes = models[modelId]->GetHierarchy().GetMeshes();
+	const StaticArray<MeshResource*> &nextMeshes = models[nextModelId]->GetHierarchy().GetMeshes();
 
-	float t = (currentTime - modelsTime[modelId]) / (modelsTime[nextModelId] - modelsTime[modelId]);
-
-	for (UINT i = 0; i < prevVerts.GetSize(); i++)
+	// update each mesh
+	for (UINT meshIndex = 0; meshIndex < meshesCount; meshIndex++)
 	{
-		tempVerts[i].Position = Vector3::Lerp(prevVerts[i].Position, nextVerts[i].Position, t);
-		tempVerts[i].Normal = Vector3::Lerp(prevVerts[i].Normal, nextVerts[i].Normal, t);
+		StaticArray<Vertex5> &targetVerts = *tempVerts[meshIndex];
+
+		// get previous mesh
+		const StaticArray<Vertex5> &prevVerts = prevMeshes[meshIndex]->GetVertices();
+
+		// get next mesh
+		const StaticArray<Vertex5> &nextVerts = nextMeshes[meshIndex]->GetVertices();
+
+		// get interpolation factor
+		float t = (currentTime - modelsTime[modelId]) / (modelsTime[nextModelId] - modelsTime[modelId]);
+
+		// interpolate between prev and next
+		for (UINT i = 0; i < prevVerts.GetSize(); i++)
+		{
+			targetVerts[i].Position = Vector3::Lerp(prevVerts[i].Position, nextVerts[i].Position, t);
+			targetVerts[i].Normal = Vector3::Lerp(prevVerts[i].Normal, nextVerts[i].Normal, t);
+		}
 	}
 
 	// load model to gpu
@@ -102,16 +131,21 @@ void CVertexAnimated::Update()
 
 void CVertexAnimated::GFXUpdate()
 {
-	// bind current mesh
-	glBindVertexArray(vaos[0]);
-	// bind mesh's buffer
-	glBindBuffer(GL_ARRAY_BUFFER, vbos[0]);
+	UINT meshCount = tempVerts.GetSize();
 
-	// update data in buffer
-	glBufferSubData(GL_ARRAY_BUFFER, 0, tempVerts.GetSize() * sizeof(Vertex5), tempVerts.GetArray());
+	for (UINT meshIndex = 0; meshIndex < meshCount; meshIndex++)
+	{
+		// bind current mesh
+		glBindVertexArray(vaos[meshIndex]);
+		// bind mesh's buffer
+		glBindBuffer(GL_ARRAY_BUFFER, vbos[meshIndex]);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+		// update data in buffer
+		glBufferSubData(GL_ARRAY_BUFFER, 0, tempVerts[meshIndex]->GetSize() * sizeof(Vertex5), tempVerts[meshIndex]->GetArray());
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
 }
 
 int CVertexAnimated::GetModelID(float time)

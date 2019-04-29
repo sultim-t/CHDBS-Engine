@@ -15,7 +15,8 @@ private:
 	// Contains time values and path to models
 	const VertexAnimatedResource *vertAnim;
 	// Temp vertices for animation
-	StaticArray<Vertex5> tempVerts;
+	// For each mesh, for each vertex
+	StaticArray<StaticArray<Vertex5>*> tempVerts;
 
 	StaticArray<const ModelResource*> models;
 	StaticArray<float> modelsTime;
