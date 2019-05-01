@@ -1,19 +1,21 @@
 #pragma once
 #include "ITexture.h"
 
+// Represents texture prepared for rendering
 class Texture : public ITexture
 {
 private:
+	// Contains only a reference to texture resource
 	const TextureResource *textureResource;
 
 public:
 	// Default constructor
 	Texture();
-	// Empty destructor
+	// Empty destructor, doesn't deletes texture resource
 	~Texture();
 
-	// Init texture from file
-	void Init(const char* path);
+	// Load texture from file
+	void Load(const char* path);
 
 	// Get current texture resource
 	const TextureResource &GetTextureResource() const;

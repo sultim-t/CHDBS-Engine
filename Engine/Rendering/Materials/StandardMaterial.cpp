@@ -1,4 +1,5 @@
 #include "StandardMaterial.h"
+#include <Engine/Rendering/Cubemap.h>
 
 #define UNIFORM_MODEL			"u_Model"
 #define UNIFORM_CAMERA_POSITION	"u_CameraPosition"
@@ -65,6 +66,22 @@ void StandardMaterial::InitLightUniforms()
 	}
 }
 
+void StandardMaterial::ActivateAdditional() const
+{
+	int type = (int)reflectionCubemap->GetType();
+
+	// bind to correct texture unit
+	shader->SetInt(TEXTURE_NAME_CUBEMAP, type);
+
+	// activate
+	reflectionCubemap->Activate(type);
+}
+
+void StandardMaterial::DeactivateAdditional() const
+{
+	reflectionCubemap->Deactivate();
+}
+
 void StandardMaterial::SetModel(const Matrix4 & m)
 {
 	shader->SetMat4(modelMatrixLoc, m);
@@ -88,6 +105,23 @@ void StandardMaterial::SetLightCount(int count)
 void StandardMaterial::SetLightSpace(const Matrix4 & vp)
 {
 	shader->SetMat4(lightSpaceLoc, vp);
+}
+
+void StandardMaterial::SetReflectionCubemap(const Cubemap *cubemap)
+{
+	reflectionCubemap = cubemap;
+}
+
+void StandardMaterial::SetMainColor(const Color4F & c)
+{
+}
+
+void StandardMaterial::SetSpecularColor(const Color4F & c)
+{
+}
+
+void StandardMaterial::SetSmoothness(float s)
+{
 }
 
 void StandardMaterial::SetLight(const ILight &light, int index)

@@ -6,6 +6,8 @@
   
   <CModel
     Path="Models/DoubleBarrel.obj"
+    ForcedDiffuseTexture="Textures/WeaponsPalette.png"
+    Shader="Standard"
     CastShadows="1"/>
   
   <Rigidbody

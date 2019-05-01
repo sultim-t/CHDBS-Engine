@@ -16,7 +16,7 @@ const StaticArray<MeshResource*> &CModel::GetMeshes() const
 	return modelResource->GetHierarchy().GetMeshes();
 }
 
-const StaticArray<Material*>& CModel::GetMaterials() const
+const StaticArray<StandardMaterial*>& CModel::GetMaterials() const
 {
 	return modelResource->GetMaterials();
 }
@@ -42,10 +42,38 @@ void CModel::Init()
 
 	// init for rendering
 	InitStatic();
+
+	BindShader(shader);
 }
 
 void CModel::Update()
 { }
+
+void CModel::BindShader(const char *shaderName)
+{
+	const StaticArray<StandardMaterial*> &materials = modelResource->GetMaterials();
+
+	for (UINT i = 0; i < materials.GetSize(); i++)
+	{
+		materials[i]->BindShader(shaderName);
+
+		// all properties are set
+		// init locations
+		materials[i]->InitUniformLocations();
+	}
+
+	// if there is forced diffuse texture, add it to each material
+	if (forcedDiffuseTexture.Length() != 0)
+	{
+		Texture *texture = new Texture();
+		texture->Load(forcedDiffuseTexture);
+
+		for (UINT i = 0; i < materials.GetSize(); i++)
+		{
+			materials[i]->AddTexture(texture);
+		}
+	}
+}
 
 #define PROPERTY_KEY_TYPE			"Path"
 #define PROPERTY_KEY_CASTSHADOWS	"CastShadows"
@@ -53,6 +81,8 @@ void CModel::Update()
 #define PROPERTY_KEY_CORRECTPOS		"PositionCorrection"
 #define PROPERTY_KEY_CORRECTSCALE	"ScaleCorrection"
 #define PROPERTY_KEY_CORRECTROT		"RotationCorrection"
+#define PROPERTY_KEY_SHADER			"Shader"
+#define PROPERTY_KEY_DIFFTEXTURE	"ForcedDiffuseTexture"
 
 void CModel::SetProperty(const String &key, const String &value)
 {
@@ -87,6 +117,14 @@ void CModel::SetProperty(const String &key, const String &value)
 	{
 		Vector3 pos = value.ToVector3();
 		correctionMatrix = Transform::TranslateMatrix(correctionMatrix, pos);
+	}
+	else if (key == PROPERTY_KEY_SHADER)
+	{
+		shader = value;
+	}
+	else if (key == PROPERTY_KEY_DIFFTEXTURE)
+	{
+		forcedDiffuseTexture = value;
 	}
 	else
 	{

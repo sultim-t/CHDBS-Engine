@@ -1,56 +1,58 @@
 #pragma once
 #include <Engine/DataStructures/Array.h>
 #include <Engine/Rendering/ModelHierarchy.h>
+#include <Engine/Rendering/Materials/StandardMaterial.h>
 
 // Contains initialized 
 class ModelResource
-{
-private:
-	// Model's hierarchy
-	ModelHierarchy *hierarchy;
-
-	// All materials in this model
-	// Must be bijection with meshes 
-	// TEMP mutable
-	mutable
-	StaticArray<Material*> materials;
-
-	String path;
+{	
+	// Memory is deallocated there where it was allocated.
+	// Resource manager just loads info to this class
+	// but doesn't allocates current StaticArrays.
+	friend class ResourceManager;
 
 public:
-	inline ModelResource(const char *path, ModelHierarchy *hierarchy);
+	// Model's hierarchy
+	ModelHierarchy					*hierarchy;
+
+	// All materials in this model
+	mutable
+	StaticArray<StandardMaterial*>	materials;
+
+	String							path;
+
+public:
+	inline ModelResource(const char *path, ModelHierarchy *hierarchy, int materialCount);
 	inline ~ModelResource();
 
-	template <UINT Size>
-	inline void SetMaterials(const Array<Material*, Size> &materials);
-	// Set all materials
-	inline void SetMaterials(Material *material) const
-	{
-		for (UINT i = 0; i < hierarchy->GetMeshes().GetSize(); i++)
-		{
-			this->materials[i] = material;
-		}
-	}
-
-	inline const ModelHierarchy &GetHierarchy() const;
-	inline const String &GetPath() const;
-	inline const StaticArray<Material*> &GetMaterials() const;
-	inline UINT GetMeshesCount() const;
+	inline const ModelHierarchy			&GetHierarchy() const;
+	inline const String					&GetPath() const;
+	inline const StaticArray<StandardMaterial*> &GetMaterials() const;
+	inline UINT							GetMeshesCount() const;
 };
 
-inline ModelResource::ModelResource(const char *path, ModelHierarchy *hierarchy)
+inline ModelResource::ModelResource(const char *path, ModelHierarchy *hierarchy, int materialCount)
+	: path(path), hierarchy(hierarchy)
 {
-	this->path = path;
-	this->hierarchy = hierarchy;
+	this->materials.Init(materialCount);
 
-	UINT meshesCount = hierarchy->GetMeshes().GetSize();
-
-	this->materials.Init(meshesCount);
+	// init each material
+	for (int i = 0; i < materialCount; i++)
+	{
+		// every model uses standard material
+		materials[i] = new StandardMaterial();
+		materials[i]->Init();
+	}
 }
 
 inline ModelResource::~ModelResource()
 {
 	delete hierarchy;
+
+	for (UINT i = 0; i < materials.GetSize(); i++)
+	{
+		delete materials[i];
+	}
 }
 
 inline const ModelHierarchy &ModelResource::GetHierarchy() const
@@ -63,7 +65,7 @@ inline const String &ModelResource::GetPath() const
 	return path;
 }
 
-inline const StaticArray<Material*> &ModelResource::GetMaterials() const
+inline const StaticArray<StandardMaterial*> &ModelResource::GetMaterials() const
 {
 	return materials;
 }
@@ -71,13 +73,4 @@ inline const StaticArray<Material*> &ModelResource::GetMaterials() const
 inline UINT ModelResource::GetMeshesCount() const
 {
 	return hierarchy->GetMeshes().GetSize();
-}
-
-template<UINT Size>
-inline void ModelResource::SetMaterials(const Array<Material*, Size> &materials)
-{
-	for (UINT i = 0; i < hierarchy->GetMeshes().GetSize(); i++)
-	{
-		this->materials[i] = materials[i];
-	}
 }

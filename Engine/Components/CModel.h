@@ -10,21 +10,26 @@ class CModel : public IComponent
 {
 	CLASSDECLARATION(CModel)
 
-// TODO: loading materials, and only then can be set as protected
-//protected:
 public:
-	UINT modelId;
+	UINT				modelId;
 
 	// Resource, loaded from file
 	const ModelResource	*modelResource;
 	// Transformation matrix for correction for loaded model
-	Matrix4 correctionMatrix;
+	Matrix4				correctionMatrix;
 
 	// Arrays for rendering
-	StaticArray<UINT> vaos, vbos, ibos;
+	StaticArray<UINT>	vaos, vbos, ibos;
 
 	// Path to file
-	String path;
+	String				path;
+
+	// Shader to use
+	String				shader;
+
+	// Forced diffuse texture path
+	// Use this if there are no textures
+	String				forcedDiffuseTexture;
 
 public:
 	// Does model cast shadows?
@@ -46,8 +51,11 @@ public:
 	void Update() override;
 	void SetProperty(const String &key, const String &value) override;
 
+	// Bind shader for each material
+	void BindShader(const char *shaderName);
+
 	const StaticArray<MeshResource*>	&GetMeshes() const;
-	const StaticArray<Material*>		&GetMaterials() const;
+	const StaticArray<StandardMaterial*>		&GetMaterials() const;
 	const StaticArray<UINT>				&GetVAO() const;
 
 	// Calculate tranformation matrices foreach mesh

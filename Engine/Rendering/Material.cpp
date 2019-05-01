@@ -6,6 +6,16 @@
 Material::Material()
 { }
 
+Material::~Material()
+{ 
+	for (int i = 0; i < textures.GetTop(); i++)
+	{
+		// delete texture holders,
+		// but not textures (TextureResource) themselves
+		delete textures[i];
+	}
+}
+
 void Material::Init()
 {
 	// max texture count
@@ -30,59 +40,19 @@ void Material::ActivateTextures() const
 	for (UINT i = 0; i < textureCount; i++)
 	{
 		const ITexture &t = *textures[i];
-
-		// bind to correct texture unit
-		const char *tname = nullptr;
-		TextureType ttype = t.GetType();
-		int type = (int)ttype;
-
-		switch (ttype)
-		{
-		case TextureType::Diffuse:
-			tname = TEXTURE_NAME_DIFFUSE;
-			break;
-		case TextureType::Specular:
-			tname = TEXTURE_NAME_SPECULAR;
-			break;
-		case TextureType::Normal:
-			tname = TEXTURE_NAME_NORMAL;
-			break;
-		case TextureType::Height:
-			tname = TEXTURE_NAME_HEIGHT;
-			break;
-		case TextureType::Emission:
-			tname = TEXTURE_NAME_EMISSION;
-			break;
-		case TextureType::Detail:
-			tname = TEXTURE_NAME_DETAIL;
-			break;
-		case TextureType::Cubemap:
-			tname = TEXTURE_NAME_CUBEMAP;
-			break;
-		case TextureType::Shadowmap:
-			tname = TEXTURE_NAME_SHADOWMAP;
-			break;
-		}
+		int type = (int)t.GetType();
 
 		char name[TEXTURE_NAME_LENGTH + 1];
+		GetTextureName(t, name);
 
-		// copy except last char
-		for (int i = 0; i < TEXTURE_NAME_LENGTH - 1; i++)
-		{
-			name[i] = tname[i];
-		}
-
-		// last char is a texture's count number
-		name[TEXTURE_NAME_LENGTH - 1] = '0';
-		// null termianted string
-		name[TEXTURE_NAME_LENGTH] = '\0';
-
-		// set current texture
+		// bind to correct texture unit
 		shader->SetInt(name, type);
 
 		// activate
 		t.Activate(type);
 	}
+
+	ActivateAdditional();
 }
 
 void Material::DeactivateTextures() const
@@ -93,9 +63,11 @@ void Material::DeactivateTextures() const
 	{
 		textures[i]->Deactivate();
 	}
+
+	DeactivateAdditional();
 }
 
-void Material::AddTexture(const ITexture *t)
+void Material::AddTexture(ITexture *t)
 {
 	// add texture
 	textures.Push(t);
@@ -105,16 +77,53 @@ void Material::BindShader(const char *name)
 {
 	shader = RenderingSystem::Instance().GetShader(name);
 	ASSERT(shader != nullptr);
-
-	//if (shader == nullptr)
-	//{
-	//	String log = "Material::Shader is not registered: ";
-	//	log += name;
-	//	Logger::Print(log);
-	//}
 }
 
 const Shader &Material::GetShader() const
 {
 	return *shader;
+}
+
+void Material::GetTextureName(const ITexture &t, char *name)
+{
+	const char *tname = nullptr;
+
+	switch (t.GetType())
+	{
+	case TextureType::Diffuse:
+		tname = TEXTURE_NAME_DIFFUSE;
+		break;
+	case TextureType::Specular:
+		tname = TEXTURE_NAME_SPECULAR;
+		break;
+	case TextureType::Normal:
+		tname = TEXTURE_NAME_NORMAL;
+		break;
+	case TextureType::Height:
+		tname = TEXTURE_NAME_HEIGHT;
+		break;
+	case TextureType::Emission:
+		tname = TEXTURE_NAME_EMISSION;
+		break;
+	case TextureType::Detail:
+		tname = TEXTURE_NAME_DETAIL;
+		break;
+	case TextureType::Cubemap:
+		tname = TEXTURE_NAME_CUBEMAP;
+		break;
+	case TextureType::Shadowmap:
+		tname = TEXTURE_NAME_SHADOWMAP;
+		break;
+	}
+
+	// copy except last char
+	for (int i = 0; i < TEXTURE_NAME_LENGTH - 1; i++)
+	{
+		name[i] = tname[i];
+	}
+
+	// last char is a texture's count number
+	name[TEXTURE_NAME_LENGTH - 1] = '0';
+	// null termianted string
+	name[TEXTURE_NAME_LENGTH] = '\0';
 }

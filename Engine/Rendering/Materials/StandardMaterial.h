@@ -21,6 +21,9 @@ private:
 	// Shadowmap shader location
 	int shadowLoc;
 
+	// Main reflection cubemap
+	const Cubemap *reflectionCubemap;
+
 	// Main color shader location
 	int mainColorLoc;
 	// Specular color shader location
@@ -45,8 +48,11 @@ private:
 private:
 	void InitLightUniforms();
 
+	void ActivateAdditional() const override;
+	void DeactivateAdditional() const override;
+
 public:
-	void InitUniformLocations();
+	void InitUniformLocations() override;
 
 	void SetModel(const Matrix4 &m);
 
@@ -58,8 +64,10 @@ public:
 
 	void SetLightSpace(const Matrix4 & vp);
 
-	void SetMainColor(const Color4 & c);
-	void SetSpecularColor(const Color4 & c);
+	void SetReflectionCubemap(const Cubemap *cubemap);
+
+	void SetMainColor(const Color4F & c);
+	void SetSpecularColor(const Color4F & c);
 	void SetSmoothness(float s);
 
 	void ActivateShadowMap();

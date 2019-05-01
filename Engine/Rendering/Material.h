@@ -16,18 +16,32 @@ protected:
 	const Shader *shader;
 
 	// must be <= 16
-	StaticStack<const ITexture*> textures;
+	StaticStack<ITexture*> textures;
+
+private:
+	static void GetTextureName(const ITexture &t, char *name);
+
+protected:
+	// Activate additional textures
+	virtual void ActivateAdditional() const {};
+	// Deactivate additional textures
+	virtual void DeactivateAdditional() const {};
 
 public:
 	// Empty constructor
 	Material();
+	// Default destructor
+	~Material();
 
 	// Init material
 	void Init();
 	// Bind shader by its name
 	void BindShader(const char *name);
 	// Add texture to material
-	void AddTexture(const ITexture *t);
+	void AddTexture(ITexture *t);
+	
+	// Get all uniform locations from shader
+	virtual void InitUniformLocations() {};
 
 	// Activate shader
 	void Use();
@@ -40,6 +54,6 @@ public:
 	void DeactivateTextures() const;
 
 	// Getters
-	Shader &GetShader();
+	// Shader &GetShader();
 	const Shader &GetShader() const;
 };

@@ -60,6 +60,9 @@ void CVertexAnimated::Init()
 
 	// update once to buffer data
 	GFXUpdate();
+
+	// bind shader only for main model
+	BindShader(shader);
 }
 
 CVertexAnimated::~CVertexAnimated()

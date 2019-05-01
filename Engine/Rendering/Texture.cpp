@@ -15,7 +15,7 @@ const TextureResource & Texture::GetTextureResource() const
 	return *textureResource;
 }
 
-void Texture::Init(const char * path)
+void Texture::Load(const char * path)
 {
 	textureResource = ResourceManager::Instance().LoadTexture(path);
 

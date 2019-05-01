@@ -11,6 +11,8 @@
 #include <Engine/Math/Intersection.h>
 #include <Engine/ResourceManager/MeshResource.h>
 
+Cubemap cubemap;
+
 // Identity function
 // Use ONLY if keys are ordered natural numbers
 UINT HashUnsigned(UINT i)
@@ -30,6 +32,17 @@ void RenderingSystem::Init()
 	//shadowMap.SetType(TextureType::Shadowmap);
 
 	//depthShader.Load("Shaders/ShadowMapping.vs", "Shaders/ShadowMapping.fs");
+	
+	Array<const char*, 6> skyReflNames;
+	skyReflNames[4] = "Textures/SkyboxRefl/desertsky_rt.tga";
+	skyReflNames[5] = "Textures/SkyboxRefl/desertsky_lf.tga";
+	skyReflNames[2] = "Textures/SkyboxRefl/desertsky_up.tga";
+	skyReflNames[3] = "Textures/SkyboxRefl/desertsky_dn.tga";
+	skyReflNames[0] = "Textures/SkyboxRefl/desertsky_ft.tga";
+	skyReflNames[1] = "Textures/SkyboxRefl/desertsky_bk.tga";
+
+	cubemap = Cubemap();
+	cubemap.LoadCubemap(skyReflNames);
 
 	shaders.Init(8, 4);
 	shaders.DeclareHashFunction(String::StringHash);
@@ -103,7 +116,7 @@ void RenderingSystem::Update()
 				// DebugDrawer::Instance().Draw(transformedSphere);
 
 				// get mesh's material
-				StandardMaterial *mat = (StandardMaterial*)materials[j];
+				StandardMaterial *mat = (StandardMaterial*)materials[modelMeshes[j]->GetMaterialIndex()];
 
 				// activate material
 				mat->Use();
@@ -130,6 +143,9 @@ void RenderingSystem::Update()
 					//	mat->SetLightSpace(light->GetLightSpace(frustumForShadowmap));
 					//}
 				}
+
+				// set reflection cubemap
+				mat->SetReflectionCubemap(&cubemap);
 
 				// set camera options
 				mat->SetCameraSpace(camSpace);

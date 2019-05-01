@@ -12,8 +12,6 @@ class CVertexAnimated : public CModel
 	CLASSDECLARATION(CModel)
 
 private:
-	// TODO: array of animations
-
 	// Contains time values and path to models
 	const VertexAnimatedResource *vertAnim;
 	// Path to anim file

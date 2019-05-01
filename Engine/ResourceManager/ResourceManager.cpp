@@ -449,7 +449,7 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 		}
 
 		// allocate memory
-		meshes[i] = new MeshResource(sourceMesh->mNumVertices, indexCount, sourceMesh->mNumFaces, sourceMesh->mNumBones);
+		meshes[i] = new MeshResource(sourceMesh->mNumVertices, indexCount, sourceMesh->mNumFaces, sourceMesh->mNumBones, sourceMesh->mMaterialIndex);
 
 		CopyMesh(sourceMesh, meshes[i]);
 
@@ -489,12 +489,49 @@ const ModelResource *ResourceManager::LoadModel(const char * path)
 	}
 
 	// allocate
-	resultModel = new ModelResource(path, hierarchy);
+	resultModel = new ModelResource(path, hierarchy, (int)scene->mNumMaterials);
+
+	// copy each material
+	for (UINT i = 0; i < scene->mNumMaterials; i++)
+	{
+		CopyMaterial(scene->mMaterials[i], resultModel->materials[i]);
+	}
 
 	// add to hash table
 	modelResources.Add(path, resultModel);
 
 	return resultModel;
+}
+
+void ResourceManager::CopyMaterial(void *from, Material *to)
+{
+	aiMaterial *source = (aiMaterial*)from;
+	StandardMaterial *target = (StandardMaterial*)to;
+	
+	aiColor4D diffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
+	aiColor4D specularColor(1.0f, 1.0f, 1.0f, 1.0f);
+	aiColor4D reflectiveColor(1.0f, 1.0f, 1.0f, 1.0f);
+	float shininess;
+	float reflectivity;
+
+	source->Get(AI_MATKEY_COLOR_DIFFUSE, diffuseColor);
+	source->Get(AI_MATKEY_COLOR_SPECULAR, specularColor);
+	source->Get(AI_MATKEY_COLOR_REFLECTIVE, reflectiveColor);
+	source->Get(AI_MATKEY_SHININESS, shininess);
+	source->Get(AI_MATKEY_REFLECTIVITY, reflectivity);
+
+	target->SetMainColor(Color4F(diffuseColor.r, diffuseColor.g, diffuseColor.b, diffuseColor.a));
+	target->SetSpecularColor(Color4F(specularColor.r, specularColor.g, specularColor.b, specularColor.a));
+
+	aiString diffuseTexturePath;
+
+	if (source->GetTexture(aiTextureType_DIFFUSE, 0, &diffuseTexturePath) == AI_SUCCESS)
+	{
+		Texture *diffuseTexture = new Texture();
+		diffuseTexture->Load(diffuseTexturePath.C_Str());
+
+		target->AddTexture(diffuseTexture);
+	}
 }
 
 void ResourceManager::CopyMesh(void *from, MeshResource *to)

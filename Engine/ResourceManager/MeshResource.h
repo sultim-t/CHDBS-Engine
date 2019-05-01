@@ -23,13 +23,17 @@ private:
 	// Hierarchy of bones, which is attached to this mesh
 	Skeleton				*skeleton;
 
+	// Material to use
+	// All materials are stored in model resource
+	UINT					materialIndex;
+
 	// Bounding sphere for rendering
-	Sphere	boundingSphere;
-	bool	boundingCalculated;
+	Sphere					boundingSphere;
+	bool					boundingCalculated;
 	
 public:
 	// Init arrays
-	MeshResource(int verticesSize, int indicesSize, int trianglesSize, int bonesSize);
+	MeshResource(int verticesSize, int indicesSize, int trianglesSize, int bonesSize, UINT materialIndex);
 	~MeshResource();
 
 	const StaticArray<Vertex5>	&GetVertices() const;
@@ -37,6 +41,7 @@ public:
 	const StaticArray<Triangle>	&GetTriangles() const;
 	// const StaticArray<Bone*>	&GetBones() const;
 	const Skeleton				&GetSkeleton() const;
+	UINT						GetMaterialIndex() const;
 
 	// Does this mesh have bones?
 	bool HasBones() const;

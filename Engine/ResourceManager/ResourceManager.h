@@ -45,6 +45,8 @@ private:
 	void CopyMesh(void *from, MeshResource *to);
 	// Allocates animation and copies data
 	void CopyAnimation(void *from, Animation *to);
+	// Copies material
+	void CopyMaterial(void *from, Material *to);
 	// Copies bones data
 	void CopyBones(void *from, ModelHierarchy *hierarchy, MeshResource *to);
 	// Allocates model nodes and copies data

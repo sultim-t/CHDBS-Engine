@@ -120,14 +120,11 @@ void main()
 
     vec3 lighting = (ambient + (1.0 - shadow) * diffuse) * color;    
 	
-	if (textureSize(t_cube0, 0).x != 1)
-	{
-		vec3 I = normalize(fs_in.FragPos - u_CameraPosition);
-		vec3 R = reflect(I, normal);
+	vec3 I = normalize(fs_in.FragPos - u_CameraPosition);
+	vec3 R = reflect(I, normal);
 
-		vec3 reflection = texture(t_cube0, R).rgb;
-		lighting *= pow(reflection * 2, 1.0 - diffuse);
-	}
+	vec3 reflection = texture(t_cube0, R).rgb;
+	lighting *= pow(reflection, 1.0 - diffuse);
 
     FragColor = vec4(lighting, 1.0);
 }

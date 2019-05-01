@@ -1,7 +1,8 @@
 #include "MeshResource.h"
 #include <Engine/Rendering/Skeleton.h>
 
-MeshResource::MeshResource(int verticesSize, int indicesSize, int trianglesSize, int bonesSize) : boundingCalculated(false)
+MeshResource::MeshResource(int verticesSize, int indicesSize, int trianglesSize, int bonesSize, UINT materialIndex) 
+	: boundingCalculated(false), materialIndex(materialIndex)
 {
 	ASSERT(verticesSize >= 0 && indicesSize >= 0 && trianglesSize >= 0 && bonesSize >= 0);
 
@@ -45,6 +46,11 @@ const StaticArray<Triangle> &MeshResource::GetTriangles() const
 const Skeleton &MeshResource::GetSkeleton() const
 {
 	return *skeleton;
+}
+
+UINT MeshResource::GetMaterialIndex() const
+{
+	return materialIndex;
 }
 
 bool MeshResource::HasBones() const

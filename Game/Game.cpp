@@ -72,6 +72,8 @@ int main()
 	PhysicsSystem::Instance().Init();
 	InputSystem::Instance().Init();
 
+	const char shaderName[] = "Standard";
+	RenderingSystem::Instance().RegisterShader(shaderName, "Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
 
 	// init debug drawer
 	const char debugShaderName[] = "DebugShader";
@@ -110,54 +112,12 @@ int main()
 	skyNames[0] = "Textures/Skybox/desertsky_ft.tga";
 	skyNames[1] = "Textures/Skybox/desertsky_bk.tga";
 	
-	Array<const char*, 6> skyReflNames;
-	skyReflNames[4] = "Textures/SkyboxRefl/desertsky_rt.tga";
-	skyReflNames[5] = "Textures/SkyboxRefl/desertsky_lf.tga";
-	skyReflNames[2] = "Textures/SkyboxRefl/desertsky_up.tga";
-	skyReflNames[3] = "Textures/SkyboxRefl/desertsky_dn.tga";
-	skyReflNames[0] = "Textures/SkyboxRefl/desertsky_ft.tga";
-	skyReflNames[1] = "Textures/SkyboxRefl/desertsky_bk.tga";
-
 	Cubemap sky = Cubemap();
 	sky.LoadCubemap(skyNames);
 	Skybox::Instance().BindCubemap(sky);
 
-	Cubemap reflection = Cubemap();
-	reflection.LoadCubemap(skyReflNames);
-
 	//Shader shader = Shader("");
 	//shader.Load("Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
-
-	const char shaderName[] = "Default";
-
-	RenderingSystem::Instance().RegisterShader(shaderName, "Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
-
-	Texture textureDB = Texture();
-	textureDB.Init("Textures/WeaponsPalette.png");
-	Texture textureTR = Texture();
-	textureTR.Init("Textures/Sand0.jpg");
-
-	StandardMaterial mat = StandardMaterial();
-	StandardMaterial matTR = StandardMaterial();
-
-	mat.Init();
-	matTR.Init();
-
-	mat.AddTexture(&textureDB);
-	mat.AddTexture(&reflection);
-	matTR.AddTexture(&textureTR);
-	//matTR.AddTexture(&reflection);
-
-	mat.BindShader(shaderName);
-	matTR.BindShader(shaderName);
-
-	mat.InitUniformLocations();
-	matTR.InitUniformLocations();
-
-
-	dbEntity->GetComponent<CModel>()->modelResource->SetMaterials(&mat);
-	terrainEntity->GetComponent<CModel>()->modelResource->SetMaterials(&matTR);
-	cameraEntity->GetComponent<CModel>()->modelResource->SetMaterials(&mat);
 
 	// Recalculate time, there shouldn't be counted initialization time
 	Time::Init();

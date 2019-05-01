@@ -4,7 +4,9 @@
   Euler="-90 0 0">
 
   <CModel
-    Path="Models/Egypt.fbx"/>
+    Path="Models/Egypt.fbx"
+    Shader="Standard"
+    />
 
   <CMeshCollider
     GenerateFromModel="1"
