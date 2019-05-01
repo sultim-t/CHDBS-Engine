@@ -1,33 +1,36 @@
 #pragma once
 #include <Engine/ResourceManager/ShaderResource.h>
 
+// Represents compiled shader program
 class Shader
 {
 	friend class Material;
-	friend class RenderingSystem;
 
 private:
-	ShaderID shaderId;
+	// Unique ID of this shader
+	UINT		shaderId;
+	// Unique shader name
+	String		name;
+
+	// Is this shader compiled?
+	bool		isCompiled;
 
 	// Program ID
-	UINT graphicsProgramId;
-	UINT vertId;
-	UINT fragId;
-	//UINT geomId;
+	UINT		graphicsProgramId;
+	UINT		vertId;
+	UINT		fragId;
 
 	// Reference to shader resource
+	// which holds only text files
 	const ShaderResource *resource;
+
+private:
+	// Load shader from strings
+	void Compile(const char *vertexCode, const char *fragmentCode);
 
 public:
 	// Reads and builds the shader
 	void Load(const char *vertexPath, const char *fragmentPath);
-	// Load shader from strings
-	void LoadFromStrings(const char *vertexCode, const char *fragmentCode);
-
-	// Bind attribute
-	void BindAttribute(int attribute, const char *name) const;
-	// Bind attributes' indices
-	virtual void BindAttributes() {};
 
 	// Get uniform location
 	int GetUniformLocation(const char *name) const;
@@ -55,8 +58,9 @@ public:
 	void SetMat4(int location, const Matrix4 &mat) const;
 
 public:
-	Shader();
-	// Destructor
+	// Empty constructor
+	Shader(const char *name);
+	// Unregisters shader
 	~Shader();
 
 	// Register shader in rendering system
@@ -68,4 +72,11 @@ public:
 	void Stop() const;
 
 	int GetProgramID() const;
+	const String &GetName() const;
+
+public:
+	// Static function to register shader
+	static const Shader *RegisterShader(const char *shaderName, const char *vertPath, const char *fragPath);
+	// Static function to get shader by name
+	static const Shader *FindShader(const char *shaderName);
 };

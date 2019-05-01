@@ -1,14 +1,14 @@
 #include "Skybox.h"
 #include "OpenGL.h"
 
-Skybox::Skybox()
-{
-	isCubemapSet = false;
-}
+#define SKYBOX_SHADER_CUBEMAP_NAME		"skybox"
+#define SKYBOX_SHADER_CAMERASPACE_NAME	"camSpace"
+
+Skybox::Skybox() : isCubemapSet(false)
+{ }
 
 Skybox::~Skybox()
-{
-}
+{ }
 
 void Skybox::Init()
 {
@@ -67,21 +67,27 @@ void Skybox::Init()
 	
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+}
 
-	shader.Load("Shaders/Skybox.vs", "Shaders/Skybox.fs");
-	shader.Use();
-	shader.SetInt("skybox", 0);
-	shader.Stop();
+void Skybox::BindShader(const char *name)
+{
+	skyboxShader = Shader::FindShader(name);
+
+	// set cubmap
+	skyboxShader->Use();
+	skyboxShader->SetInt(SKYBOX_SHADER_CUBEMAP_NAME, 0);
+	skyboxShader->Stop();
 }
 
 void Skybox::BindCubemap(const Cubemap &cubemap)
 {
 	this->cubemap = cubemap;
-	isCubemapSet = true;
+	this->isCubemapSet = true;
 }
 
 void Skybox::Draw(const Matrix4 &camSpace) const
 {
+	// no cubemap
 	if (!isCubemapSet)
 	{
 		return;
@@ -90,20 +96,19 @@ void Skybox::Draw(const Matrix4 &camSpace) const
 	glDepthFunc(GL_LEQUAL);
 
 	// set shader
-	shader.Use();
-
+	skyboxShader->Use();
 	// set uniforms
-	shader.SetMat4("camSpace", camSpace);
-	
+	skyboxShader->SetMat4(SKYBOX_SHADER_CAMERASPACE_NAME, camSpace);
 	// activate cubemap
 	cubemap.Activate(0);
 
 	// bind
 	glBindVertexArray(vao);
-	
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	
 	// to default
+	skyboxShader->Stop();
+	cubemap.Deactivate();
 	glDepthFunc(GL_LESS);
 }
 

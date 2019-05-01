@@ -6,13 +6,22 @@
 #include <Engine/Systems/RenderingSystem.h>
 #include <Engine/ResourceManager/ResourceManager.h>
 
-Shader::Shader()
+Shader::Shader(const char *name) : name(name), isCompiled(false)
 { }
 
 Shader::~Shader()
 {
-	Stop();
+	// if not compiled
+	if (!isCompiled)
+	{
+		// do nothing
+		return;
+	}
 
+	// deactivate
+	Stop();
+	
+	// unregister
 	glDetachShader(graphicsProgramId, vertId);
 	glDetachShader(graphicsProgramId, fragId);
 
@@ -24,14 +33,20 @@ Shader::~Shader()
 
 void Shader::Load(const char *vertexPath, const char *fragmentPath)
 {
+	// if compiled
+	if (isCompiled)
+	{
+		return;
+	}
+
 	// load shader
 	resource = ResourceManager::Instance().LoadShader(vertexPath, fragmentPath);
 
-	// load
-	LoadFromStrings(resource->GetVertexCode(), resource->GetFragmentCode());
+	// compile shader
+	Compile(resource->GetVertexCode(), resource->GetFragmentCode());
 }
 
-void Shader::LoadFromStrings(const char *vertex, const char *fragment)
+void Shader::Compile(const char *vertex, const char *fragment)
 {
 	char log[256];
 	int success;
@@ -78,11 +93,6 @@ void Shader::LoadFromStrings(const char *vertex, const char *fragment)
 
 	glDeleteShader(vertId);
 	glDeleteShader(fragId);
-}
-
-void Shader::BindAttribute(int attribute, const char * name) const
-{
-	glBindAttribLocation(graphicsProgramId, attribute, name);
 }
 
 int Shader::GetUniformLocation(const char * name) const
@@ -188,4 +198,21 @@ void Shader::SetMat4(int location, const Matrix4 & mat) const
 int Shader::GetProgramID() const
 {
 	return graphicsProgramId;
+}
+
+const String &Shader::GetName() const
+{
+	return name;
+}
+
+const Shader *Shader::RegisterShader(const char *shaderName, const char *vertPath, const char *fragPath)
+{
+	// just a shortcut
+	return RenderingSystem::Instance().RegisterShader(shaderName, vertPath, fragPath);
+}
+
+const Shader *Shader::FindShader(const char *shaderName)
+{
+	// just a shortcut
+	return RenderingSystem::Instance().GetShader(shaderName);
 }

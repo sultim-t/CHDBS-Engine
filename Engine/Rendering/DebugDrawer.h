@@ -35,7 +35,7 @@ private:
 	UINT linesVBO;
 
 	// Shader which is used for debugging
-	Shader debugShader;
+	const Shader *debugShader;
 
 	// All vertices to draw
 	DynamicArray<DebugDrawVertex> vertices;
@@ -47,7 +47,6 @@ private:
 
 private:
 	void InitBuffers();
-	void InitShader(const char *vertPath, const char *fragPath);
 
 	// Draw box from 8 points
 	void DrawBox(const Vector3 *points, const Color4 &color);
@@ -56,7 +55,9 @@ private:
 
 public:
 	// Init buffers and shader
-	void Init(const char *vertPath, const char *fragPath);
+	void Init();
+	// Set debugging shader
+	void SetShader(const char *name);
 
 	// Bind matrix to draw primitives
 	void BindSpaceMatrix(const Matrix4 &space);

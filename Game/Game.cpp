@@ -47,11 +47,11 @@
 
 void Game::Start()
 {
-	// init engine
-	engine.Init();
+	//// init engine
+	//engine.Init();
 
-	// init debug drawer
-	DebugDrawer::Instance().Init("Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
+	//// init debug drawer
+	//DebugDrawer::Instance().Init("Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
 }
 
 void Game::LoadScenes()
@@ -63,7 +63,7 @@ int main()
 	//Engine engine = Engine();
 	//engine.Init();
 
-	ContextWindow::Instance().Init("Engine", 1280, 720);
+	ContextWindow::Instance().Init("CHDBS Engine", 1280, 720);
 
 	ResourceManager::Instance().Init();
 	SceneManager::Instance().Init();
@@ -72,7 +72,18 @@ int main()
 	PhysicsSystem::Instance().Init();
 	InputSystem::Instance().Init();
 
-	DebugDrawer::Instance().Init("Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
+
+	// init debug drawer
+	const char debugShaderName[] = "DebugShader";
+	RenderingSystem::Instance().RegisterShader(debugShaderName, "Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
+	DebugDrawer::Instance().Init();
+	DebugDrawer::Instance().SetShader(debugShaderName);
+
+	// init skybox
+	const char skyboxShaderName[] = "SkyboxShader";
+	RenderingSystem::Instance().RegisterShader(skyboxShaderName, "Shaders/Skybox.vs", "Shaders/Skybox.fs");
+	Skybox::Instance().Init();
+	Skybox::Instance().BindShader(skyboxShaderName);
 
 	EntityFactory::RegisterComponentType<CWeapon>("CWeapon");
 
@@ -114,8 +125,12 @@ int main()
 	Cubemap reflection = Cubemap();
 	reflection.LoadCubemap(skyReflNames);
 
-	Shader shader = Shader();
-	shader.Load("Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
+	//Shader shader = Shader("");
+	//shader.Load("Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
+
+	const char shaderName[] = "Default";
+
+	RenderingSystem::Instance().RegisterShader(shaderName, "Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
 
 	Texture textureDB = Texture();
 	textureDB.Init("Textures/WeaponsPalette.png");
@@ -133,8 +148,8 @@ int main()
 	matTR.AddTexture(&textureTR);
 	//matTR.AddTexture(&reflection);
 
-	mat.BindShader(shader);
-	matTR.BindShader(shader);
+	mat.BindShader(shaderName);
+	matTR.BindShader(shaderName);
 
 	mat.InitUniformLocations();
 	matTR.InitUniformLocations();

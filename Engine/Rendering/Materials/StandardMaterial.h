@@ -56,7 +56,6 @@ public:
 	void SetLightCount(int count);
 	void SetLight(const ILight &light, int index);
 
-	void SetLightDirection(const Vector3 &pos);
 	void SetLightSpace(const Matrix4 & vp);
 
 	void SetMainColor(const Color4 & c);

@@ -1,7 +1,6 @@
 #include "CParticleSystem.h"
 #include <Engine/Memory/Memory.h>
 #include <Engine/Components/CCamera.h>
-#include <Engine/Systems/RenderingSystem.h>
 #include <Engine/Base/Random.h>
 
 #include <algorithm>
@@ -117,7 +116,7 @@ void CParticleSystem::Render()
 	ActivateShader();
 	LoadAndDraw();
 
-	particleShader.Stop();
+	particleShader->Stop();
 	glDisable(GL_BLEND);
 }
 
@@ -126,7 +125,12 @@ void CParticleSystem::Init()
 	ASSERT(maxParticleCount > 0 && maxParticleCount <= MAX_PARTICLE_COUNT);
 
 	// load shader
-	particleShader.Load(shaderVert, shaderFrag);
+	particleShader = Shader::FindShader("InternalParticleSystem");
+
+	if (particleShader == nullptr)
+	{
+		particleShader = Shader::RegisterShader("InternalParticleSystem", shaderVert, shaderFrag);
+	}
 
 	// allocate
 	particles = (Particle*)SystemAllocator::Allocate(sizeof(Particle) * maxParticleCount);
@@ -160,8 +164,8 @@ void CParticleSystem::Init()
 	glBindBuffer(GL_ARRAY_BUFFER, colorBuffer);
 	glBufferData(GL_ARRAY_BUFFER, maxParticleCount * sizeof(Color4), NULL, GL_STREAM_DRAW);
 
-	//// register particle system to render
-	//RenderingSystem::Instance().Register(this);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 CParticleSystem::~CParticleSystem()
@@ -210,7 +214,6 @@ void CParticleSystem::GenerateParticle(const Vector3 &pos, const Vector3 &vel, c
 
 void CParticleSystem::Update()
 { 
-
 	Simulate();
 }
 
@@ -278,14 +281,14 @@ void CParticleSystem::StoreData()
 
 void CParticleSystem::ActivateShader()
 {
-	particleShader.Use();
+	particleShader->Use();
 
 	const Transform &t = cam->GetOwner().GetTransform();
-	particleShader.SetVec3("cameraUp", t.GetUp());
-	particleShader.SetVec3("cameraRight", t.GetRight());
+	particleShader->SetVec3("cameraUp", t.GetUp());
+	particleShader->SetVec3("cameraRight", t.GetRight());
 
 	Matrix4 viewProj = cam->GetViewMatrix() * cam->GetProjectionMatrix();
-	particleShader.SetMat4("viewProj", viewProj);
+	particleShader->SetMat4("viewProj", viewProj);
 }
 
 void CParticleSystem::LoadAndDraw()

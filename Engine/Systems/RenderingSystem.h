@@ -15,7 +15,7 @@
 
 class RenderingSystem : public ISystem
 {
-public:
+private:
 	// References to arrays with data in scene
 	const DynamicArray<CCamera*>			*cameras;
 	const DynamicArray<CLight*>				*lights;
@@ -23,9 +23,12 @@ public:
 	const DynamicArray<CParticleSystem*>	*particleSystems;
 
 	// main shadowmap
-	FramebufferTexture shadowMap;
+	// FramebufferTexture			shadowMap;
 	// shader for shadowmapping
-	Shader depthShader;
+	// Shader						*depthShader;
+
+	// Contains all compiled shader programs
+	HashTable<String, Shader*>	shaders;
 
 private:
 	RenderingSystem();
@@ -41,7 +44,7 @@ private:
 	void DrawSkybox(const Matrix4 &viewMatrix, const Matrix4 &projMatrix);
 
 	// Generate shadowmap to framebuffer, according to camera frustum to fit entire shadowmap
-	void CreateShadowMap(const CLight &light, const Frustum &frustumForShadowmap, FramebufferTexture &shadowMap);
+	//void CreateShadowMap(const CLight &light, const Frustum &frustumForShadowmap, FramebufferTexture &shadowMap);
 
 public:
 	// Init structures
@@ -56,7 +59,16 @@ public:
 	void Register(const DynamicArray<CLight*>			*lights);
 	void Register(const DynamicArray<CModel*>			*models);
 	void Register(const DynamicArray<CParticleSystem*>	*particleSystems);
-
+	
 	// Unregister rigidbodies and colliders
 	void Reset();
+
+	// If not registered, compile and register shader
+	const Shader *RegisterShader(const char *name, const char *vertexPath, const char *fragmentPath);
+	// Delete all shaders
+	void ResetShaders();
+	
+	// Get compiled shader by its name
+	// If not found will return null
+	const Shader *GetShader(const char* name) const;
 };

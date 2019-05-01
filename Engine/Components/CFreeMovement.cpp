@@ -90,8 +90,8 @@ void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)
 	float ax = xoffset * Input::MouseSensitivity;
 	float ay = yoffset * Input::MouseSensitivity;
 
-	x = Lerp(x, x + ax, Time::GetDeltaTime() * 5);
-	y = Lerp(y, y + ay, Time::GetDeltaTime() * 5);
+	x = Lerp(x, x + ax, Time::GetDeltaTime() * 20);
+	y = Lerp(y, y + ay, Time::GetDeltaTime() * 20);
 
 	if (x > 180.0f)
 	{

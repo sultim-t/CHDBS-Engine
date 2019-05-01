@@ -9,11 +9,11 @@ class Material
 	friend class RenderingSystem;
 
 private:
-	MaterialID materialId;
+	UINT materialId;
 
 protected:
 	// current shader to use
-	Shader shader;
+	const Shader *shader;
 
 	// must be <= 16
 	StaticStack<const ITexture*> textures;
@@ -24,8 +24,8 @@ public:
 
 	// Init material
 	void Init();
-	// Bind shader
-	void BindShader(const Shader &shader);
+	// Bind shader by its name
+	void BindShader(const char *name);
 	// Add texture to material
 	void AddTexture(const ITexture *t);
 

@@ -6,14 +6,16 @@
 class Skybox
 {
 private:
-	UINT vao, vbo;
-	Cubemap cubemap;
-	Shader shader;
+	UINT			vao, vbo;
+	Cubemap			cubemap;
+	const Shader	*skyboxShader;
 
-	bool isCubemapSet;
+	bool			isCubemapSet;
 
 private:
+	// Default constructor
 	Skybox();
+	// Default destructor
 	~Skybox();
 
 	Skybox(Skybox&) = delete;
@@ -22,6 +24,7 @@ private:
 
 public:
 	void Init();
+	void BindShader(const char *name);
 	void BindCubemap(const Cubemap &cubemap);
 	void Draw(const Matrix4 &camSpace) const;
 

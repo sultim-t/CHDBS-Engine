@@ -1,6 +1,7 @@
 #include "Material.h"
 #include <Engine/Rendering/OpenGL.h>
 #include <Engine/Rendering/Cubemap.h>
+#include <Engine/Systems/RenderingSystem.h>
 
 Material::Material()
 { }
@@ -14,12 +15,12 @@ void Material::Init()
 void Material::Use()
 {
 	// activate shader
-	shader.Use();
+	shader->Use();
 }
 
 void Material::Stop()
 {	
-	shader.Stop();
+	shader->Stop();
 }
 
 void Material::ActivateTextures() const
@@ -77,7 +78,7 @@ void Material::ActivateTextures() const
 		name[TEXTURE_NAME_LENGTH] = '\0';
 
 		// set current texture
-		shader.SetInt(name, type);
+		shader->SetInt(name, type);
 
 		// activate
 		t.Activate(type);
@@ -100,17 +101,20 @@ void Material::AddTexture(const ITexture *t)
 	textures.Push(t);
 }
 
-void Material::BindShader(const Shader &shader)
+void Material::BindShader(const char *name)
 {
-	this->shader = shader;
-}
+	shader = RenderingSystem::Instance().GetShader(name);
+	ASSERT(shader != nullptr);
 
-Shader &Material::GetShader()
-{
-	return shader;
+	//if (shader == nullptr)
+	//{
+	//	String log = "Material::Shader is not registered: ";
+	//	log += name;
+	//	Logger::Print(log);
+	//}
 }
 
 const Shader &Material::GetShader() const
 {
-	return shader;
+	return *shader;
 }

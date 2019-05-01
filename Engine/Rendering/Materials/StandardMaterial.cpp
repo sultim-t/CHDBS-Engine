@@ -19,19 +19,19 @@
 
 void StandardMaterial::InitUniformLocations()
 {
-	modelMatrixLoc = shader.GetUniformLocation(UNIFORM_MODEL);
+	modelMatrixLoc = shader->GetUniformLocation(UNIFORM_MODEL);
 
-	cameraPosLoc = shader.GetUniformLocation(UNIFORM_CAMERA_POSITION);
-	cameraSpaceLoc = shader.GetUniformLocation(UNIFORM_CAMERA_SPACE);
+	cameraPosLoc = shader->GetUniformLocation(UNIFORM_CAMERA_POSITION);
+	cameraSpaceLoc = shader->GetUniformLocation(UNIFORM_CAMERA_SPACE);
 
-	shadowLoc = shader.GetUniformLocation(TEXTURE_NAME_SHADOWMAP);
+	shadowLoc = shader->GetUniformLocation(TEXTURE_NAME_SHADOWMAP);
 
-	lightCountLoc = shader.GetUniformLocation(UNIFORM_LIGHT_COUNT);
-	lightSpaceLoc = shader.GetUniformLocation(UNIFORM_LIGHT_SPACE);
+	lightCountLoc = shader->GetUniformLocation(UNIFORM_LIGHT_COUNT);
+	lightSpaceLoc = shader->GetUniformLocation(UNIFORM_LIGHT_SPACE);
 
-	mainColorLoc = shader.GetUniformLocation(UNIFORM_MAINCOLOR);
-	specularLoc = shader.GetUniformLocation(UNIFORM_SPECULARCOLOR);
-	smoothnessLoc = shader.GetUniformLocation(UNIFORM_SMOOTHNESS);
+	mainColorLoc = shader->GetUniformLocation(UNIFORM_MAINCOLOR);
+	specularLoc = shader->GetUniformLocation(UNIFORM_SPECULARCOLOR);
+	smoothnessLoc = shader->GetUniformLocation(UNIFORM_SMOOTHNESS);
 
 	InitLightUniforms();
 }
@@ -57,51 +57,51 @@ void StandardMaterial::InitLightUniforms()
 		cdir[UNIFORM_LIGHT_INDEXPOS] = index;
 
 		// get uniforms
-		lightUniforms[i].positionLoc = shader.GetUniformLocation(position);
-		lightUniforms[i].colorLoc = shader.GetUniformLocation(color);
-		lightUniforms[i].attenLoc = shader.GetUniformLocation(atten);
-		lightUniforms[i].coneAngleLoc = shader.GetUniformLocation(cangle);
-		lightUniforms[i].coneDirLoc = shader.GetUniformLocation(cdir);
+		lightUniforms[i].positionLoc = shader->GetUniformLocation(position);
+		lightUniforms[i].colorLoc = shader->GetUniformLocation(color);
+		lightUniforms[i].attenLoc = shader->GetUniformLocation(atten);
+		lightUniforms[i].coneAngleLoc = shader->GetUniformLocation(cangle);
+		lightUniforms[i].coneDirLoc = shader->GetUniformLocation(cdir);
 	}
 }
 
 void StandardMaterial::SetModel(const Matrix4 & m)
 {
-	shader.SetMat4(modelMatrixLoc, m);
+	shader->SetMat4(modelMatrixLoc, m);
 }
 
 void StandardMaterial::SetCameraPosition(const Vector3 & pos)
 {
-	shader.SetVec3(cameraPosLoc, pos);
+	shader->SetVec3(cameraPosLoc, pos);
 }
 
 void StandardMaterial::SetCameraSpace(const Matrix4 & vp)
 {
-	shader.SetMat4(cameraSpaceLoc, vp);
+	shader->SetMat4(cameraSpaceLoc, vp);
 }
 
 void StandardMaterial::SetLightCount(int count)
 {
-	shader.SetInt(lightCountLoc, count);
+	shader->SetInt(lightCountLoc, count);
 }
 
 void StandardMaterial::SetLightSpace(const Matrix4 & vp)
 {
-	shader.SetMat4(lightSpaceLoc, vp);
+	shader->SetMat4(lightSpaceLoc, vp);
 }
 
 void StandardMaterial::SetLight(const ILight &light, int index)
 {
 	// set light's properties to shader
 	// using calculated uniform locations
-	shader.SetVec4(lightUniforms[index].positionLoc, light.GetPosition());
-	shader.SetVec3(lightUniforms[index].colorLoc, light.GetColor());
-	shader.SetFloat(lightUniforms[index].attenLoc, light.GetAttenuation());
-	shader.SetFloat(lightUniforms[index].coneAngleLoc, light.GetConeAngle());
-	shader.SetVec3(lightUniforms[index].coneDirLoc, light.GetConeDirection());
+	shader->SetVec4(lightUniforms[index].positionLoc, light.GetPosition());
+	shader->SetVec3(lightUniforms[index].colorLoc, light.GetColor());
+	shader->SetFloat(lightUniforms[index].attenLoc, light.GetAttenuation());
+	shader->SetFloat(lightUniforms[index].coneAngleLoc, light.GetConeAngle());
+	shader->SetVec3(lightUniforms[index].coneDirLoc, light.GetConeDirection());
 }
 
 void StandardMaterial::ActivateShadowMap()
 {
-	shader.SetInt(shadowLoc, (int)TextureType::Shadowmap);
+	shader->SetInt(shadowLoc, (int)TextureType::Shadowmap);
 }

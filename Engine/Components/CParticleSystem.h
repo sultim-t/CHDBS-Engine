@@ -43,16 +43,16 @@ private:
 	bool	isLooping;
 
 	// array of particles
-	Particle	*particles;
+	Particle		*particles;
 	// array of positions and sizes
-	Vector4		*positionsAndSizes;
-	Color4		*colors;
+	Vector4			*positionsAndSizes;
+	Color4			*colors;
 
-	static float quadVertices[];
+	static float	quadVertices[];
 
 	// special shader for rendering particles
-	Shader particleShader;
-	String shaderVert, shaderFrag;
+	const Shader	*particleShader;
+	String			shaderVert, shaderFrag;
 
 	// store pointer to current transform
 	// for fast access

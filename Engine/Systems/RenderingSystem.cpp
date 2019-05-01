@@ -26,12 +26,13 @@ RenderingSystem::~RenderingSystem()
 
 void RenderingSystem::Init()
 {
-	shadowMap.Create(1024, 1024);
-	shadowMap.SetType(TextureType::Shadowmap);
+	//shadowMap.Create(1024, 1024);
+	//shadowMap.SetType(TextureType::Shadowmap);
 
-	depthShader.Load("Shaders/ShadowMapping.vs", "Shaders/ShadowMapping.fs");
+	//depthShader.Load("Shaders/ShadowMapping.vs", "Shaders/ShadowMapping.fs");
 
-	Skybox::Instance().Init();
+	shaders.Init(8, 4);
+	shaders.DeclareHashFunction(String::StringHash);
 }
 
 void RenderingSystem::Update()
@@ -64,14 +65,14 @@ void RenderingSystem::Update()
 		// get frustum for culling
 		const Frustum frustum = cam->GetFrustum();
 
-		// get frustum for for shadowmapping
-		const Frustum &frustumForShadowmap = cam->GetFrustum(0.1f, 40.0f);
+		//// get frustum for for shadowmapping
+		//const Frustum &frustumForShadowmap = cam->GetFrustum(0.1f, 40.0f);
 
-		if (lights->operator[](0)->IsCastingShadows())
-		{
-			CreateShadowMap(*lights->operator[](0), frustumForShadowmap, shadowMap);
-			shadowMap.Activate((int)TextureType::Shadowmap);
-		}
+		//if (lights->operator[](0)->IsCastingShadows())
+		//{
+		//	CreateShadowMap(*lights->operator[](0), frustumForShadowmap, shadowMap);
+		//	shadowMap.Activate((int)TextureType::Shadowmap);
+		//}
 
 		for (int m = 0; m < models->GetSize(); m++)
 		{
@@ -124,10 +125,10 @@ void RenderingSystem::Update()
 
 					mat->SetLight(*light, l);
 
-					if (light->GetLightType() != LightType::Point)
-					{
-						mat->SetLightSpace(light->GetLightSpace(frustumForShadowmap));
-					}
+					//if (light->GetLightType() != LightType::Point)
+					//{
+					//	mat->SetLightSpace(light->GetLightSpace(frustumForShadowmap));
+					//}
 				}
 
 				// set camera options
@@ -194,64 +195,64 @@ void RenderingSystem::DrawSkybox(const Matrix4 &viewMatrix, const Matrix4 &projM
 	Skybox::Instance().Draw(skyCamSpace);
 }
 
-void RenderingSystem::CreateShadowMap(const CLight &light, const Frustum &frustumForShadowmap, FramebufferTexture &shadowMap)
-{
-	// if not registered
-	if (cameras == nullptr || lights == nullptr || models == nullptr || particleSystems == nullptr)
-	{
-		return;
-	}
-
-	// bind viewport for shadowmap size
-	glViewport(0, 0, shadowMap.GetWidth(), shadowMap.GetHeight());
-
-	// bind
-	glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.GetFBO());
-
-	// clear depth
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-	// activate depth shader
-	depthShader.Use();
-
-	Matrix4 lightSpace = light.GetLightSpace(frustumForShadowmap);
-	
-	// draw each model
-	for (int m = 0; m < models->GetSize(); m++)
-	{
-		CModel *model = models->operator[](m);
-
-		if (!model->IsCastingShadows)
-		{
-			continue;
-		}
-
-		// get all meshes
-		const StaticArray<MeshResource*> &modelMeshes = model->GetMeshes();
-		// get their vaos
-		const StaticArray<UINT> &vaos = model->GetVAO();
-		
-		// recalculate tranforms relative to light space
-		auto &meshesTranforms = model->GetTranforms(lightSpace);
-
-		UINT count = modelMeshes.GetSize();
-		for (UINT i = 0; i < count; i++)
-		{
-			// set transformation
-			depthShader.SetMat4("MVP", meshesTranforms[i]);
-			
-			// draw
-			DrawMesh(vaos[i], modelMeshes[i]->GetIndices().GetSize());
-		}
-	}
-
-	depthShader.Stop();
-
-	// unbind framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	// reset viewport
-	ContextWindow::Instance().ResetViewport();
-}
+//void RenderingSystem::CreateShadowMap(const CLight &light, const Frustum &frustumForShadowmap, FramebufferTexture &shadowMap)
+//{
+//	// if not registered
+//	if (cameras == nullptr || lights == nullptr || models == nullptr || particleSystems == nullptr)
+//	{
+//		return;
+//	}
+//
+//	// bind viewport for shadowmap size
+//	glViewport(0, 0, shadowMap.GetWidth(), shadowMap.GetHeight());
+//
+//	// bind
+//	glBindFramebuffer(GL_FRAMEBUFFER, shadowMap.GetFBO());
+//
+//	// clear depth
+//	glClear(GL_DEPTH_BUFFER_BIT);
+//
+//	// activate depth shader
+//	depthShader.Use();
+//
+//	Matrix4 lightSpace = light.GetLightSpace(frustumForShadowmap);
+//	
+//	// draw each model
+//	for (int m = 0; m < models->GetSize(); m++)
+//	{
+//		CModel *model = models->operator[](m);
+//
+//		if (!model->IsCastingShadows)
+//		{
+//			continue;
+//		}
+//
+//		// get all meshes
+//		const StaticArray<MeshResource*> &modelMeshes = model->GetMeshes();
+//		// get their vaos
+//		const StaticArray<UINT> &vaos = model->GetVAO();
+//		
+//		// recalculate tranforms relative to light space
+//		auto &meshesTranforms = model->GetTranforms(lightSpace);
+//
+//		UINT count = modelMeshes.GetSize();
+//		for (UINT i = 0; i < count; i++)
+//		{
+//			// set transformation
+//			depthShader.SetMat4("MVP", meshesTranforms[i]);
+//			
+//			// draw
+//			DrawMesh(vaos[i], modelMeshes[i]->GetIndices().GetSize());
+//		}
+//	}
+//
+//	depthShader.Stop();
+//
+//	// unbind framebuffer
+//	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+//	// reset viewport
+//	ContextWindow::Instance().ResetViewport();
+//}
 
 RenderingSystem &RenderingSystem::Instance()
 {
@@ -279,10 +280,54 @@ void RenderingSystem::Register(const DynamicArray<CParticleSystem*> *particleSys
 	this->particleSystems = particleSystems;
 }
 
+const Shader *RenderingSystem::RegisterShader(const char *name, const char *vertexPath, const char *fragmentPath)
+{	
+	const Shader *loaded = GetShader(name);
+
+	// if loaded
+	if (loaded != nullptr)
+	{
+		return loaded;
+	}
+
+	// if not found, create
+	Shader *result = new Shader(name);
+
+	// compile
+	result->Load(vertexPath, fragmentPath);
+
+	// add to table
+	shaders.Add(name, result);
+
+	return result;
+}
+
+void RenderingSystem::ResetShaders()
+{
+	UINT count = shaders.GetSize();
+	for (UINT i = 0; i < count; i++)
+	{
+		delete shaders[i];
+	}
+}
+
 void RenderingSystem::Reset()
 {
 	this->cameras			= nullptr;
 	this->lights			= nullptr;
 	this->models			= nullptr;
 	this->particleSystems	= nullptr;
+}
+
+const Shader *RenderingSystem::GetShader(const char *name) const
+{
+	Shader *result;
+
+	// try to find in hash table
+	if (shaders.Find(name, result))
+	{
+		return result;
+	}
+
+	return nullptr;
 }

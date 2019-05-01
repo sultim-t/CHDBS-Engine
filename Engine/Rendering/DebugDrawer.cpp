@@ -29,15 +29,14 @@ void DebugDrawer::InitBuffers()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void DebugDrawer::InitShader(const char *vertPath, const char *fragPath)
+void DebugDrawer::SetShader(const char *name)
 {
-	debugShader.Load(vertPath, fragPath);
+	debugShader = Shader::FindShader(name);
 }
 
-void DebugDrawer::Init(const char *vertPath, const char *fragPath)
+void DebugDrawer::Init()
 {
 	InitBuffers();
-	InitShader(vertPath, fragPath);
 
 	// init buffer
 	vertices.Init(DEBUG_DRAWER_MAX_VERTS);
@@ -72,10 +71,17 @@ void DebugDrawer::DrawQueues()
 
 void DebugDrawer::DrawAllLines()
 {
+	// if debug shader doesn't exist
+	if (debugShader == nullptr)
+	{
+		// do nothing
+		return;
+	}
+
 	glBindVertexArray(linesVAO);
 
-	debugShader.Use();
-	debugShader.SetMat4(SHADER_MVP_MATRIX_NAME, space);
+	debugShader->Use();
+	debugShader->SetMat4(SHADER_MVP_MATRIX_NAME, space);
 
 	// bind buffer
 	glBindBuffer(GL_ARRAY_BUFFER, linesVBO);
@@ -98,7 +104,7 @@ void DebugDrawer::DrawAllLines()
 	}
 
 	// unbind
-	debugShader.Stop();
+	debugShader->Stop();
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }

@@ -11,7 +11,7 @@ enum class WeaponType
 
 class CWeapon : public IComponent
 {
-	CLASSDECLARATION(CFreeMovement)
+	CLASSDECLARATION(CWeapon)
 
 private:
 	// Timer for reload check
