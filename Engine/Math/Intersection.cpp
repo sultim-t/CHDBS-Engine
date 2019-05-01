@@ -6,6 +6,8 @@
 #include "Sphere.h"
 #include "Triangle.h"
 
+#include <Engine/Physics/CollisionInfo.h>
+
 #include <Engine/DataStructures/StaticArray.h>
 #include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/ResourceManager/MeshResource.h>
@@ -1021,4 +1023,89 @@ bool Intersection::MeshAABB(const StaticArray<Triangle>& triangles, const Dynami
 	}
 
 	return false;
+}
+
+bool Intersection::MeshSphere(const StaticArray<Triangle>& triangles, const DynamicArray<int>& indices, const Sphere & s, CollisionInfo & info)
+{
+	bool atLeastOne = false;
+
+	int size = indices.GetSize();
+
+	const Vector3 &center = s.GetCenter();
+	const float radius = s.GetRadius();
+	const float radiusSqr = radius * radius;
+
+	// for each index
+	for (int i = 0; i < size; i++)
+	{
+		int index = indices[i];
+		const Triangle &t = triangles[index];
+
+		// closest point
+		const Vector3 &point = t.GetClosestPoint(center);
+
+		// from closest point on triangle to center
+		float lengthSqr = (point - center).LengthSqr();
+
+		if (lengthSqr <= radiusSqr)
+		{
+			atLeastOne = true;
+
+			const Vector3 &normal = t.GetNormal();
+			float penetration = radius - Sqrt(lengthSqr);
+
+			info.AddContact(point, normal, penetration);
+
+			if (!info.HasFree())
+			{
+				return true;
+			}
+		}
+	}
+
+	return atLeastOne;
+}
+
+bool Intersection::MeshAABB(const StaticArray<Triangle>& triangles, const DynamicArray<int>& indices, const AABB & aabb, CollisionInfo & info)
+{
+	bool atLeastOne = false;
+
+	int size = indices.GetSize();
+	const float radius = aabb.GetSize().Length() * 0.5f;
+	const Sphere &bounding = Sphere(aabb.GetCenter(), radius);
+
+	Vector3 p;
+
+	// for each index
+	for (int i = 0; i < size; i++)
+	{
+		int index = indices[i];
+		const Triangle &t = triangles[index];
+
+		// check first sphere
+		if (TriangleSphere(t, bounding, p))
+		{
+			// and then aabb
+			if (TriangleAABB(t, aabb))
+			{
+				atLeastOne = true;
+
+				float penetration;
+				const Vector3 &normal = t.GetNormal();
+				const Vector3 &point = t.GetClosestPoint(aabb.GetCenter());
+
+				Plane p = Plane(normal, point);
+				AABBPlane(aabb, p, penetration);
+
+				info.AddContact(point, normal, penetration);
+
+				if (!info.HasFree())
+				{
+					return true;
+				}
+			}
+		}
+	}
+
+	return atLeastOne;
 }

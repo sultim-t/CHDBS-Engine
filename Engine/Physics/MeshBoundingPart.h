@@ -58,7 +58,6 @@ inline void MeshBoundingPart::Init(const Vector3 &min, const Vector3 &max)
 inline bool MeshBoundingPart::TryToAdd(const Triangle & tr, int index)
 {
 	// if at least one is in bounding box
-	// if (boundingBox.Contains(tr.A) || boundingBox.Contains(tr.B) || boundingBox.Contains(tr.C))
 	if (Intersection::TriangleAABB(tr, boundingBox))
 	{
 		// add triangle's index

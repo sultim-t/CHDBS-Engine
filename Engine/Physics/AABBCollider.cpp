@@ -58,13 +58,16 @@ bool AABBCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 	{
 		AABB &other = ((AABBCollider&)col).GetAABB();
 
-		if (!Intersection::AABBAABB(GetAABB(), other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+		Vector3 point, normal;
+		float penetration;
+
+		if (!Intersection::AABBAABB(GetAABB(), other, point, normal, penetration))
 		{
 			return false;
 		}
 
-		info.CollThis = this;
-		info.CollOther = &col;
+		// only one contact
+		info.AddContact(point, normal, penetration);
 
 		return true;
 	}
@@ -72,18 +75,22 @@ bool AABBCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 	{
 		Sphere &other = ((SphereCollider&)col).GetSphere();
 
-		if (!Intersection::AABBSphere(GetAABB(), other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+		Vector3 point, normal;
+		float penetration;
+
+		if (!Intersection::AABBSphere(GetAABB(), other, point, normal, penetration))
 		{
 			return false;
 		}
 
-		info.CollThis = this;
-		info.CollOther = &col;
+		// only one contact
+		info.AddContact(point, normal, penetration);
 
 		return true;
 	}
 	case ColliderType::Mesh:
 	{
+		// process in mesh collider with optimzations
 		return ((MeshCollider&)col).Intersect(*this, info);
 	}
 	default:

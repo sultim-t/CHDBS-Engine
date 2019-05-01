@@ -116,9 +116,6 @@ int main()
 	sky.LoadCubemap(skyNames);
 	Skybox::Instance().BindCubemap(sky);
 
-	//Shader shader = Shader("");
-	//shader.Load("Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
-
 	// Recalculate time, there shouldn't be counted initialization time
 	Time::Init();
 

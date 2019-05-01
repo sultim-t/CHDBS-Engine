@@ -1,5 +1,6 @@
 #include "SystemAllocator.h"
 #include <cstdlib>
+#include <cstdio>
 
 SystemAllocator::SystemAllocator()
 {
@@ -14,6 +15,8 @@ void * SystemAllocator::Allocate(UINT size)
 
 	Instance().allocCalls++;
 	Instance().allocatedSize += size;
+	
+	printf("Allocate: %d KB. Total: %d KB\n", size / 1024, Instance().allocatedSize / 1024);
 
 	return allocated;
 }
@@ -26,6 +29,8 @@ void * SystemAllocator::CAllocate(UINT count, UINT size)
 	Instance().allocCalls++;
 	Instance().allocatedSize += size * count;
 
+	printf("CAllocate: %d KB. Total: %d KB\n", count * size / 1024, Instance().allocatedSize / 1024);
+
 	return allocated;
 }
 
@@ -37,6 +42,8 @@ void * SystemAllocator::Reallocate(void * old, UINT oldSize, UINT newSize)
 	Instance().reallocCalls++;
 	Instance().allocatedSize += newSize - oldSize;
 
+	printf("Reallocate: %d KB. Total: %d KB\n", (newSize - oldSize) / 1024, Instance().allocatedSize / 1024);
+
 	return reallocated;
 }
 
@@ -44,6 +51,8 @@ void SystemAllocator::Free(void * address)
 {
 	free(address);
 	Instance().freeCalls++;
+
+	printf("Freed %d times\n", Instance().freeCalls);
 }
 
 UINT SystemAllocator::GetAllocatedSize()

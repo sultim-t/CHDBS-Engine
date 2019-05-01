@@ -5,16 +5,37 @@ CollisionInfo::CollisionInfo(CollisionType type) :
 	CollThis(nullptr),
 	CollOther(nullptr),
 	RbThis(nullptr),
-	RbOther(nullptr) {}
+	RbOther(nullptr),
+	ContactsCount(0) {}
 
 // Copy collision info from broad phase
-CollisionInfo::CollisionInfo(const BroadCollisionInfo &info)
+CollisionInfo::CollisionInfo(const BroadCollisionInfo &info) :
+	Type(info.Type), 
+	CollThis(info.CollThis),
+	CollOther(info.CollOther),
+	RbThis(info.RbThis),
+	RbOther(info.RbOther),
+	ContactsCount(0)
+{ }
+
+void CollisionInfo::AddContact(const Vector3 &point, const Vector3 &normal, float penetration)
 {
-	Type = info.Type;
-	CollThis = info.CollThis;
-	CollOther = info.CollOther;
-	RbThis = info.RbThis;
-	RbOther = info.RbOther;
+	if (ContactsCount >= COLLISION_MAX_CONTACTS_COUNT)
+	{
+		// ignore
+		return;
+	}
+
+	Contacts[ContactsCount].Point		= point;
+	Contacts[ContactsCount].Normal		= normal;
+	Contacts[ContactsCount].Penetration = penetration;
+
+	ContactsCount++;
+}
+
+bool CollisionInfo::HasFree() const
+{
+	return ContactsCount < COLLISION_MAX_CONTACTS_COUNT;
 }
 
 float CollisionInfo::GetRestitution() const

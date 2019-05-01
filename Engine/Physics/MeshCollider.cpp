@@ -26,7 +26,8 @@ PhysicMaterial MeshCollider::GetPhysicMaterial() const
 
 bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 {
-	// main algorythm:
+	// this function must be called only from SphereCollider/AABBCollider
+
 	// first, test with bounding spheres/boxes of parts
 	// then if there is an intersection, try to test triangles of current part
 
@@ -35,6 +36,8 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 	case ColliderType::AABB:
 	{
 		const AABB &other = ((AABBCollider&)col).GetAABB();
+		
+		bool atLeastOne = false;
 
 		for (UINT i = 0; i < partsCount; i++)
 		{
@@ -44,23 +47,31 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 				continue;
 			}
 
-			// if intersected with part's bounding,
+			// If intersected with part's bounding,
 			// test triangles using part's indices
-			if (Intersection::MeshAABB(triangles, parts[i].GetTrianglesIndices(), other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+			// Get all contacts
+			if (Intersection::MeshAABB(triangles, parts[i].GetTrianglesIndices(), other, info))
 			{
-				// inversed, as mesh collider always static
-				info.CollThis = &col;
-				info.CollOther = this;
+				atLeastOne = true;
 
-				return true;
+				// if array in info is full
+				if (!info.HasFree())
+				{
+					return true;
+				}
+
+				// else continue checking
+				continue;
 			}
 		}
 
-		return false;
+		return atLeastOne;
 	}
 	case ColliderType::Sphere:
-	{
+	{	
 		const Sphere &other = ((SphereCollider&)col).GetSphere();
+		
+		bool atLeastOne = false;
 
 		for (UINT i = 0; i < partsCount; i++)
 		{
@@ -72,20 +83,25 @@ bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 		
 			DebugDrawer::Instance().Draw(parts[i].GetBoundingBox());
 
-
-			// if intersected with part's bounding,
+			// If intersected with part's bounding,
 			// test triangles using part's indices
-			if (Intersection::MeshSphere(triangles, parts[i].GetTrianglesIndices(), other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+			// Get all contacts
+			if (Intersection::MeshSphere(triangles, parts[i].GetTrianglesIndices(), other, info))
 			{
-				// inversed, as mesh collider always static
-				info.CollThis = &col;
-				info.CollOther = this;
+				atLeastOne = true;
 
-				return true;
+				// if array in info is full
+				if (!info.HasFree())
+				{
+					return true;
+				}
+
+				// else continue checking other blocks
+				continue;
 			}
 		}
 
-		return false;
+		return atLeastOne;
 	}
 	default:
 		// other intersections are not implemeted
@@ -243,26 +259,50 @@ void MeshCollider::RecalculateBoundingParts()
 	// for each triangle
 	UINT triangleCount = triangles.GetSize();
 	for (UINT t = 0; t < triangleCount; t++)
-	{
+	{		
+		// find max and min indices of parts for this triangle
+		VectorI3 minIndices = VectorI3(maxX - minX, maxY - minY, maxZ - minZ);
+		VectorI3 maxIndices = VectorI3(0, 0, 0);
+
+		// for each triangle corner point
 		for (int p = 0; p < 3; p++)
 		{
 			const Vector3 &point = triangles[t].ABC[p];
 
+			// clamp to get indices
 			float fi = point[0] / delta;
 			float fj = point[1] / delta;
 			float fk = point[2] / delta;
 
+			// get indices of part where this point is contained
 			int i = fi >= 0.0f ? (int)(fi) : (int)(fi) - 1;
 			int j = fj >= 0.0f ? (int)(fj) : (int)(fj) - 1;
 			int k = fk >= 0.0f ? (int)(fk) : (int)(fk) - 1;
 
-			i -= minX;
-			j -= minY;
-			k -= minZ;
+			// shift to relative space
+			VectorI3 r = VectorI3(i - minX, j - minY, k - minZ);
 
-			MeshBoundingPart &part = parts[i * partsYCount * partsZCount + j * partsZCount + k];
-			// try to add
-			part.TryToAdd(triangles[t], t);
+			for (int l = 0; l < 3; l++)
+			{
+				minIndices[l] = r[l] < minIndices[l] ? r[l] : minIndices[l];
+				maxIndices[l] = r[l] > maxIndices[l] ? r[l] : maxIndices[l];
+			}
+		}
+
+		// for each part from min indices to max ones
+		for (int i = minIndices[0]; i <= maxIndices[0]; i++)
+		{
+			for (int j = minIndices[1]; j <= maxIndices[1]; j++)
+			{
+				for (int k = minIndices[2]; k <= maxIndices[2]; k++)
+				{
+					// get part of this point
+					MeshBoundingPart &part = parts[i * partsYCount * partsZCount + j * partsZCount + k];
+
+					// try to add
+					part.TryToAdd(triangles[t], t);
+				}
+			}
 		}
 	}
 }

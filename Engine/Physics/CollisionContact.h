@@ -5,5 +5,5 @@ struct CollisionContact
 {
 	Vector3 Point;
 	Vector3 Normal;
-	float Penetration;
+	float	Penetration;
 };

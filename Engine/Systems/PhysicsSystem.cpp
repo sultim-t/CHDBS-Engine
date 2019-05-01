@@ -284,8 +284,12 @@ void PhysicsSystem::SolveCollisions()
 		// get actual collision info
 		if (current.CollThis->Intersect(*current.CollOther, info))
 		{
-			// solve collision, type is processed there
-			SolveCollision(info);
+			// solve collision for each contact point 
+			// type is processed there
+			for (int k = 0; k < info.ContactsCount; k++)
+			{
+				SolveCollision(info, k);
+			}
 
 			// call on collision enter event on this
 			info.CollThis->OnCollisionEnter()(&info);
@@ -309,12 +313,12 @@ void PhysicsSystem::SolveCollisions()
 	collisions.Clear();
 }
 
-void PhysicsSystem::SolveCollision(const CollisionInfo &info)
+void PhysicsSystem::SolveCollision(const CollisionInfo &info, int contactIndex)
 {
 	ASSERT(info.RbThis != nullptr);
 
-	float penetration = info.Contact.Penetration;
-	Vector3 normal = info.Contact.Normal.GetNormalized();
+	float penetration = info.Contacts[contactIndex].Penetration;
+	Vector3 normal = info.Contacts[contactIndex].Normal.GetNormalized();
 
 	Rigidbody *rbThis = info.RbThis;
 	Rigidbody *rbOther = info.RbOther;
@@ -357,7 +361,7 @@ void PhysicsSystem::SolveCollision(const CollisionInfo &info)
 	Vector3 impulseVec = normal * impulse;
 
 	// apply friction impulse
-	impulseVec += CalculateFriction(relativeVelocity, normal, invMassThis, impulse, info.GetStaticFriction(), info.GetDynamicFriction());
+	impulseVec += CalculateFriction(relativeVelocity, normal, invMassThis + invMassOther, impulse, info.GetStaticFriction(), info.GetDynamicFriction());
 
 	// if exist other rigidbody
 	if (rbOther != nullptr)

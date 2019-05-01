@@ -116,15 +116,18 @@ void CWeapon::ShootShotgun()
 	}
 }
 
-void CWeapon::OnCollision(const CollisionInfo * info)
+void CWeapon::OnCollision(const CollisionInfo *info)
 {
 	if (particles == nullptr)
 	{
 		return;
 	}
 
-	particles->GetOwner().GetTransform().SetPosition(info->Contact.Point);
-	particles->Emit(1, info->Contact.Normal);
+	for (int i = 0; i < info->ContactsCount; i++)
+	{
+		particles->GetOwner().GetTransform().SetPosition(info->Contacts[i].Point);
+		particles->Emit(1, info->Contacts[i].Normal);
+	}
 }
 
 #define PROPERTY_KEY_RELOADTIME			"ReloadingTime"	

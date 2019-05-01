@@ -30,7 +30,7 @@ public:
 	void SolveCollisions();
 
 	// Solve collision for objects in collision info
-	void SolveCollision(const CollisionInfo &info);
+	void SolveCollision(const CollisionInfo &info, int contactIndex);
 	// Position correction
 	void ApplyPositionCorrection(Rigidbody *rbThis, Rigidbody *rbOther, float invMassThis, float invMassOther, const Vector3 &normal, float penetration);
 	// Calculate friction vector

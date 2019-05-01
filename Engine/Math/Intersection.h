@@ -80,6 +80,9 @@ public:
 	
 	static bool MeshSphere(const StaticArray<Triangle> &triangles, const DynamicArray<int>& indices, const Sphere &s, Vector3 &point, Vector3 &normal, float &penetration);
 	static bool MeshAABB(const StaticArray<Triangle>& triangles, const DynamicArray<int>& indices, const AABB & aabb, Vector3 & point, Vector3 & normal, float & penetration);
+	
+	static bool MeshSphere(const StaticArray<Triangle> &triangles, const DynamicArray<int>& indices, const Sphere &s, CollisionInfo &info);
+	static bool MeshAABB(const StaticArray<Triangle>& triangles, const DynamicArray<int>& indices, const AABB & aabb, CollisionInfo &info);
 
 private:
 	static bool SegRayTriangle(const Vector3 &p, const Vector3 &q, const Triangle &tr, Vector3 &barycentric, bool isSegment, float &t);

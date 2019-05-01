@@ -42,26 +42,39 @@ bool SphereCollider::Intersect(const ICollider &col, CollisionInfo &info) const
 	{
 		AABB &other = ((AABBCollider&)col).GetAABB();
 
-		if (!Intersection::SphereAABB(GetSphere(), other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+		Vector3 point, normal;
+		float penetration;
+
+		if (!Intersection::SphereAABB(GetSphere(), other, point, normal, penetration))
 		{
 			return false;
 		}
+
+		// only one contact
+		info.AddContact(point, normal, penetration);
 
 		return true;
 	}
 	case ColliderType::Sphere:
 	{
 		Sphere &other = ((SphereCollider&)col).GetSphere();
+		
+		Vector3 point, normal;
+		float penetration;
 
-		if (!Intersection::SphereSphere(GetSphere(), other, info.Contact.Point, info.Contact.Normal, info.Contact.Penetration))
+		if (!Intersection::SphereSphere(GetSphere(), other, point, normal, penetration))
 		{
 			return false;
 		}
+
+		// only one contact
+		info.AddContact(point, normal, penetration);
 
 		return true;
 	}
 	case ColliderType::Mesh:
 	{
+		// process in mesh collider with optimzations
 		return ((MeshCollider&)col).Intersect(*this, info);
 	}
 	default:
