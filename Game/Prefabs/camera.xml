@@ -1,6 +1,6 @@
 <Entity 
   Name="Camera"
-  Position="0 0 -600"
+  Position="0 0 0"
   >
 
   <CCamera

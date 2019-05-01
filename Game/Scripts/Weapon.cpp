@@ -84,11 +84,15 @@ void CWeapon::Shoot()
 	if (PhysicsSystem::Instance().Raycast(transform.GetPosition(), dir, info))
 	{
 		particles->GetOwner().GetTransform().SetPosition(info.Point);
-		particles->Emit(15, info.Normal);
 
 		if (info.HittedRigidbody != nullptr)
 		{
-			// info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 1000.0f);
+			info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 1500.0f);
+			particles->Emit(15, info.Normal, Color4(255, 0, 0, 255));
+		}
+		else
+		{
+			particles->Emit(15, info.Normal);
 		}
 	}
 }
@@ -99,18 +103,22 @@ void CWeapon::ShootShotgun()
 
 	for (int i = 0; i < 7; i++)
 	{
-		Vector3 localDir = Vector3((i - 3) / 3.0f * 0.2f, (i % 2 - 0.5f) * 0.1f, 1);
+		Vector3 localDir = Vector3((i - 3) / 3.0f * 0.2f, (i % 2 - 0.5f) * 0.05f, 1);
 		Vector3 dir = transform.DirectionFromLocal(localDir);
 		RaycastInfo info;
 
 		if (PhysicsSystem::Instance().Raycast(transform.GetPosition(), dir, info))
 		{
 			particles->GetOwner().GetTransform().SetPosition(info.Point);
-			particles->Emit(15, info.Normal);
 
 			if (info.HittedRigidbody != nullptr)
 			{
-				// info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 1000.0f);
+				info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 1500.0f);
+				particles->Emit(15, info.Normal, Color4(255, 0, 0, 255));
+			}
+			else
+			{
+				particles->Emit(15, info.Normal);
 			}
 		}
 	}

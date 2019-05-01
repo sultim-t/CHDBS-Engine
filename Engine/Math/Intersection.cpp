@@ -306,17 +306,30 @@ bool Intersection::MeshRay(const StaticArray<Triangle> &triangles, const Ray & r
 	UINT size = triangles.GetSize();
 	Vector3 barycentric;
 
+	bool atLeastOne = false;
+
+	float minDistance = FLT_MAX;
+	float distance;
+
+	// check each triangle
 	for (UINT i = 0; i < size; i++)
 	{
-		if (RayTriangle(ray, triangles[i], barycentric, t))
+		// check ray-triangle
+		if (RayTriangle(ray, triangles[i], barycentric, distance))
 		{
-			worldPoint = triangles[i].GetCartesian(barycentric);
-			normal = triangles[i].GetNormal().GetNormalized();
-			return true;
+			// must find min distance
+			if (distance < minDistance)
+			{
+				worldPoint = triangles[i].GetCartesian(barycentric);
+				normal = triangles[i].GetNormal().GetNormalized();
+				t = distance;
+			}
+
+			atLeastOne = true;
 		}
 	}
 
-	return false;
+	return atLeastOne;
 }
 
 bool Intersection::MeshSegment(const StaticArray<Triangle> &triangles, const Vector3 & start, const Vector3 & end, Vector3 & worldPoint, float &t)
@@ -458,7 +471,7 @@ bool Intersection::AABBPlane(const AABB & aabb, const Plane & p)
 	return s <= r;
 }
 
-bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point, float &t)
+bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point, float & t, bool ignoreBackfacing)
 {
 	Vector3 m = ray.GetStart() - s.GetCenter();
 	float b = Vector3::Dot(m, ray.GetDirection());
@@ -471,30 +484,36 @@ bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point,
 	}
 
 	float discr = b * b - c;
-	
+
 	// A negative discriminant corresponds to ray missing sphere
 	if (discr < 0.0f)
 	{
 		return false;
 	}
-	
+
 	// Ray now found to intersect sphere, compute smallest t value of intersection
 	t = -b - Sqrt(discr);
-	
+
 	// If t is negative, ray started inside sphere so clamp t to zero
 	if (t < 0.0f)
 	{
+		// if back faces must be ignored
+		if (ignoreBackfacing)
+		{
+			return false;
+		}
+
 		t = 0.0f;
 	}
 
 	point = ray.GetStart() + ray.GetDirection() * t;
-	
+
 	return true;
 }
 
-bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point, Vector3 & normal, float &t)
+bool Intersection::RaySphere(const Ray & ray, const Sphere & s, Vector3 & point, Vector3 & normal, float &t, bool ignoreBackfacing)
 {
-	if (!RaySphere(ray, s, point, t))
+	if (!RaySphere(ray, s, point, t, ignoreBackfacing))
 	{
 		return false;
 	}

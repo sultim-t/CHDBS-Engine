@@ -21,11 +21,11 @@ public:
 
 	// Test ray and sphere intersection
 	//   "point" is a intersection point on sphere
-	static bool RaySphere(const Ray &ray, const Sphere &s, Vector3 &point, float &t);
+	static bool RaySphere(const Ray &ray, const Sphere &s, Vector3 &point, float &t, bool ignoreBackfacing = true);
 	// Test ray and sphere intersection
 	//   "point" is a intersection point on sphere
 	//   "normal" is a normal on sphere in intersection point
-	static bool RaySphere(const Ray &ray, const Sphere &s, Vector3 &point, Vector3 &normal, float &t);
+	static bool RaySphere(const Ray &ray, const Sphere &s, Vector3 &point, Vector3 &normal, float &t, bool ignoreBackfacing = true);
 	// Test ray and AABB intersection
 	//   "point" is a intersection point on AABB
 	//   "t" is a t of ray

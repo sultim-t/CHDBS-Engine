@@ -12,7 +12,7 @@ struct RaycastInfo
 	// Hitted collider (mustn't be null)
 	const ICollider *Hitted;
 	// Hitted rigidbody (can be null)
-	const Rigidbody *HittedRigidbody;
+	Rigidbody *HittedRigidbody;
 
 	// Default constructor
 	RaycastInfo() : Point(0.0f), Normal(0.0f), Distance(0.0f), Hitted(nullptr), HittedRigidbody(nullptr) {}

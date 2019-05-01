@@ -81,6 +81,7 @@ public:
 	void Emit(UINT count);
 	// Emit particles with specified direction
 	void Emit(UINT count, const Vector3 &direction);
+	void Emit(UINT count, const Vector3 &direction, const Color4 &color);
 
 	// Bind camera to render
 	void BindCamera(const CCamera *cam);
