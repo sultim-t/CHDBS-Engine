@@ -4,8 +4,9 @@
 #include "CModel.h"
 #include <Engine/ResourceManager/ModelResource.h>
 #include <Engine/ResourceManager/VertexAnimatedResource.h>
+#include <Engine/Rendering/IAnimatable.h>
 
-class CVertexAnimated : public CModel
+class CVertexAnimated : public CModel, public IAnimatable
 {
 	friend class ResourceManager;
 	
@@ -43,7 +44,7 @@ public:
 	~CVertexAnimated();
 
 	// Play animation on this model
-	void PlayAnimation(int animationIndex, float startTime = 0.0f);
+	void PlayAnimation(int animationIndex, float startTime = 0.0f) override;
 
 public:
 	void Init() override;

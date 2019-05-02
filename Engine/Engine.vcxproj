@@ -307,6 +307,7 @@
     <ClInclude Include="Rendering\Bone.h" />
     <ClInclude Include="Rendering\Cubemap.h" />
     <ClInclude Include="Rendering\FramebufferTexture.h" />
+    <ClInclude Include="Rendering\IAnimatable.h" />
     <ClInclude Include="Rendering\ICamera.h" />
     <ClInclude Include="Rendering\ILight.h" />
     <ClInclude Include="Rendering\ITexture.h" />

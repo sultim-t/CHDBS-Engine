@@ -158,10 +158,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Scripts\Enemy.cpp" />
     <ClCompile Include="Scripts\Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Scripts\Enemy.h" />
+    <ClInclude Include="Scripts\IDamageable.h" />
     <ClInclude Include="Scripts\Weapon.h" />
   </ItemGroup>
   <ItemGroup>
