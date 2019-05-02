@@ -1,13 +1,13 @@
 <Entity
-  Name="Double Barrel"
-  Position="0 2 1"
-  Euler="90 0 0"
-  Scale="0.6 0.6 0.6">
-  
-  <CModel
-    Path="Models/DoubleBarrel.obj"
-    ForcedDiffuseTexture="Textures/WeaponsPalette.png"
+  Name="Kamikaze"
+  Position="0 2 1">
+
+  <CVertexAnimated
+    VertexAnimatedPath="Models/Kamikaze.txt"
+    ForcedDiffuseTexture="Textures/RobotPalette.png"
     Shader="Standard"
+    RotationCorrection="-0.5 0.5 0.5 0.5"
+    ScaleCorrection="3.5 3.5 3.5"
     CastShadows="1"/>
   
   <Rigidbody
@@ -17,7 +17,7 @@
   />
 
   <CSphereCollider
-    SphereRadius="1.5"
+    SphereRadius="2"
   />
 
 </Entity>
