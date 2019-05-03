@@ -5,6 +5,7 @@
 #include <Engine/ResourceManager/ModelResource.h>
 #include <Engine/ResourceManager/VertexAnimatedResource.h>
 #include <Engine/Rendering/IAnimatable.h>
+#include <Engine/Rendering/VertexAnimation.h>
 
 class CVertexAnimated : public CModel, public IAnimatable
 {
@@ -17,19 +18,20 @@ private:
 	const VertexAnimatedResource *vertAnim;
 	// Path to anim file
 	String vertAnimPath;
-	// All loaded models for interpolating
-	StaticArray<const ModelResource*> models;
-	// Contains time foreach model
-	StaticArray<float> modelsTime;
 
+	// All loaded models for interpolating
+	// And contains time foreach model
+	VertexAnimation vertexAnimation;
 
 	// Temp vertices for animation
 	// For each mesh, for each vertex
 	StaticArray<StaticArray<Vertex5>*> tempVerts;
 
 	// Current time of animation
-	float currentTime;
-	bool isPlaying;
+	float	currentTime;
+	// Current animation index, -1 if not playing
+	int		animIndex;
+	bool	isPlaying;
 
 private:
 	// Init as dynamic (deformable) model
@@ -37,7 +39,7 @@ private:
 	// Update graphics arrays
 	void GFXUpdate();
 
-	int GetModelID(float time);
+	void InitVertices(const StaticArray<MeshResource*> &baseMeshes);
 
 public:
 	// Destroys allocated data
@@ -45,6 +47,9 @@ public:
 
 	// Play animation on this model
 	void PlayAnimation(int animationIndex, float startTime = 0.0f) override;
+	bool IsPlaying() override;
+	int GetCurrentAnimation() override;
+	float GetAnimationLength(int animationIndex) override;
 
 public:
 	void Init() override;

@@ -221,41 +221,75 @@ const VertexAnimatedResource * ResourceManager::LoadVertexAnimated(const char * 
 	file.open(path);
 
 	// count lines
-	int lineCount = 0, i = 0;
+	int linesCount = 0;
+	int modelTimeCount = 0;
+	bool nextIsName = false;
+
 	while (std::getline(file, line))
 	{
-		lineCount++;
+		linesCount++;
+
+		if (line.length() > 0)
+		{
+			if (line[0] == '#')
+			{
+				nextIsName = true;
+
+				// dont count lines which start with # 
+				continue;
+			}
+
+			if (nextIsName)
+			{
+				// TODO: several animations
+				vertAnim->name = line.c_str();
+				nextIsName = false;
+			
+				// dont count lines which contain animation name
+				continue;
+			}
+
+			modelTimeCount++;
+		}
 	}
 
 	// reset to beginning
 	file.clear();
 	file.seekg(0);
 
-	// first line must be a name
-	if (std::getline(file, line))
-	{
-		vertAnim->name = line.c_str();
-	}
-	else
-	{
-		throw std::exception("Is not a vertex animation file");
-	}
-
-	// init array (one is for name)
+	// init array
 	// for each anim node there 2 lines
-	int animNodeCount = (lineCount - 1) / 2;
+	int animNodeCount = modelTimeCount / 2;
 	vertAnim->animationNodes.Init(animNodeCount);
 
+	int animNodeIndex = 0;
+
 	// for each line
-	for (int animNodeIndex = 0; animNodeIndex < animNodeCount; animNodeIndex++)
+	for (int i = 0; i < linesCount && animNodeIndex < animNodeCount; i++)
 	{
 		// first is time
 		std::getline(file, line);
+
+		if (line.length() == 0)
+		{
+			continue;
+		}
+
+		// check #
+		if (line[0] == '#')
+		{
+			// also, skip animation name
+			std::getline(file, line);
+			continue;
+		}
+
 		vertAnim->animationNodes[animNodeIndex].Time = (float)atof(line.c_str());
 		
 		// second is a path to model
 		std::getline(file, line);
 		vertAnim->animationNodes[animNodeIndex].ModelPath.Init(line.c_str());
+	
+		animNodeIndex++;
 	}
 
 	// close

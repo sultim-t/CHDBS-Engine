@@ -222,6 +222,7 @@
     <ClCompile Include="Rendering\Skeleton.cpp" />
     <ClCompile Include="Rendering\Skybox.cpp" />
     <ClCompile Include="Rendering\Texture.cpp" />
+    <ClCompile Include="Rendering\VertexAnimation.cpp" />
     <ClCompile Include="ResourceManager\ComponentResource.cpp" />
     <ClCompile Include="ResourceManager\EntityResource.cpp" />
     <ClCompile Include="ResourceManager\MeshResource.cpp" />
@@ -329,6 +330,7 @@
     <ClInclude Include="Rendering\Texture.h" />
     <ClInclude Include="Rendering\TextureColorFormat.h" />
     <ClInclude Include="Rendering\Vertex.h" />
+    <ClInclude Include="Rendering\VertexAnimation.h" />
     <ClInclude Include="Rendering\VertexWeight.h" />
     <ClInclude Include="ResourceManager\ComponentResource.h" />
     <ClInclude Include="ResourceManager\EntityResource.h" />

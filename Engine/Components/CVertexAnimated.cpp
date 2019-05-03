@@ -15,42 +15,25 @@ void CVertexAnimated::Init()
 
 	// load all models in this resource
 	auto &nodes = vertAnim->GetAnimationNodes();
-	models.Init(nodes.GetSize());
-	modelsTime.Init(nodes.GetSize());
-
+	
+	// TODO: must be in reosurce manager
+	vertexAnimation.Init(nodes.GetSize());
 	for (UINT i = 0; i < nodes.GetSize(); i++)
 	{
-		models[i] = ResourceManager::Instance().LoadModel(nodes[i].ModelPath);
-		modelsTime[i] = nodes[i].Time;
+		vertexAnimation.keys[i].Value = ResourceManager::Instance().LoadModel(nodes[i].ModelPath);
+		vertexAnimation.keys[i].Time = nodes[i].Time;
 	}
 
 	// set first as main model
-	modelResource = models[0];
+	modelResource = vertexAnimation.keys[0].Value;
 
-	// get meshes from main model to copy data
+	// get meshes from main model
 	const StaticArray<MeshResource*> &baseMeshes = modelResource->GetHierarchy().GetMeshes();
-	UINT meshesCount = baseMeshes.GetSize();
-
-	// init array for each mesh
-	tempVerts.Init(meshesCount);
-
-	for (UINT meshIndex = 0; meshIndex < meshesCount; meshIndex++)
-	{
-		const StaticArray<Vertex5> &baseVerts = baseMeshes[meshIndex]->GetVertices();
-		tempVerts[meshIndex] = new StaticArray<Vertex5>();
-
-		StaticArray<Vertex5> &targetVerts = *tempVerts[meshIndex];
-
-		// init temp verts
-		targetVerts.Init(baseVerts.GetSize());
-
-		for (UINT i = 0; i < baseVerts.GetSize(); i++)
-		{
-			targetVerts[i] = baseVerts[i];
-		}
-	}
+	// copy data
+	InitVertices(baseMeshes);
 
 	// init 
+	UINT meshesCount = baseMeshes.GetSize();
 	vaos.Init(meshesCount);
 	vbos.Init(meshesCount);
 	ibos.Init(meshesCount);
@@ -112,40 +95,8 @@ void CVertexAnimated::Update()
 		// currentTime = Mod(currentTime, vertAnim->GetDuration());
 	}
 
-	// get model index in array
-	int modelId = GetModelID(currentTime);
-	int nextModelId = modelId + 1;
-
-	if ((UINT)nextModelId >= models.GetSize())
-	{
-		nextModelId = 0;
-	}
-
-	UINT meshesCount = tempVerts.GetSize();
-	const StaticArray<MeshResource*> &prevMeshes = models[modelId]->GetHierarchy().GetMeshes();
-	const StaticArray<MeshResource*> &nextMeshes = models[nextModelId]->GetHierarchy().GetMeshes();
-
-	// update each mesh
-	for (UINT meshIndex = 0; meshIndex < meshesCount; meshIndex++)
-	{
-		StaticArray<Vertex5> &targetVerts = *tempVerts[meshIndex];
-
-		// get previous mesh
-		const StaticArray<Vertex5> &prevVerts = prevMeshes[meshIndex]->GetVertices();
-
-		// get next mesh
-		const StaticArray<Vertex5> &nextVerts = nextMeshes[meshIndex]->GetVertices();
-
-		// get interpolation factor
-		float t = (currentTime - modelsTime[modelId]) / (modelsTime[nextModelId] - modelsTime[modelId]);
-
-		// interpolate between prev and next
-		for (UINT i = 0; i < prevVerts.GetSize(); i++)
-		{
-			targetVerts[i].Position = Vector3::Lerp(prevVerts[i].Position, nextVerts[i].Position, t);
-			targetVerts[i].Normal = Vector3::Lerp(prevVerts[i].Normal, nextVerts[i].Normal, t);
-		}
-	}
+	// update temp vertices according to current time
+	vertexAnimation.Animate(tempVerts, currentTime);
 
 	// load model to gpu
 	GFXUpdate();
@@ -173,17 +124,28 @@ void CVertexAnimated::GFXUpdate()
 	}
 }
 
-int CVertexAnimated::GetModelID(float time)
+void CVertexAnimated::InitVertices(const StaticArray<MeshResource*>& baseMeshes)
 {
-	for (UINT i = 0; i < modelsTime.GetSize() - 1; i++)
+	int meshesCount = baseMeshes.GetSize();
+
+	// init array for each mesh
+	tempVerts.Init(meshesCount);
+
+	for (int meshIndex = 0; meshIndex < meshesCount; meshIndex++)
 	{
-		if (modelsTime[i] <= time && time < modelsTime[i + 1])
+		const StaticArray<Vertex5> &baseVerts = baseMeshes[meshIndex]->GetVertices();
+		tempVerts[meshIndex] = new StaticArray<Vertex5>();
+
+		StaticArray<Vertex5> &targetVerts = *tempVerts[meshIndex];
+
+		// init temp verts
+		targetVerts.Init(baseVerts.GetSize());
+
+		for (UINT i = 0; i < baseVerts.GetSize(); i++)
 		{
-			return (int)i;
+			targetVerts[i] = baseVerts[i];
 		}
 	}
-
-	return 0;
 }
 
 #define PROPERTY_KEY_VERTANIMPATH	"VertexAnimatedPath"
@@ -197,4 +159,19 @@ void CVertexAnimated::SetProperty(const String & key, const String & value)
 	}
 
 	CModel::SetProperty(key, value);
+}
+
+bool CVertexAnimated::IsPlaying()
+{
+	return isPlaying;
+}
+
+int CVertexAnimated::GetCurrentAnimation()
+{
+	return 0;
+}
+
+float CVertexAnimated::GetAnimationLength(int animationIndex)
+{
+	return 0.0f;
 }
