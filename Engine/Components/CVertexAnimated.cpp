@@ -11,21 +11,12 @@ CLASSDEFINITION(CModel, CVertexAnimated)
 void CVertexAnimated::Init()
 {
 	// load vertex animation resource
-	vertAnim = ResourceManager::Instance().LoadVertexAnimated(vertAnimPath);
-
-	// load all models in this resource
-	auto &nodes = vertAnim->GetAnimationNodes();
-	
-	// TODO: must be in reosurce manager
-	vertexAnimation.Init(nodes.GetSize());
-	for (UINT i = 0; i < nodes.GetSize(); i++)
-	{
-		vertexAnimation.keys[i].Value = ResourceManager::Instance().LoadModel(nodes[i].ModelPath);
-		vertexAnimation.keys[i].Time = nodes[i].Time;
-	}
+	vertexAnimation = new VertexAnimation();
+	vertexAnimation->Init(vertAnimPath);
 
 	// set first as main model
-	modelResource = vertexAnimation.keys[0].Value;
+	modelResource = 
+		vertexAnimation->GetVertexAnimationResource()->GetAnimationNodes()[0].Value;
 
 	// get meshes from main model
 	const StaticArray<MeshResource*> &baseMeshes = modelResource->GetHierarchy().GetMeshes();
@@ -85,7 +76,7 @@ void CVertexAnimated::Update()
 		return;
 	}
 
-	if (currentTime >= vertAnim->GetDuration())
+	if (currentTime >= vertexAnimation->GetLength())
 	{
 		// animation ended
 		isPlaying = false;
@@ -96,7 +87,7 @@ void CVertexAnimated::Update()
 	}
 
 	// update temp vertices according to current time
-	vertexAnimation.Animate(tempVerts, currentTime);
+	vertexAnimation->Animate(tempVerts, currentTime);
 
 	// load model to gpu
 	GFXUpdate();

@@ -1,8 +1,13 @@
 #include "VertexAnimation.h"
+#include <Engine/ResourceManager/ResourceManager.h>
+#include <Engine/ResourceManager/VertexAnimatedResource.h>
 
 int VertexAnimation::GetModelIndex(float time)
 {
-	for (UINT i = 0; i < keys.GetSize() - 1; i++)
+	auto &keys = vertAnim->GetAnimationNodes();
+	UINT count = keys.GetSize();
+
+	for (UINT i = 0; i < count - 1; i++)
 	{
 		if (keys[i].Time <= time && time < keys[i + 1].Time)
 		{
@@ -13,15 +18,11 @@ int VertexAnimation::GetModelIndex(float time)
 	return 0;
 }
 
-VertexAnimation::VertexAnimation(const char * name, float duration, float ticksPerSecond)
-	: name(name), duration(duration), ticksPerSecond(ticksPerSecond) { }
-
-VertexAnimation::~VertexAnimation()
-{ }
-
-void VertexAnimation::Init(int keyCount)
+void VertexAnimation::Init(const char * path)
 {
-	keys.Init(keyCount);
+	// load from resource
+	vertAnim = ResourceManager::Instance().LoadVertexAnimated(path);
+	animLength = vertAnim->GetDuration() / vertAnim->GetTicksPerSecond();
 }
 
 void VertexAnimation::Animate(StaticArray<StaticArray<Vertex5>*>& tempVerts, float time)
@@ -29,6 +30,8 @@ void VertexAnimation::Animate(StaticArray<StaticArray<Vertex5>*>& tempVerts, flo
 	// get model index in array
 	int modelId = GetModelIndex(time);
 	int nextModelId = modelId + 1;
+
+	auto &keys = vertAnim->GetAnimationNodes();
 
 	// clamp
 	if ((UINT)nextModelId >= keys.GetSize())
@@ -64,4 +67,19 @@ void VertexAnimation::Animate(StaticArray<StaticArray<Vertex5>*>& tempVerts, flo
 			targetVerts[i].Normal = Vector3::Lerp(prevVerts[i].Normal, nextVerts[i].Normal, t);
 		}
 	}
+}
+
+const VertexAnimatedResource * VertexAnimation::GetVertexAnimationResource() const
+{
+	return vertAnim;
+}
+
+const String & VertexAnimation::GetName() const
+{
+	return vertAnim->GetName();
+}
+
+float VertexAnimation::GetLength() const
+{
+	return animLength;
 }

@@ -2,40 +2,39 @@
 #include <Engine/DataStructures/StaticArray.h>
 #include <Engine/Base/StringTuple.h>
 
-struct VertAnimNode
-{
-	// Path to model
-	String	ModelPath;
-	float	Time;
-};
+typedef AnimationKey<const ModelResource*> VertexAnimationKey;
 
 class VertexAnimatedResource
 {
 	friend class ResourceManager;
 
 private:
-	StaticArray<VertAnimNode> animationNodes;
+	StaticArray<VertexAnimationKey> animationNodes;
 	float duration;
+	float ticksPerSecond;
 	String name;
 
 public:
-	// Empty constructor
 	VertexAnimatedResource();
 	// Default destructor
 	~VertexAnimatedResource();
 
-	const StaticArray<VertAnimNode> &GetAnimationNodes() const;
-	const String &GetName() const;
+	const StaticArray<VertexAnimationKey> &GetAnimationNodes() const;
+	const String &GetName() const;	
+	
+	// Get animation duration in ticks
 	float GetDuration() const;
+	// Get count of ticks per second
+	float GetTicksPerSecond() const;
 };
 
 inline VertexAnimatedResource::VertexAnimatedResource()
-{ }
+	: ticksPerSecond(1.0f) { }
 
 inline VertexAnimatedResource::~VertexAnimatedResource()
 { }
 
-inline const StaticArray<VertAnimNode>& VertexAnimatedResource::GetAnimationNodes() const
+inline const StaticArray<VertexAnimationKey>& VertexAnimatedResource::GetAnimationNodes() const
 {
 	return animationNodes;
 }
@@ -48,4 +47,9 @@ inline const String &VertexAnimatedResource::GetName() const
 inline float VertexAnimatedResource::GetDuration() const
 {
 	return duration;
+}
+
+inline float VertexAnimatedResource::GetTicksPerSecond() const
+{
+	return ticksPerSecond;
 }

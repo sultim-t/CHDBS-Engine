@@ -287,7 +287,8 @@ const VertexAnimatedResource * ResourceManager::LoadVertexAnimated(const char * 
 		
 		// second is a path to model
 		std::getline(file, line);
-		vertAnim->animationNodes[animNodeIndex].ModelPath.Init(line.c_str());
+		// so load model resource
+		vertAnim->animationNodes[animNodeIndex].Value = LoadModel(line.c_str());
 	
 		animNodeIndex++;
 	}

@@ -14,14 +14,12 @@ class CVertexAnimated : public CModel, public IAnimatable
 	CLASSDECLARATION(CModel)
 
 private:
-	// Contains time values and path to models
-	const VertexAnimatedResource *vertAnim;
 	// Path to anim file
 	String vertAnimPath;
 
 	// All loaded models for interpolating
 	// And contains time foreach model
-	VertexAnimation vertexAnimation;
+	VertexAnimation *vertexAnimation;
 
 	// Temp vertices for animation
 	// For each mesh, for each vertex
