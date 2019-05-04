@@ -1,14 +1,22 @@
 #pragma once
 #include <Engine/DataStructures/StaticArray.h>
+#include <Engine/Math/Transform.h>
+
+struct SceneEntity
+{
+	Transform	Transformation;
+	String		EntityPath;		// path to entity resource
+	bool		IsTransformed;	// does this entity have overrided transform
+};
 
 class SceneResource
 {
 	friend class ResourceManager;
 
 private:
-	// Paths to entities files
-	StaticArray<String> entityPaths;
-
+	// Scene's entities data
+	StaticArray<SceneEntity> entitiesData;
+	
 	// Scene's name
 	String sceneName;
 	// Path to this resource
@@ -20,8 +28,10 @@ public:
 	// Destructor
 	~SceneResource();
 
+	void Init(int entitiesCount, const char *name = "Scene");
+
 	// Get all paths to entity files in this scene
-	const StaticArray<String> &GetEntityPaths() const;
+	const StaticArray<SceneEntity> &GetEntitiesData() const;
 	// Get scene's name
 	const String &GetName() const;
 	// Get path to this scene resource
@@ -34,20 +44,31 @@ inline SceneResource::SceneResource(const char * path)
 inline SceneResource::~SceneResource()
 {
 	// delete strings manually 
-	// (because they wil not be destroyed during array destruction)
-
-	// do not delete path with index 0
-	// as it will be deleted in shared_ptr in StaticArray
-	// just a dirty crutch
-	for (UINT i = 1; i < entityPaths.GetSize(); i++)
+	// (because they will not be destroyed during array destruction)
+	// (calling Delete on empty string does nothing)
+	for (UINT i = 0; i < entitiesData.GetSize(); i++)
 	{
-		entityPaths[i].Delete();
+		entitiesData[i].EntityPath.Delete();
 	}
 }
 
-inline const StaticArray<String>& SceneResource::GetEntityPaths() const
+inline void SceneResource::Init(int entitiesCount, const char *name)
 {
-	return entityPaths;
+	sceneName = name;
+	entitiesData.Init(entitiesCount);
+
+	for (int i = 0; i < entitiesCount; i++)
+	{
+		// set default
+		entitiesData[i].EntityPath.Init("");
+		entitiesData[i].IsTransformed = false;
+		entitiesData[i].Transformation = Transform();
+	}
+}
+
+inline const StaticArray<SceneEntity>& SceneResource::GetEntitiesData() const
+{
+	return entitiesData;
 }
 
 inline const String & SceneResource::GetName() const

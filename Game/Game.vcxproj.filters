@@ -42,6 +42,5 @@
   <ItemGroup>
     <None Include="Shaders\DebugDraw.fs" />
     <None Include="Shaders\DebugDraw.vs" />
-    <None Include="Scenes\MainScene.scene" />
   </ItemGroup>
 </Project>

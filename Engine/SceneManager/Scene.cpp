@@ -242,10 +242,18 @@ const DynamicArray<ICollider*> &Scene::GetAllColliders() const
 	return colliders;
 }
 
-void Scene::CreateEntity(const char *name)
+void Scene::CreateEntity(const char *name, const Transform *transform)
 {
 	// create entity in factory
 	Entity *created = EntityFactory::CreateEntity(name);
+
+	// override tranformation from scene resource, if exist
+	if (transform != nullptr)
+	{
+		// copy
+		created->GetTransform() = *transform;
+	}
+
 	// add to this scene
 	AddEntity(created);
 }

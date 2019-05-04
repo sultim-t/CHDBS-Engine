@@ -4,6 +4,8 @@
 #include <Engine/DataStructures/StaticArray.h>
 #include <Engine/Math/Transform.h>
 
+#define ENTITY_KEY_ACTIVE "Active"
+
 // Contains component resources and main enitity's data
 class EntityResource
 {

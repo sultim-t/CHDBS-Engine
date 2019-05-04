@@ -40,15 +40,19 @@ int SceneManager::CreateScene(const char *path)
 	int sceneId = CreateEmptyScene(sceneResource->GetName());
 	Scene *currentScene = scenes[sceneId];
 
-	const StaticArray<String> &entitiesPaths = sceneResource->GetEntityPaths();
-	UINT count = entitiesPaths.GetSize();
+	const StaticArray<SceneEntity> &entitiesData = sceneResource->GetEntitiesData();
+	UINT count = entitiesData.GetSize();
 
 	// for each entity
 	for (UINT i = 0; i < count; i++)
 	{
 		// load it to scene,
 		// there will be created an entity from this path
-		currentScene->CreateEntity(entitiesPaths[i]);
+
+		// if transform is specified, apply it to current entity
+		currentScene->CreateEntity(
+			entitiesData[i].EntityPath,
+			entitiesData[i].IsTransformed ? &entitiesData[i].Transformation : nullptr);
 	}
 
 	return sceneId;

@@ -2,6 +2,8 @@
 #include <Engine/DataStructures/StaticArray.h>
 #include <Engine/Base/StringTuple.h>
 
+#define COMPONENT_KEY_ACTIVE "Active"
+
 class ComponentResource
 {
 	friend class ResourceManager;

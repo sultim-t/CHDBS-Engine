@@ -1,0 +1,25 @@
+<Scene
+  Name="Main scene">
+
+  <Entity
+    Path="Prefabs/terrain.xml"
+    />
+
+  <Entity
+    Path="Prefabs/camera.xml"
+    Position="0 10 0"
+    Euler="0 0 0"
+    />
+
+  <Entity
+    Path="Prefabs/light.xml"
+    />
+
+  <Entity
+    Path="Prefabs/doubleBarrel.xml"
+    />
+  
+  <Entity
+    Path="Prefabs/particleSystem.xml"
+    />
+</Scene>

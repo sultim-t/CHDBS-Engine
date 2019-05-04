@@ -2,6 +2,7 @@
 #include <Engine/DataStructures/DynamicArray.h>
 #include <Engine/Rendering/Skybox.h>
 #include <Engine/Base/Event.h>
+#include <Engine/Entities/Entity.h>
 
 // Delegate for fixed update call
 typedef void(*FixedUpdateFunction)(int);
@@ -68,7 +69,7 @@ public:
 	const DynamicArray<ICollider*> &GetAllColliders() const;
 
 	// Create entity from file in this scene
-	void CreateEntity(const char *name);
+	void CreateEntity(const char *name, const Transform *transform = nullptr);
 	// Create copy of entity in this scene
 	void CreateEntity(const Entity *source);
 

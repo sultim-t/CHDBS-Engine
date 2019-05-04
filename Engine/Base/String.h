@@ -14,42 +14,44 @@ private:
 
 public:
 	// Creates empty string ("")
-	inline String();
+	String();
 	// Creates copy of orig
-	inline String(const String &orig);
+	String(const String &orig);
 	// Creates copy from orig
 	String(const char* orig);
 	// Destructor
 	~String();
 
-	inline char				&operator[](int i);
-	inline char				operator[](int i) const;
+	char					&operator[](int i);
+	char					operator[](int i) const;
 
-	inline bool				operator==(const String &b) const;
+	bool					operator==(const String &b) const;
 	bool					operator==(const char *b) const;
-	inline bool				operator!=(const String &b) const;
-	inline bool				operator!=(const char *b) const;
+	bool					operator!=(const String &b) const;
+	bool					operator!=(const char *b) const;
 
-	inline String			&operator=(const String &b);
+	String					&operator=(const String &b);
 	String					&operator=(const char *b);
 
 	// Overloaded cast to const char*
-	inline operator const char * () const;
+	operator const char * () const;
 
 	// Concatenate
-	inline String			operator+(const String &b) const;
+	String					operator+(const String &b) const;
 	// Concatenate
 	String					operator+(const char *b) const;
 	// Concatenate
-	inline String			&operator+=(const String &b);
+	String					&operator+=(const String &b);
 	// Concatenate
 	String					&operator+=(const char *b);
 
+	static bool				Compare(const char *a, const char *b);
+
 	// Returns length of this string
-	inline UINT				Length() const;
+	UINT					Length() const;
 
 	// Makes string empty
-	inline void				Clear();
+	void					Clear();
 
 	static bool				ToBool(const char *str);
 	static int				ToInt(const char *str);
@@ -58,14 +60,14 @@ public:
 	static Quaternion		ToQuaternion(const char *str);
 	static Color4			ToColor4(const char *str);
 
-	inline bool				ToBool() const;
-	inline int				ToInt() const;
-	inline float			ToFloat() const;
+	bool					ToBool() const;
+	int						ToInt() const;
+	float					ToFloat() const;
 	Vector3					ToVector3() const;
 	Quaternion				ToQuaternion() const;
 	Color4					ToColor4() const;
 
-	inline const char		*GetCharPtr() const;
+	const char				*GetCharPtr() const;
 
 	// Hash function for a string
 	static UINT				StringHash(String toHash);
@@ -97,17 +99,22 @@ inline char String::operator[](int i) const
 
 inline bool String::operator==(const String &b) const
 {
-	return (*this) == b.string;
+	return *this == b.string;
 }
 
 inline bool String::operator!=(const String &b) const
 {
-	return !(*this == b);
+	return !(*this == b.string);
 }
 
 inline bool String::operator!=(const char * b) const
 {
 	return !(*this == b);
+}
+
+inline bool String::operator==(const char * b) const
+{
+	return Compare(this->string, b);
 }
 
 inline String &String::operator=(const String &b)

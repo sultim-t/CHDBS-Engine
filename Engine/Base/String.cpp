@@ -118,6 +118,11 @@ String &String::operator+=(const char * b)
 	return *this;
 }
 
+bool String::Compare(const char * a, const char * b)
+{
+	return strcmp(a, b) == 0;
+}
+
 Vector3 String::ToVector3(const char *str)
 {
 	const int Dim = 3;
@@ -259,11 +264,6 @@ Color4 String::ToColor4(const char * str)
 	}
 
 	return result;
-}
-
-bool String::operator==(const char * b) const
-{
-	return strcmp(string, b) == 0;
 }
 
 bool String::ToBool(const char *str)

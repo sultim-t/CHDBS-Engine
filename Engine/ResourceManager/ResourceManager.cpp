@@ -127,7 +127,7 @@ const EntityResource *ResourceManager::LoadEnitity(const char * path)
 	}
 
 	entity->Init(componentsCount);
-	entity->isActive = root->BoolAttribute("Active", true);
+	entity->isActive = root->BoolAttribute(ENTITY_KEY_ACTIVE, true);
 	entity->path = path;
 
 	const char *val;
@@ -178,7 +178,7 @@ const EntityResource *ResourceManager::LoadEnitity(const char * path)
 		ComponentResource *component = new ComponentResource();
 		component->Init(attributeCount);
 
-		component->isActive = element->BoolAttribute("Active", true);
+		component->isActive = element->BoolAttribute(COMPONENT_KEY_ACTIVE, true);
 		component->name = element->Value();
 		
 		int attrIndex = 0;
@@ -339,44 +339,86 @@ const SceneResource *ResourceManager::LoadScene(const char * path)
 	// allocate
 	scene = new SceneResource(path);
 
-	std::ifstream file;
-	std::string line;
+	using namespace tinyxml2;
 
-	// open
-	file.open(path);
+	XMLDocument doc;
+	doc.LoadFile(path);
 
-	// count lines
-	int lineCount = 0, i = 0;
-	while (std::getline(file, line))
+	XMLElement *root = doc.RootElement();
+	if (!root)
 	{
-		lineCount++;
+		// if can't parse root
+		return nullptr;
 	}
 
-	// reset to beginning
-	file.clear();
-	file.seekg(0);
-
-	// first line must be a name
-	if (std::getline(file, line))
+	// count entities
+	int entitiesCount = 0;
+	for (XMLElement *node = root->FirstChildElement();
+		node;
+		node = node->NextSiblingElement())
 	{
-		scene->sceneName = line.c_str();
+		entitiesCount++;
+	}
+
+	const char *val;
+
+	if (val = root->Attribute("Name"))
+	{
+		// if name is found
+		scene->Init(entitiesCount, val);
 	}
 	else
 	{
-		throw std::exception("Is not scene file");
+		scene->Init(entitiesCount);
 	}
 
-	// init array (one for name)
-	scene->entityPaths.Init(lineCount - 1);
+	// entity index
+	int i = 0;
 
-	// for each line
-	while (std::getline(file, line))
+	// foreach entity in xml
+	for (XMLElement *element = root->FirstChildElement();
+		element;
+		element = element->NextSiblingElement())
 	{
-		scene->entityPaths[i++].Init(line.c_str());
+		if (!String::Compare(element->Value(), "Entity"))
+		{
+			continue;
+		}
+
+		const XMLAttribute *attr = element->FirstAttribute();
+		
+		if (val = element->Attribute("Path"))
+		{
+			scene->entitiesData[i].EntityPath = val;
+		}
+
+		if (val = element->Attribute("Position"))
+		{
+			scene->entitiesData[i].Transformation.SetPosition(String::ToVector3(val));
+			scene->entitiesData[i].IsTransformed = true;
+		}
+
+		if (val = element->Attribute("Euler"))
+		{
+			scene->entitiesData[i].Transformation.SetRotation(String::ToVector3(val));
+			scene->entitiesData[i].IsTransformed = true;
+		}
+
+		if (val = element->Attribute("Quaternion"))
+		{
+			scene->entitiesData[i].Transformation.SetRotation(String::ToQuaternion(val));
+			scene->entitiesData[i].IsTransformed = true;
+		}
+
+		if (val = element->Attribute("Scale"))
+		{
+			scene->entitiesData[i].Transformation.SetScale(String::ToVector3(val));
+			scene->entitiesData[i].IsTransformed = true;
+		}
+
+		i++;
 	}
 
-	// close
-	file.close();
 
 	// register
 	sceneResources.Add(path, scene);

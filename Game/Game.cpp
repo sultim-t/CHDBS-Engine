@@ -91,7 +91,7 @@ int main()
 
 
 
-	int sceneId = SceneManager::Instance().CreateScene("Scenes/MainScene.scene");
+	int sceneId = SceneManager::Instance().CreateScene("Scenes/MainScene.xml");
 	//Scene &currentScene = SceneManager::Instance().GetScene(sceneId);
 
 	SceneManager::Instance().LoadScene(sceneId);
