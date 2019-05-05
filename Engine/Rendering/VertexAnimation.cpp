@@ -2,7 +2,7 @@
 #include <Engine/ResourceManager/ResourceManager.h>
 #include <Engine/ResourceManager/VertexAnimatedResource.h>
 
-int VertexAnimation::GetModelIndex(float time)
+int VertexAnimation::GetModelIndex(float time) const
 {
 	auto &keys = vertAnim->GetAnimationNodes();
 	UINT count = keys.GetSize();
@@ -18,6 +18,9 @@ int VertexAnimation::GetModelIndex(float time)
 	return 0;
 }
 
+VertexAnimation::VertexAnimation() : WrapType(AnimationWrapType::Once)
+{ }
+
 void VertexAnimation::Init(const char * path)
 {
 	// load from resource
@@ -25,29 +28,19 @@ void VertexAnimation::Init(const char * path)
 	animLength = vertAnim->GetDuration() / vertAnim->GetTicksPerSecond();
 }
 
-void VertexAnimation::Animate(StaticArray<StaticArray<Vertex5>*>& tempVerts, float time)
+bool VertexAnimation::Animate(StaticArray<StaticArray<Vertex5>*>& tempVerts, float time) const
 {
-	// get model index in array
-	int modelId = GetModelIndex(time);
-	int nextModelId = modelId + 1;
+	const ModelResource *prevModel, *nextModel;
+	float t;
 
-	auto &keys = vertAnim->GetAnimationNodes();
+	bool animated = GetModels(time, prevModel, nextModel, t);
 
-	// clamp
-	if ((UINT)nextModelId >= keys.GetSize())
-	{
-		nextModelId = 0;
-	}
+	const StaticArray<MeshResource*> &prevMeshes = prevModel->GetHierarchy().GetMeshes();
+	const StaticArray<MeshResource*> &nextMeshes = nextModel->GetHierarchy().GetMeshes();
 
 	UINT meshesCount = tempVerts.GetSize();
-	const StaticArray<MeshResource*> &prevMeshes = keys[modelId].Value->GetHierarchy().GetMeshes();
-	const StaticArray<MeshResource*> &nextMeshes = keys[nextModelId].Value->GetHierarchy().GetMeshes();
-
 	ASSERT(meshesCount = prevMeshes.GetSize());
 	ASSERT(meshesCount = nextMeshes.GetSize());
-
-	// get interpolation factor
-	float t = (time - keys[modelId].Time) / (keys[nextModelId].Time - keys[modelId].Time);
 
 	// update each mesh
 	for (UINT meshIndex = 0; meshIndex < meshesCount; meshIndex++)
@@ -67,6 +60,46 @@ void VertexAnimation::Animate(StaticArray<StaticArray<Vertex5>*>& tempVerts, flo
 			targetVerts[i].Normal = Vector3::Lerp(prevVerts[i].Normal, nextVerts[i].Normal, t);
 		}
 	}
+	
+	return animated;
+}
+
+bool VertexAnimation::GetModels(float time, const ModelResource *& prevModel, const ModelResource *& nextModel, float &interpFactor) const
+{
+	auto &keys = vertAnim->GetAnimationNodes();
+
+	if (WrapType == AnimationWrapType::Loop)
+	{
+		time = Mod(time, animLength);
+	}
+	else if (WrapType == AnimationWrapType::Once)
+	{
+		if (time > animLength)
+		{
+			// use last frame
+			prevModel = keys[keys.GetSize() - 1].Value;
+			nextModel = keys[keys.GetSize() - 1].Value;
+			interpFactor = 0;
+
+			return false;
+		}
+	}
+
+	// get model index in array
+	int modelId = GetModelIndex(time);
+	int nextModelId = modelId + 1;
+
+	// clamp
+	if ((UINT)nextModelId >= keys.GetSize())
+	{
+		nextModelId = 0;
+	}
+
+	prevModel = keys[modelId].Value;
+	nextModel = keys[nextModelId].Value;
+	interpFactor = (time - keys[modelId].Time) / (keys[nextModelId].Time - keys[modelId].Time);
+
+	return true;
 }
 
 const VertexAnimatedResource * VertexAnimation::GetVertexAnimationResource() const

@@ -1,0 +1,4 @@
+Models/Gunner/GunnerDamage.txt
+Models/Gunner/GunnerRun.txt
+Models/Gunner/GunnerShoot.txt
+Models/Gunner/GunnerDeath.txt

@@ -8,15 +8,27 @@
 
 CLASSDEFINITION(CModel, CVertexAnimated)
 
+CVertexAnimated::CVertexAnimated()
+{ }
+
 void CVertexAnimated::Init()
 {
-	// load vertex animation resource
-	vertexAnimation = new VertexAnimation();
-	vertexAnimation->Init(vertAnimPath);
+	// load list
+	const ListResource *animationList = ResourceManager::Instance().LoadList(vertAnimListPath);
+	const StaticArray<String> &lines = animationList->GetLines();
+
+	ASSERT(lines.GetSize() != 0);
+
+	// load each animation in this list
+	vertAnimations.Init(lines.GetSize());
+	for (UINT i = 0; i < lines.GetSize(); i++)
+	{
+		vertAnimations[i] = new VertexAnimation();
+		vertAnimations[i]->Init(lines[i]);
+	}
 
 	// set first as main model
-	modelResource = 
-		vertexAnimation->GetVertexAnimationResource()->GetAnimationNodes()[0].Value;
+	modelResource = vertAnimations[0]->GetVertexAnimationResource()->GetAnimationNodes()[0].Value;
 
 	// get meshes from main model
 	const StaticArray<MeshResource*> &baseMeshes = modelResource->GetHierarchy().GetMeshes();
@@ -39,21 +51,28 @@ void CVertexAnimated::Init()
 	BindShader(shader);
 }
 
-CVertexAnimated::~CVertexAnimated()
-{ 
-	// delete all arrays
-	for (UINT i = 0; i < tempVerts.GetSize(); i++)
-	{
-		delete tempVerts[i];
-	}
-}
-
-void CVertexAnimated::PlayAnimation(int animationIndex, float startTime)
+void CVertexAnimated::InitVertices(const StaticArray<MeshResource*>& baseMeshes)
 {
-	// enable animation
-	isPlaying = true;
-	// reset time
-	currentTime = startTime;
+	int meshesCount = baseMeshes.GetSize();
+
+	// init array for each mesh
+	tempVerts.Init(meshesCount);
+
+	for (int meshIndex = 0; meshIndex < meshesCount; meshIndex++)
+	{
+		const StaticArray<Vertex5> &baseVerts = baseMeshes[meshIndex]->GetVertices();
+		tempVerts[meshIndex] = new StaticArray<Vertex5>();
+
+		StaticArray<Vertex5> &targetVerts = *tempVerts[meshIndex];
+
+		// init temp verts
+		targetVerts.Init(baseVerts.GetSize());
+
+		for (UINT i = 0; i < baseVerts.GetSize(); i++)
+		{
+			targetVerts[i] = baseVerts[i];
+		}
+	}
 }
 
 void CVertexAnimated::InitDynamic()
@@ -68,6 +87,21 @@ void CVertexAnimated::InitDynamic()
 	}
 }
 
+CVertexAnimated::~CVertexAnimated()
+{ 
+	// delete all arrays
+	for (UINT i = 0; i < tempVerts.GetSize(); i++)
+	{
+		delete tempVerts[i];
+	}
+
+	// delete animations
+	for (UINT i = 0; i < vertAnimations.GetSize(); i++)
+	{
+		delete vertAnimations[i];
+	}
+}
+
 void CVertexAnimated::Update()
 {
 	// if no animation is set, then ignore
@@ -76,18 +110,11 @@ void CVertexAnimated::Update()
 		return;
 	}
 
-	if (currentTime >= vertexAnimation->GetLength())
-	{
-		// animation ended
-		isPlaying = false;
-		return;
-
-		// TODO: several types of animations: clamped, infinite, mirror etc
-		// currentTime = Mod(currentTime, vertAnim->GetDuration());
-	}
+	ASSERT(playingAnimIndex >= 0 && playingAnimIndex < (int)vertAnimations.GetSize());
 
 	// update temp vertices according to current time
-	vertexAnimation->Animate(tempVerts, currentTime);
+	// it will return false, if last frame was animated
+	isPlaying = vertAnimations[playingAnimIndex]->Animate(tempVerts, currentTime);
 
 	// load model to gpu
 	GFXUpdate();
@@ -115,41 +142,14 @@ void CVertexAnimated::GFXUpdate()
 	}
 }
 
-void CVertexAnimated::InitVertices(const StaticArray<MeshResource*>& baseMeshes)
+void CVertexAnimated::PlayAnimation(int animationIndex, float startTime)
 {
-	int meshesCount = baseMeshes.GetSize();
+	// enable animation
+	isPlaying = true;
+	playingAnimIndex = animationIndex;
 
-	// init array for each mesh
-	tempVerts.Init(meshesCount);
-
-	for (int meshIndex = 0; meshIndex < meshesCount; meshIndex++)
-	{
-		const StaticArray<Vertex5> &baseVerts = baseMeshes[meshIndex]->GetVertices();
-		tempVerts[meshIndex] = new StaticArray<Vertex5>();
-
-		StaticArray<Vertex5> &targetVerts = *tempVerts[meshIndex];
-
-		// init temp verts
-		targetVerts.Init(baseVerts.GetSize());
-
-		for (UINT i = 0; i < baseVerts.GetSize(); i++)
-		{
-			targetVerts[i] = baseVerts[i];
-		}
-	}
-}
-
-#define PROPERTY_KEY_VERTANIMPATH	"VertexAnimatedPath"
-
-void CVertexAnimated::SetProperty(const String & key, const String & value)
-{
-	if (key == PROPERTY_KEY_VERTANIMPATH)
-	{
-		vertAnimPath = value;
-		return;
-	}
-
-	CModel::SetProperty(key, value);
+	// reset time
+	currentTime = startTime;
 }
 
 bool CVertexAnimated::IsPlaying()
@@ -159,10 +159,23 @@ bool CVertexAnimated::IsPlaying()
 
 int CVertexAnimated::GetCurrentAnimation()
 {
-	return 0;
+	return isPlaying ? playingAnimIndex : -1;
 }
 
 float CVertexAnimated::GetAnimationLength(int animationIndex)
 {
 	return 0.0f;
+}
+
+#define PROPERTY_KEY_VERTANIMPATH	"VertexAnimationListPath"
+
+void CVertexAnimated::SetProperty(const String & key, const String & value)
+{
+	if (key == PROPERTY_KEY_VERTANIMPATH)
+	{
+		vertAnimListPath = value;
+		return;
+	}
+
+	CModel::SetProperty(key, value);
 }

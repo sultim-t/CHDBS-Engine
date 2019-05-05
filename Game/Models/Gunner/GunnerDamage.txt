@@ -1,0 +1,8 @@
+#
+GunnerRun
+0
+Models/Gunner/GunnerShoot0.obj
+8
+Models/Gunner/GunnerDamage8.obj
+30
+Models/Gunner/GunnerShoot0.obj

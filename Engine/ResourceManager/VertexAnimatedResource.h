@@ -4,6 +4,7 @@
 
 typedef AnimationKey<const ModelResource*> VertexAnimationKey;
 
+// Represents one vertex animation, contains loaded models
 class VertexAnimatedResource
 {
 	friend class ResourceManager;

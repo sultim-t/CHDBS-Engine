@@ -1,0 +1,8 @@
+#
+KamikazeDamage
+0
+Models/Kamikaze/KamikazeRun0.obj
+0.45
+Models/Kamikaze/KamikazeDamage5.obj
+1
+Models/Kamikaze/KamikazeRun0.obj

@@ -8,6 +8,7 @@
 #include "ShaderResource.h"
 #include "EntityResource.h"
 #include "VertexAnimatedResource.h"
+#include "ListResource.h"
 
 #include <Engine/DataStructures/HashTable.h>
 #include <Engine/DataStructures/DynamicArray.h>
@@ -40,6 +41,9 @@ private:
 	// Stores all loaded vertex aniamated resources
 	HashTable<String, VertexAnimatedResource*>	vertexAnimatedResources;
 
+	// Stores all loaded entities
+	HashTable<String, ListResource*>	listResources;
+
 private:	
 	// Allocates mesh resource and copies data
 	void CopyMesh(void *from, MeshResource *to);
@@ -67,6 +71,7 @@ public:
 	const ShaderResource			*LoadShader(const char *vertexPath, const char *fragmentPath);
 	const EntityResource			*LoadEnitity(const char *path);
 	const VertexAnimatedResource	*LoadVertexAnimated(const char *path);
+	const ListResource				*LoadList(const char *path);
 
 	static ResourceManager &Instance();
 };

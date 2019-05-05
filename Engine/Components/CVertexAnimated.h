@@ -15,11 +15,11 @@ class CVertexAnimated : public CModel, public IAnimatable
 
 private:
 	// Path to anim file
-	String vertAnimPath;
+	String vertAnimListPath;
 
-	// All loaded models for interpolating
-	// And contains time foreach model
-	VertexAnimation *vertexAnimation;
+	// Array of vertex animations
+	// Each contains all loaded models for interpolating and time foreach model
+	StaticArray<VertexAnimation*> vertAnimations;
 
 	// Temp vertices for animation
 	// For each mesh, for each vertex
@@ -27,8 +27,8 @@ private:
 
 	// Current time of animation
 	float	currentTime;
-	// Current animation index, -1 if not playing
-	int		animIndex;
+	// Index of current playing animation, -1 if not playing
+	int		playingAnimIndex;
 	bool	isPlaying;
 
 private:
@@ -40,14 +40,16 @@ private:
 	void InitVertices(const StaticArray<MeshResource*> &baseMeshes);
 
 public:
+	// Empty constructor
+	CVertexAnimated();
 	// Destroys allocated data
 	~CVertexAnimated();
 
 	// Play animation on this model
-	void PlayAnimation(int animationIndex, float startTime = 0.0f) override;
-	bool IsPlaying() override;
-	int GetCurrentAnimation() override;
-	float GetAnimationLength(int animationIndex) override;
+	void	PlayAnimation(int animationIndex, float startTime = 0.0f) override;
+	bool	IsPlaying() override;
+	int		GetCurrentAnimation() override;
+	float	GetAnimationLength(int animationIndex) override;
 
 public:
 	void Init() override;

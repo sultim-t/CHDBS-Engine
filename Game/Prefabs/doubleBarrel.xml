@@ -3,7 +3,7 @@
   Position="0 2 1">
 
   <CVertexAnimated
-    VertexAnimatedPath="Models/Kamikaze.txt"
+    VertexAnimationListPath="Models/AnimKamikaze.txt"
     ForcedDiffuseTexture="Textures/RobotPalette.png"
     Shader="Standard"
     RotationCorrection="-0.5 0.5 0.5 0.5"

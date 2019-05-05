@@ -15,7 +15,7 @@
     />
   
   <CVertexAnimated
-    VertexAnimatedPath="Models/DoubleBarrelAnimated.txt"
+    VertexAnimationListPath="Models/AnimDoubleBarrel.txt"
     ForcedDiffuseTexture="Textures/WeaponsPalette.png"
     RotationCorrection="-0.5 0.5 0.5 0.5"
     ScaleCorrection="0.9 -1.5 1.5"

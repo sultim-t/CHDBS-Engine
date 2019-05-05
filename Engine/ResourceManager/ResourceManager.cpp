@@ -52,6 +52,9 @@ void ResourceManager::Init()
 
 	vertexAnimatedResources.Init(32, 8);
 	vertexAnimatedResources.DeclareHashFunction(String::StringHash);
+
+	listResources.Init(64, 8);
+	listResources.DeclareHashFunction(String::StringHash);
 }
 
 ResourceManager::~ResourceManager()
@@ -201,7 +204,7 @@ const EntityResource *ResourceManager::LoadEnitity(const char * path)
 	return entity;
 }
 
-const VertexAnimatedResource * ResourceManager::LoadVertexAnimated(const char * path)
+const VertexAnimatedResource *ResourceManager::LoadVertexAnimated(const char * path)
 {
 	VertexAnimatedResource *vertAnim;
 
@@ -303,6 +306,56 @@ const VertexAnimatedResource * ResourceManager::LoadVertexAnimated(const char * 
 	vertexAnimatedResources.Add(path, vertAnim);
 
 	return vertAnim;
+}
+
+const ListResource *ResourceManager::LoadList(const char * path)
+{
+	ListResource *list;
+
+	// if already loaded
+	if (listResources.Find(path, list))
+	{
+		return list;
+	}
+
+	list = new ListResource(path);
+
+	std::ifstream file;
+	std::string line;
+
+	// open
+	file.open(path);
+
+	// count lines
+	int linesCount = 0;
+
+	while (std::getline(file, line))
+	{
+		// dont ignore empty
+		linesCount++;
+	}
+
+	// reset to beginning
+	file.clear();
+	file.seekg(0);
+
+	// init array
+	list->lines.Init(linesCount);
+
+	// for each line
+	for (int i = 0; i < linesCount; i++)
+	{
+		std::getline(file, line);
+		
+		// raw init, as array was initted using malloc
+		list->lines[i].Init(line.c_str());
+	}
+
+	// close
+	file.close();
+
+	listResources.Add(path, list);
+	return list;
 }
 
 const TextureResource *ResourceManager::LoadTexture(char const *path)
