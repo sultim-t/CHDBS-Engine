@@ -37,6 +37,8 @@ private:
 	DynamicArray<CParticleSystem*>	particleSystems;
 	DynamicArray<CLight*>			lights;
 
+	Cubemap							*skybox;
+
 public:
 	bool IsLoaded;
 

@@ -36,9 +36,12 @@ int SceneManager::CreateScene(const char *path)
 	// load scene resource
 	const SceneResource *sceneResource = ResourceManager::Instance().LoadScene(path);
 	
-	// allcate scene
+	// allocate scene
 	int sceneId = CreateEmptyScene(sceneResource->GetName());
 	Scene *currentScene = scenes[sceneId];
+
+	// load skybox
+	currentScene->skybox->LoadCubemap(sceneResource->GetSkyboxSideNames());
 
 	const StaticArray<SceneEntity> &entitiesData = sceneResource->GetEntitiesData();
 	UINT count = entitiesData.GetSize();
@@ -54,7 +57,7 @@ int SceneManager::CreateScene(const char *path)
 			entitiesData[i].EntityPath,
 			entitiesData[i].IsTransformed ? &entitiesData[i].Transformation : nullptr);
 	}
-
+	
 	return sceneId;
 }
 

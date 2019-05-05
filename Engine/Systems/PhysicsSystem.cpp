@@ -382,9 +382,10 @@ void PhysicsSystem::SolveCollision(const CollisionInfo &info, int contactIndex)
 void PhysicsSystem::ApplyPositionCorrection(Rigidbody *rbThis, Rigidbody *rbOther, float invMassThis, float invMassOther,const Vector3 &normal, float penetration)
 {	
 	float slop = 0.01f;
+	float percent = 0.95f;
 
 	// position correction
-	Vector3 correction = normal * Max(penetration - slop, 0.0f) / (invMassThis + invMassOther);
+	Vector3 correction = normal * Max(penetration - slop, 0.0f) / (invMassThis + invMassOther) * percent;
 
 	// change positions
 	rbThis->GetOwner().GetTransform().Translate(correction * invMassThis);

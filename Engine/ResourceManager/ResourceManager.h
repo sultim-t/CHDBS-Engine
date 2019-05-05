@@ -9,6 +9,7 @@
 #include "EntityResource.h"
 #include "VertexAnimatedResource.h"
 #include "ListResource.h"
+#include "GlobalSettings.h"
 
 #include <Engine/DataStructures/HashTable.h>
 #include <Engine/DataStructures/DynamicArray.h>
@@ -17,9 +18,6 @@
 class ResourceManager
 {
 private:	
-	// Stores all loaded meshes
-	// DynamicArray<MeshResource*>			meshResources;
-
 	// Stores all loaded mesh colliders
 	DynamicArray<MeshColliderResource*> meshColliderResources;
 
@@ -43,6 +41,9 @@ private:
 
 	// Stores all loaded entities
 	HashTable<String, ListResource*>	listResources;
+
+	// Global settings for the engine
+	GlobalSettings						*settings;
 
 private:	
 	// Allocates mesh resource and copies data
@@ -72,6 +73,7 @@ public:
 	const EntityResource			*LoadEnitity(const char *path);
 	const VertexAnimatedResource	*LoadVertexAnimated(const char *path);
 	const ListResource				*LoadList(const char *path);
+	const GlobalSettings			*LoadSettings(const char *path);
 
 	static ResourceManager &Instance();
 };

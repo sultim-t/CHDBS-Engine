@@ -36,6 +36,8 @@ void Scene::Init()
 	lights.Init(8);
 	models.Init(128);
 	particleSystems.Init(128);
+
+	skybox = new Cubemap();
 }
 
 void Scene::Destroy()
@@ -78,6 +80,8 @@ void Scene::Load()
 	RenderingSystem::Instance().Register(&lights);
 	RenderingSystem::Instance().Register(&models);
 	RenderingSystem::Instance().Register(&particleSystems);
+
+	Skybox::Instance().BindCubemap(*skybox);
 
 	// also, call OnSceneLoading() on each component on each entity
 	int entityCount = entities.GetSize();

@@ -55,6 +55,8 @@ void ResourceManager::Init()
 
 	listResources.Init(64, 8);
 	listResources.DeclareHashFunction(String::StringHash);
+
+	settings = nullptr;
 }
 
 ResourceManager::~ResourceManager()
@@ -382,11 +384,14 @@ const SceneResource *ResourceManager::LoadScene(const char * path)
 
 	// count entities
 	int entitiesCount = 0;
-	for (XMLElement *node = root->FirstChildElement();
-		node;
-		node = node->NextSiblingElement())
+	for (XMLElement *element = root->FirstChildElement();
+		element;
+		element = element->NextSiblingElement())
 	{
-		entitiesCount++;
+		if (String::Compare(element->Value(), "Entity"))
+		{
+			entitiesCount++;
+		}
 	}
 
 	const char *val;
@@ -409,6 +414,39 @@ const SceneResource *ResourceManager::LoadScene(const char * path)
 		element;
 		element = element->NextSiblingElement())
 	{
+		if (String::Compare(element->Value(), "Skybox"))
+		{
+			if (val = element->Attribute("Front"))
+			{
+				scene->skyboxSideNames[0] = val;
+			}
+
+			if (val = element->Attribute("Back"))
+			{
+				scene->skyboxSideNames[1] = val;
+			}
+
+			if (val = element->Attribute("Up"))
+			{
+				scene->skyboxSideNames[2] = val;
+			}
+
+			if (val = element->Attribute("Down"))
+			{
+				scene->skyboxSideNames[3] = val;
+			}
+
+			if (val = element->Attribute("Right"))
+			{
+				scene->skyboxSideNames[4] = val;
+			}
+
+			if (val = element->Attribute("Left"))
+			{
+				scene->skyboxSideNames[5] = val;
+			}
+		}
+
 		if (!String::Compare(element->Value(), "Entity"))
 		{
 			continue;
@@ -917,3 +955,77 @@ ModelNode *ResourceManager::ProcessModelNode(void *n, const void *s, ModelNode *
 	return node;
 }
 #pragma endregion
+
+const GlobalSettings *ResourceManager::LoadSettings(const char * path)
+{
+	ASSERT(settings == nullptr);
+
+	// allocate
+	settings = new GlobalSettings();
+
+	using namespace tinyxml2;
+
+	XMLDocument doc;
+	doc.LoadFile(path);
+
+	XMLElement *root = doc.RootElement();
+	if (!root)
+	{
+		// if can't parse root
+		return nullptr;
+	}
+
+	const char *val;
+
+	if (val = root->Attribute("Name"))
+	{
+		settings->Name = val;
+	}
+
+	if (val = root->Attribute("ScreenWidth"))
+	{
+		settings->ScreenWidth = String::ToInt(val);
+	}
+
+	if (val = root->Attribute("ScreenHeight"))
+	{
+		settings->ScreenHeight = String::ToInt(val);
+	}
+
+	if (val = root->Attribute("StartScenePath"))
+	{
+		settings->StartScenePath = val;
+	}
+
+	if (val = root->Attribute("StandardShaderVert"))
+	{
+		settings->StandardShaderVert = val;
+	}
+
+	if (val = root->Attribute("StandardShaderFrag"))
+	{
+		settings->StandardShaderFrag = val;
+	}
+
+	if (val = root->Attribute("SkyboxShaderVert"))
+	{
+		settings->SkyboxShaderVert = val;
+	}
+
+	if (val = root->Attribute("SkyboxShaderFrag"))
+	{
+		settings->SkyboxShaderFrag = val;
+	}
+
+	if (val = root->Attribute("DebugShaderVert"))
+	{
+		settings->DebugShaderVert = val;
+	}
+
+	if (val = root->Attribute("DebugShaderFrag"))
+	{
+		settings->DebugShaderFrag = val;
+	}
+
+	return settings;
+}

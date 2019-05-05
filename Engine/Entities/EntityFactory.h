@@ -5,6 +5,7 @@
 #include <Engine/DataStructures/StaticArray.h>
 #include <Engine/DataStructures/HashTable.h>
 #include <Engine/Systems/ComponentSystem.h>
+#include <Engine/ResourceManager/ComponentResource.h>
 
 class EntityFactory
 {

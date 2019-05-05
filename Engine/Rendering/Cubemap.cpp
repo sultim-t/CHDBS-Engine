@@ -10,14 +10,14 @@ Cubemap::Cubemap()
 	type = TextureType::Cubemap;
 }
 
-void Cubemap::LoadCubemap(const Array<const char*, 6> &paths)
+void Cubemap::LoadCubemap(const StaticArray<String> &sidesNames)
 {
 	glGenTextures(1, &graphicsTextureId);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, graphicsTextureId);
 
-	for (unsigned int i = 0; i < paths.GetSize(); i++)
+	for (unsigned int i = 0; i < 6; i++)
 	{
-		unsigned char *data = stbi_load(paths[i], &width, &height, &channelsNumber, 0);
+		unsigned char *data = stbi_load(sidesNames[i], &width, &height, &channelsNumber, 0);
 		if (data)
 		{
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);

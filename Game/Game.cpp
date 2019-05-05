@@ -3,137 +3,27 @@
 #define GLEW_STATIC
 #include <GLEW\glew.h>
 
-#include <Engine/Rendering/Texture.h>
-#include <Engine/Rendering/FramebufferTexture.h>
-#include <Engine/Math/Vector.h>
-#include <Engine/Math/Matrix.h>
-#include <Engine/Math/Projection.h>
-#include <Engine/Math/Transform.h>
-#include <Engine/Rendering/Shader.h>
-#include <Engine/Rendering/ContextWindow.h>
-#include <Engine/Input/Input.h>
-#include <Engine/Entities/Entity.h>
-#include <Engine/Entities/EntityFactory.h>
-#include <Engine/Components/CCamera.h>
-#include <Engine/Components/CFreeMovement.h>
-#include <Engine/Components/CModel.h>
-#include <Engine/DataStructures/HashTable.h>
-#include <Engine/DataStructures/DynamicArray.h>
-#include <Engine/Rendering/Cubemap.h>
-#include <Engine/Components/CLight.h>
 #include <Engine/Rendering/Skybox.h>
-#include <Engine/DataStructures/Array.h>
-#include <Engine/Math/Intersection.h>
-#include <Engine/Math/Ray.h>
-#include <Engine/Math/AABB.h>
-#include <Engine/Physics/MeshCollider.h>
-#include <Engine/Physics/AABBCollider.h>
-#include <Engine/Physics/SphereCollider.h>
-#include <Engine/Rendering/Materials/StandardMaterial.h>
-#include <Engine/Rendering/DebugDrawer.h>
-#include <Engine/Physics/Rigidbody.h>
-#include <Engine/Base/Event.h>
-
-
-#include <Engine/Systems/RenderingSystem.h>
-#include <Engine/Systems/ComponentSystem.h>
-#include <Engine/Systems/PhysicsSystem.h>
-#include <Engine/Systems/InputSystem.h>
-#include <Engine/ResourceManager/ResourceManager.h>
-#include <Engine/SceneManager/SceneManager.h>
 #include <Engine/Entities/EntityFactory.h>
 
 #include "Scripts/Weapon.h"
 
-void Game::Start()
-{
-	//// init engine
-	//engine.Init();
-
-	//// init debug drawer
-	//DebugDrawer::Instance().Init("Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
-}
-
-void Game::LoadScenes()
-{
-}
-
 int main()
 {
-	//Engine engine = Engine();
-	//engine.Init();
+	// load global settings
+	Engine engine = Engine();
+	engine.Init("GlobalSettings.xml");
 
-	ContextWindow::Instance().Init("CHDBS Engine", 1280, 720);
+	// register user component types
+	LoadComponentTypes();
 
-	ResourceManager::Instance().Init();
-	SceneManager::Instance().Init();
-	RenderingSystem::Instance().Init();
-	ComponentSystem::Instance().Init();
-	PhysicsSystem::Instance().Init();
-	InputSystem::Instance().Init();
+	// start main loop
+	engine.Start();
 
-	const char shaderName[] = "Standard";
-	RenderingSystem::Instance().RegisterShader(shaderName, "Shaders/ShadowMapped.vs", "Shaders/ShadowMapped.fs");
-
-	// init debug drawer
-	const char debugShaderName[] = "DebugShader";
-	RenderingSystem::Instance().RegisterShader(debugShaderName, "Shaders/DebugDraw.vs", "Shaders/DebugDraw.fs");
-	DebugDrawer::Instance().Init();
-	DebugDrawer::Instance().SetShader(debugShaderName);
-
-	// init skybox
-	const char skyboxShaderName[] = "SkyboxShader";
-	RenderingSystem::Instance().RegisterShader(skyboxShaderName, "Shaders/Skybox.vs", "Shaders/Skybox.fs");
-	Skybox::Instance().Init();
-	Skybox::Instance().BindShader(skyboxShaderName);
-
-	EntityFactory::RegisterComponentType<CWeapon>("CWeapon");
-
-
-
-	int sceneId = SceneManager::Instance().CreateScene("Scenes/MainScene.xml");
-	//Scene &currentScene = SceneManager::Instance().GetScene(sceneId);
-
-	SceneManager::Instance().LoadScene(sceneId);
-
-	Entity *cameraEntity = SceneManager::Instance().GetCurrentScene().FindEntity("Camera");
-	Entity *lightEntity = SceneManager::Instance().GetCurrentScene().FindEntity("Sun");
-	Entity *terrainEntity = SceneManager::Instance().GetCurrentScene().FindEntity("Terrain");
-	Entity *dbEntity = SceneManager::Instance().GetCurrentScene().FindEntity("Double Barrel");
-	Entity *particles = SceneManager::Instance().GetCurrentScene().FindEntity("Particles");
-
-
-
-	Array<const char*, 6> skyNames;
-	skyNames[4] = "Textures/Skybox/desertsky_rt.tga";
-	skyNames[5] = "Textures/Skybox/desertsky_lf.tga";
-	skyNames[2] = "Textures/Skybox/desertsky_up.tga";
-	skyNames[3] = "Textures/Skybox/desertsky_dn.tga";
-	skyNames[0] = "Textures/Skybox/desertsky_ft.tga";
-	skyNames[1] = "Textures/Skybox/desertsky_bk.tga";
-	
-	Cubemap sky = Cubemap();
-	sky.LoadCubemap(skyNames);
-	Skybox::Instance().BindCubemap(sky);
-
-	// Recalculate time, there shouldn't be counted initialization time
-	Time::Init();
-
-	while (!ContextWindow::Instance().ShouldClose())
-	{
-		Time::Calculate();
-
-		while (Time::ToFixedUpdate())
-		{
-			PhysicsSystem::Instance().Update();
-			ComponentSystem::Instance().FixedUpdate();
-		}
-
-		InputSystem::Instance().Update();
-		ComponentSystem::Instance().Update();
-		RenderingSystem::Instance().Update();
-	}
-
-	ContextWindow::Instance().Terminate();
 	return 0;
+}
+
+void LoadComponentTypes()
+{
+	EntityFactory::RegisterComponentType<CWeapon>("CWeapon");
 }

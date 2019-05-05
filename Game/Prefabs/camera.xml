@@ -5,7 +5,7 @@
 
   <CCamera
     ZNear="0.1"
-    ZFar="1000"
+    ZFar="1500"
     Projection="Perspective"
     FOV="100" 
     />

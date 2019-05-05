@@ -1,13 +1,22 @@
 <Scene
   Name="Main scene">
 
-  <Entity
-    Path="Prefabs/terrain.xml"
+  <Skybox
+    Front="Textures/Skybox/desertsky_ft.tga"
+    Back="Textures/Skybox/desertsky_bk.tga"
+    Up="Textures/Skybox/desertsky_up.tga"
+    Down="Textures/Skybox/desertsky_dn.tga"
+    Right="Textures/Skybox/desertsky_rt.tga"
+    Left="Textures/Skybox/desertsky_lf.tga"
     />
 
   <Entity
-    Path="Prefabs/camera.xml"
-    Position="0 10 0"
+    Path="Prefabs/Terrain.xml"
+    />
+
+  <Entity
+    Path="Prefabs/Camera.xml"
+    Position="0 0 5"
     Euler="0 0 0"
     />
 
@@ -16,10 +25,10 @@
     />
 
   <Entity
-    Path="Prefabs/doubleBarrel.xml"
+    Path="Prefabs/DoubleBarrel.xml"
     />
   
   <Entity
-    Path="Prefabs/particleSystem.xml"
+    Path="Prefabs/ParticleSystem.xml"
     />
 </Scene>

@@ -15,8 +15,10 @@ class SceneResource
 
 private:
 	// Scene's entities data
-	StaticArray<SceneEntity> entitiesData;
-	
+	StaticArray<SceneEntity>	entitiesData;
+	// Scene's skybox names
+	StaticArray<String>			skyboxSideNames;
+
 	// Scene's name
 	String sceneName;
 	// Path to this resource
@@ -32,6 +34,8 @@ public:
 
 	// Get all paths to entity files in this scene
 	const StaticArray<SceneEntity> &GetEntitiesData() const;
+	// Get all scene's skybox names
+	const StaticArray<String> &GetSkyboxSideNames() const;
 	// Get scene's name
 	const String &GetName() const;
 	// Get path to this scene resource
@@ -50,6 +54,11 @@ inline SceneResource::~SceneResource()
 	{
 		entitiesData[i].EntityPath.Delete();
 	}
+
+	for (int i = 0; i < 6; i++)
+	{
+		skyboxSideNames[i].Delete();
+	}
 }
 
 inline void SceneResource::Init(int entitiesCount, const char *name)
@@ -64,19 +73,30 @@ inline void SceneResource::Init(int entitiesCount, const char *name)
 		entitiesData[i].IsTransformed = false;
 		entitiesData[i].Transformation = Transform();
 	}
+
+	skyboxSideNames.Init(6);
+	for (int i = 0; i < 6; i++)
+	{
+		skyboxSideNames[i].Init("");
+	}
 }
 
-inline const StaticArray<SceneEntity>& SceneResource::GetEntitiesData() const
+inline const StaticArray<SceneEntity> &SceneResource::GetEntitiesData() const
 {
 	return entitiesData;
 }
 
-inline const String & SceneResource::GetName() const
+inline const StaticArray<String> &SceneResource::GetSkyboxSideNames() const
+{
+	return skyboxSideNames;
+}
+
+inline const String &SceneResource::GetName() const
 {
 	return sceneName;
 }
 
-inline const String & SceneResource::GetPath() const
+inline const String &SceneResource::GetPath() const
 {
 	return path;
 }

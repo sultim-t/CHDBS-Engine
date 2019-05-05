@@ -334,6 +334,7 @@
     <ClInclude Include="Rendering\VertexAnimation.h" />
     <ClInclude Include="Rendering\VertexWeight.h" />
     <ClInclude Include="ResourceManager\ComponentResource.h" />
+    <ClInclude Include="ResourceManager\GlobalSettings.h" />
     <ClInclude Include="ResourceManager\EntityResource.h" />
     <ClInclude Include="ResourceManager\ListResource.h" />
     <ClInclude Include="ResourceManager\MeshColliderResource.h" />

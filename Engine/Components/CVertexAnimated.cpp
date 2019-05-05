@@ -164,7 +164,7 @@ int CVertexAnimated::GetCurrentAnimation()
 
 float CVertexAnimated::GetAnimationLength(int animationIndex)
 {
-	return 0.0f;
+	return vertAnimations[animationIndex]->GetLength();
 }
 
 #define PROPERTY_KEY_VERTANIMPATH	"VertexAnimationListPath"
