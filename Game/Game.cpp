@@ -1,11 +1,6 @@
 #include "Game.h"
 
-#define GLEW_STATIC
-#include <GLEW\glew.h>
-
-#include <Engine/Rendering/Skybox.h>
 #include <Engine/Entities/EntityFactory.h>
-
 #include "Scripts/Weapon.h"
 
 int main()
