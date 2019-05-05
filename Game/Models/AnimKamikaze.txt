@@ -1,3 +1,2 @@
-Models/Kamikaze/KamikazeIdle.txt
 Models/Kamikaze/KamikazeDamage.txt
 Models/Kamikaze/KamikazeRun.txt

@@ -1,5 +1,5 @@
-#
 DoubleBarrelShoot
+1
 0
 Models/DoubleBarrelVertexAnimated/DoubleBarrel0.obj
 0.066

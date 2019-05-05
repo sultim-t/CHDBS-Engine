@@ -224,51 +224,36 @@ const VertexAnimatedResource *ResourceManager::LoadVertexAnimated(const char * p
 	file.open(path);
 
 	// count lines
-	int linesCount = 0;
 	int modelTimeCount = 0;
-	bool nextIsName = false;
 
+	// first must be name
+	std::getline(file, line);
+	vertAnim->name = line.c_str();
+
+	// second must be ticks per second
+	std::getline(file, line);
+	vertAnim->ticksPerSecond = String::ToFloat(line.c_str());
+
+	// else must be pairs model-time
 	while (std::getline(file, line))
 	{
-		linesCount++;
-
-		if (line.length() > 0)
-		{
-			if (line[0] == '#')
-			{
-				nextIsName = true;
-
-				// dont count lines which start with # 
-				continue;
-			}
-
-			if (nextIsName)
-			{
-				// TODO: several animations
-				vertAnim->name = line.c_str();
-				nextIsName = false;
-			
-				// dont count lines which contain animation name
-				continue;
-			}
-
-			modelTimeCount++;
-		}
+		modelTimeCount++;
 	}
 
 	// reset to beginning
 	file.clear();
 	file.seekg(0);
+	// skip animation name and ticks per second
+	std::getline(file, line);
+	std::getline(file, line);
 
 	// init array
 	// for each anim node there 2 lines
 	int animNodeCount = modelTimeCount / 2;
 	vertAnim->animationNodes.Init(animNodeCount);
 
-	int animNodeIndex = 0;
-
 	// for each line
-	for (int i = 0; i < linesCount && animNodeIndex < animNodeCount; i++)
+	for (int i = 0; i < animNodeCount; i++)
 	{
 		// first is time
 		std::getline(file, line);
@@ -278,22 +263,12 @@ const VertexAnimatedResource *ResourceManager::LoadVertexAnimated(const char * p
 			continue;
 		}
 
-		// check #
-		if (line[0] == '#')
-		{
-			// also, skip animation name
-			std::getline(file, line);
-			continue;
-		}
-
-		vertAnim->animationNodes[animNodeIndex].Time = (float)atof(line.c_str());
+		vertAnim->animationNodes[i].Time = (float)atof(line.c_str());
 		
 		// second is a path to model
 		std::getline(file, line);
 		// so load model resource
-		vertAnim->animationNodes[animNodeIndex].Value = LoadModel(line.c_str());
-	
-		animNodeIndex++;
+		vertAnim->animationNodes[i].Value = LoadModel(line.c_str());
 	}
 
 	// close

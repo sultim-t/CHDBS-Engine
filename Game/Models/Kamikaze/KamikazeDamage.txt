@@ -1,8 +1,8 @@
-#
 KamikazeDamage
+30
 0
 Models/Kamikaze/KamikazeRun0.obj
-0.45
+12
 Models/Kamikaze/KamikazeDamage5.obj
-1
+30
 Models/Kamikaze/KamikazeRun0.obj
