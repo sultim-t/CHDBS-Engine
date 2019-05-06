@@ -2,6 +2,7 @@
 #include <Engine/Systems/ISystem.h>
 #include <Engine/Rendering/ContextWindow.h>
 #include <Engine/Rendering/DebugDrawer.h>
+#include <Engine/Rendering/GUI/TextRenderer.h>
 #include <Engine/Systems/RenderingSystem.h>
 #include <Engine/Systems/ComponentSystem.h>
 #include <Engine/Systems/PhysicsSystem.h>
@@ -36,20 +37,19 @@ void Engine::Init(const char *globalSettingsPath)
 	PhysicsSystem::Instance().Init();
 	InputSystem::Instance().Init();
 
-#define SHADER_NAME_STANDARD	"Standard"
-#define SHADER_NAME_DEBUG		"DebugShader"
-#define SHADER_NAME_SKYBOX		"SkyboxShader"
-
 	// init predefined shaders
 	RenderingSystem::Instance().RegisterShader(SHADER_NAME_STANDARD, settings->StandardShaderVert, settings->StandardShaderFrag);
 	RenderingSystem::Instance().RegisterShader(SHADER_NAME_DEBUG, settings->DebugShaderVert, settings->DebugShaderFrag);
 	RenderingSystem::Instance().RegisterShader(SHADER_NAME_SKYBOX, settings->SkyboxShaderVert, settings->SkyboxShaderFrag);
+	RenderingSystem::Instance().RegisterShader(SHADER_NAME_TEXT, settings->TextShaderVert, settings->TextShaderFrag);
 
 	DebugDrawer::Instance().Init();
 	DebugDrawer::Instance().SetShader(SHADER_NAME_DEBUG);
 
 	Skybox::Instance().Init();
 	Skybox::Instance().BindShader(SHADER_NAME_SKYBOX);
+
+	TextRenderer::Instance().Init();
 }
 
 void Engine::Start()

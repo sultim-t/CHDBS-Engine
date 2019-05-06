@@ -212,6 +212,7 @@
     <ClCompile Include="Rendering\Cubemap.cpp" />
     <ClCompile Include="Rendering\DebugDrawer.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
+    <ClCompile Include="Rendering\GUI\TextRenderer.cpp" />
     <ClCompile Include="Rendering\ITexture.cpp" />
     <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\ContextWindow.cpp" />
@@ -309,6 +310,8 @@
     <ClInclude Include="Rendering\Bone.h" />
     <ClInclude Include="Rendering\Cubemap.h" />
     <ClInclude Include="Rendering\FramebufferTexture.h" />
+    <ClInclude Include="Rendering\GUI\Character.h" />
+    <ClInclude Include="Rendering\GUI\TextRenderer.h" />
     <ClInclude Include="Rendering\IAnimatable.h" />
     <ClInclude Include="Rendering\ICamera.h" />
     <ClInclude Include="Rendering\ILight.h" />

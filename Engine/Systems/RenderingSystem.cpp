@@ -10,6 +10,7 @@
 #include <Engine/Rendering/DebugDrawer.h>
 #include <Engine/Math/Intersection.h>
 #include <Engine/ResourceManager/MeshResource.h>
+#include <Engine/Rendering/GUI/TextRenderer.h>
 
 Cubemap cubemap;
 
@@ -182,6 +183,11 @@ void RenderingSystem::Update()
 		// Render debug objects
 		DebugDrawer::Instance().BindSpaceMatrix(camSpace);
 		DebugDrawer::Instance().DrawQueues();
+
+		glClear(GL_DEPTH_BUFFER_BIT);
+
+		TextRenderer::Instance().Draw("+ 100", 25, 25, 1.0f, Color3F(0, 1, 0));
+		TextRenderer::Instance().Draw("2 / 100", 1100, 25, 1.0f);
 	}
 
 	ContextWindow::Instance().SwapBuffers();

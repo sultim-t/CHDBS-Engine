@@ -1027,5 +1027,15 @@ const GlobalSettings *ResourceManager::LoadSettings(const char * path)
 		settings->DebugShaderFrag = val;
 	}
 
+	if (val = root->Attribute("TextShaderVert"))
+	{
+		settings->TextShaderVert = val;
+	}
+
+	if (val = root->Attribute("TextShaderFrag"))
+	{
+		settings->TextShaderFrag = val;
+	}
+
 	return settings;
 }

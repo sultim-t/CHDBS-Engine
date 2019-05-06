@@ -11,24 +11,24 @@
     />
 
   <Entity
-    Path="Prefabs/Terrain.xml"
+    Path="Entities/Terrain.xml"
     />
 
   <Entity
-    Path="Prefabs/Camera.xml"
+    Path="Entities/Camera.xml"
     Position="0 0 5"
     Euler="0 0 0"
     />
 
   <Entity
-    Path="Prefabs/light.xml"
+    Path="Entities/light.xml"
     />
 
   <Entity
-    Path="Prefabs/DoubleBarrel.xml"
+    Path="Entities/DoubleBarrel.xml"
     />
   
   <Entity
-    Path="Prefabs/ParticleSystem.xml"
+    Path="Entities/ParticleSystem.xml"
     />
 </Scene>

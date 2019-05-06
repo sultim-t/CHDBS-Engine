@@ -7,3 +7,4 @@ x64/
 *.suo
 *.VC.db
 *.VC.VC.opendb
+/Game/Fonts

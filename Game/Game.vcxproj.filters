@@ -39,8 +39,4 @@
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Shaders\DebugDraw.fs" />
-    <None Include="Shaders\DebugDraw.vs" />
-  </ItemGroup>
 </Project>

@@ -1,0 +1,20 @@
+<Settings
+  Name="CHDBS Engine"
+  ScreenWidth="1280"
+  ScreenHeight="720"
+  
+  StartScenePath="Scenes/MainScene.xml"
+  
+  StandardShaderVert="Shaders/ShadowMapped.vs"
+  StandardShaderFrag="Shaders/ShadowMapped.fs"
+  
+  SkyboxShaderVert="Shaders/Skybox.vs"
+  SkyboxShaderFrag="Shaders/Skybox.fs"
+  
+  DebugShaderVert="Shaders/DebugDraw.vs"
+  DebugShaderFrag="Shaders/DebugDraw.fs"
+ 
+  TextShaderVert="Shaders/Text.vs"
+  TextShaderFrag="Shaders/Text.fs"
+>
+</Settings>
