@@ -160,10 +160,16 @@ class CModel;
 	class Material;
 	class Shader;
 	class Texture;
+	class ITexture;
 	class Cubemap;
 	class FramebufferTexture;
+
+	class IModel;
+	class IAnimatable;
 class CLight;
+	class ILight;
 class CParticleSystem;
+	class IParticleSystem;
 
 class Rigidbody;
 class ICollider;

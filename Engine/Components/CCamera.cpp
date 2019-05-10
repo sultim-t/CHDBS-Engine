@@ -101,6 +101,11 @@ void CCamera::SetProperty(const String &key, const String &value)
 	}
 }
 
+const Transform & CCamera::GetTransform() const
+{
+	return owner->GetTransform();
+}
+
 Matrix4 CCamera::GetViewMatrix() const
 {
 	const Transform &t = owner->GetTransform();
@@ -150,13 +155,6 @@ float CCamera::GetFarClipDist() const
 float CCamera::GetAspect() const
 {
 	return aspect;
-}
-
-const Vector3 &CCamera::GetPosition() const
-{
-	ASSERT(owner != nullptr);
-
-	return owner->GetTransform().GetPosition();
 }
 
 Frustum CCamera::GetFrustum() const

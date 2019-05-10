@@ -2,11 +2,12 @@
 
 #include "IComponent.h"
 #include <Engine/DataStructures/StaticArray.h>
-#include <Engine/Math/Matrix.h>
 #include <Engine/ResourceManager/ModelResource.h>
+#include <Engine/Rendering/IModel.h>
+#include <Engine/Math/Matrix.h>
 
 // Represents static model
-class CModel : public IComponent
+class CModel : public IComponent, public IModel
 {
 	CLASSDECLARATION(CModel)
 
@@ -54,17 +55,17 @@ public:
 	// Bind shader for each material
 	void BindShader(const char *shaderName);
 
-	const StaticArray<MeshResource*>	&GetMeshes() const;
-	const StaticArray<StandardMaterial*>		&GetMaterials() const;
-	const StaticArray<UINT>				&GetVAO() const;
+	const StaticArray<MeshResource*>		&GetMeshes()	const override;
+	const StaticArray<StandardMaterial*>	&GetMaterials()	const override;
+	const StaticArray<UINT>					&GetVAO()		const override;
 
 	// Calculate tranformation matrices foreach mesh
 	// with current entity's tranform
-	const StaticArray<Matrix4>			&GetTranforms() const;
+	const StaticArray<Matrix4>				&GetTranforms()	const override;
 
 	// Calculate tranformation matrices foreach mesh
 	// with current entity's tranform converted to global space
-	const StaticArray<Matrix4>			&GetTranforms(const Matrix4 &global) const;
+	const StaticArray<Matrix4>				&GetTranforms(const Matrix4 &global) const override;
 };
 
 inline const StaticArray<Matrix4> &CModel::GetTranforms() const

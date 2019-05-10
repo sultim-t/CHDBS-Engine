@@ -56,3 +56,33 @@ public:
 
 	void SetType(TextureType t);
 };
+
+inline UINT ITexture::GetID() const
+{
+	return graphicsTextureId;
+}
+
+inline void ITexture::SetType(TextureType t)
+{
+	type = t;
+}
+
+inline TextureType ITexture::GetType() const
+{
+	return type;
+}
+
+inline int ITexture::GetWidth() const
+{
+	return width;
+}
+
+inline int ITexture::GetHeight() const
+{
+	return height;
+}
+
+inline UINT ITexture::GetFormat() const
+{
+	return format;
+}

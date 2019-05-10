@@ -96,7 +96,7 @@ void CParticleSystem::Emit(UINT count, const Vector3 & direction, const Color4 &
 	}
 }
 
-void CParticleSystem::BindCamera(const CCamera * cam)
+void CParticleSystem::BindCamera(const ICamera * cam)
 {
 	this->cam = cam;
 }
@@ -267,7 +267,7 @@ void CParticleSystem::SortParticles()
 	for (UINT i = 0; i < particleCount; i++)
 	{
 		// length is sqr: only for comparing
-		particles[i].camDistance = (particles[i].position - cam->GetPosition()).LengthSqr();
+		particles[i].camDistance = (particles[i].position - cam->GetTransform().GetPosition()).LengthSqr();
 	}
 
 	std::sort(&particles[0], &particles[maxParticleCount]);
@@ -288,7 +288,7 @@ void CParticleSystem::ActivateShader()
 {
 	particleShader->Use();
 
-	const Transform &t = cam->GetOwner().GetTransform();
+	const Transform &t = cam->GetTransform();
 	particleShader->SetVec3("cameraUp", t.GetUp());
 	particleShader->SetVec3("cameraRight", t.GetRight());
 

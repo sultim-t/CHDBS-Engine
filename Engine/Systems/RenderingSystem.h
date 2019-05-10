@@ -6,21 +6,23 @@
 #include <Engine/DataStructures/LinkedList.h>
 #include <Engine/DataStructures/HashTable.h>
 
-#include <Engine/Rendering/ILight.h>
-#include <Engine/Components/CLight.h>
-#include <Engine/Components/CParticleSystem.h>
 #include <Engine/Rendering/Material.h>
 #include <Engine/Rendering/Texture.h>
 #include <Engine/Rendering/FramebufferTexture.h>
+
+#include <Engine/Rendering/ILight.h>
+#include <Engine/Rendering/IModel.h>
+#include <Engine/Rendering/ICamera.h>
+#include <Engine/Rendering/IParticleSystem.h>
 
 class RenderingSystem : public ISystem
 {
 private:
 	// References to arrays with data in scene
-	const DynamicArray<CCamera*>			*cameras;
-	const DynamicArray<CLight*>				*lights;
-	const DynamicArray<CModel*>				*models;
-	const DynamicArray<CParticleSystem*>	*particleSystems;
+	const DynamicArray<ICamera*>			*cameras;
+	const DynamicArray<ILight*>				*lights;
+	const DynamicArray<IModel*>				*models;
+	const DynamicArray<IParticleSystem*>	*particleSystems;
 
 	// main shadowmap
 	// FramebufferTexture			shadowMap;
@@ -55,10 +57,10 @@ public:
 	// Get instance of system
 	static RenderingSystem &Instance();
 
-	void Register(const DynamicArray<CCamera*>			*cameras);
-	void Register(const DynamicArray<CLight*>			*lights);
-	void Register(const DynamicArray<CModel*>			*models);
-	void Register(const DynamicArray<CParticleSystem*>	*particleSystems);
+	void Register(const DynamicArray<ICamera*>			*cameras);
+	void Register(const DynamicArray<ILight*>			*lights);
+	void Register(const DynamicArray<IModel*>			*models);
+	void Register(const DynamicArray<IParticleSystem*>	*particleSystems);
 	
 	// Unregister rigidbodies and colliders
 	void Reset();

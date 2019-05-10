@@ -213,7 +213,6 @@
     <ClCompile Include="Rendering\DebugDrawer.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
     <ClCompile Include="Rendering\GUI\TextRenderer.cpp" />
-    <ClCompile Include="Rendering\ITexture.cpp" />
     <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\ContextWindow.cpp" />
     <ClCompile Include="Rendering\Materials\StandardMaterial.cpp" />
@@ -235,6 +234,7 @@
     <ClCompile Include="Systems\InputSystem.cpp" />
     <ClCompile Include="Systems\PhysicsSystem.cpp" />
     <ClCompile Include="Systems\RenderingSystem.cpp" />
+    <ClCompile Include="Systems\UISystem.cpp" />
     <ClCompile Include="TEMP\tinyxml2\tinyxml2.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -309,9 +309,12 @@
     <ClInclude Include="Rendering\FramebufferTexture.h" />
     <ClInclude Include="Rendering\GUI\Character.h" />
     <ClInclude Include="Rendering\GUI\TextRenderer.h" />
+    <ClInclude Include="Rendering\GUI\UIElement.h" />
     <ClInclude Include="Rendering\IAnimatable.h" />
     <ClInclude Include="Rendering\ICamera.h" />
     <ClInclude Include="Rendering\ILight.h" />
+    <ClInclude Include="Rendering\IModel.h" />
+    <ClInclude Include="Rendering\IParticleSystem.h" />
     <ClInclude Include="Rendering\ITexture.h" />
     <ClInclude Include="Rendering\Material.h" />
     <ClInclude Include="Rendering\ContextWindow.h" />
@@ -354,6 +357,7 @@
     <ClInclude Include="Systems\PhysicsSystem.h" />
     <ClInclude Include="Systems\RenderingSystem.h" />
     <ClInclude Include="Systems\ISystem.h" />
+    <ClInclude Include="Systems\UISystem.h" />
     <ClInclude Include="TEMP\tinyxml2\tinyxml2.h" />
   </ItemGroup>
   <ItemGroup>

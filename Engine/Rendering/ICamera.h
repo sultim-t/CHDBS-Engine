@@ -1,4 +1,5 @@
 #pragma once
+#include <Engine/Math/Transform.h>
 
 enum class CameraProjection
 {
@@ -18,4 +19,7 @@ public:
 	// Get camera's view frustum in world space
 	// but with changed near and far planes
 	virtual Frustum GetFrustum(float newNear, float newFar) const = 0;
+
+	virtual void SetAspect(float width, float height) = 0;
+	virtual const Transform &GetTransform() const = 0;
 };

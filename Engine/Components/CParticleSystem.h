@@ -2,8 +2,10 @@
 #include <Engine/Components/IComponent.h>
 #include <Engine/Rendering/Particle.h>
 #include <Engine/Rendering/Shader.h>
+#include <Engine/Rendering/ICamera.h>
+#include <Engine/Rendering/IParticleSystem.h>
 
-class CParticleSystem : public IComponent
+class CParticleSystem : public IComponent, public IParticleSystem
 {
 	CLASSDECLARATION(CParticleSystem)
 
@@ -60,7 +62,7 @@ private:
 
 	// store pointer to camera
 	// for sorting and aligning
-	const CCamera *cam;
+	const ICamera *cam;
 
 private:
 	UINT FindDeadParticle();
@@ -84,8 +86,8 @@ public:
 	void Emit(UINT count, const Vector3 &direction, const Color4 &color);
 
 	// Bind camera to render
-	void BindCamera(const CCamera *cam);
-	void Render();
+	void BindCamera(const ICamera *cam) override;
+	void Render() override;
 
 public:
 	void Init() override;

@@ -66,7 +66,7 @@ void RenderingSystem::Update()
 	{
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		CCamera *cam = cameras->operator[](i);
+		ICamera *cam = cameras->operator[](i);
 
 		// reset aspect
 		cam->SetAspect((float)ContextWindow::Instance().GetWidth(), (float)ContextWindow::Instance().GetHeight());
@@ -92,7 +92,7 @@ void RenderingSystem::Update()
 
 		for (int m = 0; m < models->GetSize(); m++)
 		{
-			CModel *model = models->operator[](m);
+			IModel *model = models->operator[](m);
 
 			// get meshes
 			auto &modelMeshes = model->GetMeshes();
@@ -137,7 +137,7 @@ void RenderingSystem::Update()
 				for (int l = 0; l < lights->GetSize(); l++)
 				{
 					// set light's properties
-					CLight *light = lights->operator[](l);
+					ILight *light = lights->operator[](l);
 
 					mat->SetLight(*light, l);
 
@@ -152,7 +152,7 @@ void RenderingSystem::Update()
 
 				// set camera options
 				mat->SetCameraSpace(camSpace);
-				mat->SetCameraPosition(cam->GetPosition());
+				mat->SetCameraPosition(cam->GetTransform().GetPosition());
 
 				// bind tranform
 				mat->SetModel(meshesTranforms[j]);
@@ -171,7 +171,7 @@ void RenderingSystem::Update()
 		// Render all particle systems
 		for (int p = 0; p < particleSystems->GetSize(); p++)
 		{
-			CParticleSystem *ps = particleSystems->operator[](p);
+			IParticleSystem *ps = particleSystems->operator[](p);
 
 			ps->BindCamera(cam);
 			ps->Render();
@@ -284,22 +284,22 @@ RenderingSystem &RenderingSystem::Instance()
 	return instance;
 }
 
-void RenderingSystem::Register(const DynamicArray<CCamera*> *cameras)
+void RenderingSystem::Register(const DynamicArray<ICamera*> *cameras)
 {
 	this->cameras = cameras;
 }
 
-void RenderingSystem::Register(const DynamicArray<CLight*> *lights)
+void RenderingSystem::Register(const DynamicArray<ILight*> *lights)
 {
 	this->lights = lights;
 }
 
-void RenderingSystem::Register(const DynamicArray<CModel*> *models)
+void RenderingSystem::Register(const DynamicArray<IModel*> *models)
 {
 	this->models = models;
 }
 
-void RenderingSystem::Register(const DynamicArray<CParticleSystem*> *particleSystems)
+void RenderingSystem::Register(const DynamicArray<IParticleSystem*> *particleSystems)
 {
 	this->particleSystems = particleSystems;
 }

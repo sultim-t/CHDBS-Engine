@@ -44,13 +44,16 @@ public:
 	float GetNearClipDist() const;
 	float GetFarClipDist() const;
 	float GetAspect() const;
-	const Vector3 &GetPosition() const;
 
 	void SetProjection(CameraProjection p);
 	void SetFOV(float fov);
 	void SetNearClipDist(float znear);
 	void SetFarClipDist(float zfar);
-	void SetAspect(float width, float height);
+
+
+	void SetAspect(float width, float height) override;
+	const Transform &GetTransform() const override;
+
 
 	void Init() override;
 	void Update() override {}

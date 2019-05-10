@@ -4,6 +4,11 @@
 #include <Engine/Base/Event.h>
 #include <Engine/Entities/Entity.h>
 
+#include <Engine/Rendering/ILight.h>
+#include <Engine/Rendering/IModel.h>
+#include <Engine/Rendering/ICamera.h>
+#include <Engine/Rendering/IParticleSystem.h>
+
 // Delegate for fixed update call
 typedef void(*FixedUpdateFunction)(int);
 
@@ -32,10 +37,10 @@ private:
 	DynamicArray<ICollider*>		colliders;
 
 	// References to all objects related to rendering
-	DynamicArray<CModel*>			models;
-	DynamicArray<CCamera*>			cameras;
-	DynamicArray<CParticleSystem*>	particleSystems;
-	DynamicArray<CLight*>			lights;
+	DynamicArray<IModel*>			models;
+	DynamicArray<ICamera*>			cameras;
+	DynamicArray<IParticleSystem*>	particleSystems;
+	DynamicArray<ILight*>			lights;
 
 	Cubemap							*skybox;
 

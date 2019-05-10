@@ -119,9 +119,9 @@ inline void HashTable<K, T>::Init(UINT chainCount, UINT maxChainSize)
 	this->chainCount = chainCount;
 	this->maxChainSize = maxChainSize;
 
-	chainSizes = (UINT*)SystemAllocator::Allocate(sizeof(UINT) * chainCount);
+	chainSizes = new UINT[chainCount];
 
-	chains = (HTElement<K, T>**)SystemAllocator::Allocate(sizeof(HTElement<K, T>*) * chainCount);
+	chains = new HTElement<K, T>*[chainCount];
 	for (UINT i = 0; i < chainCount; i++)
 	{
 		// can't use malloc because there must be uninitialized keys and values 
@@ -253,9 +253,9 @@ inline void HashTable<K, T>::Resize()
 	chainCount = (UINT)(prevCount * HASH_TABLE_INC_MULT);
 
 	// init for larger table
-	UINT *tempSizes = (UINT*)SystemAllocator::Allocate(sizeof(UINT) * chainCount);
+	UINT *tempSizes = new UINT[chainCount];
 
-	HTElement<K, T> **temp = (HTElement<K, T>**)SystemAllocator::Allocate(sizeof(HTElement<K, T>*) * chainCount);
+	HTElement<K, T> **temp = new HTElement<K, T>*[chainCount];
 	for (UINT i = 0; i < chainCount; i++)
 	{
 		// can't use malloc because there must be uninitialized keys and values 
@@ -266,10 +266,6 @@ inline void HashTable<K, T>::Resize()
 	// save old pointers
 	HTElement<K, T> **oldChains = chains;
 	UINT *oldSizes = chainSizes;
-
-	// reassign to new
-	chains = temp;
-	chainSizes = tempSizes;
 
 	for (UINT i = 0; i < prevCount; i++)
 	{
@@ -284,11 +280,13 @@ inline void HashTable<K, T>::Resize()
 			// add element to new chain with recalculated hash key
 			Add(sourceChain[j].Key, sourceChain[j].Value);
 		}
+
+		delete[] sourceChain;
 	}
 
 	// delete old pointers
-	SystemAllocator::Free(oldChains);
-	SystemAllocator::Free(oldSizes);
+	delete[] oldChains;
+	delete[] oldSizes;
 
 	// reassign
 	chains = temp;
@@ -314,8 +312,8 @@ inline void HashTable<K, T>::Delete()
 		delete[] chains[i];
 	}
 
-	SystemAllocator::Free(chains);
-	SystemAllocator::Free(chainSizes);
+	delete[] chains;
+	delete[] chainSizes;
 }
 
 //template<class K, class T>
