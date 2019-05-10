@@ -16,6 +16,9 @@ private:
 		Vector3 Position;
 		Color4 Color;
 
+		// Default constructor
+		DebugDrawVertex() {}
+
 		DebugDrawVertex(Vector3 pos, Color4 color)
 			: Position(pos), Color(color) {}
 	};
@@ -25,6 +28,9 @@ private:
 		Vector3 From;
 		Vector3 To;
 		Color4 Color;
+
+		// Default constructor
+		DebugDrawLine() { }
 
 		DebugDrawLine(Vector3 from, Vector3 to, Color4 color)
 			: From(from), To(to), Color(color) {}

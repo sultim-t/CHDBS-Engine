@@ -249,7 +249,6 @@
     <ClInclude Include="Components\CVertexAnimated.h" />
     <ClInclude Include="Components\IFixedUpdatable.h" />
     <ClInclude Include="Components\IUpdatable.h" />
-    <ClInclude Include="Math\Octree.h" />
     <ClInclude Include="Math\MTransform.h" />
     <ClInclude Include="Physics\MeshBoundingPart.h" />
     <ClInclude Include="Rendering\DebugDrawer.h" />
@@ -277,8 +276,6 @@
     <ClInclude Include="DataStructures\DynamicArray.h" />
     <ClInclude Include="DataStructures\HashTable.h" />
     <ClInclude Include="DataStructures\LinkedList.h" />
-    <ClInclude Include="DataStructures\LinkedListManual.h" />
-    <ClInclude Include="DataStructures\StackManual.h" />
     <ClInclude Include="DataStructures\StaticArray.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="Entities\Brush.h" />

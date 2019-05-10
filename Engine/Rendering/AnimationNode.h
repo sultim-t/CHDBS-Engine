@@ -35,7 +35,7 @@ public:
 inline AnimationNode::AnimationNode(const char *nodeName, int positionKeysCount, int rotationKeysCount, int scaleKeysCount)
 {
 	// unsafe init
-	this->nodeName.Init(nodeName);
+	this->nodeName = nodeName;
 	
 	// init all arrays
 	positionKeys.Init(positionKeysCount);

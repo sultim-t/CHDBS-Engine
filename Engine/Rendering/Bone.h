@@ -21,6 +21,7 @@ private:
 
 public:
 	// Default constructor
+	inline Bone() {};
 	inline Bone(int boneID, int parentBoneID, const ModelNode *modelNode, const Matrix4 &offsetMatrix);
 
 	// Get bone tranformation in default pose

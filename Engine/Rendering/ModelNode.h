@@ -55,7 +55,7 @@ inline ModelNode::ModelNode(const char *name, const ModelNode *parent, const Mat
 	this->childNodes.Init(childNodesCount);
 	this->meshes.Init(meshesCount);
 
-	this->name.Init(name);
+	this->name = name;
 }
 
 inline ModelNode::~ModelNode()

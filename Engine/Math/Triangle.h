@@ -13,12 +13,9 @@ public:
 			Vector3 A, B, C;
 		};
 	};
-	
-private:
-	Triangle(const Triangle&) = delete;
-	//void operator=(const Triangle&) = delete;
 
 public:
+	Triangle() {}
 	Triangle(const Vector3 & a, const Vector3 & b, const Vector3 & c);
 
 	inline Vector3 &operator[](int index);

@@ -1,15 +1,13 @@
 #pragma once
 
-#include <Engine/Memory/Memory.h>
 #include <string> // for memcpy_s
-#include <memory> // for shared ptr
 
 // An array with dynamic allocation
 template<class T>
 class StaticArray
 {
 protected:
-	std::shared_ptr<T> ptr;
+	T *buffer;
 	UINT amount;
 	
 public:
@@ -21,8 +19,7 @@ public:
 	// Allocates memory for "amount" elements of type T
 	inline void Init(UINT amount);
 	
-	// Copies pointer and amount
-	// Note: doesn't copy elements from source
+	// Copies elements from source
 	inline void operator=(const StaticArray<T> &source);
 	inline const T &operator[](UINT index) const;
 	inline T &operator[](UINT index);
@@ -41,14 +38,11 @@ public:
 	// Copy "n" elements to this array from "source"
 	// Note: memory is not allocated, use Init()
 	inline void CopyFrom(const StaticArray<T> &source, UINT n);
-
-	// Allocates memory for copy, and returns it
-	inline StaticArray<T> GetCopy() const;
 };
 
 
 template<class T>
-inline StaticArray<T>::StaticArray() : amount(0)
+inline StaticArray<T>::StaticArray() : amount(0), buffer(nullptr)
 { }
 
 template<class T>
@@ -61,27 +55,27 @@ template<class T>
 inline void StaticArray<T>::Init(UINT amount)
 {
 	// this must be empty
-	ASSERT(this->GetSize() == 0 && !ptr);
+	ASSERT(this->GetSize() == 0 && buffer == nullptr);
 
 	this->amount = amount;
 
 	if (amount != 0)
 	{
-		ptr.reset((T*)SystemAllocator::Allocate(sizeof(T) * amount));
+		buffer = new T[amount];
 	}
 }
 
 template<class T>
-inline void StaticArray<T>::operator=(const StaticArray<T> &source)
+inline void StaticArray<T>::operator=(const StaticArray<T>& source)
 {
-	// this array must be empty
-	ASSERT(this->GetSize() == 0 && !this->ptr);
-	
-	// source array must be not empty
-	ASSERT(source.GetSize() != 0 && source.ptr);
+	// this must be empty
+	ASSERT(this->GetSize() == 0 && ptr == nullptr);
 
-	this->ptr = source.ptr;
-	this->amount = source.amount;
+	// allocate memory
+	Init(source.GetSize());
+
+	// copy data
+	CopyFrom(source);
 }
 
 template<class T>
@@ -89,7 +83,7 @@ inline const T &StaticArray<T>::operator[](UINT index) const
 {
 	ASSERT(index >= 0 && index < amount);
 
-	return ptr.get()[index];
+	return buffer[index];
 }
 
 template<class T>
@@ -97,7 +91,7 @@ inline T &StaticArray<T>::operator[](UINT index)
 {
 	ASSERT(index >= 0 && index < amount);
 
-	return ptr.get()[index];
+	return buffer[index];
 }
 
 template<class T>
@@ -109,27 +103,29 @@ inline UINT StaticArray<T>::GetSize() const
 template<class T>
 inline const T * StaticArray<T>::GetArray() const
 {
-	return ptr.get();
+	return buffer;
 }
 
 template<class T>
 inline bool StaticArray<T>::IsEmpty() const
 {
-	return amount == 0 || !ptr;
+	return amount == 0 || buffer == nullptr;
 }
 
 template<class T>
 inline void StaticArray<T>::Delete()
 {
 	// if not initialized
-	if (!ptr && amount == 0)
+	if (buffer == nullptr && amount == 0)
 	{
 		return;
 	}
 
+	// release
+	delete[] buffer;
+
 	amount = 0;
-	// release shared ptr
-	ptr.reset();
+	buffer = nullptr;
 }
 
 template<class T>
@@ -147,24 +143,13 @@ inline void StaticArray<T>::CopyFrom(const StaticArray<T>& source, UINT n)
 	}
 
 	// self copying
-	ASSERT(source.ptr != this->ptr);
+	ASSERT(source.buffer != this->buffer);
 	
 	// existense
-	ASSERT(source.GetSize() <= n && source.ptr);
-	ASSERT(this->GetSize() >= n && this->ptr);
+	ASSERT(source.GetSize() <= n && source.buffer != nullptr);
+	ASSERT(this->GetSize() >= n && this->buffer != nullptr);
 
 	int bytesToCopy = n * sizeof(T);
 
-	memcpy_s(this->ptr.get(), bytesToCopy, source.ptr.get(), bytesToCopy);
-}
-
-template<class T>
-inline StaticArray<T> StaticArray<T>::GetCopy() const
-{
-	StaticArray<T> copy = StaticArray<T>();
-	copy.Init(this->amount);
-
-	copy.CopyFrom(*this);
-
-	return copy;
+	std::memcpy(this->buffer, source.buffer, bytesToCopy);
 }

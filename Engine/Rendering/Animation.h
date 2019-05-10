@@ -32,7 +32,7 @@ inline Animation::Animation(const char *name, float duration, float ticksPerSeco
 {
 	ASSERT(duration >= 0.0f && ticksPerSecond >= 0.0f);
 
-	this->name.Init(name);
+	this->name = name;
 
 	this->duration = duration;
 	this->ticksPerSecond = ticksPerSecond;

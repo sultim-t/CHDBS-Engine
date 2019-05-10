@@ -125,7 +125,7 @@ inline void HashTable<K, T>::Init(UINT chainCount, UINT maxChainSize)
 	for (UINT i = 0; i < chainCount; i++)
 	{
 		// can't use malloc because there must be uninitialized keys and values 
-		chains[i] = (HTElement<K, T>*)SystemAllocator::CAllocate(maxChainSize, sizeof(HTElement<K, T>));
+		chains[i] = new HTElement<K, T>[maxChainSize];
 		chainSizes[i] = 0;
 	}
 }
@@ -259,7 +259,7 @@ inline void HashTable<K, T>::Resize()
 	for (UINT i = 0; i < chainCount; i++)
 	{
 		// can't use malloc because there must be uninitialized keys and values 
-		temp[i] = (HTElement<K, T>*)SystemAllocator::CAllocate(maxChainSize, sizeof(HTElement<K, T>));
+		temp[i] = new HTElement<K, T>[maxChainSize];
 		tempSizes[i] = 0;
 	}
 
@@ -309,6 +309,11 @@ inline void HashTable<K, T>::Clear()
 template<class K, class T>
 inline void HashTable<K, T>::Delete()
 {
+	for (UINT i = 0; i < chainCount; i++)
+	{
+		delete[] chains[i];
+	}
+
 	SystemAllocator::Free(chains);
 	SystemAllocator::Free(chainSizes);
 }

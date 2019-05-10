@@ -325,7 +325,7 @@ const ListResource *ResourceManager::LoadList(const char * path)
 		std::getline(file, line);
 		
 		// raw init, as array was initted using malloc
-		list->lines[i].Init(line.c_str());
+		list->lines[i] = line.c_str();
 	}
 
 	// close

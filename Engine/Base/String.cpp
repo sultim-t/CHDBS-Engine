@@ -27,12 +27,6 @@ char * String::AllocateString(const char * orig)
 	return copy;
 }
 
-void String::Init(const char *str)
-{
-	string = AllocateString(str);
-	length = strlen(string);
-}
-
 void String::Delete()
 {
 	if (string != nullptr)

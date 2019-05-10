@@ -31,9 +31,9 @@ template<class T>
 inline void StaticStack<T>::Push(const T &data)
 {
 	ASSERT(top < (int)amount);
-	ASSERT(ptr);
+	ASSERT(buffer != nullptr);
 
-	ptr.get()[top] = data;
+	buffer[top] = data;
 	top++;
 }
 
@@ -41,9 +41,9 @@ template<class T>
 inline T StaticStack<T>::Pop()
 {
 	ASSERT(top > 0);
-	ASSERT(ptr);
+	ASSERT(buffer != nullptr);
 
-	return ptr.get()[top--];
+	return buffer[top--];
 }
 
 template<class T>

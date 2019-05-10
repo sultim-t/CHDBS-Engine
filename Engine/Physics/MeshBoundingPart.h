@@ -38,7 +38,9 @@ inline MeshBoundingPart::MeshBoundingPart()
 { }
 
 inline MeshBoundingPart::~MeshBoundingPart()
-{ }
+{ 
+	Delete();
+}
 
 inline void MeshBoundingPart::Init(const Vector3 &min, const Vector3 &max)
 {
@@ -52,7 +54,7 @@ inline void MeshBoundingPart::Init(const Vector3 &min, const Vector3 &max)
 	boundingSphere.SetRadius(radius);
 
 	// suppose, that mesh bounding part will be used as value type (not reference type)
-	trianglesIndices.RawInit(16);
+	trianglesIndices.Init(16);
 }
 
 inline bool MeshBoundingPart::TryToAdd(const Triangle & tr, int index)

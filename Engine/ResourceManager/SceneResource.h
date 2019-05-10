@@ -69,16 +69,11 @@ inline void SceneResource::Init(int entitiesCount, const char *name)
 	for (int i = 0; i < entitiesCount; i++)
 	{
 		// set default
-		entitiesData[i].EntityPath.Init("");
 		entitiesData[i].IsTransformed = false;
 		entitiesData[i].Transformation = Transform();
 	}
 
 	skyboxSideNames.Init(6);
-	for (int i = 0; i < 6; i++)
-	{
-		skyboxSideNames[i].Init("");
-	}
 }
 
 inline const StaticArray<SceneEntity> &SceneResource::GetEntitiesData() const

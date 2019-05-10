@@ -27,13 +27,12 @@ public:
 
 inline MeshColliderResource::MeshColliderResource(const StaticArray<Triangle>& triangles)
 {
-	this->triangles = triangles.GetCopy();
+	this->triangles.Init(triangles.GetSize());
+	this->triangles.CopyFrom(triangles);
 }
 
 inline MeshColliderResource::MeshColliderResource(const MeshResource &mesh)
-{
-	this->triangles = mesh.GetTriangles().GetCopy();
-}
+	: MeshColliderResource(mesh.GetTriangles()) { }
 
 inline void MeshColliderResource::TransformCollider(const Transform &t, StaticArray<Triangle> &outTriangles) const
 {

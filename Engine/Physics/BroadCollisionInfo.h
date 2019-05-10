@@ -20,6 +20,8 @@ struct BroadCollisionInfo
 	// Note: can be modified in collision solving
 	Rigidbody *RbOther;
 
+	inline BroadCollisionInfo() : BroadCollisionInfo(CollisionType::Rigidbodies) {};
+
 	inline BroadCollisionInfo(CollisionType type) :
 		Type(type),
 		CollThis(nullptr),

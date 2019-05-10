@@ -1,7 +1,6 @@
 #pragma once
 
-#include <Engine/Memory/Memory.h>
-
+#include <string> // for memcpy_s
 #define DYNARRAY_INCMULT 2
 
 template <class T>
@@ -46,6 +45,7 @@ public:
 	// Frees allocated memory
 	void Delete();
 
+private:
 	// Allocate memory in not initialized memory
 	// Note: use it ONLY when using malloc() or similar
 	void RawInit(int initSize);
@@ -54,17 +54,27 @@ public:
 template<class T>
 inline void DynamicArray<T>::Expand()
 {
-	int oldSize = sizeof(T) * allocated;
+	int oldBytesSize = allocated * sizeof(T);
+	
+	int newAllocated = allocated * DYNARRAY_INCMULT;
 
-	allocated *= DYNARRAY_INCMULT;
-	int newSize = sizeof(T) * allocated;
+	// allocate new array
+	T *newBuffer = new T[newAllocated];
 
-	buffer = (T*)SystemAllocator::Reallocate(buffer, oldSize, newSize);
+	// copy old data
+	std::memcpy(newBuffer, buffer, oldBytesSize);
+
+	// delete old buffer
+	delete[] buffer;
+
+	// update
+	buffer = newBuffer;
+	allocated = newAllocated;
 }
 
 template<class T>
 inline DynamicArray<T>::DynamicArray() : 
-	allocated(0), top(0) { }
+	allocated(0), top(0), buffer(nullptr) { }
 
 template<class T>
 inline DynamicArray<T>::~DynamicArray()
@@ -89,7 +99,7 @@ inline void DynamicArray<T>::RawInit(int initSize)
 	// init without checking buffer and size
 	top = 0;
 	allocated = initSize;
-	buffer = (T*)SystemAllocator::Allocate(sizeof(T) * initSize);
+	buffer = new T[initSize];
 }
 
 template<class T>
@@ -166,7 +176,7 @@ inline void DynamicArray<T>::Delete()
 	// delete
 	if (buffer != nullptr)
 	{
-		SystemAllocator::Free(buffer);
+		delete[] buffer;
 	}
 
 	buffer = nullptr;

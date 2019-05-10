@@ -37,12 +37,12 @@ void RenderingSystem::Init()
 	StaticArray<String> skyReflNames;
 	skyReflNames.Init(6);
 
-	skyReflNames[0].Init("Textures/SkyboxRefl/desertsky_ft.tga");
-	skyReflNames[1].Init("Textures/SkyboxRefl/desertsky_bk.tga");
-	skyReflNames[2].Init("Textures/SkyboxRefl/desertsky_up.tga");
-	skyReflNames[3].Init("Textures/SkyboxRefl/desertsky_dn.tga");
-	skyReflNames[4].Init("Textures/SkyboxRefl/desertsky_rt.tga");
-	skyReflNames[5].Init("Textures/SkyboxRefl/desertsky_lf.tga");
+	skyReflNames[0] = "Textures/SkyboxRefl/desertsky_ft.tga";
+	skyReflNames[1] = "Textures/SkyboxRefl/desertsky_bk.tga";
+	skyReflNames[2] = "Textures/SkyboxRefl/desertsky_up.tga";
+	skyReflNames[3] = "Textures/SkyboxRefl/desertsky_dn.tga";
+	skyReflNames[4] = "Textures/SkyboxRefl/desertsky_rt.tga";
+	skyReflNames[5] = "Textures/SkyboxRefl/desertsky_lf.tga";
 
 	cubemap = Cubemap();
 	cubemap.LoadCubemap(skyReflNames);

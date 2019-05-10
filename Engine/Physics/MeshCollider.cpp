@@ -170,7 +170,9 @@ void MeshCollider::AddTriangles(const StaticArray<Triangle> &mesh, const Transfo
 	UINT newSize = curSize + addingSize;
 
 	// save old data
-	StaticArray<Triangle> &oldData = triangles.GetCopy();
+	StaticArray<Triangle> oldData = StaticArray<Triangle>();
+	oldData.Init(triangles.GetSize());
+	oldData.CopyFrom(triangles);
 
 	// delete old array
 	triangles.Delete();
@@ -309,12 +311,6 @@ void MeshCollider::RecalculateBoundingParts()
 
 void MeshCollider::DeleteParts()
 {
-	// delete all parts
-	for (UINT i = 0; i < partsCount; i++)
-	{
-		parts[i].Delete();
-	}
-
 	// delete array itself
 	parts.Delete();
 }
