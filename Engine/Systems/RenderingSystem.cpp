@@ -10,7 +10,7 @@
 #include <Engine/Rendering/DebugDrawer.h>
 #include <Engine/Math/Intersection.h>
 #include <Engine/ResourceManager/MeshResource.h>
-#include <Engine/Rendering/GUI/TextRenderer.h>
+#include <Engine/Systems/UISystem.h>
 
 Cubemap cubemap;
 
@@ -49,6 +49,8 @@ void RenderingSystem::Init()
 
 	shaders.Init(8, 4);
 	shaders.DeclareHashFunction(String::StringHash);
+
+	UISystem::Instance().Init();
 }
 
 void RenderingSystem::Update()
@@ -186,8 +188,11 @@ void RenderingSystem::Update()
 
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		TextRenderer::Instance().Draw("+ 100", 25, 25, 1.0f, Color3F(0, 1, 0));
-		TextRenderer::Instance().Draw("2 / 100", 1100, 25, 1.0f);
+		// Render UI
+		UISystem::Instance().Update();
+
+		//TextRenderer::Instance().Draw("+ 100", 25, 25, 1.0f, Color3F(0, 1, 0));
+		//TextRenderer::Instance().Draw("2 / 100", 1100, 25, 1.0f);
 	}
 
 	ContextWindow::Instance().SwapBuffers();

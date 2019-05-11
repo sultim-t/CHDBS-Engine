@@ -213,9 +213,11 @@
     <ClCompile Include="Rendering\DebugDrawer.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
     <ClCompile Include="Rendering\GUI\TextRenderer.cpp" />
+    <ClCompile Include="Rendering\GUI\UIText.cpp" />
     <ClCompile Include="Rendering\Material.cpp" />
     <ClCompile Include="Rendering\ContextWindow.cpp" />
     <ClCompile Include="Rendering\Materials\StandardMaterial.cpp" />
+    <ClCompile Include="Rendering\Materials\UIMaterial.cpp" />
     <ClCompile Include="Rendering\Shader.cpp" />
     <ClCompile Include="Math\AABB.cpp" />
     <ClCompile Include="Math\Math.cpp" />
@@ -310,6 +312,7 @@
     <ClInclude Include="Rendering\GUI\Character.h" />
     <ClInclude Include="Rendering\GUI\TextRenderer.h" />
     <ClInclude Include="Rendering\GUI\UIElement.h" />
+    <ClInclude Include="Rendering\GUI\UIText.h" />
     <ClInclude Include="Rendering\IAnimatable.h" />
     <ClInclude Include="Rendering\ICamera.h" />
     <ClInclude Include="Rendering\ILight.h" />
@@ -319,6 +322,7 @@
     <ClInclude Include="Rendering\Material.h" />
     <ClInclude Include="Rendering\ContextWindow.h" />
     <ClInclude Include="Rendering\Materials\StandardMaterial.h" />
+    <ClInclude Include="Rendering\Materials\UIMaterial.h" />
     <ClInclude Include="Rendering\ModelHierarchy.h" />
     <ClInclude Include="Rendering\ModelNode.h" />
     <ClInclude Include="Rendering\OpenGL.h" />

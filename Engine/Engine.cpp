@@ -49,7 +49,8 @@ void Engine::Init(const char *globalSettingsPath)
 	Skybox::Instance().Init();
 	Skybox::Instance().BindShader(SHADER_NAME_SKYBOX);
 
-	TextRenderer::Instance().Init();
+	// TODO: set of fonts in textrenderer
+	// TextRenderer::Instance().Init();
 }
 
 void Engine::Start()

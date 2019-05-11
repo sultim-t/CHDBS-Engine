@@ -17,12 +17,14 @@ private:
 	
 	StaticArray<Chraracter>	chars;
 
+private:
+	void LoadChars(const char *fontPath);
+
 public:
-	void Init();
-	void LoadChars();
+	void Init(const char *fontPath);
 
 	// Render text
-	void Draw(const char *string, float x, float y, float scale, const Color3F &color = Color3F(1.0f, 1.0f, 1.0f));
+	void Draw(const char *string, float x, float y, float scaleX = 1.0f, float scaleY = 1.0f, const Color3F &color = Color3F(1.0f, 1.0f, 1.0f));
 
 	static TextRenderer &Instance();
 };

@@ -2,6 +2,7 @@
 #include <Engine/Components/IComponent.h>
 #include <Engine/Components/CParticleSystem.h>
 #include <Engine/Base/Event.h>
+#include <Engine/Rendering/GUI/UIText.h>
 
 enum class WeaponType
 {
@@ -26,11 +27,19 @@ private:
 	CVertexAnimated *animatedModel;
 	CSphereCollider *thisCollider;
 
+	int shotAmmoCount;
+	int ammoCount;
+
+	// UI text
+	UIText *uiText;
+
 private:
 	void Shoot();
 	void ShootShotgun();
 
 	void OnCollision(const CollisionInfo *info);
+
+	void InitWeaponUI();
 
 public:
 	void Init() override;

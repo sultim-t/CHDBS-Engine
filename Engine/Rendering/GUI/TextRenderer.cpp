@@ -6,7 +6,7 @@
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
-void TextRenderer::Init()
+void TextRenderer::Init(const char *fontPath)
 {
 	textShader = Shader::FindShader(SHADER_NAME_TEXT);
 	textColorLoc = textShader->GetUniformLocation("TextColor");
@@ -14,7 +14,7 @@ void TextRenderer::Init()
 	textTextureLoc = textShader->GetUniformLocation("TextTexture");
 
 	chars.Init(128);
-	LoadChars();
+	LoadChars(fontPath);
 
 	glGenVertexArrays(1, &charVao);
 	glGenBuffers(1, &charVbo);
@@ -27,7 +27,7 @@ void TextRenderer::Init()
 	glBindVertexArray(0);
 }
 
-void TextRenderer::LoadChars()
+void TextRenderer::LoadChars(const char *fontPath)
 {
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft))
@@ -36,7 +36,7 @@ void TextRenderer::LoadChars()
 	}
 
 	FT_Face face;
-	if (FT_New_Face(ft, "Fonts\\Roboto-Regular.ttf", 0, &face))
+	if (FT_New_Face(ft, fontPath, 0, &face))
 	{
 		Logger::Print("Freetype::Can't load font");
 	}
@@ -85,7 +85,7 @@ void TextRenderer::LoadChars()
 	FT_Done_FreeType(ft);
 }
 
-void TextRenderer::Draw(const char * string, float x, float y, float scale, const Color3F & color)
+void TextRenderer::Draw(const char * string, float x, float y, float scaleX, float scaleY, const Color3F & color)
 {
 	const Matrix4 &projection = Projection::Ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
 
@@ -104,11 +104,11 @@ void TextRenderer::Draw(const char * string, float x, float y, float scale, cons
 	{
 		const Chraracter &c = chars[(int)string[i]];
 
-		float cx = x + c.Bearing[0] * scale;
-		float cy = y -(c.Size[1] - c.Bearing[1]) * scale;
+		float cx = x + c.Bearing[0] * scaleX;
+		float cy = y -(c.Size[1] - c.Bearing[1]) * scaleY;
 
-		float w = c.Size[0] * scale;
-		float h = c.Size[1] * scale;
+		float w = c.Size[0] * scaleX;
+		float h = c.Size[1] * scaleY;
 
 		float vertices[6][4] = {
 			{ cx,     cy + h,   0.0f, 0.0f },
@@ -129,7 +129,7 @@ void TextRenderer::Draw(const char * string, float x, float y, float scale, cons
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		x += (c.Advance >> 6) * scale;
+		x += (c.Advance >> 6) * scaleX;
 
 		i++;
 	}

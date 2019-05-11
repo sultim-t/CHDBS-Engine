@@ -8,6 +8,7 @@
 #include <Engine/Components/CParticleSystem.h>
 #include <Engine/Components/CSphereCollider.h>
 #include <Engine/Components/CVertexAnimated.h>
+#include <Engine/Systems/UISystem.h>
 
 CLASSDEFINITION(IComponent, CWeapon)
 
@@ -27,6 +28,24 @@ void CWeapon::Init()
 	}
 
 	animatedModel = owner->GetComponent<CVertexAnimated>();
+
+	weaponTimer = reloadingTime;
+	shotAmmoCount = 2;
+	ammoCount = 120;
+
+	InitWeaponUI();
+}
+
+void CWeapon::InitWeaponUI()
+{
+	uiText = UISystem::Instance().AddText("Weapon");
+
+	uiText->GetTransform().SetPosition(Vector2(1100, 25));
+	uiText->BindFont("Fonts\\Roboto-Regular.ttf");
+
+	char s[16];
+	snprintf(s, 16, "%d", ammoCount);
+	uiText->Text = s;
 }
 
 void CWeapon::Update()
@@ -71,8 +90,15 @@ void CWeapon::Update()
 
 		// reset timer
 		weaponTimer = 0;
+
+		ammoCount -= shotAmmoCount;
+
+		char s[16];
+		snprintf(s, 16, "%d", ammoCount);
+		uiText->Text = s;
 	}
 }
+
 void CWeapon::Shoot()
 {
 	const Transform &transform = GetOwner().GetTransform();
