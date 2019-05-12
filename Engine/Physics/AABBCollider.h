@@ -6,9 +6,6 @@ class AABBCollider : public ICollider
 {
 private:
 	AABB aabb;
-	//const Transform *t;
-
-	PhysicMaterial physicMaterial;
 
 public:
 	// Empty constructor
@@ -26,5 +23,4 @@ public:
 	ColliderType	GetColliderType() const override;
 	bool			Intersect(const ICollider & col, CollisionInfo &info) const override;
 	Sphere			GetBoundingSphere() const override;
-	PhysicMaterial	GetPhysicMaterial() const override;
 };

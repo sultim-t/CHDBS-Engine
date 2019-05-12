@@ -29,6 +29,12 @@ private:
 	EventParam<CollisionInfo> onCollisionEnter;
 	EventParam<CollisionInfo> onCollisionExit;
 
+protected:
+	PhysicMaterial physicMaterial;
+
+public:
+	bool IsTrigger;
+
 public:
 	// This event will be called on collision
 	//   - if there is rigidbody on this entity 
@@ -68,8 +74,6 @@ public:
 	// Default constructor
 	ICollider();
 
-	bool IsTrigger;
-
 	// Get current collider type
 	virtual ColliderType GetColliderType() const = 0;
 
@@ -80,7 +84,9 @@ public:
 	virtual bool Intersect(const ICollider &col, CollisionInfo &info) const = 0;
 
 	// Get physic material of this collider
-	virtual PhysicMaterial GetPhysicMaterial() const = 0;
+	PhysicMaterial &GetPhysicMaterial();
+	// Get physic material of this collider
+	const PhysicMaterial &GetPhysicMaterial() const;
 
 	// Get current tranformation of collider
 	virtual const Transform &GetTransform() const = 0;
@@ -92,6 +98,16 @@ inline ICollider::ICollider()
 	onTriggerExit.Init();
 	onCollisionEnter.Init();
 	onCollisionExit.Init();
+}
+
+inline PhysicMaterial & ICollider::GetPhysicMaterial()
+{
+	return physicMaterial;
+}
+
+inline const PhysicMaterial & ICollider::GetPhysicMaterial() const
+{
+	return physicMaterial;
 }
 
 inline EventParam<CollisionInfo> &ICollider::OnTriggerEnter()

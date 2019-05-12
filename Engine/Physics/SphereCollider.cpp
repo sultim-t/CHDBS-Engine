@@ -29,11 +29,6 @@ Sphere SphereCollider::GetBoundingSphere() const
 	return GetSphere();
 }
 
-PhysicMaterial SphereCollider::GetPhysicMaterial() const
-{
-	return physicMaterial;
-}
-
 bool SphereCollider::Intersect(const ICollider &col, CollisionInfo &info) const
 {
 	switch (col.GetColliderType())

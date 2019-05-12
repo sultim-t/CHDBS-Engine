@@ -45,11 +45,6 @@ Sphere AABBCollider::GetBoundingSphere() const
 	return Sphere(center, radius);
 }
 
-PhysicMaterial AABBCollider::GetPhysicMaterial() const
-{
-	return physicMaterial;
-}
-
 bool AABBCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 {
 	switch (col.GetColliderType())

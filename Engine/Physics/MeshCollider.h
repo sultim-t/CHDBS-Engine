@@ -21,8 +21,6 @@ private:
 	StaticArray<MeshBoundingPart> parts;
 	UINT partsCount;
 
-	PhysicMaterial physicMaterial;
-
 protected:
 	void RecalculateBoundingBox();
 	void RecalculateBoundingSphere();
@@ -44,5 +42,4 @@ public:
 	ColliderType	GetColliderType() const override;
 	bool			Intersect(const ICollider &col, CollisionInfo &info) const override;
 	Sphere			GetBoundingSphere() const override;
-	PhysicMaterial	GetPhysicMaterial() const override;
 };

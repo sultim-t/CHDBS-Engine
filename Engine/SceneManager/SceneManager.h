@@ -13,18 +13,19 @@ private:
 	// Current scene's index in array
 	int currentSceneIndex;
 
-public:
+private:
 	// Default constructor
 	SceneManager();
 	// Destroys all scenes
 	~SceneManager();
 
+public:
 	// Allocate memory for the fields
 	void Init();
 
 	// Create empty scene
 	// Returns its ID
-	int CreateEmptyScene(const char *path);
+	int CreateEmptyScene(const char *name);
 
 	// Create scene from file
 	// Returns its ID

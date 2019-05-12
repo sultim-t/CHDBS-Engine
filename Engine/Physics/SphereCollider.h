@@ -6,7 +6,6 @@ class SphereCollider : public ICollider
 {
 private:
 	Sphere sphere;
-	PhysicMaterial physicMaterial;
 
 public:
 	// Empty constructor
@@ -22,5 +21,4 @@ public:
 	ColliderType	GetColliderType() const override;
 	bool			Intersect(const ICollider &col, CollisionInfo &info) const override;
 	Sphere			GetBoundingSphere() const override;
-	PhysicMaterial	GetPhysicMaterial() const override;
 };

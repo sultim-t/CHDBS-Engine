@@ -19,11 +19,6 @@ Sphere MeshCollider::GetBoundingSphere() const
 	return boundingSphere;
 }
 
-PhysicMaterial MeshCollider::GetPhysicMaterial() const
-{
-	return physicMaterial;
-}
-
 bool MeshCollider::Intersect(const ICollider & col, CollisionInfo &info) const
 {
 	// this function must be called only from SphereCollider/AABBCollider

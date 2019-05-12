@@ -20,10 +20,15 @@ public:
 	// Global gravity
 	static Vector3 Gravity;
 
-public:
-	void Init() override;
-	void Update() override;
+private:
+	PhysicsSystem();
+	~PhysicsSystem();
 
+	PhysicsSystem(PhysicsSystem&) = delete;
+	PhysicsSystem(PhysicsSystem&&) = delete;
+	PhysicsSystem &operator=(const PhysicsSystem&) = delete;
+
+private:
 	// Broad phase of collision detection
 	void GetApproximateCollisions();
 	// Main phase of collision detection
@@ -36,15 +41,10 @@ public:
 	// Calculate friction vector
 	Vector3 CalculateFriction(const Vector3 &relativeVelocity, const Vector3 &normal, float invMass, float impulse, float staticFriction, float dynamicFriction);
 
-	// Get instance of system
-	static PhysicsSystem &Instance();
-
 public:
-	//// Register dynamic physics object
-	//void Register(Rigidbody *rb);
-	//// Register static physics object
-	//void Register(ICollider *col);
-	
+	void Init() override;
+	void Update() override;
+
 	// Register rigidbodies and colliders to simulate physics
 	void Register(const DynamicArray<Rigidbody*> *rigidbodies, const DynamicArray<ICollider*> *colliders);
 	// Unregister rigidbodies and colliders
@@ -56,4 +56,7 @@ public:
 	// Check ray from pos with direction dir
 	// If returns true, result of cast will be in info
 	bool Raycast(const Vector3 &pos, const Vector3 &dir, RaycastInfo &info);
+
+	// Get instance of system
+	static PhysicsSystem &Instance();
 };

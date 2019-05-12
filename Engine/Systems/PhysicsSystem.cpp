@@ -11,6 +11,12 @@
 
 Vector3 PhysicsSystem::Gravity = Vector3(0.0f, -9.8f, 0.0f);
 
+PhysicsSystem::PhysicsSystem()
+{ }
+
+PhysicsSystem::~PhysicsSystem()
+{ }
+
 void PhysicsSystem::Init()
 {
 	//rigidbodies.Init(128);

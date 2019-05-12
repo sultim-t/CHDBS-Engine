@@ -12,36 +12,23 @@ public:
 	
 	StringTuple(const char *left, const char *right)
 	{
-		this->left = left;
-		this->right = right;
+		Set(left, right);
 	}
 
-	// Manually delete strings
-	// Use this function to delete strings in arrays, which contatains shared_ptr or same (they call destructor only on first element)
-	void Delete()
+	StringTuple(const StringTuple &source)
 	{
-		left.Delete();
-		right.Delete();
+		Set(source.left, source.right);
 	}
 
 	StringTuple &operator=(const StringTuple &source)
 	{
-		this->left = source.left;
-		this->right = source.right;
+		Set(source.left, source.right);
+		return *this;
 	}
 
-	// Use this function if target memory has garbage
-	void Init(const char *left, const char *right)
+	bool operator==(const StringTuple &source)
 	{
-		this->left = left;
-		this->right = right;
-	}
-
-	// Use this function if target memory has garbage
-	void Init(const StringTuple &source)
-	{
-		this->left = source.left;
-		this->right = source.right;
+		return left == source.left && right == source.right;
 	}
 
 	const String &Left() const
@@ -52,5 +39,27 @@ public:
 	const String &Right() const
 	{
 		return right;
+	}
+
+	void Set(const char *left, const char *right)
+	{
+		SetLeft(left);
+		SetRight(right);
+	}
+
+	void SetLeft(const char *left)
+	{
+		this->left = left;
+	}
+
+	void SetRight(const char *right)
+	{
+		this->right = right;
+	}
+
+	void Delete()
+	{
+		left.Delete();
+		right.Delete();
 	}
 };

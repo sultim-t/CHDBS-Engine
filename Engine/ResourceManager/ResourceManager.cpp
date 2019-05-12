@@ -191,7 +191,7 @@ const EntityResource *ResourceManager::LoadEnitity(const char * path)
 		attr = element->FirstAttribute();
 		while (attr != nullptr)
 		{
-			component->tuples[attrIndex].Init(attr->Name(), attr->Value());
+			component->tuples[attrIndex].Set(attr->Name(), attr->Value());
 
 			// get next
 			attr = attr->Next();

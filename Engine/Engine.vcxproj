@@ -208,7 +208,6 @@
     <ClCompile Include="Physics\MeshCollider.cpp" />
     <ClCompile Include="Physics\Rigidbody.cpp" />
     <ClCompile Include="Physics\SphereCollider.cpp" />
-    <ClCompile Include="Rendering\ArrayMesh.cpp" />
     <ClCompile Include="Rendering\Cubemap.cpp" />
     <ClCompile Include="Rendering\DebugDrawer.cpp" />
     <ClCompile Include="Rendering\FramebufferTexture.cpp" />
@@ -227,7 +226,6 @@
     <ClCompile Include="Rendering\VertexAnimation.cpp" />
     <ClCompile Include="ResourceManager\ComponentResource.cpp" />
     <ClCompile Include="ResourceManager\EntityResource.cpp" />
-    <ClCompile Include="ResourceManager\ListResource.cpp" />
     <ClCompile Include="ResourceManager\MeshResource.cpp" />
     <ClCompile Include="ResourceManager\ResourceManager.cpp" />
     <ClCompile Include="SceneManager\Scene.cpp" />
@@ -249,13 +247,10 @@
     <ClInclude Include="Components\CMeshCollider.h" />
     <ClInclude Include="Components\CSphereCollider.h" />
     <ClInclude Include="Components\CVertexAnimated.h" />
-    <ClInclude Include="Components\IFixedUpdatable.h" />
-    <ClInclude Include="Components\IUpdatable.h" />
     <ClInclude Include="Math\MTransform.h" />
     <ClInclude Include="Physics\MeshBoundingPart.h" />
     <ClInclude Include="Rendering\DebugDrawer.h" />
     <ClInclude Include="Base\Logger.h" />
-    <ClInclude Include="Base\Empty.h" />
     <ClInclude Include="Base\Hash.h" />
     <ClInclude Include="Base\Random.h" />
     <ClInclude Include="Base\String.h" />
@@ -268,7 +263,6 @@
     <ClInclude Include="Physics\CollisionType.h" />
     <ClInclude Include="Physics\ICollider.h" />
     <ClInclude Include="Components\CLight.h" />
-    <ClInclude Include="Base\Message.h" />
     <ClInclude Include="Base\Time.h" />
     <ClInclude Include="Components\CCamera.h" />
     <ClInclude Include="Components\CFreeMovement.h" />
@@ -280,7 +274,6 @@
     <ClInclude Include="DataStructures\LinkedList.h" />
     <ClInclude Include="DataStructures\StaticArray.h" />
     <ClInclude Include="Engine.h" />
-    <ClInclude Include="Entities\Brush.h" />
     <ClInclude Include="Entities\Entity.h" />
     <ClInclude Include="Entities\EntityFactory.h" />
     <ClInclude Include="Input\Input.h" />
@@ -305,7 +298,6 @@
     <ClInclude Include="Rendering\Animation.h" />
     <ClInclude Include="Rendering\AnimationKey.h" />
     <ClInclude Include="Rendering\AnimationNode.h" />
-    <ClInclude Include="Rendering\ArrayMesh.h" />
     <ClInclude Include="Rendering\Bone.h" />
     <ClInclude Include="Rendering\Cubemap.h" />
     <ClInclude Include="Rendering\FramebufferTexture.h" />
@@ -357,7 +349,6 @@
     <ClInclude Include="SceneManager\SceneManager.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />
     <ClInclude Include="Systems\InputSystem.h" />
-    <ClInclude Include="Systems\MaterialResource.h" />
     <ClInclude Include="Systems\PhysicsSystem.h" />
     <ClInclude Include="Systems\RenderingSystem.h" />
     <ClInclude Include="Systems\ISystem.h" />
