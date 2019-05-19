@@ -17,7 +17,7 @@
   />
 
   <CSphereCollider
-    SphereRadius="2"
+    SphereRadius="1.8"
   />
 
 </Entity>

@@ -16,7 +16,7 @@
 
   <Entity
     Path="Entities/Camera.xml"
-    Position="0 0 5"
+    Position="10 0 5"
     Euler="0 0 0"
     />
 
@@ -27,7 +27,17 @@
   <Entity
     Path="Entities/DoubleBarrel.xml"
     />
-  
+
+  <Entity
+    Path="Entities/DoubleBarrel.xml"
+    Position="-5 2 3"
+    />
+
+  <Entity
+    Path="Entities/DoubleBarrel.xml"
+    Position="-9 2 2"
+    />
+
   <Entity
     Path="Entities/ParticleSystem.xml"
     />

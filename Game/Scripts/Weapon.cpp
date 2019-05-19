@@ -113,7 +113,7 @@ void CWeapon::Shoot()
 
 		if (info.HittedRigidbody != nullptr)
 		{
-			info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 1500.0f);
+			info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 5000.0f);
 			particles->Emit(15, info.Normal, Color4(255, 0, 0, 255));
 		}
 		else
@@ -139,7 +139,7 @@ void CWeapon::ShootShotgun()
 
 			if (info.HittedRigidbody != nullptr)
 			{
-				info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 1500.0f);
+				info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 5000.0f);
 				particles->Emit(15, info.Normal, Color4(255, 0, 0, 255));
 			}
 			else

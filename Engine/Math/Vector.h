@@ -45,7 +45,7 @@ public:
 	inline bool operator!=(const Vector<Type, Dim> &vec) const;
 
 	static void Copy(const Vector<Type, Dim> &in, Vector<Type, Dim> &out);
-	static bool ApproximateCompare(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2);
+	static bool ApproximateCompare(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2, float epsilon = 0.001f);
 	// Length of vec
 	static Type Length(const Vector<Type, Dim> &vec);
 	// Sqr length vec
@@ -63,7 +63,7 @@ public:
 	static Vector<Type, Dim> Scale(const Vector<Type, Dim> &vec1, const Vector<Type, Dim> &vec2);
 
 	inline void Copy(Vector<Type, Dim> &out) const;
-	inline bool ApproximateCompare(const Vector<Type, Dim> &vec) const;
+	inline bool ApproximateCompare(const Vector<Type, Dim> &vec, float epsilon = 0.001f) const;
 	// Length of this vector
 	inline Type Length() const;
 	// Sqr length of this vector
@@ -384,11 +384,11 @@ inline void Vector<Type, Dim>::Copy(const Vector<Type, Dim>&in, Vector<Type, Dim
 }
 
 template <class Type, int Dim>
-inline bool Vector<Type, Dim>::ApproximateCompare(const Vector<Type, Dim>&vec1, const Vector<Type, Dim>&vec2)
+inline bool Vector<Type, Dim>::ApproximateCompare(const Vector<Type, Dim>&vec1, const Vector<Type, Dim>&vec2, float epsilon)
 {
 	for (int i = 0; i < Dim; i++)
 	{
-		if (ABS(vec1[i] - vec2[i]) > EPSILONEQUAL)
+		if (Abs(vec1[i] - vec2[i]) > epsilon)
 		{
 			return false;
 		}
@@ -486,9 +486,9 @@ inline void Vector<Type, Dim>::Copy(Vector<Type, Dim>&out) const
 }
 
 template <class Type, int Dim>
-inline bool Vector<Type, Dim>::ApproximateCompare(const Vector<Type, Dim>&vec) const
+inline bool Vector<Type, Dim>::ApproximateCompare(const Vector<Type, Dim>&vec, float epsilon) const
 {
-	return ApproximateCompare(*this, vec);
+	return ApproximateCompare(*this, vec, epsilon);
 }
 
 template <class Type, int Dim>
