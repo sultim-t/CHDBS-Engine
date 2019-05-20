@@ -87,6 +87,8 @@ void CFreeMovement::ProcessKeyboard()
 
 void CFreeMovement::ProcessMouseMovement(float xoffset, float yoffset)
 {
+	using namespace Mathf;
+
 	float ax = xoffset * Input::MouseSensitivity;
 	float ay = yoffset * Input::MouseSensitivity;
 

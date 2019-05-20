@@ -400,6 +400,8 @@ inline bool Vector<Type, Dim>::ApproximateCompare(const Vector<Type, Dim>&vec1, 
 template <class Type, int Dim>
 inline Type Vector<Type, Dim>::Length(const Vector<Type, Dim>&vec)
 {
+	using namespace Mathf;
+
 	Type length = Vector<Type, Dim>::LengthSqr(vec);
 	length = (Type)Sqrt(length);
 

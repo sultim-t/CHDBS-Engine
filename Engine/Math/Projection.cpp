@@ -4,7 +4,7 @@ Matrix4 Projection::Perspective(float fov, float aspect, float zNear, float zFar
 {
 	Matrix4 mat(0.0f);
 
-	float ctgHalfFov = 1.0f / Tan(DEG2RAD(fov * 0.5f));
+	float ctgHalfFov = 1.0f / Mathf::Tan(DEG2RAD(fov * 0.5f));
 	float invDiff = 1.0f / (zFar - zNear);
 
 	mat(0, 0) = ctgHalfFov/ aspect;			// left: ctgHalfFov * aspect;

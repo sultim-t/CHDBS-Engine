@@ -66,6 +66,8 @@ bool VertexAnimation::Animate(StaticArray<StaticArray<Vertex5>*>& tempVerts, flo
 
 bool VertexAnimation::GetModels(float time, const ModelResource *& prevModel, const ModelResource *& nextModel, float &interpFactor) const
 {
+	using namespace Mathf;
+
 	auto &keys = vertAnim->GetAnimationNodes();
 
 	if (WrapType == AnimationWrapType::Loop)

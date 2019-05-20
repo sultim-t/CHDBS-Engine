@@ -14,6 +14,8 @@
 
 #include <limits>
 
+using namespace Mathf;
+
 #pragma region AABBTriangleTests
 
 #define X 0

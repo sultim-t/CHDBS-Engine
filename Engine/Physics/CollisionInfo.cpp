@@ -40,6 +40,8 @@ bool CollisionInfo::HasFree() const
 
 float CollisionInfo::GetRestitution() const
 {
+	using namespace Mathf;
+
 	float a = CollThis->GetPhysicMaterial().GetRestitution();
 	float b = CollOther->GetPhysicMaterial().GetRestitution();
 
@@ -62,6 +64,8 @@ float CollisionInfo::GetRestitution() const
 
 float CollisionInfo::GetStaticFriction() const
 {
+	using namespace Mathf;
+
 	float a = CollThis->GetPhysicMaterial().GetStaticFriction();
 	float b = CollOther->GetPhysicMaterial().GetStaticFriction();
 
@@ -85,6 +89,8 @@ float CollisionInfo::GetStaticFriction() const
 
 float CollisionInfo::GetDynamicFriction() const
 {
+	using namespace Mathf;
+
 	float a = CollThis->GetPhysicMaterial().GetDynamicFriction();
 	float b = CollOther->GetPhysicMaterial().GetDynamicFriction();
 

@@ -111,6 +111,8 @@ void DebugDrawer::DrawAllLines()
 
 void DebugDrawer::Draw(const Sphere & sphere, const Color4 & color)
 {
+	using namespace Mathf;
+
 	const Vector3 &center = sphere.GetCenter();
 	float radius = sphere.GetRadius();
 

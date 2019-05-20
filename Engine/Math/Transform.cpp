@@ -237,6 +237,8 @@ Matrix4 Transform::TranslateMatrix(const Matrix4 &mat, const Vector3 &vec)
 
 Matrix4 Transform::RotateMatrix(const Matrix4& mat, const Vector3 &inaxis, const float angle)
 {
+	using namespace Mathf;
+
 	float c = Cos(angle);
 	float s = Sin(angle);
 

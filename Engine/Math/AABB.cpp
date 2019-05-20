@@ -185,5 +185,5 @@ float AABB::DistanceSqrTo(const Vector3 & p) const
 
 float AABB::DistanceTo(const Vector3 & p) const
 {
-	return Sqrt(DistanceSqrTo(p));
+	return Mathf::Sqrt(DistanceSqrTo(p));
 }

@@ -87,6 +87,8 @@ CSkinnedModel::~CSkinnedModel()
 
 void CSkinnedModel::Update()
 {
+	using namespace Mathf;
+
 	const Animation *animation = modelResource->GetHierarchy().GetAnimations()[currentAnimation];
 
 	float animLength = animation->GetDuration() / animation->GetTicksPerSecond();

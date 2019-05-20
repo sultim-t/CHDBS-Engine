@@ -386,7 +386,9 @@ void PhysicsSystem::SolveCollision(const CollisionInfo &info, int contactIndex)
 }
 
 void PhysicsSystem::ApplyPositionCorrection(Rigidbody *rbThis, Rigidbody *rbOther, float invMassThis, float invMassOther,const Vector3 &normal, float penetration)
-{	
+{
+	using namespace Mathf;
+
 	float slop = 0.01f;
 	float percent = 0.95f;
 
@@ -403,7 +405,9 @@ void PhysicsSystem::ApplyPositionCorrection(Rigidbody *rbThis, Rigidbody *rbOthe
 }
 
 Vector3 PhysicsSystem::CalculateFriction(const Vector3 &relativeVelocity, const Vector3 &normal, float invMass, float impulse, float staticFriction, float dynamicFriction)
-{	
+{
+	using namespace Mathf;
+
 	// get tangent vector
 	Vector3 tanDir = relativeVelocity - normal * (Vector3::Dot(relativeVelocity, normal));
 	float tanLength = tanDir.Length();

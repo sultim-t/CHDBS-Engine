@@ -1,17 +1,17 @@
 #include "Math.h"
 #include <cmath>
 
-float Sqrt(float x)
+float Mathf::Sqrt(float x)
 {
 	return sqrtf(x);
 }
 
-double SqrtD(double x)
+double Mathf::SqrtD(double x)
 {
 	return sqrt(x);
 }
 
-float MathReverseSqrt(float x)
+float Mathf::MathReverseSqrt(float x)
 {
 	long i;
 	float x2, y;
@@ -27,7 +27,7 @@ float MathReverseSqrt(float x)
 	return y;
 }
 
-int MinusOnePower(int n)
+int Mathf::MinusOnePower(int n)
 {
 	if (n % 2 == 0)
 	{
@@ -37,97 +37,97 @@ int MinusOnePower(int n)
 	return -1;
 }
 
-inline float Sin(float x)
+float Mathf::Sin(float x)
 {
 	return sinf(x);
 }
 
-inline float Cos(float x)
+float Mathf::Cos(float x)
 {
 	return cosf(x);
 }
 
-float Tan(float x)
+float Mathf::Tan(float x)
 {
 	return tanf(x);
 }
 
-inline float Abs(float x)
+float Mathf::Abs(float x)
 {
 	return fabs(x);
 }
 
-inline float ASin(float x)
+float Mathf::ASin(float x)
 {
 	return asinf(x);
 }
 
-inline float ACos(float x)
+float Mathf::ACos(float x)
 {
 	return acosf(x);
 }
 
-inline float CopySign(float x, float sign)
+float Mathf::CopySign(float x, float sign)
 {
 	return copysignf(x, sign);
 }
 
-inline float ATan2(float y, float x)
+float Mathf::ATan2(float y, float x)
 {
 	return atan2f(y, x);
 }
 
-float Min(float x, float y)
+float Mathf::Min(float x, float y)
 {
 	return fminf(x, y);
 }
 
-float Max(float x, float y)
+float Mathf::Max(float x, float y)
 {
 	return fmaxf(x, y);
 }
 
-float Round(float x)
+float Mathf::Round(float x)
 {
 	return roundf(x);
 }
 
-float Ceil(float x)
+float Mathf::Ceil(float x)
 {
 	return ceilf(x);
 }
 
-float Floor(float x)
+float Mathf::Floor(float x)
 {
 	return floorf(x);
 }
 
-float Mod(float x, float y)
+float Mathf::Mod(float x, float y)
 {
 	return fmodf(x,y);
 }
 
-float Exp(float x)
+float Mathf::Exp(float x)
 {
 	return expf(x);
 }
 
-float Log(float x)
+float Mathf::Log(float x)
 {
 	return logf(x);
 }
 
-float Log10(float x)
+float Mathf::Log10(float x)
 {
 	return log10f(x);
 }
 
-float Pow(float base, float exp)
+float Mathf::Pow(float base, float exp)
 {
 	return powf(base, exp);
 }
 
-float Lerp(float a, float b, float t)
+float Mathf::Lerp(float a, float b, float t)
 {
 	return a * (1.0f - t) + b * t;
 }

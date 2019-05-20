@@ -234,6 +234,8 @@ inline Quaternion &Quaternion::operator/=(const float scale)
 
 inline void Quaternion::ToEuler(const Quaternion &q, Vector3& euler)
 {
+	using namespace Mathf;
+
 	// roll
 	float sinr = +2.0f * (q.quat[0] * q.quat[1] + q.quat[2] * q.quat[3]);
 	float cosr = +1.0f - 2.0f * (q.quat[1] * q.quat[1] + q.quat[2] * q.quat[2]);
@@ -277,6 +279,8 @@ const inline Vector3 Quaternion::ToEuler() const
 
 inline void Quaternion::FromAxisAngle(const Vector3 &axis, float angle)
 {
+	using namespace Mathf;
+
 	quat[0] = Cos(angle * 0.5f);
 
 	float s = Sin(angle * 0.5f);
@@ -287,6 +291,8 @@ inline void Quaternion::FromAxisAngle(const Vector3 &axis, float angle)
 
 inline void Quaternion::ToAxisAngle(Vector3 &axis, float &angle) const
 {
+	using namespace Mathf;
+
 	angle = 2.0f * ACos(quat[0]);
 
 	float s = Sqrt(1.0f - quat[0] * quat[0]);
@@ -308,6 +314,8 @@ inline void Quaternion::ToAxisAngle(Vector3 &axis, float &angle) const
 
 inline Quaternion Quaternion::FromDirection(const Vector3 & f, const Vector3 & u)
 {
+	using namespace Mathf;
+
 	Vector3 forward = f.GetNormalized();
 	Vector3 right = (Vector3::Cross(u, forward)).GetNormalized();
 	Vector3 up = Vector3::Cross(forward, right);
@@ -365,6 +373,8 @@ inline Quaternion Quaternion::FromDirection(const Vector3 & f, const Vector3 & u
 
 inline Matrix3 Quaternion::ToRotationMatrix(const Quaternion & q)
 {
+	using namespace Mathf;
+
 	Vector3 axis;
 	float angle;
 
@@ -399,6 +409,8 @@ inline Matrix3 Quaternion::ToRotationMatrix() const
 
 inline void Quaternion::FromRotationMatrix(const Matrix3 &m)
 {
+	using namespace Mathf;
+
 	/*float w = Sqrt(1.0f + m(0,0) + m(1, 1) + m(2, 2)) / 2.0f;
 	float w4 = 4.0f * w;
 
@@ -491,31 +503,8 @@ inline void Quaternion::Inverse()
 
 inline void Quaternion::FromEuler(const Vector3& euler, Quaternion &q)
 {
-	/*Quaternion qH;
-	Quaternion qP;
-	Quaternion qB;
+	using namespace Mathf;
 
-	float x = DEG2RAD(euler[0]) * 0.5f;
-	float y = DEG2RAD(euler[1]) * 0.5f;
-	float z = DEG2RAD(euler[2]) * 0.5f;
-
-	qH[0] = Cos(x);
-	qH[1] = 0.0f;
-	qH[2] = Sin(x);
-	qH[3] = 0.0f;
-
-	qP[0] = Cos(y);
-	qP[1] = Sin(y);
-	qP[2] = 0.0f;
-	qP[3] = 0.0f;
-
-	qB[0] = Cos(z);
-	qB[1] = 0.0f;
-	qB[2] = 0.0f;
-	qB[3] = Sin(z);
-
-	q = qH * qP * qB;
-	*/
 	float pitch = DEG2RAD(euler[PITCH]);
 	float roll = DEG2RAD(euler[ROLL]);
 	float yaw = DEG2RAD(euler[YAW]);
@@ -558,6 +547,8 @@ inline Quaternion Quaternion::Lerp(const Quaternion &a, const Quaternion &b, con
 
 inline Quaternion Quaternion::Slerp(const Quaternion &a, const Quaternion &b, const float t)
 {
+	using namespace Mathf;
+
 	Quaternion q;
 
 	float it = 1 - t;

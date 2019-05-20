@@ -11,6 +11,8 @@ void Frustum::Init(float fov, float aspect, float near, float far)
 
 void Frustum::Init(float fovy, float aspect, float near, float far, const Transform &t)
 {
+	using namespace Mathf;
+
 	ASSERT(fovy > 0.0f && aspect > 0.0f && near > 0.0f && far > 0.0f);
 
 	this->fov = fovy;
