@@ -9,7 +9,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <ForcedIncludeFiles>$(SolutionDir)Engine\Base\Typedef.h;$(SolutionDir)Engine\Base\Assert.h;$(SolutionDir)Engine\Base\Time.h;$(SolutionDir)Engine\Base\String.h;$(SolutionDir)Engine\Base\Logger.h</ForcedIncludeFiles>
+      <ForcedIncludeFiles>$(SolutionDir)Engine\StdH.h</ForcedIncludeFiles>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup />

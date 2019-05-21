@@ -347,6 +347,7 @@
     <ClInclude Include="SceneManager\Scene.h" />
     <ClInclude Include="SceneManager\SceneInfo.h" />
     <ClInclude Include="SceneManager\SceneManager.h" />
+    <ClInclude Include="StdH.h" />
     <ClInclude Include="Systems\ComponentSystem.h" />
     <ClInclude Include="Systems\InputSystem.h" />
     <ClInclude Include="Systems\PhysicsSystem.h" />
