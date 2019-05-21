@@ -1,12 +1,14 @@
 #include <catch.hpp>
-#include <Engine/Base/Assert.h>
-#include <Engine/Base/Typedef.h>
-#include <Engine/Math/Vector.h>
+#include "StdH.h"
 
-bool Compare(float a, float b, float eps);
-bool Compare(float a, float b, float eps)
+TEST_CASE("Vector3 elements")
 {
-	return Mathf::Abs(a - b) < eps;
+	VectorI3 a(1, 2, 3);
+
+	REQUIRE(a[0] == 1);
+	
+	a[1] = 6;
+	REQUIRE(a[1] == 6);
 }
 
 TEST_CASE("Vector3 sum")
@@ -41,6 +43,13 @@ TEST_CASE("Vector3 length")
 	Vector3 a(2, 3, 4);
 	float length = 5.385f;
 
-	bool c = Compare(a.Length(), length, 0.001f);
-	REQUIRE(c);
+	REQUIRE(Compare::Floats(a.Length(), length));
+}
+
+TEST_CASE("Vector3 normalization")
+{
+	Vector3 a(2, 3, 4);
+	a.Normalize();
+
+	REQUIRE(Compare::Floats(a.Length(), 1));
 }
