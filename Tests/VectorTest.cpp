@@ -2,12 +2,12 @@
 #include <Engine/Base/Assert.h>
 #include <Engine/Base/Typedef.h>
 #include <Engine/Math/Vector.h>
-//
-//bool Compare(float a, float b, float eps);
-//bool Compare(float a, float b, float eps)
-//{
-//	return Abs(a - b) < eps;
-//}
+
+bool Compare(float a, float b, float eps);
+bool Compare(float a, float b, float eps)
+{
+	return Mathf::Abs(a - b) < eps;
+}
 
 TEST_CASE("Vector3 sum")
 {
@@ -36,11 +36,11 @@ TEST_CASE("Vector3 cross product")
 	REQUIRE(result == Vector3::Cross(a, b));
 }
 
-//TEST_CASE("Vector3 length")
-//{
-//	Vector3 a(2, 3, 4);
-//	float length = 5.0f;
-//
-//	bool c = Compare(a.Length(), length, 0.001f);
-//	REQUIRE(c);
-//}
+TEST_CASE("Vector3 length")
+{
+	Vector3 a(2, 3, 4);
+	float length = 5.385f;
+
+	bool c = Compare(a.Length(), length, 0.001f);
+	REQUIRE(c);
+}
