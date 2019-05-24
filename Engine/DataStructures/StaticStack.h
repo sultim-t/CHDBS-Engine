@@ -43,7 +43,7 @@ inline T StaticStack<T>::Pop()
 	ASSERT(top > 0);
 	ASSERT(buffer != nullptr);
 
-	return buffer[top--];
+	return buffer[--top];
 }
 
 template<class T>

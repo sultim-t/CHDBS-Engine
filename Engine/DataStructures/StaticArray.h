@@ -61,7 +61,7 @@ inline void StaticArray<T>::Init(UINT amount)
 
 	if (amount != 0)
 	{
-		buffer = new T[amount];
+		buffer = new T[amount]();
 	}
 }
 

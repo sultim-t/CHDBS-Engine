@@ -1,7 +1,8 @@
-#include <catch.hpp>
 #include "StdH.h"
+#include <catch.hpp>
+#include <Engine/Math/Quaternion.h>
 
-TEST_CASE("Quaternion <-> euler")
+TEST_CASE("Quaternion -> euler")
 {
 	Quaternion a(1, 0, 0, 0);
 	Vector3 result = a.ToEuler();
@@ -9,10 +10,6 @@ TEST_CASE("Quaternion <-> euler")
 	Vector3 euler = Vector3(0, 0, 0);
 
 	REQUIRE(Compare::Vectors(result, euler));
-
-	// convert back from euler to quat
-	Quaternion converted = Quaternion(euler);
-	REQUIRE(Compare::Quaternions(a, converted));
 }
 
 TEST_CASE("Quaternion <-> matrix")

@@ -59,7 +59,7 @@ inline void DynamicArray<T>::Expand()
 	int newAllocated = allocated * DYNARRAY_INCMULT;
 
 	// allocate new array
-	T *newBuffer = new T[newAllocated];
+	T *newBuffer = new T[newAllocated]();
 
 	// copy old data
 	std::memcpy(newBuffer, buffer, oldBytesSize);
@@ -99,7 +99,7 @@ inline void DynamicArray<T>::RawInit(int initSize)
 	// init without checking buffer and size
 	top = 0;
 	allocated = initSize;
-	buffer = new T[initSize];
+	buffer = new T[initSize]();
 }
 
 template<class T>
@@ -137,7 +137,7 @@ inline T DynamicArray<T>::Pop()
 	ASSERT(top > 0);
 	ASSERT(buffer != nullptr);
 
-	return buffer[top--];
+	return buffer[--top];
 }
 
 template<class T>

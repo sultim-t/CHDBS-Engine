@@ -1,5 +1,6 @@
-#include <catch.hpp>
 #include "StdH.h"
+#include <catch.hpp>
+#include <Engine/Math/Vector.h>
 
 TEST_CASE("Vector3 elements")
 {

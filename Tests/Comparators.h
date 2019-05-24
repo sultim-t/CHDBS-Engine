@@ -15,6 +15,9 @@ public:
 	static bool Quaternions(const Quaternion &a, const Quaternion &b, float eps = 0.001f);
 
 	static bool Floats(float a, float b, float eps = 0.001f);
+
+	template<class Type>
+	static bool Arrays(int count, const Type *a, const Type *b);
 };
 
 template<class Type, int Dim>
@@ -64,4 +67,18 @@ inline bool Compare::Quaternions(const Quaternion & a, const Quaternion & b, flo
 inline bool Compare::Floats(float a, float b, float eps)
 {
 	return Mathf::Abs(a - b) < eps;
+}
+
+template<class Type>
+inline bool Compare::Arrays(int count, const Type * a, const Type * b)
+{
+	for (int i = 0; i < count; i++)
+	{
+		if (a[i] != b[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
 }

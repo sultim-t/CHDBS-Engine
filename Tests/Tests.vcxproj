@@ -166,8 +166,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="DynamicArrayTests.cpp" />
+    <ClCompile Include="HashTableTests.cpp" />
+    <ClCompile Include="LinkedListTests.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MatrixTests.cpp" />
     <ClCompile Include="QuaternionTests.cpp" />
+    <ClCompile Include="StaticArrayTests.cpp" />
+    <ClCompile Include="TransformTests.cpp" />
     <ClCompile Include="VectorTest.cpp" />
   </ItemGroup>
   <ItemGroup>
