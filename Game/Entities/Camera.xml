@@ -29,8 +29,8 @@
     />
   
   <CSphereCollider
-    SphereRadius="2"
-    Offset="0 -0.5 0"
+    SphereRadius="1"
+    Offset="0 -0.3 0"
   />
 
   <CWeapon

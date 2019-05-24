@@ -8,13 +8,13 @@
     Lifetime="2"
     LifetimeRandom="0.3"
     
-    Size="0.2"
-    SizeRandom="0.1"
+    Size="0.1"
+    SizeRandom="0.05"
     
     Color="208 155 66 220"
     
-    Velocity="0 0 2.5"
-    VelocityRandom="0.6 0.6 1.5"
+    Velocity="0 0 2"
+    VelocityRandom="0.5 0.5 1"
     
     GravityMultiplier="0.5"
     GravityMultRandom="0.2"

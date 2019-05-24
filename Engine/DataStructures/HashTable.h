@@ -258,7 +258,6 @@ inline void HashTable<K, T>::Resize()
 	HTElement<K, T> **temp = new HTElement<K, T>*[chainCount];
 	for (UINT i = 0; i < chainCount; i++)
 	{
-		// can't use malloc because there must be uninitialized keys and values 
 		temp[i] = new HTElement<K, T>[maxChainSize];
 		tempSizes[i] = 0;
 	}

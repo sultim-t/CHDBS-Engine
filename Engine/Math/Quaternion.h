@@ -22,6 +22,8 @@ public:
 	inline const float operator[](int index) const;
 	inline float& operator[](int index);
 
+	inline bool	operator==(const Quaternion &b) const;
+
 	inline const Quaternion operator+(const Quaternion &r) const;
 	inline Quaternion &operator+=(const Quaternion &r);
 	inline const Quaternion operator-(const Quaternion &r) const;
@@ -132,6 +134,11 @@ inline float &Quaternion::operator[](int index)
 {
 	ASSERT(index >= 0 || index < 4);
 	return quat[index];
+}
+
+inline bool Quaternion::operator==(const Quaternion & b) const
+{
+	return quat[0] == b.quat[0] && quat[1] == b.quat[1] && quat[2] == b.quat[2] && quat[3] == b.quat[3];
 }
 
 inline const Quaternion Quaternion::operator+(const Quaternion &r) const

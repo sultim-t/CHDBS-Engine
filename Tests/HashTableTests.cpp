@@ -39,17 +39,4 @@ TEST_CASE("Hash table")
 	REQUIRE_FALSE(table.Find("Qw", found));
 
 	REQUIRE(table.GetSize() == 2);
-
-	// add more than allocated
-	table.Add("Dfdsaw", 40);
-	table.Add("Cvdsax", 40);
-	table.Add("Tycrcx", 40);
-	table.Add("Ghcdgs", 40);
-	table.Add("Bvsbtn", 40);
-	table.Add("Uihzbt", 40);
-	table.Add("Jbbdfk", 40);
-	table.Add("Mbyjjo", 40);
-	table.Add("Pgstul", 40);
-
-	REQUIRE(table.GetSize() == 11);
 }

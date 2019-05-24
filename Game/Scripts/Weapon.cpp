@@ -9,6 +9,7 @@
 #include <Engine/Components/CSphereCollider.h>
 #include <Engine/Components/CVertexAnimated.h>
 #include <Engine/Systems/UISystem.h>
+#include <Engine/Base/Random.h>
 
 CLASSDEFINITION(IComponent, CWeapon)
 
@@ -105,22 +106,8 @@ void CWeapon::Shoot()
 
 	Vector3 localDir = Vector3(0, 0, 1);
 	Vector3 dir = transform.DirectionFromLocal(localDir);
-	RaycastInfo info;
 
-	if (PhysicsSystem::Instance().Raycast(transform.GetPosition(), dir, info))
-	{
-		particles->GetOwner().GetTransform().SetPosition(info.Point);
-
-		if (info.HittedRigidbody != nullptr)
-		{
-			info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 5000.0f);
-			particles->Emit(15, info.Normal, Color4(255, 0, 0, 255));
-		}
-		else
-		{
-			particles->Emit(15, info.Normal);
-		}
-	}
+	CheckRay(transform.GetPosition(), dir);
 }
 
 void CWeapon::ShootShotgun()
@@ -131,21 +118,36 @@ void CWeapon::ShootShotgun()
 	{
 		Vector3 localDir = Vector3((i - 3) / 3.0f * 0.2f, (i % 2 - 0.5f) * 0.05f, 1);
 		Vector3 dir = transform.DirectionFromLocal(localDir);
-		RaycastInfo info;
 
-		if (PhysicsSystem::Instance().Raycast(transform.GetPosition(), dir, info))
+		CheckRay(transform.GetPosition(), dir);
+	}
+}
+
+void CWeapon::CheckRay(const Vector3 &pos, const Vector3 &dir)
+{
+	RaycastInfo info;
+
+	if (PhysicsSystem::Instance().Raycast(pos, dir, info))
+	{
+		particles->GetOwner().GetTransform().SetPosition(info.Point);
+
+		if (info.HittedRigidbody != nullptr)
 		{
-			particles->GetOwner().GetTransform().SetPosition(info.Point);
+			info.HittedRigidbody->AddImpulse(dir.GetNormalized() * Random::GetFloat(1000, 3000));
+			particles->Emit(15, info.Normal, Color4(255, 0, 0, 255));
 
-			if (info.HittedRigidbody != nullptr)
+			auto anim = info.HittedRigidbody->GetOwner().GetComponent<CVertexAnimated>();
+			if (anim != nullptr)
 			{
-				info.HittedRigidbody->AddImpulse(dir.GetNormalized() * 5000.0f);
-				particles->Emit(15, info.Normal, Color4(255, 0, 0, 255));
+				if (!anim->IsPlaying())
+				{
+					anim->PlayAnimation(0);
+				}
 			}
-			else
-			{
-				particles->Emit(15, info.Normal);
-			}
+		}
+		else
+		{
+			particles->Emit(15, info.Normal);
 		}
 	}
 }

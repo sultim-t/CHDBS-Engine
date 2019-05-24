@@ -36,6 +36,7 @@ private:
 private:
 	void Shoot();
 	void ShootShotgun();
+	void CheckRay(const Vector3 &pos, const Vector3 &dir);
 
 	void OnCollision(const CollisionInfo *info);
 

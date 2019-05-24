@@ -70,13 +70,16 @@ bool VertexAnimation::GetModels(float time, const ModelResource *& prevModel, co
 
 	auto &keys = vertAnim->GetAnimationNodes();
 
+	// time must be mulitplied by ticks per second
+	time *= vertAnim->GetTicksPerSecond();
+
 	if (WrapType == AnimationWrapType::Loop)
 	{
-		time = Mod(time, animLength);
+		time = Mod(time, vertAnim->GetDuration());
 	}
 	else if (WrapType == AnimationWrapType::Once)
 	{
-		if (time > animLength)
+		if (time > vertAnim->GetDuration())
 		{
 			// use last frame
 			prevModel = keys[keys.GetSize() - 1].Value;
@@ -88,6 +91,7 @@ bool VertexAnimation::GetModels(float time, const ModelResource *& prevModel, co
 	}
 
 	// get model index in array
+	// time must be mulitplied by ticks per second
 	int modelId = GetModelIndex(time);
 	int nextModelId = modelId + 1;
 

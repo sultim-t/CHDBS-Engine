@@ -7,7 +7,7 @@
     ForcedDiffuseTexture="Textures/RobotPalette.png"
     Shader="Standard"
     RotationCorrection="-0.5 0.5 0.5 0.5"
-    ScaleCorrection="3.5 3.5 3.5"
+    ScaleCorrection="1.4 1.4 1.4"
     CastShadows="1"/>
   
   <Rigidbody
@@ -17,7 +17,7 @@
   />
 
   <CSphereCollider
-    SphereRadius="1.8"
+    SphereRadius="1"
   />
 
 </Entity>

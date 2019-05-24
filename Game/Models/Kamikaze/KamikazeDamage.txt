@@ -2,7 +2,9 @@ KamikazeDamage
 30
 0
 Models/Kamikaze/KamikazeRun0.obj
-12
+10
+Models/Kamikaze/KamikazeDamage5.obj
+15
 Models/Kamikaze/KamikazeDamage5.obj
 30
 Models/Kamikaze/KamikazeRun0.obj
